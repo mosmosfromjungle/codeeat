@@ -1,3 +1,6 @@
+/*
+  Icon: mui 라이브러리 사용 (https://mui.com/material-ui/material-icons/)
+*/
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import Fab from '@mui/material/Fab'
@@ -15,9 +18,11 @@ import GitHubIcon from '@mui/icons-material/GitHub'
 import TwitterIcon from '@mui/icons-material/Twitter'
 import VideogameAssetIcon from '@mui/icons-material/VideogameAsset'
 import VideogameAssetOffIcon from '@mui/icons-material/VideogameAssetOff'
+import CodeEditIcon from '@mui/icons-material/Code'
+import CodeEditOffIcon from '@mui/icons-material/CodeOff'
 
 import { BackgroundMode } from '../../../types/BackgroundMode'
-import { setShowJoystick, toggleBackgroundMode } from '../stores/UserStore'
+import { setShowJoystick, toggleBackgroundMode, setShowCodeEditor } from '../stores/UserStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
 import { getAvatarString, getColorByString } from '../util'
 
@@ -114,6 +119,7 @@ export default function HelperButtonGroup() {
   const roomId = useAppSelector((state) => state.room.roomId)
   const roomName = useAppSelector((state) => state.room.roomName)
   const roomDescription = useAppSelector((state) => state.room.roomDescription)
+  const showCodeEditor = useAppSelector((state) => state.user.showCodeEditor)
   const dispatch = useAppDispatch()
 
   return (
@@ -225,6 +231,13 @@ export default function HelperButtonGroup() {
             {backgroundMode === BackgroundMode.DAY ? <DarkModeIcon /> : <LightModeIcon />}
           </StyledFab>
         </Tooltip>
+        {roomJoined && (
+          <Tooltip title={showCodeEditor ? 'Close the Code Editor' : 'Open the Code Editor'}>
+            <StyledFab size="small" onClick={() => dispatch(setShowCodeEditor(!showCodeEditor))}>
+              {showCodeEditor ? <CodeEditIcon /> : <CodeEditOffIcon />}
+            </StyledFab>
+          </Tooltip>
+        )}
       </ButtonGroup>
     </Backdrop>
   )
