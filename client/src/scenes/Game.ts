@@ -21,7 +21,7 @@ import { PlayerBehavior } from '../../../types/PlayerBehavior'
 import { ItemType } from '../../../types/Items'
 
 import store from '../stores'
-import { setFocused, setShowChat } from '../stores/ChatStore'
+import { setFocused, setShowChat, setShowDM } from '../stores/ChatStore'
 import { NavKeys, Keyboard } from '../../../types/KeyboardState'
 
 export default class Game extends Phaser.Scene {
@@ -58,6 +58,7 @@ export default class Game extends Phaser.Scene {
     })
     this.input.keyboard.on('keydown-ESC', (event) => {
       store.dispatch(setShowChat(false))
+      store.dispatch(setShowDM(false))
     })
   }
 

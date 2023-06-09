@@ -9,9 +9,10 @@ import ComputerDialog from './components/ComputerDialog'
 import WhiteboardDialog from './components/WhiteboardDialog'
 import CodeEditorDialog from './components/CodeEditorDialog'
 import VideoConnectionDialog from './components/VideoConnectionDialog'
-import Chat from './components/Chat'
 import HelperButtonGroup from './components/HelperButtonGroup'
 import MobileVirtualJoystick from './components/MobileVirtualJoystick'
+
+import GlobalFont from '../public/assets/fonts/GlobalFont';
 
 const Backdrop = styled.div`
   position: absolute;
@@ -42,7 +43,6 @@ function App() {
       ui = (
         /* Render Chat or VideoConnectionDialog if no dialogs are opened. */
         <>
-          <Chat />
           {/* Render VideoConnectionDialog if user is not connected to a webcam. */}
           {!videoConnected && <VideoConnectionDialog />}
           <MobileVirtualJoystick />
@@ -62,6 +62,7 @@ function App() {
       {ui}
       {/* Render HelperButtonGroup if no dialogs are opened. */}
       {!computerDialogOpen && !whiteboardDialogOpen && !codeEditorDialogOpen && <HelperButtonGroup />}
+      {<GlobalFont />}
     </Backdrop>
   )
 }

@@ -1,28 +1,32 @@
 /*
   Icon: mui 라이브러리 사용 (https://mui.com/material-ui/material-icons/)
 */
-import React, { useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import styled from 'styled-components'
+
 import Fab from '@mui/material/Fab'
 import IconButton from '@mui/material/IconButton'
-import Avatar from '@mui/material/Avatar'
 import Tooltip from '@mui/material/Tooltip'
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
-import ShareIcon from '@mui/icons-material/Share'
-import LightModeIcon from '@mui/icons-material/LightMode'
-import DarkModeIcon from '@mui/icons-material/DarkMode'
-import CloseIcon from '@mui/icons-material/Close'
-import LightbulbIcon from '@mui/icons-material/Lightbulb'
-import ArrowRightIcon from '@mui/icons-material/ArrowRight'
-import GitHubIcon from '@mui/icons-material/GitHub'
-import TwitterIcon from '@mui/icons-material/Twitter'
-import VideogameAssetIcon from '@mui/icons-material/VideogameAsset'
-import VideogameAssetOffIcon from '@mui/icons-material/VideogameAssetOff'
+import Box from '@mui/material/Box'
+import InputBase from '@mui/material/InputBase'
 
-import { BackgroundMode } from '../../../types/BackgroundMode'
-import { setShowJoystick, toggleBackgroundMode } from '../stores/UserStore'
+import CloseIcon from '@mui/icons-material/Close'
+
+import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon'
+import 'emoji-mart/css/emoji-mart.css'
+import { Picker } from 'emoji-mart'
+
+import ChatIcon from '@mui/icons-material/Chat'
+import DMIcon from '@mui/icons-material/Send'
+import UserIcon from '@mui/icons-material/SupervisorAccount'
+import LogoutIcon from '@mui/icons-material/ExitToApp';
+
+import { MessageType, setFocused, setShowChat, setShowDM } from '../stores/ChatStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
-import { getAvatarString, getColorByString } from '../util'
+import { getColorByString } from '../util'
+
+import phaserGame from '../PhaserGame'
+import Game from '../scenes/Game'
 
 const Backdrop = styled.div`
   position: fixed;
@@ -31,35 +35,11 @@ const Backdrop = styled.div`
   bottom: 16px;
   right: 16px;
   align-items: flex-end;
-
-  .wrapper-group {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
 `
 
 const Wrapper = styled.div`
-  position: relative;
-  font-size: 16px;
-  color: #eee;
-  background: #222639;
-  box-shadow: 0px 0px 5px #0000006f;
-  border-radius: 16px;
-  padding: 15px 35px 15px 15px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  .close {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-  }
-
-  .tip {
-    margin-left: 12px;
-  }
+  height: 100%;
+  margin-top: auto;
 `
 
 const ButtonGroup = styled.div`
@@ -67,168 +47,364 @@ const ButtonGroup = styled.div`
   gap: 10px;
 `
 
-const Title = styled.h3`
-  font-size: 24px;
-  color: #eee;
-  text-align: center;
+const FabWrapper = styled.div`
+  margin-top: auto;
 `
 
-const RoomName = styled.div`
-  margin: 10px 20px;
-  max-width: 460px;
-  max-height: 150px;
-  overflow-wrap: anywhere;
-  overflow-y: auto;
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  align-items: center;
+const ChatHeader = styled.div`
+  position: relative;
+  height: 35px;
+  background: #000000a7;
+  border-radius: 10px 10px 0px 0px;
 
   h3 {
-    font-size: 24px;
-    color: #eee;
+    color: #fff;
+    margin: 7px;
+    font-size: 17px;
+    text-align: center;
+  }
+
+  .close {
+    position: absolute;
+    top: 0;
+    right: 0;
   }
 `
 
-const RoomDescription = styled.div`
-  margin: 0 20px;
-  max-width: 460px;
-  max-height: 150px;
-  overflow-wrap: anywhere;
-  overflow-y: auto;
-  font-size: 16px;
-  color: #c2c2c2;
+const ChatBox = styled(Box)`
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  background: #2c2c2c;
+  border: 1px solid #00000029;
+`
+
+const MessageWrapper = styled.div`
   display: flex;
-  justify-content: center;
-`
+  flex-wrap: wrap;
+  padding: 0px 2px;
 
-const StyledFab = styled(Fab)<{ target?: string }>`
-  &:hover {
-    color: #1ea2df;
+  p {
+    margin: 3px;
+    text-shadow: 0.3px 0.3px black;
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+
+  span {
+    color: white;
+    font-weight: normal;
+  }
+
+  .notification {
+    color: grey;
+    font-weight: normal;
+  }
+
+  :hover {
+    background: #3a3a3a;
   }
 `
+
+const InputWrapper = styled.form`
+  box-shadow: 10px 10px 10px #00000018;
+  border: 1px solid #42eacb;
+  border-radius: 0px 0px 10px 10px;
+  display: flex;
+  flex-direction: row;
+  background: linear-gradient(180deg, #000000c1, #242424c0);
+`
+
+const InputTextField = styled(InputBase)`
+  border-radius: 0px 0px 10px 10px;
+  input {
+    padding: 5px;
+  }
+`
+
+const EmojiPickerWrapper = styled.div`
+  position: absolute;
+  bottom: 54px;
+  right: 16px;
+`
+
+const dateFormatter = new Intl.DateTimeFormat('en', {
+  timeStyle: 'short',
+  dateStyle: 'short',
+})
+
+const Message = ({ chatMessage, messageType }) => {
+  const [tooltipOpen, setTooltipOpen] = useState(false)
+
+  return (
+    <MessageWrapper
+      onMouseEnter={() => {
+        setTooltipOpen(true)
+      }}
+      onMouseLeave={() => {
+        setTooltipOpen(false)
+      }}
+    >
+      <Tooltip
+        open={tooltipOpen}
+        title={dateFormatter.format(chatMessage.createdAt)}
+        placement="right"
+        arrow
+      >
+        {messageType === MessageType.REGULAR_MESSAGE ? (
+          <p
+            style={{
+              color: getColorByString(chatMessage.author),
+            }}
+          >
+            {chatMessage.author}: <span>{chatMessage.content}</span>
+          </p>
+        ) : (
+          <p className="notification">
+            {chatMessage.author} {chatMessage.content}
+          </p>
+        )}
+      </Tooltip>
+    </MessageWrapper>
+  )
+}
 
 export default function HelperButtonGroup() {
-  const [showControlGuide, setShowControlGuide] = useState(false)
-  const [showRoomInfo, setShowRoomInfo] = useState(false)
-  const showJoystick = useAppSelector((state) => state.user.showJoystick)
-  const backgroundMode = useAppSelector((state) => state.user.backgroundMode)
+  const [inputValue, setInputValue] = useState('')
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const [readyToSubmit, setReadyToSubmit] = useState(false)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const chatMessages = useAppSelector((state) => state.chat.chatMessages)
   const roomJoined = useAppSelector((state) => state.room.roomJoined)
-  const roomId = useAppSelector((state) => state.room.roomId)
-  const roomName = useAppSelector((state) => state.room.roomName)
-  const roomDescription = useAppSelector((state) => state.room.roomDescription)
-  const showCodeEditor = useAppSelector((state) => state.user.showCodeEditor)
+  const focused = useAppSelector((state) => state.chat.focused)
+  const showChat = useAppSelector((state) => state.chat.showChat)
+  const showDM = useAppSelector((state) => state.chat.showDM)
+
   const dispatch = useAppDispatch()
+  const game = phaserGame.scene.keys.game as Game
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value)
+  }
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Escape') {
+      // move focus back to the game
+      inputRef.current?.blur()
+      dispatch(setShowChat(false))
+      dispatch(setShowDM(false))
+    }
+  }
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    // this is added because without this, 2 things happen at the same
+    // time when Enter is pressed, (1) the inputRef gets focus (from
+    // useEffect) and (2) the form gets submitted (right after the input
+    // gets focused)
+    if (!readyToSubmit) {
+      setReadyToSubmit(true)
+      return
+    }
+    // move focus back to the game
+    inputRef.current?.blur()
+
+    const val = inputValue.trim()
+    setInputValue('')
+    if (val) {
+      game.network.addChatMessage(val)
+      game.myPlayer.updateDialogBubble(val)
+    }
+  }
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  useEffect(() => {
+    if (focused) {
+      inputRef.current?.focus()
+    }
+  }, [focused])
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [chatMessages, showChat, showDM])
 
   return (
     <Backdrop>
-      <div className="wrapper-group">
-        {roomJoined && (
-          <Tooltip title={showJoystick ? 'Disable virtual joystick' : 'Enable virtual joystick'}>
-            <StyledFab size="small" onClick={() => dispatch(setShowJoystick(!showJoystick))}>
-              {showJoystick ? <VideogameAssetOffIcon /> : <VideogameAssetIcon />}
-            </StyledFab>
-          </Tooltip>
-        )}
-        {showRoomInfo && (
-          <Wrapper>
-            <IconButton className="close" onClick={() => setShowRoomInfo(false)} size="small">
-              <CloseIcon />
-            </IconButton>
-            <RoomName>
-              <Avatar style={{ background: getColorByString(roomName) }}>
-                {getAvatarString(roomName)}
-              </Avatar>
-              <h3>{roomName}</h3>
-            </RoomName>
-            <RoomDescription>
-              <ArrowRightIcon /> ID: {roomId}
-            </RoomDescription>
-            <RoomDescription>
-              <ArrowRightIcon /> Description: {roomDescription}
-            </RoomDescription>
-            <p className="tip">
-              <LightbulbIcon />
-              Shareable link coming up 😄
-            </p>
-          </Wrapper>
-        )}
-        {showControlGuide && (
-          <Wrapper>
-            <Title>Controls</Title>
-            <IconButton className="close" onClick={() => setShowControlGuide(false)} size="small">
-              <CloseIcon />
-            </IconButton>
-            <ul>
-              <li>
-                <strong>W, A, S, D or arrow keys</strong> to move
-              </li>
-              <li>
-                <strong>E</strong> to sit down (when facing a chair)
-              </li>
-              <li>
-                <strong>R</strong> to use computer to screen share (when facing a computer)
-              </li>
-              <li>
-                <strong>Enter</strong> to open chat
-              </li>
-              <li>
-                <strong>ESC</strong> to close chat
-              </li>
-            </ul>
-            <p className="tip">
-              <LightbulbIcon />
-              Video connection will start if you are close to someone else
-            </p>
-          </Wrapper>
-        )}
-      </div>
       <ButtonGroup>
+        <Wrapper>
+          {roomJoined &&
+          (showChat ? (
+            <>
+              <ChatHeader>
+                <h3>Chat</h3>
+                <IconButton
+                  aria-label="close dialog"
+                  className="close"
+                  onClick={() => dispatch(setShowChat(false))}
+                  size="small"
+                >
+                  <CloseIcon />
+                </IconButton>
+              </ChatHeader>
+              <ChatBox>
+                {chatMessages.map(({ messageType, chatMessage }, index) => (
+                  <Message chatMessage={chatMessage} messageType={messageType} key={index} />
+                ))}
+                <div ref={messagesEndRef} />
+                {showEmojiPicker && (
+                  <EmojiPickerWrapper>
+                    <Picker
+                      theme="dark"
+                      showSkinTones={false}
+                      showPreview={false}
+                      onSelect={(emoji) => {
+                        setInputValue(inputValue + emoji.native)
+                        setShowEmojiPicker(!showEmojiPicker)
+                        dispatch(setFocused(true))
+                      }}
+                      exclude={['recent', 'flags']}
+                    />
+                  </EmojiPickerWrapper>
+                )}
+              </ChatBox>
+              <InputWrapper onSubmit={handleSubmit}>
+                <InputTextField
+                  inputRef={inputRef}
+                  autoFocus={focused}
+                  fullWidth
+                  placeholder="Press Enter to Chat"
+                  value={inputValue}
+                  onKeyDown={handleKeyDown}
+                  onChange={handleChange}
+                  onFocus={() => {
+                    if (!focused) {
+                      dispatch(setFocused(true))
+                      setReadyToSubmit(true)
+                    }
+                  }}
+                  onBlur={() => {
+                    dispatch(setFocused(false))
+                    setReadyToSubmit(false)
+                  }}
+                />
+                <IconButton aria-label="emoji" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
+                  <InsertEmoticonIcon />
+                </IconButton>
+              </InputWrapper>
+            </>
+          ) : (
+            <FabWrapper>
+              <Fab
+                onClick={() => {
+                  dispatch(setShowChat(true))
+                  dispatch(setFocused(true))
+                }}
+              >
+                <ChatIcon />
+              </Fab>
+            </FabWrapper>
+          ))}
+        </Wrapper>
+
+        <Wrapper>
+          {roomJoined &&
+          (showDM ? (
+            <>
+              <ChatHeader>
+                <h3>DM</h3>
+                <IconButton
+                  aria-label="close dialog"
+                  className="close"
+                  onClick={() => dispatch(setShowDM(false))}
+                  size="small"
+                >
+                  <CloseIcon />
+                </IconButton>
+              </ChatHeader>
+              <ChatBox>
+                {chatMessages.map(({ messageType, chatMessage }, index) => (
+                  <Message chatMessage={chatMessage} messageType={messageType} key={index} />
+                ))}
+                <div ref={messagesEndRef} />
+                {showEmojiPicker && (
+                  <EmojiPickerWrapper>
+                    <Picker
+                      theme="dark"
+                      showSkinTones={false}
+                      showPreview={false}
+                      onSelect={(emoji) => {
+                        setInputValue(inputValue + emoji.native)
+                        setShowEmojiPicker(!showEmojiPicker)
+                        dispatch(setFocused(true))
+                      }}
+                      exclude={['recent', 'flags']}
+                    />
+                  </EmojiPickerWrapper>
+                )}
+              </ChatBox>
+              <InputWrapper onSubmit={handleSubmit}>
+                <InputTextField
+                  inputRef={inputRef}
+                  autoFocus={focused}
+                  fullWidth
+                  placeholder="Press Enter to DM"
+                  value={inputValue}
+                  onKeyDown={handleKeyDown}
+                  onChange={handleChange}
+                  onFocus={() => {
+                    if (!focused) {
+                      dispatch(setFocused(true))
+                      setReadyToSubmit(true)
+                    }
+                  }}
+                  onBlur={() => {
+                    dispatch(setFocused(false))
+                    setReadyToSubmit(false)
+                  }}
+                />
+                <IconButton aria-label="emoji" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
+                  <InsertEmoticonIcon />
+                </IconButton>
+              </InputWrapper>
+            </>
+          ) : (
+            <FabWrapper>
+              <Fab
+                onClick={() => {
+                  dispatch(setShowDM(true))
+                  dispatch(setFocused(true))
+                }}
+              >
+                <DMIcon />
+              </Fab>
+            </FabWrapper>
+          ))}
+        </Wrapper>
+
         {roomJoined && (
-          <>
-            <Tooltip title="Room Info">
-              <StyledFab
-                size="small"
-                onClick={() => {
-                  setShowRoomInfo(!showRoomInfo)
-                  setShowControlGuide(false)
-                }}
-              >
-                <ShareIcon />
-              </StyledFab>
-            </Tooltip>
-            <Tooltip title="Control Guide">
-              <StyledFab
-                size="small"
-                onClick={() => {
-                  setShowControlGuide(!showControlGuide)
-                  setShowRoomInfo(false)
-                }}
-              >
-                <HelpOutlineIcon />
-              </StyledFab>
-            </Tooltip>
-          </>
-        )}
-        <Tooltip title="Visit Our GitHub">
-          <StyledFab
-            size="small"
-            href="https://github.com/kevinshen56714/SkyOffice"
-            target="_blank"
+          <FabWrapper>
+          <Fab
           >
-            <GitHubIcon />
-          </StyledFab>
-        </Tooltip>
-        <Tooltip title="Follow Us on Twitter">
-          <StyledFab size="small" href="https://twitter.com/SkyOfficeApp" target="_blank">
-            <TwitterIcon />
-          </StyledFab>
-        </Tooltip>
-        <Tooltip title="Switch Background Theme">
-          <StyledFab size="small" onClick={() => dispatch(toggleBackgroundMode())}>
-            {backgroundMode === BackgroundMode.DAY ? <DarkModeIcon /> : <LightModeIcon />}
-          </StyledFab>
-        </Tooltip>
+            <UserIcon />
+          </Fab>
+          </FabWrapper>
+        )}
+
+        {roomJoined && (
+          <FabWrapper>
+          <Fab
+          >
+            <LogoutIcon />
+          </Fab>
+          </FabWrapper>
+        )}
       </ButtonGroup>
     </Backdrop>
   )

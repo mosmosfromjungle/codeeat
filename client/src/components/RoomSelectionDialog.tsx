@@ -26,6 +26,7 @@ const Backdrop = styled.div`
   flex-direction: column;
   gap: 60px;
   align-items: center;
+  font-family: Font_DungGeun;
 `
 
 const Wrapper = styled.div`
@@ -68,14 +69,14 @@ const TitleWrapper = styled.div`
 `
 
 const Title = styled.h1`
-  font-size: 24px;
+  font-size: 200px;
   color: #eee;
   text-align: center;
+  font-family: Font_DungGeun;
 `
 
 const Content = styled.div`
   display: flex;
-  flex-direction: column;
   gap: 20px;
   margin: 20px 0;
   align-items: center;
@@ -84,6 +85,11 @@ const Content = styled.div`
   img {
     border-radius: 8px;
     height: 120px;
+  }
+
+  button {
+    font-size: 20px;
+    font-family: Font_DungGeun;
   }
 `
 
@@ -179,18 +185,14 @@ export default function RoomSelectionDialog() {
             </CustomRoomWrapper>
           ) : (
             <>
-              <Title>Welcome to SkyOffice</Title>
+              <Title>AlgoEAT</Title>
               <Content>
-                <img src={logo} alt="logo" />
-                <Button variant="contained" color="secondary" onClick={handleConnect}>
-                  Connect to public lobby
+                {/* <img src={logo} alt="logo" /> */}
+                <Button variant="contained" onClick={handleConnect}>
+                  로그인
                 </Button>
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  onClick={() => (lobbyJoined ? setShowCustomRoom(true) : setShowSnackbar(true))}
-                >
-                  Create/find custom rooms
+                <Button variant="contained" onClick={handleConnect}>
+                  회원가입
                 </Button>
               </Content>
             </>
