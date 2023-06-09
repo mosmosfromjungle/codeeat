@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import axios from 'axios'
 
 import { useAppSelector } from './hooks'
 
@@ -11,6 +12,10 @@ import VideoConnectionDialog from './components/VideoConnectionDialog'
 import Chat from './components/Chat'
 import HelperButtonGroup from './components/HelperButtonGroup'
 import MobileVirtualJoystick from './components/MobileVirtualJoystick'
+
+axios.defaults.baseURL = 'http://localhost:2567'
+console.log('axios.defaults.baseURL ', axios.defaults.baseURL);
+
 
 const Backdrop = styled.div`
   position: absolute;
