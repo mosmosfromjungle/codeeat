@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-// import phaserGame from '../PhaserGame'
-// import Game from '../scenes/Game'
+import phaserGame from '../PhaserGame'
+import Game from '../scenes/Game'
 
 interface CodeEditorState {
   codeEditorDialogOpen: boolean
@@ -26,13 +26,13 @@ export const codeEditorSlice = createSlice({
       state.codeEditorId = action.payload
       const url = state.urls.get(action.payload)
       if (url) state.codeEditorUrl = url
-      // const game = phaserGame.scene.keys.game as Game
-      // game.disableKeys()
+      const game = phaserGame.scene.keys.game as Game
+      game.disableKeys()
     },
     closeCodeEditorDialog: (state) => {
-      // const game = phaserGame.scene.keys.game as Game
-      // game.enableKeys()
-      // game.network.disconnectFromCodeEditor(state.codeEditorId!)
+      const game = phaserGame.scene.keys.game as Game
+      game.enableKeys()
+      game.network.disconnectFromCodeEditor(state.codeEditorId!)
       state.codeEditorDialogOpen = false
       state.codeEditorId = null
       state.codeEditorUrl = null
@@ -40,7 +40,8 @@ export const codeEditorSlice = createSlice({
     setCodeEditorUrls: (state, action: PayloadAction<{ codeEditorId: string; roomId: string }>) => {
       state.urls.set(
         action.payload.codeEditorId,
-        `https://wbo.ophir.dev/boards/sky-office-${action.payload.roomId}`
+        // `https://wbo.ophir.dev/boards/sky-office-${action.payload.roomId}`
+        `https://www.google.com/webhp?igu=1`
       )
     },
   },

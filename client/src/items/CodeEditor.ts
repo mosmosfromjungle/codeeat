@@ -1,7 +1,7 @@
 import { ItemType } from '../../../types/Items'
 import store from '../stores'
 import Item from './Item'
-// import Network from '../services/Network'
+import Network from '../services/Network'
 import { openCodeEditorDialog } from '../stores/CodeEditorStore'
 
 export default class CodeEditor extends Item {
@@ -26,7 +26,6 @@ export default class CodeEditor extends Item {
   }
 
   onOverlapDialog() {
-    console.log("here: onOverlapDialog")
     if (this.currentUsers.size === 0) {
       this.setDialogBox('Press R to use code editor')
     } else {
@@ -46,15 +45,9 @@ export default class CodeEditor extends Item {
     this.updateStatus()
   }
 
-  // openDialog(network: Network) {
-  //   if (!this.id) return
-  //   store.dispatch(openCodeEditorDialog(this.id))
-  //   network.connectToWhiteboard(this.id)
-  // }
-
-  openDialog() {
-    console.log("here: openDialog")
+  openDialog(network: Network) {
     if (!this.id) return
     store.dispatch(openCodeEditorDialog(this.id))
+    network.connectToCodeEditor(this.id)
   }
 }

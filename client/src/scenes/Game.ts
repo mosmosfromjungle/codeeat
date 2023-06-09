@@ -36,6 +36,7 @@ export default class Game extends Phaser.Scene {
   private otherPlayerMap = new Map<string, OtherPlayer>()
   computerMap = new Map<string, Computer>()
   private whiteboardMap = new Map<string, Whiteboard>()
+  private codeeditorMap = new Map<String, CodeEditor>()
 
   constructor() {
     super('game')
@@ -131,10 +132,18 @@ export default class Game extends Phaser.Scene {
     })
 
     // import code editor objects from Tiled map to Phaser
-    const codeEditors = this.physics.add.staticGroup({ classType: CodeEditor })
-    const codeEditorLayer = this.map.getObjectLayer('CodeEditor')
-    codeEditorLayer.objects.forEach((obj, i) => {
-      this.addObjectFromTiled(codeEditors, obj, 'codeeditors', 'codeeditor')
+    const codeeditors = this.physics.add.staticGroup({ classType: CodeEditor })
+    const codeeditorLayer = this.map.getObjectLayer('CodeEditor')
+    codeeditorLayer.objects.forEach((obj, i) => {
+      const item = this.addObjectFromTiled(
+        codeeditors,
+        obj,
+        'codeeditors',
+        'codeeditor'
+      ) as CodeEditor
+      const id = `${i}`
+      item.id = id
+      this.codeeditorMap.set(id, item)
     })
 
     // import other objects from Tiled map to Phaser
@@ -152,11 +161,10 @@ export default class Game extends Phaser.Scene {
 
     this.physics.add.collider([this.myPlayer, this.myPlayer.playerContainer], groundLayer)
     this.physics.add.collider([this.myPlayer, this.myPlayer.playerContainer], vendingMachines)
-    this.physics.add.collider([this.myPlayer, this.myPlayer.playerContainer], codeEditors)
 
     this.physics.add.overlap(
       this.playerSelector,
-      [chairs, computers, whiteboards, vendingMachines, codeEditors],
+      [chairs, computers, whiteboards, vendingMachines, codeeditors],
       this.handleItemSelectorOverlap,
       undefined,
       this
@@ -270,9 +278,14 @@ export default class Game extends Phaser.Scene {
     if (itemType === ItemType.COMPUTER) {
       const computer = this.computerMap.get(itemId)
       computer?.addCurrentUser(playerId)
+
     } else if (itemType === ItemType.WHITEBOARD) {
       const whiteboard = this.whiteboardMap.get(itemId)
       whiteboard?.addCurrentUser(playerId)
+
+    } else if (itemType === ItemType.CODEEDITOR) {
+      const codeeditor = this.codeeditorMap.get(itemId)
+      codeeditor?.addCurrentUser(playerId)
     }
   }
 
@@ -280,9 +293,14 @@ export default class Game extends Phaser.Scene {
     if (itemType === ItemType.COMPUTER) {
       const computer = this.computerMap.get(itemId)
       computer?.removeCurrentUser(playerId)
+
     } else if (itemType === ItemType.WHITEBOARD) {
       const whiteboard = this.whiteboardMap.get(itemId)
       whiteboard?.removeCurrentUser(playerId)
+
+    } else if (itemType === ItemType.CODEEDITOR) {
+      const codeeditor = this.codeeditorMap.get(itemId)
+      codeeditor?.removeCurrentUser(playerId)
     }
   }
 

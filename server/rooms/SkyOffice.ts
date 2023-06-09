@@ -1,10 +1,11 @@
 import bcrypt from 'bcrypt'
 import { Room, Client, ServerError } from 'colyseus'
 import { Dispatcher } from '@colyseus/command'
-import { Player, OfficeState, Computer, Whiteboard } from './schema/OfficeState'
+import { Player, OfficeState, Computer, Whiteboard, CodeEditor } from './schema/OfficeState'
 import { Message } from '../../types/Messages'
 import { IRoomData } from '../../types/Rooms'
 import { whiteboardRoomIds } from './schema/OfficeState'
+import { codeEditorRoomIds } from './schema/OfficeState'
 import PlayerUpdateCommand from './commands/PlayerUpdateCommand'
 import PlayerUpdateNameCommand from './commands/PlayerUpdateNameCommand'
 import {
@@ -15,6 +16,10 @@ import {
   WhiteboardAddUserCommand,
   WhiteboardRemoveUserCommand,
 } from './commands/WhiteboardUpdateArrayCommand'
+import {
+  CodeEditorAddUserCommand,
+  CodeEditorRemoveUserCommand,
+} from './commands/CodeEditorUpdateArrayCommand'
 import ChatMessageUpdateCommand from './commands/ChatMessageUpdateCommand'
 
 export class SkyOffice extends Room<OfficeState> {
@@ -47,6 +52,11 @@ export class SkyOffice extends Room<OfficeState> {
     // HARD-CODED: Add 3 whiteboards in a room
     for (let i = 0; i < 3; i++) {
       this.state.whiteboards.set(String(i), new Whiteboard())
+    }
+
+    // HARD-CODED: Add 1 codeeditors in a room
+    for (let i = 0; i < 1; i++) {
+      this.state.codeeditors.set(String(i), new CodeEditor())
     }
 
     // when a player connect to a computer, add to the computer connectedUser array
@@ -92,6 +102,25 @@ export class SkyOffice extends Room<OfficeState> {
         this.dispatcher.dispatch(new WhiteboardRemoveUserCommand(), {
           client,
           whiteboardId: message.whiteboardId,
+        })
+      }
+    )
+
+    // when a player connect to a codeeditor, add to the codeeditor connectedUser array
+    this.onMessage(Message.CONNECT_TO_CODEEDITOR, (client, message: { codeEditorId: string }) => {
+      this.dispatcher.dispatch(new CodeEditorAddUserCommand(), {
+        client,
+        codeEditorId: message.codeEditorId,
+      })
+    })
+
+    // when a player disconnect from a codeeditor, remove from the codeeditor connectedUser array
+    this.onMessage(
+      Message.DISCONNECT_FROM_CODEEDITOR,
+      (client, message: { codeEditorId: string }) => {
+        this.dispatcher.dispatch(new CodeEditorRemoveUserCommand(), {
+          client,
+          codeEditorId: message.codeEditorId,
         })
       }
     )
@@ -188,11 +217,20 @@ export class SkyOffice extends Room<OfficeState> {
         whiteboard.connectedUser.delete(client.sessionId)
       }
     })
+    this.state.codeeditors.forEach((codeeditor) => {
+      if (codeeditor.connectedUser.has(client.sessionId)) {
+        codeeditor.connectedUser.delete(client.sessionId)
+      }
+    })
   }
 
   onDispose() {
     this.state.whiteboards.forEach((whiteboard) => {
       if (whiteboardRoomIds.has(whiteboard.roomId)) whiteboardRoomIds.delete(whiteboard.roomId)
+    })
+
+    this.state.codeeditors.forEach((codeeditor) => {
+      if (whiteboardRoomIds.has(codeeditor.roomId)) whiteboardRoomIds.delete(codeeditor.roomId)
     })
 
     console.log('room', this.roomId, 'disposing...')

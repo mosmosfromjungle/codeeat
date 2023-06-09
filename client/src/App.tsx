@@ -7,6 +7,7 @@ import RoomSelectionDialog from './components/RoomSelectionDialog'
 import LoginDialog from './components/LoginDialog'
 import ComputerDialog from './components/ComputerDialog'
 import WhiteboardDialog from './components/WhiteboardDialog'
+import CodeEditorDialog from './components/CodeEditorDialog'
 import VideoConnectionDialog from './components/VideoConnectionDialog'
 import Chat from './components/Chat'
 import HelperButtonGroup from './components/HelperButtonGroup'
@@ -24,6 +25,7 @@ function App() {
   const whiteboardDialogOpen = useAppSelector((state) => state.whiteboard.whiteboardDialogOpen)
   const videoConnected = useAppSelector((state) => state.user.videoConnected)
   const roomJoined = useAppSelector((state) => state.room.roomJoined)
+  const codeEditorDialogOpen = useAppSelector((state) => state.codeeditor.codeEditorDialogOpen)
 
   let ui: JSX.Element
   if (loggedIn) {
@@ -33,6 +35,9 @@ function App() {
     } else if (whiteboardDialogOpen) {
       /* Render WhiteboardDialog if user is using a whiteboard. */
       ui = <WhiteboardDialog />
+    } else if (codeEditorDialogOpen) {
+      /* Render CodeEditorDialogOpen if user is using a code editor. */
+      ui = <CodeEditorDialog />
     } else {
       ui = (
         /* Render Chat or VideoConnectionDialog if no dialogs are opened. */
@@ -56,7 +61,7 @@ function App() {
     <Backdrop>
       {ui}
       {/* Render HelperButtonGroup if no dialogs are opened. */}
-      {!computerDialogOpen && !whiteboardDialogOpen && <HelperButtonGroup />}
+      {!computerDialogOpen && !whiteboardDialogOpen && !codeEditorDialogOpen && <HelperButtonGroup />}
     </Backdrop>
   )
 }

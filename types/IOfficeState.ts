@@ -18,6 +18,11 @@ export interface IWhiteboard extends Schema {
   connectedUser: SetSchema<string>
 }
 
+export interface ICodeEditor extends Schema {
+  roomId: string
+  connectedUser: SetSchema<string>
+}
+
 export interface IChatMessage extends Schema {
   author: string
   createdAt: number
@@ -28,5 +33,6 @@ export interface IOfficeState extends Schema {
   players: MapSchema<IPlayer>
   computers: MapSchema<IComputer>
   whiteboards: MapSchema<IWhiteboard>
+  codeeditors: MapSchema<ICodeEditor>
   chatMessages: ArraySchema<IChatMessage>
 }

@@ -1,5 +1,5 @@
 import { Client, Room } from 'colyseus.js'
-import { IComputer, IOfficeState, IPlayer, IWhiteboard } from '../../../types/IOfficeState'
+import { IComputer, IOfficeState, IPlayer, IWhiteboard, ICodeEditor } from '../../../types/IOfficeState'
 import { Message } from '../../../types/Messages'
 import { IRoomData, RoomType } from '../../../types/Rooms'
 import { ItemType } from '../../../types/Items'
@@ -20,6 +20,7 @@ import {
   pushPlayerLeftMessage,
 } from '../stores/ChatStore'
 import { setWhiteboardUrls } from '../stores/WhiteboardStore'
+import { setCodeEditorUrls } from '../stores/CodeEditorStore'
 
 export default class Network {
   private client: Client
@@ -155,6 +156,23 @@ export default class Network {
       }
     }
 
+    // new instance added to the codeeditors MapSchema
+    this.room.state.codeeditors.onAdd = (codeeditor: ICodeEditor, key: string) => {
+      store.dispatch(
+        setCodeEditorUrls({
+          codeEditorId: key,
+          roomId: codeeditor.roomId,
+        })
+      )
+      // track changes on every child object's connectedUser
+      codeeditor.connectedUser.onAdd = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.CODEEDITOR)
+      }
+      codeeditor.connectedUser.onRemove = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.CODEEDITOR)
+      }
+    }
+
     // new instance added to the chatMessages ArraySchema
     this.room.state.chatMessages.onAdd = (item, index) => {
       store.dispatch(pushChatMessage(item))
@@ -281,5 +299,13 @@ export default class Network {
 
   addChatMessage(content: string) {
     this.room?.send(Message.ADD_CHAT_MESSAGE, { content: content })
+  }
+
+  connectToCodeEditor(id: string) {
+    this.room?.send(Message.CONNECT_TO_CODEEDITOR, { codeEditorId: id })
+  }
+
+  disconnectFromCodeEditor(id: string) {
+    this.room?.send(Message.DISCONNECT_FROM_CODEEDITOR, { codeEditorId: id })
   }
 }
