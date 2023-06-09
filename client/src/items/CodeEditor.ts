@@ -26,10 +26,11 @@ export default class CodeEditor extends Item {
   }
 
   onOverlapDialog() {
+    console.log("here: onOverlapDialog")
     if (this.currentUsers.size === 0) {
-      this.setDialogBox('Press Q to use code editor')
+      this.setDialogBox('Press R to use code editor')
     } else {
-      this.setDialogBox('Press Q join')
+      this.setDialogBox('Press R join')
     }
   }
 
@@ -52,6 +53,7 @@ export default class CodeEditor extends Item {
   // }
 
   openDialog() {
+    console.log("here: openDialog")
     if (!this.id) return
     store.dispatch(openCodeEditorDialog(this.id))
   }

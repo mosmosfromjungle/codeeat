@@ -8,6 +8,8 @@ import Chair from '../items/Chair'
 import Computer from '../items/Computer'
 import Whiteboard from '../items/Whiteboard'
 import VendingMachine from '../items/VendingMachine'
+import CodeEditor from '../items/CodeEditor'
+
 import '../characters/MyPlayer'
 import '../characters/OtherPlayer'
 import MyPlayer from '../characters/MyPlayer'
@@ -128,6 +130,13 @@ export default class Game extends Phaser.Scene {
       this.addObjectFromTiled(vendingMachines, obj, 'vendingmachines', 'vendingmachine')
     })
 
+    // import code editor objects from Tiled map to Phaser
+    const codeEditors = this.physics.add.staticGroup({ classType: CodeEditor })
+    const codeEditorLayer = this.map.getObjectLayer('CodeEditor')
+    codeEditorLayer.objects.forEach((obj, i) => {
+      this.addObjectFromTiled(codeEditors, obj, 'codeeditors', 'codeeditor')
+    })
+
     // import other objects from Tiled map to Phaser
     this.addGroupFromTiled('Wall', 'tiles_wall', 'FloorAndGround', false)
     this.addGroupFromTiled('Objects', 'office', 'Modern_Office_Black_Shadow', false)
@@ -143,10 +152,11 @@ export default class Game extends Phaser.Scene {
 
     this.physics.add.collider([this.myPlayer, this.myPlayer.playerContainer], groundLayer)
     this.physics.add.collider([this.myPlayer, this.myPlayer.playerContainer], vendingMachines)
+    this.physics.add.collider([this.myPlayer, this.myPlayer.playerContainer], codeEditors)
 
     this.physics.add.overlap(
       this.playerSelector,
-      [chairs, computers, whiteboards, vendingMachines],
+      [chairs, computers, whiteboards, vendingMachines, codeEditors],
       this.handleItemSelectorOverlap,
       undefined,
       this

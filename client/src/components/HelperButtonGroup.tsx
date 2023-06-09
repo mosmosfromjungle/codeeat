@@ -18,11 +18,9 @@ import GitHubIcon from '@mui/icons-material/GitHub'
 import TwitterIcon from '@mui/icons-material/Twitter'
 import VideogameAssetIcon from '@mui/icons-material/VideogameAsset'
 import VideogameAssetOffIcon from '@mui/icons-material/VideogameAssetOff'
-import CodeEditIcon from '@mui/icons-material/Code'
-import CodeEditOffIcon from '@mui/icons-material/CodeOff'
 
 import { BackgroundMode } from '../../../types/BackgroundMode'
-import { setShowJoystick, toggleBackgroundMode, setShowCodeEditor } from '../stores/UserStore'
+import { setShowJoystick, toggleBackgroundMode } from '../stores/UserStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
 import { getAvatarString, getColorByString } from '../util'
 
@@ -231,13 +229,6 @@ export default function HelperButtonGroup() {
             {backgroundMode === BackgroundMode.DAY ? <DarkModeIcon /> : <LightModeIcon />}
           </StyledFab>
         </Tooltip>
-        {roomJoined && (
-          <Tooltip title={showCodeEditor ? 'Close the Code Editor' : 'Open the Code Editor'}>
-            <StyledFab size="small" onClick={() => dispatch(setShowCodeEditor(!showCodeEditor))}>
-              {showCodeEditor ? <CodeEditIcon /> : <CodeEditOffIcon />}
-            </StyledFab>
-          </Tooltip>
-        )}
       </ButtonGroup>
     </Backdrop>
   )

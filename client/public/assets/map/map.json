@@ -4229,6 +4229,29 @@
          "visible":true,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":15,
+         "name":"CodeEditor",
+         "objects":[
+                {
+                 "gid":5489,
+                 "height":30,
+                 "id":1263,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":30,
+                 "x":800,
+                 "y":200
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
  "nextlayerid":15,
  "nextobjectid":1269,
@@ -27377,6 +27400,19 @@
          "imagewidth":48,
          "margin":0,
          "name":"vendingmachine",
+         "spacing":0,
+         "tilecount":1,
+         "tileheight":72,
+         "tilewidth":48
+        }, 
+        {
+         "columns":1,
+         "firstgid":5489,
+         "image":"..\/items\/codeeditor.png",
+         "imageheight":72,
+         "imagewidth":48,
+         "margin":0,
+         "name":"codeeditor",
          "spacing":0,
          "tilecount":1,
          "tileheight":72,
