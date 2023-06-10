@@ -105,6 +105,14 @@ for (let i = avatars.length - 1; i > 0; i--) {
   ;[avatars[i], avatars[j]] = [avatars[j], avatars[i]]
 }
 
+// check email format
+export function isValidEmailFormat(email) {
+  var rule = /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
+
+  if (rule.test(email)) return false;
+  else return true;          
+}
+
 export default function JoinDialog() {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
@@ -112,24 +120,40 @@ export default function JoinDialog() {
   const [nickname, setNickname] = useState<string>('')
   
   const [emailFieldEmpty, setEmailFieldEmpty] = useState<boolean>(false)
+  const [emailFieldWrongFormat, setEmailFieldWrongFormat] = useState<boolean>(false)
   const [passwordFieldEmpty, setPasswordFieldEmpty] = useState<boolean>(false)
   const [passwordCheckFieldEmpty, setPasswordCheckFieldEmpty] = useState<boolean>(false)
+  const [passwordFieldNotMatch, setPasswordFieldNotMatch] = useState<boolean>(false)
   const [nicknameFieldEmpty, setNicknameFieldEmpty] = useState<boolean>(false)
 
   const [setAvatarIndex] = useState<number>(0)
   const dispatch = useAppDispatch()
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    // reset the error message
+    setEmailFieldEmpty(false)
+    setEmailFieldWrongFormat(false)
+    setPasswordFieldEmpty(false)
+    setPasswordCheckFieldEmpty(false)
+    setPasswordFieldNotMatch(false)
+    setNicknameFieldEmpty(false)
+
     event.preventDefault()
 
     if (email === '') {
       setEmailFieldEmpty(true)
+
+    } else if (isValidEmailFormat(email)) {
+      setEmailFieldWrongFormat(true)
 
     } else if (password === '') {
       setPasswordFieldEmpty(true)
 
     } else if (passwordCheck === '') {
       setPasswordCheckFieldEmpty(true)
+
+    } else if (password !== passwordCheck) {
+      setPasswordFieldNotMatch(true)
 
     } else if (nickname === '') {
       setNicknameFieldEmpty(true)
@@ -145,15 +169,15 @@ export default function JoinDialog() {
       <Content>
         <Left>
           <SubTitle>좌우로 이동하여 캐릭터를 골라보세요 !</SubTitle>
-          <Swiper
-            modules={[Navigation]}
-            navigation
-            spaceBetween={0}
-            slidesPerView={1}
-            onSlideChange={(swiper) => {
-              setAvatarIndex(swiper.activeIndex)
-            }}
-          >
+            <Swiper
+              modules={[Navigation]}
+              navigation
+              spaceBetween={0}
+              slidesPerView={1}
+              onSlideChange={(swiper) => {
+                setAvatarIndex(swiper.activeIndex)
+              }}
+            >
             {avatars.map((avatar) => (
               <SwiperSlide key={avatar.name}>
                 <img src={avatar.img} alt={avatar.name} />
@@ -162,14 +186,16 @@ export default function JoinDialog() {
           </Swiper>
         </Left>
         <Right>
-        <TextField
+          <TextField
             autoFocus
             fullWidth
             label="이메일"
             variant="outlined"
             color="secondary"
             error={emailFieldEmpty}
-            helperText={emailFieldEmpty && '이메일을 입력해주세요 !'}
+            helperText={
+              (emailFieldEmpty && '이메일을 입력해주세요 !') || (emailFieldWrongFormat && '이메일 형식을 확인해주세요 !')
+            }
             onInput={(e) => {
               setEmail((e.target as HTMLInputElement).value)
             }}
@@ -191,7 +217,9 @@ export default function JoinDialog() {
             variant="outlined"
             color="secondary"
             error={passwordCheckFieldEmpty}
-            helperText={passwordCheckFieldEmpty && '패스워드를 입력해주세요 !'}
+            helperText={
+              (passwordCheckFieldEmpty && '패스워드를 입력해주세요 !') || (passwordFieldNotMatch && '패스워드를 확인해주세요 !')
+            }
             onInput={(e) => {
               setPasswordCheck((e.target as HTMLInputElement).value)
             }}

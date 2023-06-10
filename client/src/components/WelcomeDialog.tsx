@@ -4,7 +4,10 @@ import Button from '@mui/material/Button'
 import Alert from '@mui/material/Alert'
 import Snackbar from '@mui/material/Snackbar'
 
-import { useAppDispatch } from '../hooks'
+import phaserGame from '../PhaserGame'
+import Bootstrap from '../scenes/Bootstrap'
+
+import { useAppSelector, useAppDispatch } from '../hooks'
 import { setShowLogin, setShowJoin } from '../stores/UserStore'
 
 const Backdrop = styled.div`
@@ -53,9 +56,21 @@ const Content = styled.div`
 
 export default function WelcomeDialog() {
   const [showSnackbar, setShowSnackbar] = useState(false)
+  const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)
+
   const dispatch = useAppDispatch()
 
   const gotoLoginPage = () => {
+    if (lobbyJoined) {
+      const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
+      bootstrap.network
+        .joinOrCreatePublic()
+        .then(() => bootstrap.launchGame())
+        .catch((error) => console.error(error))
+    } else {
+      setShowSnackbar(true)
+    }
+    
     dispatch(setShowLogin(true))
   }
 

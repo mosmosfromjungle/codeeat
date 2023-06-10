@@ -3,8 +3,6 @@ import styled from 'styled-components'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import LinearProgress from '@mui/material/LinearProgress'
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 
@@ -13,11 +11,9 @@ import 'swiper/css/navigation'
 
 import { useAppSelector, useAppDispatch } from '../hooks'
 import { setLoggedIn } from '../stores/UserStore'
-import { setRoomJoined } from '../stores/RoomStore'
 
 import phaserGame from '../PhaserGame'
 import Game from '../scenes/Game'
-import Bootstrap from '../scenes/Bootstrap'
 
 const Backdrop = styled.div`
   position: absolute;
@@ -47,12 +43,7 @@ const Title = styled.p`
 `
 
 const Content = styled.div`
-  margin: 36px 36px;
-
-  TextField {
-    font-size: 20px;
-    font-family: Font_DungGeun;
-  }
+  margin: 50px 50px;
 `
 
 const Warning = styled.div`
@@ -60,7 +51,7 @@ const Warning = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 10px;
 `
 
 const Bottom = styled.div`
@@ -95,8 +86,6 @@ export default function LoginDialog() {
   const [idFieldEmpty, setIdFieldEmpty] = useState<boolean>(false)
   const [passwordFieldEmpty, setPasswordFieldEmpty] = useState<boolean>(false)
 
-  const [showSnackbar, setShowSnackbar] = useState(false)
-
   const dispatch = useAppDispatch()
   
   const videoConnected = useAppSelector((state) => state.user.videoConnected)
@@ -105,6 +94,10 @@ export default function LoginDialog() {
   const game = phaserGame.scene.keys.game as Game
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    // reset the error message
+    setIdFieldEmpty(false)
+    setPasswordFieldEmpty(false)
+
     event.preventDefault()
 
     if (id === '') {
@@ -114,16 +107,6 @@ export default function LoginDialog() {
       setPasswordFieldEmpty(true)
       
     } else {
-      if (lobbyJoined) {
-        const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-        bootstrap.network
-          .joinOrCreatePublic()
-          .then(() => bootstrap.launchGame())
-          .catch((error) => console.error(error))
-      } else {
-        setShowSnackbar(true)
-      }
-
       // TODO: It need to set the information with login api response data.
       if (roomJoined) {
         // console.log('Join! Id:', id, 'Avatar:', avatars[avatarIndex].name)
@@ -165,41 +148,32 @@ export default function LoginDialog() {
                   setPassword((e.target as HTMLInputElement).value)
                 }}
               />
-              
-              <FormControlLabel
-                control={
-                  <Checkbox 
-                    name="loginCheck"
-                  />
-                }
-                label="로그인 상태 유지"
-              />
+            </Content>
 
-              <Content>
-                {!videoConnected && (
-                  <Warning>
-                    <Alert variant="outlined" severity="warning">
-                      <AlertTitle>Warning</AlertTitle>
-                      No webcam/mic connected - <strong>connect one for best experience!</strong>
-                    </Alert>
-                    <Button
-                      variant="outlined"
-                      color="secondary"
-                      onClick={() => {
-                        game.network.webRTC?.getUserMedia()
-                      }}
-                    >
-                      Connect Webcam
-                    </Button>
-                  </Warning>
-                )}
+            <Content>
+              {!videoConnected && (
+                <Warning>
+                  <Alert variant="outlined" severity="warning">
+                    <AlertTitle>Warning</AlertTitle>
+                    No webcam/mic connected - <strong>connect one for best experience!</strong>
+                  </Alert>
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={() => {
+                      game.network.webRTC?.getUserMedia()
+                    }}
+                  >
+                    Connect Webcam
+                  </Button>
+                </Warning>
+              )}
 
-                {videoConnected && (
-                  <Warning>
-                    <Alert variant="outlined">Webcam connected!</Alert>
-                  </Warning>
-                )}
-              </Content>
+              {videoConnected && (
+                <Warning>
+                  <Alert variant="outlined">Webcam connected!</Alert>
+                </Warning>
+              )}
             </Content>
           <Bottom>
             <Button variant="contained" size="large" type="submit">
