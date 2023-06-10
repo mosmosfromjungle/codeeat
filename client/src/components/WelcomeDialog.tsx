@@ -1,0 +1,104 @@
+import { useState } from 'react'
+import styled from 'styled-components'
+import Button from '@mui/material/Button'
+import Alert from '@mui/material/Alert'
+import Snackbar from '@mui/material/Snackbar'
+
+import { useAppDispatch } from '../hooks'
+import { setShowLogin, setShowJoin } from '../stores/UserStore'
+
+const Backdrop = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  align-items: center;
+  font-family: Font_DungGeun;
+`
+
+const Wrapper = styled.div`
+  background: #222639;
+  border-radius: 16px;
+  padding: 36px 60px;
+  box-shadow: 0px 0px 5px #0000006f;
+`
+
+const Title = styled.h1`
+  font-size: 200px;
+  color: #eee;
+  text-align: center;
+  font-family: Font_DungGeun;
+`
+
+const Content = styled.div`
+  display: flex;
+  gap: 20px;
+  margin: 20px 0;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    border-radius: 8px;
+    height: 120px;
+  }
+
+  button {
+    font-size: 20px;
+    font-family: Font_DungGeun;
+  }
+`
+
+export default function WelcomeDialog() {
+  const [showSnackbar, setShowSnackbar] = useState(false)
+  const dispatch = useAppDispatch()
+
+  const gotoLoginPage = () => {
+    dispatch(setShowLogin(true))
+  }
+
+  const gotoJoinPage = () => {
+    dispatch(setShowJoin(true))
+  }
+
+  return (
+    <>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={showSnackbar}
+        autoHideDuration={3000}
+        onClose={() => {
+          setShowSnackbar(false)
+        }}
+      >
+        <Alert
+          severity="error"
+          variant="outlined"
+          // overwrites the dark theme on render
+          style={{ background: '#fdeded', color: '#7d4747' }}
+        >
+          Trying to connect to server, please try again!
+        </Alert>
+      </Snackbar>
+      <Backdrop>
+        <Wrapper>
+          {(
+            <>
+              <Title>AlgoEAT</Title>
+              <Content>
+                <Button variant="contained" onClick={gotoLoginPage}>
+                  로그인
+                </Button>
+                <Button variant="contained" onClick={gotoJoinPage}>
+                  회원가입
+                </Button>
+              </Content>
+            </>
+          )}
+        </Wrapper>
+      </Backdrop>
+    </>
+  )
+}

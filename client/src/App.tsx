@@ -3,8 +3,9 @@ import styled from 'styled-components'
 
 import { useAppSelector } from './hooks'
 
-import RoomSelectionDialog from './components/RoomSelectionDialog'
+import WelcomeDialog from './components/WelcomeDialog'
 import LoginDialog from './components/LoginDialog'
+import JoinDialog from './components/JoinDialog'
 import ComputerDialog from './components/ComputerDialog'
 import WhiteboardDialog from './components/WhiteboardDialog'
 import CodeEditorDialog from './components/CodeEditorDialog'
@@ -27,34 +28,37 @@ function App() {
   const videoConnected = useAppSelector((state) => state.user.videoConnected)
   const roomJoined = useAppSelector((state) => state.room.roomJoined)
   const codeEditorDialogOpen = useAppSelector((state) => state.codeeditor.codeEditorDialogOpen)
+  const showLogin = useAppSelector((state) => state.user.showLogin)
+  const showJoin = useAppSelector((state) => state.user.showJoin)
 
   let ui: JSX.Element
   if (loggedIn) {
     if (computerDialogOpen) {
-      /* Render ComputerDialog if user is using a computer. */
       ui = <ComputerDialog />
+
     } else if (whiteboardDialogOpen) {
-      /* Render WhiteboardDialog if user is using a whiteboard. */
       ui = <WhiteboardDialog />
+
     } else if (codeEditorDialogOpen) {
-      /* Render CodeEditorDialogOpen if user is using a code editor. */
       ui = <CodeEditorDialog />
+      
     } else {
       ui = (
-        /* Render Chat or VideoConnectionDialog if no dialogs are opened. */
         <>
-          {/* Render VideoConnectionDialog if user is not connected to a webcam. */}
           {!videoConnected && <VideoConnectionDialog />}
           <MobileVirtualJoystick />
         </>
       )
     }
-  } else if (roomJoined) {
-    /* Render LoginDialog if not logged in but selected a room. */
+
+  } else if (showLogin) {
     ui = <LoginDialog />
+
+  } else if (showJoin) {
+    ui = <JoinDialog />
+
   } else {
-    /* Render RoomSelectionDialog if yet selected a room. */
-    ui = <RoomSelectionDialog />
+    ui = <WelcomeDialog />
   }
 
   return (
