@@ -14,6 +14,7 @@ import UserIcon from '@mui/icons-material/SupervisorAccount'
 import LogoutIcon from '@mui/icons-material/ExitToApp';
 
 import { setFocused, setShowChat, setShowDM, setShowUser } from '../stores/ChatStore'
+import { setShowLogout } from '../stores/UserStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
 
 const Backdrop = styled.div`
@@ -48,6 +49,7 @@ export default function HelperButtonGroup() {
   const showChat = useAppSelector((state) => state.chat.showChat)
   const showDM = useAppSelector((state) => state.chat.showDM)
   const showUser = useAppSelector((state) => state.chat.showUser)
+  const showLogout = useAppSelector((state) => state.user.showLogout)
 
   const dispatch = useAppDispatch()
 
@@ -63,7 +65,7 @@ export default function HelperButtonGroup() {
 
   useEffect(() => {
     scrollToBottom()
-  }, [chatMessages, showChat, showDM, showUser])
+  }, [chatMessages, showChat, showDM, showUser, showLogout])
 
   return (
     <Backdrop>
@@ -109,11 +111,9 @@ export default function HelperButtonGroup() {
             <FabWrapper>
               <Fab
                 onClick={() => showUser ? (
-                  dispatch(setShowUser(false)),
-                  dispatch(setFocused(false))
+                  dispatch(setShowUser(false))
                 ) : (
-                  dispatch(setShowUser(true)),
-                  dispatch(setFocused(true))
+                  dispatch(setShowUser(true))
                 )}
               >
                 <UserIcon />
@@ -125,6 +125,11 @@ export default function HelperButtonGroup() {
         {roomJoined && (
           <FabWrapper>
           <Fab
+            onClick={() => showLogout ? (
+              dispatch(setShowLogout(false))
+            ) : (
+              dispatch(setShowLogout(true))
+            )}
           >
             <LogoutIcon />
           </Fab>

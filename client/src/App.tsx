@@ -17,6 +17,7 @@ import MobileVirtualJoystick from './components/MobileVirtualJoystick'
 import ChatDialog from './components/ChatDialog'
 import DMDialog from './components/DMDialog'
 import UserDialog from './components/UserDialog'
+import LogoutDialog from './components/LogoutDialog'
 
 import GlobalFont from '../public/assets/fonts/GlobalFont'
 
@@ -40,6 +41,7 @@ function App() {
   const showChat = useAppSelector((state) => state.chat.showChat)
   const showDM = useAppSelector((state) => state.chat.showDM)
   const showUser = useAppSelector((state) => state.chat.showUser)
+  const showLogout = useAppSelector((state) => state.user.showLogout)
 
   let ui: JSX.Element
   if (loggedIn) {
@@ -60,6 +62,9 @@ function App() {
       
     } else if (showUser) {
       ui = <UserDialog />
+      
+    } else if (showLogout) {
+      ui = <LogoutDialog />
       
     } else {
       ui = (

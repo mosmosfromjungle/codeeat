@@ -22,6 +22,7 @@ export const userSlice = createSlice({
     showCodeEditor: false,
     showLogin: false,
     showJoin: false,
+    showLogout: false,
   },
   reducers: {
     toggleBackgroundMode: (state) => {
@@ -58,6 +59,9 @@ export const userSlice = createSlice({
     },
     setShowJoin: (state, action: PayloadAction<boolean>) => {
       state.showJoin = action.payload
+    },
+    setShowLogout: (state, action: PayloadAction<boolean>) => {
+      state.showLogout = action.payload
     }
   },
 })
@@ -73,6 +77,7 @@ export const {
   setShowCodeEditor,
   setShowLogin,
   setShowJoin,
+  setShowLogout,
 } = userSlice.actions
 
 export default userSlice.reducer

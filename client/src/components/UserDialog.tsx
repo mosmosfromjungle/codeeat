@@ -71,7 +71,7 @@ const ChatBox = styled(Box)`
   border-radius: 0px 0px 10px 10px;
 `
 
-export default function ChatDialog() {
+export default function UserDialog() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const chatMessages = useAppSelector((state) => state.chat.chatMessages)
