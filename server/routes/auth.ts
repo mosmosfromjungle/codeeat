@@ -2,7 +2,7 @@ import express from 'express';
 // import 'express-async-errors';
 import {
     update,
-//   signUp,
+    signUp,
 //   login,
 //   updateUserWithAuth,
 //   inquireUser,
@@ -18,7 +18,7 @@ const router = express.Router();
 
 router.post('/update', update);
 
-// router.post('/signup', signUp);
+router.post('/signup', signUp);
 
 // router.post('/login', login);
 
