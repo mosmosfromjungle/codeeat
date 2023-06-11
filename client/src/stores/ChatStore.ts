@@ -16,6 +16,7 @@ export const chatSlice = createSlice({
     focused: false,
     showChat: false,
     showDM: false,
+    showUser: false,
   },
   reducers: {
     pushChatMessage: (state, action: PayloadAction<IChatMessage>) => {
@@ -55,6 +56,9 @@ export const chatSlice = createSlice({
     setShowDM: (state, action: PayloadAction<boolean>) => {
       state.showDM = action.payload
     },
+    setShowUser: (state, action: PayloadAction<boolean>) => {
+      state.showUser = action.payload
+    },
   },
 })
 
@@ -65,6 +69,7 @@ export const {
   setFocused,
   setShowChat,
   setShowDM,
+  setShowUser,
 } = chatSlice.actions
 
 export default chatSlice.reducer

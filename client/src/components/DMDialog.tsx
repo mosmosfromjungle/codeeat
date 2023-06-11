@@ -15,7 +15,7 @@ import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon'
 import 'emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
 
-import { MessageType, setFocused, setShowChat, setShowDM } from '../stores/ChatStore'
+import { MessageType, setFocused, setShowChat, setShowDM, setShowUser } from '../stores/ChatStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
 import { getColorByString } from '../util'
 
@@ -66,8 +66,8 @@ const ChatHeader = styled.div`
 `
 
 const ChatBox = styled(Box)`
-  height: 500px;
-  width: 500px;
+  height: 400px;
+  width: 400px;
   overflow: auto;
   background: #2c2c2c;
   border: 1px solid #00000029;
@@ -174,7 +174,6 @@ export default function DMDialog() {
   const inputRef = useRef<HTMLInputElement>(null)
   const chatMessages = useAppSelector((state) => state.chat.chatMessages)
   const focused = useAppSelector((state) => state.chat.focused)
-  const showChat = useAppSelector((state) => state.chat.showChat)
   const showDM = useAppSelector((state) => state.chat.showDM)
 
   const dispatch = useAppDispatch()
@@ -190,6 +189,7 @@ export default function DMDialog() {
       inputRef.current?.blur()
       dispatch(setShowChat(false))
       dispatch(setShowDM(false))
+      dispatch(setShowUser(false))
     }
   }
 
@@ -233,7 +233,7 @@ export default function DMDialog() {
 
   useEffect(() => {
     scrollToBottom()
-  }, [chatMessages, showChat, showDM])
+  }, [chatMessages, showDM])
 
   return (
     <Backdrop>

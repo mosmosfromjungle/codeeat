@@ -13,7 +13,7 @@ import DMIcon from '@mui/icons-material/Send'
 import UserIcon from '@mui/icons-material/SupervisorAccount'
 import LogoutIcon from '@mui/icons-material/ExitToApp';
 
-import { setFocused, setShowChat, setShowDM } from '../stores/ChatStore'
+import { setFocused, setShowChat, setShowDM, setShowUser } from '../stores/ChatStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
 
 const Backdrop = styled.div`
@@ -47,6 +47,7 @@ export default function HelperButtonGroup() {
   const focused = useAppSelector((state) => state.chat.focused)
   const showChat = useAppSelector((state) => state.chat.showChat)
   const showDM = useAppSelector((state) => state.chat.showDM)
+  const showUser = useAppSelector((state) => state.chat.showUser)
 
   const dispatch = useAppDispatch()
 
@@ -62,7 +63,7 @@ export default function HelperButtonGroup() {
 
   useEffect(() => {
     scrollToBottom()
-  }, [chatMessages, showChat, showDM])
+  }, [chatMessages, showChat, showDM, showUser])
 
   return (
     <Backdrop>
@@ -103,14 +104,23 @@ export default function HelperButtonGroup() {
           )}
         </Wrapper>
 
-        {roomJoined && (
-          <FabWrapper>
-          <Fab
-          >
-            <UserIcon />
-          </Fab>
-          </FabWrapper>
-        )}
+        <Wrapper>
+          {roomJoined && (
+            <FabWrapper>
+              <Fab
+                onClick={() => showUser ? (
+                  dispatch(setShowUser(false)),
+                  dispatch(setFocused(false))
+                ) : (
+                  dispatch(setShowUser(true)),
+                  dispatch(setFocused(true))
+                )}
+              >
+                <UserIcon />
+              </Fab>
+            </FabWrapper>
+          )}
+        </Wrapper>
 
         {roomJoined && (
           <FabWrapper>

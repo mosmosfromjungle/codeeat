@@ -16,6 +16,7 @@ import MobileVirtualJoystick from './components/MobileVirtualJoystick'
 // ↓ HelperButtonGroup Dialog
 import ChatDialog from './components/ChatDialog'
 import DMDialog from './components/DMDialog'
+import UserDialog from './components/UserDialog'
 
 import GlobalFont from '../public/assets/fonts/GlobalFont'
 
@@ -38,6 +39,7 @@ function App() {
   // ↓ HelperButtonGroup Dialog
   const showChat = useAppSelector((state) => state.chat.showChat)
   const showDM = useAppSelector((state) => state.chat.showDM)
+  const showUser = useAppSelector((state) => state.chat.showUser)
 
   let ui: JSX.Element
   if (loggedIn) {
@@ -55,6 +57,9 @@ function App() {
       
     } else if (showDM) {
       ui = <DMDialog />
+      
+    } else if (showUser) {
+      ui = <UserDialog />
       
     } else {
       ui = (
