@@ -13,7 +13,11 @@ import VideoConnectionDialog from './components/VideoConnectionDialog'
 import HelperButtonGroup from './components/HelperButtonGroup'
 import MobileVirtualJoystick from './components/MobileVirtualJoystick'
 
-import GlobalFont from '../public/assets/fonts/GlobalFont';
+// ↓ HelperButtonGroup Dialog
+import ChatDialog from './components/ChatDialog'
+import DMDialog from './components/DMDialog'
+
+import GlobalFont from '../public/assets/fonts/GlobalFont'
 
 const Backdrop = styled.div`
   position: absolute;
@@ -31,6 +35,10 @@ function App() {
   const showLogin = useAppSelector((state) => state.user.showLogin)
   const showJoin = useAppSelector((state) => state.user.showJoin)
 
+  // ↓ HelperButtonGroup Dialog
+  const showChat = useAppSelector((state) => state.chat.showChat)
+  const showDM = useAppSelector((state) => state.chat.showDM)
+
   let ui: JSX.Element
   if (loggedIn) {
     if (computerDialogOpen) {
@@ -41,6 +49,12 @@ function App() {
 
     } else if (codeEditorDialogOpen) {
       ui = <CodeEditorDialog />
+
+    } else if (showChat) {
+      ui = <ChatDialog />
+      
+    } else if (showDM) {
+      ui = <DMDialog />
       
     } else {
       ui = (

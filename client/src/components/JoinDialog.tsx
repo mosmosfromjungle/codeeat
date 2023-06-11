@@ -79,6 +79,7 @@ const Left = styled.div`
 
 const Right = styled.div`
   width: 300px;
+  margin-top: 60px;
 `
 
 const Bottom = styled.div`
