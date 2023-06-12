@@ -1,6 +1,8 @@
 import 'express'
 import bcrypt from 'bcrypt'
-import User from '../../models/User'
+import jwt from 'jsonwebtoken'
+import { v4 } from 'uuid'
+import User, { IUserDocument } from '../../models/User'
 import { IUserInfo } from './types'
 import { config } from '../../envconfig'
 
@@ -33,9 +35,21 @@ export const signUp = async (req, res) => {
             message: 'error - password missing',
         })
     }
+    if (!user.username) {
+        return res.status(400).json({
+            status: 400,
+            message: 'error - username missing',
+        })
+    }
+    if (!user.character) {
+        return res.status(400).json({
+            status: 400,
+            message: 'error - character missing',
+        })
+    }
     
     /* 이메일 아이디 중복확인 */
-    const foundUser = await User.findOne({userId: user.userId})
+    const foundUser = await User.findOne({ userId: user.userId })
     if (foundUser) {
         return res.status(409).json({
             status: 409,
@@ -44,7 +58,7 @@ export const signUp = async (req, res) => {
     }
 
     /* 닉네임 중복확인 */
-    const foundUsername = await User.findOne({username: user.username})
+    const foundUsername = await User.findOne({ username: user.username })
     if (foundUsername) {
         return res.status(410).json({
             status: 410,
@@ -58,7 +72,7 @@ export const signUp = async (req, res) => {
     /* DB에 유저 데이터 저장 */
     const result = await User.collection.insertOne({
         userId: user.userId,
-        password: user.password,
+        hashedPassword: user.password,
         username: user.username,
         userProfile: {
             userCharacter: user.character,
@@ -83,13 +97,90 @@ export const signUp = async (req, res) => {
     });
 }
 
+/* 로그인 */
+export const login = async (req, res) => {
+    const user = req.body
+
+    /* 누락 정보 확인 */
+    if (!user.userId) {
+        return res.status(400).json({
+            status: 400,
+            message: 'error - id missing',
+        })
+    }
+    if (!user.password) {
+        return res.status(400).json({
+            status: 400,
+            message: 'error - password missing',
+        })
+    }
+
+    const foundUser = await User.collection.findOne({ userId: user.userId })
+    if (!foundUser) {
+        return res.status(409).json({
+            status: 409,
+            message: '아이디를 확인해주세요.',
+        })
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(user.password, foundUser.hashedPassword)
+    if (!isPasswordCorrect) {
+        return res.status(410).json({
+            status: 410,
+            message: '비밀번호가 틀렸습니다.'
+        })
+    }
+
+    const accessToken = jwt.sign(
+        {
+            username: foundUser.username,
+            uuid: v4(),
+        },
+        config.jwt.accessSecretKey,
+        {
+            expiresIn: config.jwt.accessExpiresIn,
+        }
+    )
+
+    const refreshToken = jwt.sign(
+        {
+            username: foundUser.username,
+            uuid1: v4(),
+            uuid2: v4(),
+        },
+        config.jwt.refreshSecretKey,
+        {
+            expiresIn: config.jwt.refreshExpiresIn,
+        }
+    )
+
+    await User.collection.updateOne( { userId: foundUser.userId }, 
+        {
+            $set: {
+                refreshToken: refreshToken,
+                lastUpdated: new Date(),    
+            }
+        }
+    )
+
+    res.cookie('refreshToken', refreshToken, { path: '/', secure: true })
+    res.status(200).json({
+        status: 200,
+        payload: {
+            userId: foundUser.userId,
+            accessToken: accessToken,
+        }
+    })
+}
+
+
 // TODO: For testing NEED TO FIX 
 export const update = async (req, res) => {
     const user = req.body;
 
     console.log('reached')
     
-    const result = await User.collection.insertOne({username: user.name});
+    const result = await User.collection.insertOne({ username: user.name });
     if (!result) {
         return res.json({success: false, message: '유저 등록 실패'})
     }

@@ -3,7 +3,7 @@ import { IUserInfo } from '../controllers/UserControllers/types';
 
 const user = new Schema<IUserInfo>({
     userId: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    hashedPassword: { type: String, required: true },
     username: { type: String, required: true, unique: true },
     userProfile: {
         userCharacter: { type: String, required: true },

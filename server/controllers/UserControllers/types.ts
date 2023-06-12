@@ -2,8 +2,7 @@ export type Token = string;
 
 export interface IUserInfo {
     userId?: string;
-    password?: string;
-    passwordCheck?: string;
+    hashedPassword?: string;
     username?: string;
     userProfile?: IUserProfile;
     refreshToken?: Token | null;
@@ -12,7 +11,7 @@ export interface IUserInfo {
 
 export interface IUserProfile {
     [key: string]: any;
-    profileImgUrl?: string;
+    userCharacter?: string;
     userLevel?: string;
     contactGit?: string;
     contactEmail?: string;

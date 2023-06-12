@@ -3,7 +3,7 @@ import express from 'express';
 import {
     update,
     signUp,
-//   login,
+    login,
 //   updateUserWithAuth,
 //   inquireUser,
 //   deleteUser,
@@ -12,7 +12,7 @@ import {
 } from '../controllers/UserControllers/index';
 import User from '../models/User'
 
-// express().use(express.json()); 
+express().use(express.json()); 
 
 const router = express.Router();
 
@@ -20,7 +20,7 @@ router.post('/update', update);
 
 router.post('/signup', signUp);
 
-// router.post('/login', login);
+router.post('/login', login);
 
 // router.patch('/update', updateUserWithAuth);
 

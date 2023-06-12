@@ -1,0 +1,23 @@
+// API requests//
+
+// 회원가입 //
+POST http://localhost:2567/auth/signUp
+Content-Type: application/json
+
+{
+    "userId": "mosmos3@gmail.com",
+    "password": "mosmosPassword",
+    "username": "uniqueUsername3",
+    "character": 1
+}
+
+###
+
+// 로그인 //
+POST http://localhost:2567/auth/login
+Content-Type: application/json
+
+{
+    "userId": "mosmos3@gmail.com",
+    "password": "mosmosPassword"
+}
