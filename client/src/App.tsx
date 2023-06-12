@@ -19,6 +19,10 @@ import DMDialog from './components/DMDialog'
 import UserDialog from './components/UserDialog'
 import LogoutDialog from './components/LogoutDialog'
 
+// ↓ Profile Button & Dialog
+import ProfileButton from './components/ProfileButton'
+import ProfileDialog from './components/ProfileDialog'
+
 import GlobalFont from '../public/assets/fonts/GlobalFont'
 
 const Backdrop = styled.div`
@@ -43,6 +47,9 @@ function App() {
   const showUser = useAppSelector((state) => state.chat.showUser)
   const showLogout = useAppSelector((state) => state.user.showLogout)
 
+  // ↓ Profile Dialog
+  const showProfile = useAppSelector((state) => state.user.showProfile)
+
   let ui: JSX.Element
   if (loggedIn) {
     if (computerDialogOpen) {
@@ -66,6 +73,9 @@ function App() {
     } else if (showLogout) {
       ui = <LogoutDialog />
       
+    } else if (showProfile) {
+      ui = <ProfileDialog />
+      
     } else {
       ui = (
         <>
@@ -88,8 +98,9 @@ function App() {
   return (
     <Backdrop>
       {ui}
-      {/* Render HelperButtonGroup if no dialogs are opened. */}
+      {/* Render HelperButtonGroup, ProfileButton if no dialogs are opened. */}
       {!computerDialogOpen && !whiteboardDialogOpen && !codeEditorDialogOpen && <HelperButtonGroup />}
+      {!computerDialogOpen && !whiteboardDialogOpen && !codeEditorDialogOpen && <ProfileButton />}
       {<GlobalFont />}
     </Backdrop>
   )

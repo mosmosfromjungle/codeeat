@@ -23,6 +23,7 @@ export const userSlice = createSlice({
     showLogin: false,
     showJoin: false,
     showLogout: false,
+    showProfile: false,
   },
   reducers: {
     toggleBackgroundMode: (state) => {
@@ -62,6 +63,9 @@ export const userSlice = createSlice({
     },
     setShowLogout: (state, action: PayloadAction<boolean>) => {
       state.showLogout = action.payload
+    },
+    setShowProfile: (state, action: PayloadAction<boolean>) => {
+      state.showProfile = action.payload
     }
   },
 })
@@ -78,6 +82,7 @@ export const {
   setShowLogin,
   setShowJoin,
   setShowLogout,
+  setShowProfile,
 } = userSlice.actions
 
 export default userSlice.reducer
