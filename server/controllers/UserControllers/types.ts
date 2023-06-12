@@ -11,7 +11,7 @@ export interface IUserInfo {
 
 export interface IUserProfile {
     [key: string]: any;
-    userCharacter?: string;
+    character?: string;
     userLevel?: string;
     contactGit?: string;
     contactEmail?: string;

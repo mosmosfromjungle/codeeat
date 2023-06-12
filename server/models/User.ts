@@ -6,7 +6,7 @@ const user = new Schema<IUserInfo>({
     hashedPassword: { type: String, required: true },
     username: { type: String, required: true, unique: true },
     userProfile: {
-        userCharacter: { type: String, required: true },
+        character: { type: String, required: true },
         userLevel: { type: String, required: true },
         contactGit: { type: String, required: false },
         contactEmail: { type: String, required: false },

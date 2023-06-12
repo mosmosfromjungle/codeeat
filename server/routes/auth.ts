@@ -4,6 +4,8 @@ import {
     update,
     signUp,
     login,
+    authenticateToken,
+    userProfile,
 //   updateUserWithAuth,
 //   inquireUser,
 //   deleteUser,
@@ -22,9 +24,9 @@ router.post('/signup', signUp);
 
 router.post('/login', login);
 
-// router.patch('/update', updateUserWithAuth);
+router.get('/myprofile', authenticateToken, userProfile);
 
-// router.get('/me', inquireUser);
+// router.patch('/update', updateUserWithAuth);
 
 // router.get('/isAuth', authenticateUser);
 
