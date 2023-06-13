@@ -88,7 +88,7 @@ export const signUp = async (req, res) => {
         hashedPassword: user.password,
         username: user.username,
         userProfile: {
-            userCharacter: user.character,
+            character: user.character,
             userLevel: 0,
             contactGit: '',
             contactEmail: '',
@@ -186,7 +186,7 @@ export const login = async (req, res) => {
     })
 }
 
-/* 내 정보 조회 */
+/* 토큰 기반 회원 정보 조회 */
 export const userProfile = async (req, res) => {
     const decoded = req.decoded
     const foundUser = await User.collection.findOne({ userId: decoded.userId })
@@ -208,12 +208,44 @@ export const userProfile = async (req, res) => {
 
     return res.status(404).json({
         status: 404,
-        message: '데이터 조회 실패'
+        message: '유저 데이터 조회 실패'
+    })
+}
+
+/* 토큰 기반 회원 정보 수정 */
+export const updateProfile = async (req, res) => {
+    const decoded = req.decoded
+    const newUserData = req.body
+    
+    const foundUser = await User.findOne({ userId: decoded.userId })
+    if (!foundUser) return res.status(404).json({
+        status: 404,
+        message: '유저 데이터 조회 실패'
+    })
+
+    foundUser.username = newUserData.username
+    foundUser.userProfile!.character = newUserData.character
+    foundUser.userProfile!.contactGit = newUserData.contactGit
+    foundUser.userProfile!.contactEmail = newUserData.contactEmail
+    foundUser.userProfile!.profileMessage = newUserData.profileMessage
+
+    const updateUser = await foundUser.save()
+
+    if (updateUser) {
+        return res.status(200).json({
+            status: 200,
+            payload: newUserData,
+        })
+    }
+
+    return res.status(500).json({
+        status: 500,
+        message: '정보 변경 실패',
     })
 }
 
 
-// TODO: For testing NEED TO FIX 
+// TODO: For testing - need to remove 
 export const update = async (req, res) => {
     const user = req.body;
 

@@ -6,6 +6,7 @@ import {
     login,
     authenticateToken,
     userProfile,
+    updateProfile,
 //   updateUserWithAuth,
 //   inquireUser,
 //   deleteUser,
@@ -26,7 +27,7 @@ router.post('/login', login);
 
 router.get('/myprofile', authenticateToken, userProfile);
 
-// router.patch('/update', updateUserWithAuth);
+router.patch('/update', authenticateToken, updateProfile);
 
 // router.get('/isAuth', authenticateUser);
 
