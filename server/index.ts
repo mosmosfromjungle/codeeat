@@ -45,8 +45,8 @@ gameServer.define(RoomType.CUSTOM, SkyOffice).enableRealtimeListing()
 app.use('/colyseus', monitor())
 
 app.use('/auth', authRouter);
-
-connectDB().then(db => {
-  gameServer.listen(port)
-  console.log(`Listening on ws://localhost:${port}`)
-}).catch(console.error);
+gameServer.listen(port)
+// connectDB().then(db => {
+  
+//   console.log(`Listening on ws://localhost:${port}`)
+// }).catch(console.error);
