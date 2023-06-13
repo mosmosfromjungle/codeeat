@@ -4,10 +4,12 @@ import cors from 'cors'
 import { Server, LobbyRoom } from 'colyseus'
 import { monitor } from '@colyseus/monitor'
 import { RoomType } from '../types/Rooms'
+import authRouter from './routes/auth';
 
 // import socialRoutes from "@colyseus/social/express"
 
 import { SkyOffice } from './rooms/SkyOffice'
+import { connectDB } from './DB/db'
 
 const port = Number(process.env.PORT || 2567)
 const app = express()
@@ -42,5 +44,9 @@ gameServer.define(RoomType.CUSTOM, SkyOffice).enableRealtimeListing()
 // register colyseus monitor AFTER registering your room handlers
 app.use('/colyseus', monitor())
 
-gameServer.listen(port)
-console.log(`Listening on ws://localhost:${port}`)
+app.use('/auth', authRouter);
+
+connectDB().then(db => {
+  gameServer.listen(port)
+  console.log(`Listening on ws://localhost:${port}`)
+}).catch(console.error);
