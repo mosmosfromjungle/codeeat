@@ -6,7 +6,6 @@ import CloseIcon from '@mui/icons-material/Close'
 
 import { useAppSelector, useAppDispatch } from '../hooks'
 import { closeComputerDialog } from '../stores/ComputerStore'
-import { TypingGame } from './typinggame'
 
 import Video from './Video'
 
@@ -103,7 +102,7 @@ export default function ComputerDialog() {
         </IconButton>
 
         <div className="toolbar">
-          {/* <Button
+          <Button
             variant="contained"
             color="secondary"
             onClick={() => {
@@ -115,17 +114,16 @@ export default function ComputerDialog() {
             }}
           >
             {shareScreenManager?.myStream ? 'Stop sharing' : 'Share Screen'}
-          </Button> */}
+          </Button>
         </div>
-            <TypingGame/>
-        {/* <VideoGrid>
+        <VideoGrid>
           {myStream && <VideoContainer stream={myStream} playerName="You" />}
 
           {[...peerStreams.entries()].map(([id, { stream }]) => {
             const playerName = playerNameMap.get(id)
             return <VideoContainer key={id} playerName={playerName} stream={stream} />
           })}
-        </VideoGrid> */}
+        </VideoGrid>
       </Wrapper>
     </Backdrop>
   )
