@@ -128,6 +128,7 @@ export function TypingGame() {
                             key={index} 
                             style={{
                                 position: "absolute", 
+                                fontFamily : 'CustomFont',
                                 fontSize : 25,
                                 letterSpacing :'3px',
                                 top: item.y, 
