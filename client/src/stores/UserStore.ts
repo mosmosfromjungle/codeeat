@@ -19,6 +19,11 @@ export const userSlice = createSlice({
     loggedIn: false,
     playerNameMap: new Map<string, string>(),
     showJoystick: window.innerWidth < 650,
+    showCodeEditor: false,
+    showLogin: false,
+    showJoin: false,
+    showLogout: false,
+    showProfile: false,
   },
   reducers: {
     toggleBackgroundMode: (state) => {
@@ -47,6 +52,21 @@ export const userSlice = createSlice({
     setShowJoystick: (state, action: PayloadAction<boolean>) => {
       state.showJoystick = action.payload
     },
+    setShowCodeEditor: (state, action: PayloadAction<boolean>) => {
+      state.showCodeEditor = action.payload
+    },
+    setShowLogin: (state, action: PayloadAction<boolean>) => {
+      state.showLogin = action.payload
+    },
+    setShowJoin: (state, action: PayloadAction<boolean>) => {
+      state.showJoin = action.payload
+    },
+    setShowLogout: (state, action: PayloadAction<boolean>) => {
+      state.showLogout = action.payload
+    },
+    setShowProfile: (state, action: PayloadAction<boolean>) => {
+      state.showProfile = action.payload
+    }
   },
 })
 
@@ -58,6 +78,11 @@ export const {
   setPlayerNameMap,
   removePlayerNameMap,
   setShowJoystick,
+  setShowCodeEditor,
+  setShowLogin,
+  setShowJoin,
+  setShowLogout,
+  setShowProfile,
 } = userSlice.actions
 
 export default userSlice.reducer

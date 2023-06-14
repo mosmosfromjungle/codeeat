@@ -4,8 +4,7 @@ import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 
 import { useAppSelector, useAppDispatch } from '../hooks'
-import { closeWhiteboardDialog } from '../stores/WhiteboardStore'
-import { TypingGame } from './typinggame'
+import { closeCodeEditorDialog } from '../stores/CodeEditorStore'
 
 const Backdrop = styled.div`
   position: fixed;
@@ -37,7 +36,7 @@ const Wrapper = styled.div`
   }
 `
 
-const WhiteboardWrapper = styled.div`
+const CodeEditorWrapper = styled.div`
   flex: 1;
   border-radius: 25px;
   overflow: hidden;
@@ -50,27 +49,25 @@ const WhiteboardWrapper = styled.div`
   }
 `
 
-export default function WhiteboardDialog() {
-  const whiteboardUrl = useAppSelector((state) => state.whiteboard.whiteboardUrl)
+export default function CodeEditorDialog() {
+  const codeEditorUrl = useAppSelector((state) => state.codeeditor.codeEditorUrl)
   const dispatch = useAppDispatch()
 
   return (
     <Backdrop>
       <Wrapper>
-        <TypingGame />
-        { <IconButton
+        <IconButton
           aria-label="close dialog"
           className="close"
-          onClick={() => dispatch(closeWhiteboardDialog())}
+          onClick={() => dispatch(closeCodeEditorDialog())}
         >
           <CloseIcon />
         </IconButton>
-        /*
-        {whiteboardUrl && (
-          <WhiteboardWrapper>
-            <iframe title="white board" src={whiteboardUrl} />
-          </WhiteboardWrapper>
-        )} */}
+        {codeEditorUrl && (
+          <CodeEditorWrapper>
+            <iframe title="code editor" src={codeEditorUrl} />
+          </CodeEditorWrapper>
+        )}
       </Wrapper>
     </Backdrop>
   )

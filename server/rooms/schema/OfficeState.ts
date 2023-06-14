@@ -4,6 +4,7 @@ import {
   IOfficeState,
   IComputer,
   IWhiteboard,
+  ICodeEditor,
   IChatMessage,
 } from '../../../types/IOfficeState'
 
@@ -25,6 +26,11 @@ export class Whiteboard extends Schema implements IWhiteboard {
   @type({ set: 'string' }) connectedUser = new SetSchema<string>()
 }
 
+export class CodeEditor extends Schema implements ICodeEditor {
+  @type('string') roomId = getRoomId()
+  @type({ set: 'string' }) connectedUser = new SetSchema<string>()
+}
+
 export class ChatMessage extends Schema implements IChatMessage {
   @type('string') author = ''
   @type('number') createdAt = new Date().getTime()
@@ -41,11 +47,15 @@ export class OfficeState extends Schema implements IOfficeState {
   @type({ map: Whiteboard })
   whiteboards = new MapSchema<Whiteboard>()
 
+  @type({ map: CodeEditor })
+  codeeditors = new MapSchema<CodeEditor>()
+
   @type([ChatMessage])
   chatMessages = new ArraySchema<ChatMessage>()
 }
 
 export const whiteboardRoomIds = new Set<string>()
+export const codeEditorRoomIds = new Set<string>()
 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 const charactersLength = characters.length
 
@@ -56,6 +66,20 @@ function getRoomId() {
   }
   if (!whiteboardRoomIds.has(result)) {
     whiteboardRoomIds.add(result)
+    return result
+  } else {
+    console.log('roomId exists, remaking another one.')
+    getRoomId()
+  }
+}
+
+function getRoomIdWithCodeEditor() {
+  let result = ''
+  for (let i = 0; i < 12; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength))
+  }
+  if (!codeEditorRoomIds.has(result)) {
+    codeEditorRoomIds.add(result)
     return result
   } else {
     console.log('roomId exists, remaking another one.')

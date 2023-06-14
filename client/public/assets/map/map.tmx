@@ -12827,6 +12827,9 @@
  <tileset firstgid="5488" name="vendingmachine" tilewidth="48" tileheight="72" tilecount="1" columns="1">
   <image source="../items/vendingmachine.png" width="48" height="72"/>
  </tileset>
+ <tileset firstgid="5489" name="codeeditor" tilewidth="30" tileheight="30" tilecount="1" columns="1">
+  <image source="../items/codeeditor.png" width="30" height="30"/>
+ </tileset>
  <layer id="2" name="Ground" width="40" height="30" locked="1">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -13337,5 +13340,8 @@
  </objectgroup>
  <objectgroup id="14" name="VendingMachine" locked="1">
   <object id="1262" gid="5488" x="378" y="209" width="48" height="72"/>
+ </objectgroup>
+ <objectgroup id="15" name="CodeEditor" locked="1">
+  <object id="1263" gid="5489" x="800" y="200" width="30" height="30"/>
  </objectgroup>
 </map>

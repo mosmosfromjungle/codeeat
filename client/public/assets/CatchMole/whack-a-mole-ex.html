@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Vanilla Coding | Bootcamp Prep</title>
+
+    <link rel="stylesheet" href="./whack-a-mole-ex.css">
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <header>
+        <h1 class="title">Welcome!<br>whack-a-mole</h1> 
+    </header>
+    <div class="main">
+      <div id="problem" class="problem">
+        <p id="problem-box"></p>
+      </div>
+      <div id="ending" class="ending">
+        <p id="ending-box"></p>
+      </div>
+      <div id="ending-bg" class="ending-bg"></div>    
+      <ul class="whack-a-mole clearfix">
+        <li class="mole">
+          <img id="7" src="./mole.png">
+          <div id="answer-div-7" class="answer-text-7 hiding">
+            <p id="answer-text-7"></p>
+          </div>
+        </li>
+        <li class="mole">
+          <img id="8" src="./mole.png">
+          <div id="answer-div-8" class="answer-text-8 hiding">
+            <p id="answer-text-8"></p>
+          </div>
+        </li>
+        <li class="mole">
+          <img id="9" src="./mole.png">
+          <div id="answer-div-9" class="answer-text-9 hiding">
+            <p id="answer-text-9"></p>
+          </div>
+        </li>
+        <li class="mole">
+          <img id="4" src="./mole.png">
+          <div id="answer-div-4" class="answer-text-4 hiding">
+            <p id="answer-text-4"></p>
+          </div>
+        </li>
+        <li class="mole">
+          <img id="5" src="./mole.png">
+          <div id="answer-div-5" class="answer-text-5 hiding">
+            <p id="answer-text-5"></p>
+          </div>
+        </li>
+        <li class="mole">
+          <img id="6" src="./mole.png">
+          <div id="answer-div-6" class="answer-text-6 hiding">
+            <p id="answer-text-6"></p>
+          </div>
+        </li>
+        <li class="mole">
+          <img id="1" src="./mole.png">
+          <div id="answer-div-1" class="answer-text-1 hiding">
+            <p id="answer-text-1"></p>
+          </div>
+        </li>
+        <li class="mole">
+          <img id="2" src="./mole.png">
+          <div id="answer-div-2" class="answer-text-2 hiding">
+            <p id="answer-text-2"></p>
+          </div>
+        </li>
+        <li class="mole">
+          <img id="3" src="./mole.png">
+          <div id="answer-div-3" class="answer-text-3 hiding">
+            <p id="answer-text-3"></p>
+          </div>
+        </li>
+      </ul>
+      <div class="point-box clearfix">
+        <div class="point-wrap">
+          <p id="point-text">Point :</p>
+          <p id="count-mole">0</p>
+          <p id="count-mole2">/10</p>
+        </div>
+        <div class="btn-wrap">
+          <button type="button" class="start-btn">PRESS START</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./whack-a-mole-ex.js"></script>
+  </body>
+</html>

@@ -4,18 +4,30 @@ import axios from 'axios'
 
 import { useAppSelector } from './hooks'
 
-import RoomSelectionDialog from './components/RoomSelectionDialog'
+import WelcomeDialog from './components/WelcomeDialog'
 import LoginDialog from './components/LoginDialog'
+import JoinDialog from './components/JoinDialog'
 import ComputerDialog from './components/ComputerDialog'
 import WhiteboardDialog from './components/WhiteboardDialog'
+import CodeEditorDialog from './components/CodeEditorDialog'
 import VideoConnectionDialog from './components/VideoConnectionDialog'
-import Chat from './components/Chat'
 import HelperButtonGroup from './components/HelperButtonGroup'
 import MobileVirtualJoystick from './components/MobileVirtualJoystick'
 
+// ↓ HelperButtonGroup Dialog
+import ChatDialog from './components/ChatDialog'
+import DMDialog from './components/DMDialog'
+import UserDialog from './components/UserDialog'
+import LogoutDialog from './components/LogoutDialog'
+
+// ↓ Profile Button & Dialog
+import ProfileButton from './components/ProfileButton'
+import ProfileDialog from './components/ProfileDialog'
+
+import GlobalFont from '../public/assets/fonts/GlobalFont'
+
 axios.defaults.baseURL = 'http://localhost:2567'
 console.log('axios.defaults.baseURL ', axios.defaults.baseURL);
-
 
 const Backdrop = styled.div`
   position: absolute;
@@ -29,39 +41,71 @@ function App() {
   const whiteboardDialogOpen = useAppSelector((state) => state.whiteboard.whiteboardDialogOpen)
   const videoConnected = useAppSelector((state) => state.user.videoConnected)
   const roomJoined = useAppSelector((state) => state.room.roomJoined)
+  const codeEditorDialogOpen = useAppSelector((state) => state.codeeditor.codeEditorDialogOpen)
+  const showLogin = useAppSelector((state) => state.user.showLogin)
+  const showJoin = useAppSelector((state) => state.user.showJoin)
+
+  // ↓ HelperButtonGroup Dialog
+  const showChat = useAppSelector((state) => state.chat.showChat)
+  const showDM = useAppSelector((state) => state.chat.showDM)
+  const showUser = useAppSelector((state) => state.chat.showUser)
+  const showLogout = useAppSelector((state) => state.user.showLogout)
+
+  // ↓ Profile Dialog
+  const showProfile = useAppSelector((state) => state.user.showProfile)
 
   let ui: JSX.Element
   if (loggedIn) {
     if (computerDialogOpen) {
-      /* Render ComputerDialog if user is using a computer. */
       ui = <ComputerDialog />
+
     } else if (whiteboardDialogOpen) {
-      /* Render WhiteboardDialog if user is using a whiteboard. */
       ui = <WhiteboardDialog />
+
+    } else if (codeEditorDialogOpen) {
+      ui = <CodeEditorDialog />
+
+    } else if (showChat) {
+      ui = <ChatDialog />
+      
+    } else if (showDM) {
+      ui = <DMDialog />
+      
+    } else if (showUser) {
+      ui = <UserDialog />
+      
+    } else if (showLogout) {
+      ui = <LogoutDialog />
+      
+    } else if (showProfile) {
+      ui = <ProfileDialog />
+      
     } else {
       ui = (
-        /* Render Chat or VideoConnectionDialog if no dialogs are opened. */
         <>
-          <Chat />
-          {/* Render VideoConnectionDialog if user is not connected to a webcam. */}
           {!videoConnected && <VideoConnectionDialog />}
           <MobileVirtualJoystick />
         </>
       )
     }
-  } else if (roomJoined) {
-    /* Render LoginDialog if not logged in but selected a room. */
+
+  } else if (showLogin) {
     ui = <LoginDialog />
+
+  } else if (showJoin) {
+    ui = <JoinDialog />
+
   } else {
-    /* Render RoomSelectionDialog if yet selected a room. */
-    ui = <RoomSelectionDialog />
+    ui = <WelcomeDialog />
   }
 
   return (
     <Backdrop>
       {ui}
-      {/* Render HelperButtonGroup if no dialogs are opened. */}
-      {!computerDialogOpen && !whiteboardDialogOpen && <HelperButtonGroup />}
+      {/* Render HelperButtonGroup, ProfileButton if no dialogs are opened. */}
+      {!computerDialogOpen && !whiteboardDialogOpen && !codeEditorDialogOpen && <HelperButtonGroup />}
+      {!computerDialogOpen && !whiteboardDialogOpen && !codeEditorDialogOpen && <ProfileButton />}
+      {<GlobalFont />}
     </Backdrop>
   )
 }

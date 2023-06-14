@@ -1,43 +1,48 @@
+/*
+  Icon: mui 라이브러리 사용 (https://mui.com/material-ui/material-icons/)
+*/
 import React, { useRef, useState, useEffect } from 'react'
 import styled from 'styled-components'
-import Box from '@mui/material/Box'
-import Fab from '@mui/material/Fab'
-import Tooltip from '@mui/material/Tooltip'
+
 import IconButton from '@mui/material/IconButton'
+import Tooltip from '@mui/material/Tooltip'
+import Box from '@mui/material/Box'
 import InputBase from '@mui/material/InputBase'
-import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon'
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline'
+
 import CloseIcon from '@mui/icons-material/Close'
+
+import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon'
 import 'emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
+
+import { MessageType, setFocused, setShowChat, setShowDM, setShowUser } from '../stores/ChatStore'
+import { useAppSelector, useAppDispatch } from '../hooks'
+import { getColorByString } from '../util'
 
 import phaserGame from '../PhaserGame'
 import Game from '../scenes/Game'
 
-import { getColorByString } from '../util'
-import { useAppDispatch, useAppSelector } from '../hooks'
-import { MessageType, setFocused, setShowChat } from '../stores/ChatStore'
-
 const Backdrop = styled.div`
   position: fixed;
-  bottom: 60px;
-  left: 0;
-  height: 400px;
-  width: 500px;
-  max-height: 50%;
-  max-width: 100%;
+  display: flex;
+  gap: 10px;
+  bottom: 16px;
+  right: 16px;
+  align-items: flex-end;
 `
 
 const Wrapper = styled.div`
-  position: relative;
   height: 100%;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
+  margin-top: auto;
 `
 
-const FabWrapper = styled.div`
-  margin-top: auto;
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 10px;
+`
+
+const Content = styled.div`
+  margin: 70px auto;
 `
 
 const ChatHeader = styled.div`
@@ -61,17 +66,18 @@ const ChatHeader = styled.div`
 `
 
 const ChatBox = styled(Box)`
-  height: 100%;
-  width: 100%;
+  height: 400px;
+  width: 400px;
   overflow: auto;
   background: #2c2c2c;
   border: 1px solid #00000029;
+  padding: 10px 10px;
 `
 
 const MessageWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
-  padding: 0px 2px;
+  padding: px 2px;
 
   p {
     margin: 3px;
@@ -114,9 +120,9 @@ const InputTextField = styled(InputBase)`
 `
 
 const EmojiPickerWrapper = styled.div`
-  position: absolute;
-  bottom: 54px;
-  right: 16px;
+position: absolute;
+bottom: 110px;
+right: 0px;
 `
 
 const dateFormatter = new Intl.DateTimeFormat('en', {
@@ -160,7 +166,7 @@ const Message = ({ chatMessage, messageType }) => {
   )
 }
 
-export default function Chat() {
+export default function DMDialog() {
   const [inputValue, setInputValue] = useState('')
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [readyToSubmit, setReadyToSubmit] = useState(false)
@@ -168,7 +174,8 @@ export default function Chat() {
   const inputRef = useRef<HTMLInputElement>(null)
   const chatMessages = useAppSelector((state) => state.chat.chatMessages)
   const focused = useAppSelector((state) => state.chat.focused)
-  const showChat = useAppSelector((state) => state.chat.showChat)
+  const showDM = useAppSelector((state) => state.chat.showDM)
+
   const dispatch = useAppDispatch()
   const game = phaserGame.scene.keys.game as Game
 
@@ -181,25 +188,33 @@ export default function Chat() {
       // move focus back to the game
       inputRef.current?.blur()
       dispatch(setShowChat(false))
+      dispatch(setShowDM(false))
+      dispatch(setShowUser(false))
     }
   }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    // this is added because without this, 2 things happen at the same
-    // time when Enter is pressed, (1) the inputRef gets focus (from
-    // useEffect) and (2) the form gets submitted (right after the input
-    // gets focused)
+    /*
+      this is added because without this, 2 things happen at the same
+      time when Enter is pressed, (1) the inputRef gets focus (from
+      useEffect) and (2) the form gets submitted (right after the input
+      gets focused)
+    */
     if (!readyToSubmit) {
       setReadyToSubmit(true)
       return
     }
-    // move focus back to the game
+
+    /*
+      move focus back to the game
+    */
     inputRef.current?.blur()
 
     const val = inputValue.trim()
     setInputValue('')
+
     if (val) {
       game.network.addChatMessage(val)
       game.myPlayer.updateDialogBubble(val)
@@ -218,19 +233,19 @@ export default function Chat() {
 
   useEffect(() => {
     scrollToBottom()
-  }, [chatMessages, showChat])
+  }, [chatMessages, showDM])
 
   return (
     <Backdrop>
-      <Wrapper>
-        {showChat ? (
-          <>
+      <ButtonGroup>
+        <Wrapper>
+          <Content>
             <ChatHeader>
-              <h3>Chat</h3>
+              <h3>DM</h3>
               <IconButton
                 aria-label="close dialog"
                 className="close"
-                onClick={() => dispatch(setShowChat(false))}
+                onClick={() => dispatch(setShowDM(false))}
                 size="small"
               >
                 <CloseIcon />
@@ -262,7 +277,7 @@ export default function Chat() {
                 inputRef={inputRef}
                 autoFocus={focused}
                 fullWidth
-                placeholder="Press Enter to chat"
+                placeholder="Press Enter to DM"
                 value={inputValue}
                 onKeyDown={handleKeyDown}
                 onChange={handleChange}
@@ -281,22 +296,9 @@ export default function Chat() {
                 <InsertEmoticonIcon />
               </IconButton>
             </InputWrapper>
-          </>
-        ) : (
-          <FabWrapper>
-            <Fab
-              color="secondary"
-              aria-label="showChat"
-              onClick={() => {
-                dispatch(setShowChat(true))
-                dispatch(setFocused(true))
-              }}
-            >
-              <ChatBubbleOutlineIcon />
-            </Fab>
-          </FabWrapper>
-        )}
-      </Wrapper>
+          </Content>
+        </Wrapper>
+      </ButtonGroup>
     </Backdrop>
   )
 }

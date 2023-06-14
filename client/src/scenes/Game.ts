@@ -8,6 +8,8 @@ import Chair from '../items/Chair'
 import Computer from '../items/Computer'
 import Whiteboard from '../items/Whiteboard'
 import VendingMachine from '../items/VendingMachine'
+import CodeEditor from '../items/CodeEditor'
+
 import '../characters/MyPlayer'
 import '../characters/OtherPlayer'
 import MyPlayer from '../characters/MyPlayer'
@@ -19,7 +21,7 @@ import { PlayerBehavior } from '../../../types/PlayerBehavior'
 import { ItemType } from '../../../types/Items'
 
 import store from '../stores'
-import { setFocused, setShowChat } from '../stores/ChatStore'
+import { setFocused, setShowChat, setShowDM } from '../stores/ChatStore'
 import { NavKeys, Keyboard } from '../../../types/KeyboardState'
 
 export default class Game extends Phaser.Scene {
@@ -34,6 +36,7 @@ export default class Game extends Phaser.Scene {
   private otherPlayerMap = new Map<string, OtherPlayer>()
   computerMap = new Map<string, Computer>()
   private whiteboardMap = new Map<string, Whiteboard>()
+  private codeeditorMap = new Map<String, CodeEditor>()
 
   constructor() {
     super('game')
@@ -55,6 +58,7 @@ export default class Game extends Phaser.Scene {
     })
     this.input.keyboard.on('keydown-ESC', (event) => {
       store.dispatch(setShowChat(false))
+      store.dispatch(setShowDM(false))
     })
   }
 
@@ -128,6 +132,21 @@ export default class Game extends Phaser.Scene {
       this.addObjectFromTiled(vendingMachines, obj, 'vendingmachines', 'vendingmachine')
     })
 
+    // import code editor objects from Tiled map to Phaser
+    const codeeditors = this.physics.add.staticGroup({ classType: CodeEditor })
+    const codeeditorLayer = this.map.getObjectLayer('CodeEditor')
+    codeeditorLayer.objects.forEach((obj, i) => {
+      const item = this.addObjectFromTiled(
+        codeeditors,
+        obj,
+        'codeeditors',
+        'codeeditor'
+      ) as CodeEditor
+      const id = `${i}`
+      item.id = id
+      this.codeeditorMap.set(id, item)
+    })
+
     // import other objects from Tiled map to Phaser
     this.addGroupFromTiled('Wall', 'tiles_wall', 'FloorAndGround', false)
     this.addGroupFromTiled('Objects', 'office', 'Modern_Office_Black_Shadow', false)
@@ -146,7 +165,7 @@ export default class Game extends Phaser.Scene {
 
     this.physics.add.overlap(
       this.playerSelector,
-      [chairs, computers, whiteboards, vendingMachines],
+      [chairs, computers, whiteboards, vendingMachines, codeeditors],
       this.handleItemSelectorOverlap,
       undefined,
       this
@@ -260,9 +279,14 @@ export default class Game extends Phaser.Scene {
     if (itemType === ItemType.COMPUTER) {
       const computer = this.computerMap.get(itemId)
       computer?.addCurrentUser(playerId)
+
     } else if (itemType === ItemType.WHITEBOARD) {
       const whiteboard = this.whiteboardMap.get(itemId)
       whiteboard?.addCurrentUser(playerId)
+
+    } else if (itemType === ItemType.CODEEDITOR) {
+      const codeeditor = this.codeeditorMap.get(itemId)
+      codeeditor?.addCurrentUser(playerId)
     }
   }
 
@@ -270,9 +294,14 @@ export default class Game extends Phaser.Scene {
     if (itemType === ItemType.COMPUTER) {
       const computer = this.computerMap.get(itemId)
       computer?.removeCurrentUser(playerId)
+
     } else if (itemType === ItemType.WHITEBOARD) {
       const whiteboard = this.whiteboardMap.get(itemId)
       whiteboard?.removeCurrentUser(playerId)
+
+    } else if (itemType === ItemType.CODEEDITOR) {
+      const codeeditor = this.codeeditorMap.get(itemId)
+      codeeditor?.removeCurrentUser(playerId)
     }
   }
 
