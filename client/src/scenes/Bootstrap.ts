@@ -48,6 +48,10 @@ export default class Bootstrap extends Phaser.Scene {
       frameWidth: 48,
       frameHeight: 72,
     })
+    this.load.spritesheet('codeeditors', 'assets/items/codeeditor.png', {
+      frameWidth: 30,
+      frameHeight: 30,
+    })
     this.load.spritesheet('office', 'assets/tileset/Modern_Office_Black_Shadow.png', {
       frameWidth: 32,
       frameHeight: 32,
