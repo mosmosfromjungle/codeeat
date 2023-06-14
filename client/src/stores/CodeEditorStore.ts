@@ -41,7 +41,7 @@ export const codeEditorSlice = createSlice({
       state.urls.set(
         action.payload.codeEditorId,
         // `https://wbo.ophir.dev/boards/sky-office-${action.payload.roomId}`
-        `https://www.google.com/webhp?igu=1`
+        `http://localhost:5173/assets/CatchMole/whack-a-mole-ex.html`
       )
     },
   },
