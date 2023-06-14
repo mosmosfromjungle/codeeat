@@ -1,5 +1,9 @@
+import { url } from "inspector";
 import React, { useState, useEffect, useRef } from "react";
-import styled, { createGlobalStyle } from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components';
+import Background from "../scenes/Background";
+import typing_Background from "../../public/img/typinggame/blackboard.png"
+
 
 const GlobalStyle = createGlobalStyle`
   @font-face {
@@ -10,8 +14,10 @@ const GlobalStyle = createGlobalStyle`
   body {
     font-family: 'CustomFont', sans-serif;
     font-size: 24px;
+    color : #000000;
   }
-`
+`;
+
 
 interface KeywordRain {
     y: number;
@@ -25,14 +31,20 @@ export function TypingGame() {
     const [point, setPoint] = useState<number>(0);
     const [heart, setHeart] = useState<number>(5);
     const [level, setLevel] = useState<number>(1);
-    const [goal, setGoal] = useState<number>(5);
+    const [goal, setGoal] = useState<number>(10);
     const [keywordList, setKeywordList] = useState<string[]>([
-        "apple",
-        "banana",
-        "kiwi",
-        "tomato",
-        "coconut",
-        "mango",
+        "abs",
+        "print",
+        "list",
+        "row",
+        "col",
+        "set",
+        "style",
+        "font",
+        "div",
+        "h1",
+        "h2",
+        "body"
     ]);
     const keywordInput = useRef<HTMLInputElement>(null);
     const canvasHeight = 1000;
@@ -44,7 +56,7 @@ export function TypingGame() {
                 keywordList[Math.floor(Math.random() * keywordList.length)];
             setGame((game) => [
                 ...game,
-                { y: 0, speed: Math.random() * 2, keyword, x: Math.random() * 300 },
+                { y: 0, speed: Math.random() * 2, keyword, x: Math.random() * 800},
             ]);
         }, 1000);
 
@@ -90,11 +102,11 @@ export function TypingGame() {
     };
 
     if (heart < 1) {
-        return <h1>게임 오버 :(</h1>;
+        return <h1 style={{textAlign: "center"}}>게임 오버 :(</h1>;
     }
 
     if (point >= goal) {
-        return <h1>성공!</h1>;
+        return <h1 style={{ textAlign: "center"}}>성공!</h1>;
     }
 
     return (
@@ -103,15 +115,31 @@ export function TypingGame() {
             <div>
                 <div style={{
                     width: "1000px", height: lineHeight,
+                    backgroundImage : `url(${typing_Background})`,
+                    backgroundSize : "cover",
+                    backgroundPositionY : "-63px",
+                    backgroundRepeat: "no-repeat",
                     position: "relative",
                     overflow: "hidden",
                     borderBottom: "2px solid white"
                 }}>
                     {game.map((item, index) => (
-                        <h5 key={index} style={{ position: "absolute", top: item.y, left: item.x }}>
+                        <h5 
+                            key={index} 
+                            style={{
+                                position: "absolute", 
+                                fontSize : 25,
+                                letterSpacing :'3px',
+                                top: item.y, 
+                                left: item.x, 
+                                color : '#FFFFFF',
+                                backgroundImage : '',
+                                backgroundSize : '100px 100px',
+                                }}>
                             {item.keyword}
                         </h5>
                     ))}
+        
                 </div>
 
 
@@ -123,7 +151,7 @@ export function TypingGame() {
                     />
                     <button onClick={() => keydown(13)}>입력</button>
                     <span style={{ marginRight: "10px" }}>점수: {point}</span>
-                    <span style={{ marginLeft: "10px" }}>목숨: {heart}</span>
+                    <span style={{ marginLeft: "10px" }}>Coin: {heart}</span>
                 </div>
             </div>
         </>

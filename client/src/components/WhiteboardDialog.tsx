@@ -6,7 +6,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import { useAppSelector, useAppDispatch } from '../hooks'
 import { closeWhiteboardDialog } from '../stores/WhiteboardStore'
 import { TypingGame } from './typinggame'
-
+// 원래 패딩 : 16px, 180px, 16px, 10px
 const Backdrop = styled.div`
   position: fixed;
   top: 0;
@@ -14,7 +14,7 @@ const Backdrop = styled.div`
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  padding: 16px 180px 16px 16px;
+  padding: 16px 180px 16px 10px; 
   width: 100%;
   height: 100%;
 `
