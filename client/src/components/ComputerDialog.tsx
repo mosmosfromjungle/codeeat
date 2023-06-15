@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
@@ -6,6 +6,20 @@ import CloseIcon from '@mui/icons-material/Close'
 
 import { useAppSelector, useAppDispatch } from '../hooks'
 import { closeComputerDialog } from '../stores/ComputerStore'
+
+const WRONG_OPERATION = '해당 자료구조에서 사용되지 않는 연산입니다!'
+const COMMON_MESSAGE = (
+  <>
+    <br />
+    <span style={{ fontSize: '22px' }}>더하기 </span>
+    <span style={{ fontSize: '30px' }}>sum</span>
+    <span style={{ fontSize: '22px' }}> | 원래대로 </span>
+    <span style={{ fontSize: '30px' }}>restore</span>
+    <span style={{ fontSize: '22px' }}> | 게임 초기화 </span>
+    <span style={{ fontSize: '30px' }}> reset</span>
+    <br />
+  </>
+);
 
 const GlobalStyle = createGlobalStyle`
   @font-face {
@@ -17,7 +31,6 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'CustomFont', sans-serif;
   }
 `
-
 const Backdrop = styled.div`
   position: fixed;
   top: 0;
@@ -48,12 +61,10 @@ const Wrapper = styled.div`
     right: 0px;
   }
 `
-
 const ImageContainer = styled.div`
   position: relative;
   margin: 10px;
 `
-
 const ImageText = styled.div`
   position: absolute;
   bottom: 0;
@@ -68,7 +79,12 @@ const ImageText = styled.div`
   text-align: center;
   text-shadow: 0px 0px 12px rgba(0, 0, 0, 0.9); /* 텍스트 그림자 스타일링 */
 `
-
+const CustomBracket = styled.div`
+  position: relative;
+  font-family: 'CustomFont', sans-serif;
+  font-size: 32px;
+  margin-top: 60px;
+`
 const CustomInput = styled.input`
   font-family: 'CustomFont', sans-serif;
   font-size: 32px;
@@ -77,17 +93,32 @@ const CustomInput = styled.input`
   width: 80%;
   // height: 100px;
 `
-
 const CustomButton = styled(Button)`
-  font-family: 'CustomFont', sans-serif;
-  font-size: 32px;
+  && {
+    font-family: 'CustomFont', sans-serif;
+    font-size: 32px;
+    color: white;
+    &:hover {
+      color: blue;
+  }
 `
-
+const CustomResetButton = styled(Button)`
+  && {
+    font-family: 'CustomFont', sans-serif;
+    font-size: 24px;
+    color: white;
+    &:hover {
+      color: blue;
+  }
+`
 const CustomList = styled.div`
   font-family: 'CustomFont', sans-serif;
   font-size: 28px;
   color: white;
   width: 80%;
+  line-height: 1.5;
+  text-align: center;
+
 `
 
 export default function ComputerDialog() {
@@ -100,101 +131,285 @@ export default function ComputerDialog() {
     { src: '/assets/brickGame/51-2.png', text: '3' },
     { src: '/assets/brickGame/50-2.png', text: '9' },
     { src: '/assets/brickGame/39-2.png', text: '8' },
-  ]);
-  
-  const [originalImages, setOriginalImages] = useState([...images]); // 원래의 이미지 배열 복사
+  ])
+
+  const [originalImages, setOriginalImages] = useState([...images]) // 원래의 이미지 배열 복사
+  const [command, setCommand] = useState('')
+  const [selectedOption, setSelectedOption] = useState('')
+
+  // const handleRemoveImage = () => {
+  //   const match = command.match(/remove\((\d+)\)/) || command.match(/discard\((\d+)\)/)
+  //   if (match) {
+  //     const number = match[1]
+  //     const index = images.findIndex((image) => image.text === number)
+  //     if (index !== -1) {
+  //       removeImage(index)
+  //     }
+  //   }
+  //   setCommand('')
+  // }
+
+  const handleRemoveImage = () => {
+    const match = command.match(/remove\((\d+)\)/) || command.match(/discard\((\d+)\)/);
+    if (match) {
+      const number = match[1];
+      const index = images.findIndex((image) => image.text === number);
+      if (index !== -1) {
+        removeImage(index);
+      }
+    } else {
+      alert('제거할 숫자를 같이 입력해주세요.');
+    }
+    setCommand('');
+  };
 
   const removeImage = (index) => {
-    setImages(prevImages => {
-      const newImages = [...prevImages];
-      newImages.splice(index, 1);
-      return newImages;
-    });
-  };
-
-  const [command, setCommand] = useState('');
+    setImages((prevImages) => {
+      const newImages = [...prevImages]
+      newImages.splice(index, 1)
+      return newImages
+    })
+  }
 
   const restoreImages = () => {
-    setImages([...originalImages]); // 원래의 이미지 배열로 복구
-  };
-  
+    setImages([...originalImages]) // 원래의 이미지 배열로 복구
+  }
+
+  // const handleCommand = () => {
+  //   const lowercaseCommand = command.toLowerCase()
+  //   if (lowercaseCommand === 'popleft' || lowercaseCommand === 'dequeue') {
+  //     removeImage(0)
+  //   } else if (lowercaseCommand === 'pop') {
+  //     removeImage(images.length - 1)
+  //   } else if (lowercaseCommand === 'sum') {
+  //     const sum = images.reduce((total, image) => total + parseInt(image.text), 0)
+  //     alert(`Sum: ${sum}`)
+  //   } else if (lowercaseCommand === 'restore') {
+  //     restoreImages() // 이미지 복구
+  //   } else if (lowercaseCommand.startsWith('remove(') || lowercaseCommand.startsWith('discard(')) {
+  //     handleRemoveImage()
+  //   }
+  //   setCommand('')
+  // }
+
   const handleCommand = () => {
     const lowercaseCommand = command.toLowerCase();
-    if (lowercaseCommand === 'popleft') {
-      removeImage(0);
-    } else if (lowercaseCommand === 'pop') {
-      removeImage(images.length - 1);
-    } else if (lowercaseCommand === 'sum') {
+    if (lowercaseCommand === 'sum') {
       const sum = images.reduce((total, image) => total + parseInt(image.text), 0);
       alert(`Sum: ${sum}`);
     } else if (lowercaseCommand === 'restore') {
       restoreImages(); // 이미지 복구
+    } else if (lowercaseCommand === 'reset') {
+      handleReset();
+    } else {
+      switch (selectedOption) {
+        case 'list':
+          if (lowercaseCommand.startsWith('remove')) {
+            handleRemoveImage();
+          } else if (lowercaseCommand === 'pop') {
+            removeImage(images.length - 1);
+          } else {
+            alert(WRONG_OPERATION);
+          }
+          break;
+        case 'set':
+          if (lowercaseCommand.startsWith('remove') || lowercaseCommand.startsWith('discard')) {
+            handleRemoveImage();
+          } else {
+            alert(WRONG_OPERATION);
+          }
+          break;
+        case 'stack':
+          if (lowercaseCommand === 'pop') {
+            removeImage(images.length - 1);
+          } else {
+            alert(WRONG_OPERATION);
+          }
+          break;
+        case 'queue':
+          if (lowercaseCommand === 'dequeue') {
+            removeImage(0);
+          } else {
+            alert(WRONG_OPERATION);
+          }
+          break;
+        case 'deque':
+          if (lowercaseCommand === 'popleft') {
+            removeImage(0);
+          } else if (lowercaseCommand === 'pop') {
+            removeImage(images.length - 1);
+          } else {
+            alert(WRONG_OPERATION);
+          }
+          break;
+        default:
+          if (lowercaseCommand === 'list') {
+            setSelectedOption('list');
+          } else if (lowercaseCommand === 'set') {
+            setSelectedOption('set');
+          } else if (lowercaseCommand === 'stack') {
+            setSelectedOption('stack');
+          } else if (lowercaseCommand === 'queue') {
+            setSelectedOption('queue');
+          } else if (lowercaseCommand === 'deque') {
+            setSelectedOption('deque');
+          } else {
+            alert(`자료구조를 입력해주세요!`);
+          }
+          break;
+      }
     }
     setCommand('');
   };
-  
+
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
-      handleCommand();
+      handleCommand()
     }
-  };
+  }
+
+  const handleOptionClick = (option) => {
+    setSelectedOption(option)
+  }
+
+  const handleReset = () => {
+    setImages([...originalImages])
+    setSelectedOption('')
+  }
 
   return (
     <>
-    <GlobalStyle />
+      <GlobalStyle />
 
-    <Backdrop>
-      <Wrapper>
-        <div style={{ fontSize: '40px' }}>
-          괴물을 이겨라!<br></br>
+      <Backdrop>
+        <Wrapper>
+          <div style={{ fontSize: '40px' }}>
+            몬스터 줄세우기!<br></br>
+            <br></br>
+          </div>
+
+          <div style={{ fontSize: '40px', display: 'flex', alignItems: 'center' }}>
+            <span style={{ fontSize: '24px', marginLeft: '10px' }}>
+              숫자의 합이 <span style={{ fontSize: '36px', color: 'yellow' }}>10 </span>이 되도록
+              몬스터 배열을 수정해주세요!
+            </span>
+          </div>
+          <br></br><br></br>
+          <br></br><br></br>
           <br></br>
-          <br></br>
-        </div>
 
-        <IconButton
-          aria-label="close dialog"
-          className="close"
-          onClick={() => dispatch(closeComputerDialog())}
-        >
-          <CloseIcon />
-        </IconButton>
+          <IconButton
+            aria-label="close dialog"
+            className="close"
+            onClick={() => dispatch(closeComputerDialog())}
+          >
+            <CloseIcon />
+          </IconButton>
 
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          {images.map((image, index) => (
-            <ImageContainer key={index}>
-              <img 
-                src={image.src} 
-                alt={`Image ${index + 1}`} 
-                style={{ width: '100px', height: '100px' }} 
-              />
-              <ImageText>{image.text}</ImageText>
-            </ImageContainer>
-          ))}
-        </div>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <CustomBracket>&#91;</CustomBracket>
+            {images.map((image, index) => (
+              <ImageContainer key={index}>
+                <img
+                  src={image.src}
+                  alt={`Image ${index + 1}`}
+                  style={{ width: '100px', height: '100px' }}
+                />
+                <ImageText>{image.text}</ImageText>
+              </ImageContainer>
+            ))}
+            <CustomBracket>&#93;</CustomBracket>
+          </div>
 
-        <CustomList>
-          <br></br>
-          <br></br>
-          <br></br>
-          pop<br></br>
-          popleft<br></br>
-          sum<br></br>
-          restore<br></br>
-        </CustomList>
+          {selectedOption === 'list' ? (
+            <CustomList>
+              <br></br>
+              <span style={{ fontSize: '32px', color: 'yellow' }}>List</span><br></br>
+              {/* <br></br>
+              삽입(Insertion): append, insert<br></br> */}
+              삭제(Deletion): remove(), pop<br></br>
+              {COMMON_MESSAGE}
+              <br></br>
+            </CustomList>
+          ) : selectedOption === 'set' ? (
+            <CustomList>
+              <br></br>
+              <span style={{ fontSize: '32px', color: 'yellow' }}>Set</span><br></br>
+              {/* <br></br>
+              삽입(Insertion): add<br></br> */}
+              삭제(Deletion): remove(), discard()<br></br>
+              {COMMON_MESSAGE}
+              <br></br>
+            </CustomList>
+          ) : selectedOption === 'stack' ? (
+            <CustomList>
+              <br></br>
+              <span style={{ fontSize: '32px', color: 'yellow' }}>Stack</span><br></br>
+              {/* <br></br>
+              삽입(Insertion): push, append<br></br> */}
+              삭제(Deletion): pop<br></br>
+              {COMMON_MESSAGE}
+              <br></br>
+            </CustomList>
+          ) : selectedOption === 'queue' ? (
+            <CustomList>
+              <br></br>
+              <span style={{ fontSize: '32px', color: 'yellow' }}>Queue</span><br></br>
+              {/* <br></br>
+              삽입(Insertion): enqueue<br></br> */}
+              삭제(Deletion): dequeue<br></br>
+              {COMMON_MESSAGE}
+              <br></br>
+            </CustomList>
+          ) : selectedOption === 'deque' ? (
+            <CustomList>
+              <br></br>
+              <span style={{ fontSize: '32px', color: 'yellow' }}>Deque</span><br></br>
+              {/* <br></br>
+              삽입(Insertion): append, appendleft<br></br> */}
+              삭제(Deletion): pop, popleft<br></br>
+              {COMMON_MESSAGE}
+              <br></br>
+            </CustomList>
+          ) : (
+            <div>
+              <br></br>
+              <br></br>
+              <br></br>
+              <br></br>
+              <CustomButton onClick={() => handleOptionClick('list')}>list</CustomButton>
+              <CustomButton onClick={() => handleOptionClick('set')}>set</CustomButton>
+              <CustomButton onClick={() => handleOptionClick('stack')}>stack</CustomButton>
+              <CustomButton onClick={() => handleOptionClick('queue')}>queue</CustomButton>
+              <CustomButton onClick={() => handleOptionClick('deque')}>deque</CustomButton>
+              <br></br>
+              <br></br>
+              <br></br>
+              <br></br>
+            </div>
+          )}
 
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-          <CustomInput
-            type="text"
-            value={command}
-            onChange={(event) => setCommand(event.target.value)}
-            onKeyDown={handleKeyDown} // 키 다운 이벤트 핸들러 추가
-            style={{ margin: '10px' }}
-          />
-          {/* <CustomButton onClick={handleCommand}>명령어 실행</CustomButton> */}
-        </div>
-
-      </Wrapper>
-    </Backdrop>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              width: '100%',
+            }}
+          >
+            <CustomInput
+              type="text"
+              value={command}
+              onChange={(event) => setCommand(event.target.value)}
+              onKeyDown={handleKeyDown} // 키 다운 이벤트 핸들러 추가
+              style={{ margin: '10px' }}
+            />
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+            <CustomResetButton onClick={handleReset}>게임 초기화</CustomResetButton>
+          </div>
+        </Wrapper>
+      </Backdrop>
     </>
   )
 }
