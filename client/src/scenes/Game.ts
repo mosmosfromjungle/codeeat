@@ -163,6 +163,7 @@ export default class Game extends Phaser.Scene {
     this.physics.add.collider([this.myPlayer, this.myPlayer.playerContainer], groundLayer)
     this.physics.add.collider([this.myPlayer, this.myPlayer.playerContainer], vendingMachines)
 
+    // 상호작용 추가하는 부분..?
     this.physics.add.overlap(
       this.playerSelector,
       [chairs, computers, whiteboards, vendingMachines, codeeditors],
