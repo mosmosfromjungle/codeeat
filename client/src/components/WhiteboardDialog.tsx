@@ -5,6 +5,7 @@ import CloseIcon from '@mui/icons-material/Close'
 
 import { useAppSelector, useAppDispatch } from '../hooks'
 import { closeWhiteboardDialog } from '../stores/WhiteboardStore'
+import { TypingGame } from './typinggame'
 
 const Backdrop = styled.div`
   position: fixed;
@@ -56,18 +57,20 @@ export default function WhiteboardDialog() {
   return (
     <Backdrop>
       <Wrapper>
-        <IconButton
+        <TypingGame />
+        { <IconButton
           aria-label="close dialog"
           className="close"
           onClick={() => dispatch(closeWhiteboardDialog())}
         >
           <CloseIcon />
         </IconButton>
+        /*
         {whiteboardUrl && (
           <WhiteboardWrapper>
             <iframe title="white board" src={whiteboardUrl} />
           </WhiteboardWrapper>
-        )}
+        )} */}
       </Wrapper>
     </Backdrop>
   )

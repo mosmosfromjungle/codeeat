@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 import { Client, Room } from 'colyseus.js'
 import { IComputer, IOfficeState, IPlayer, IWhiteboard, ICodeEditor } from '../../../types/IOfficeState'
 import { Message } from '../../../types/Messages'
@@ -250,6 +252,8 @@ export default class Network {
   // method to send player name to Colyseus server
   updatePlayerName(currentName: string) {
     this.room?.send(Message.UPDATE_PLAYER_NAME, { name: currentName })
+    // const response = axios.post('auth/update', { name: currentName });
+    // console.log(response)
   }
 
   // method to send ready-to-connect signal to Colyseus server

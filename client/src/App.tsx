@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import axios from 'axios'
 
 import { useAppSelector } from './hooks'
 
@@ -24,6 +25,9 @@ import ProfileButton from './components/ProfileButton'
 import ProfileDialog from './components/ProfileDialog'
 
 import GlobalFont from '../public/assets/fonts/GlobalFont'
+
+axios.defaults.baseURL = 'http://localhost:2567'
+console.log('axios.defaults.baseURL ', axios.defaults.baseURL);
 
 const Backdrop = styled.div`
   position: absolute;
