@@ -20,7 +20,6 @@ import {
   pushPlayerLeftMessage,
 } from '../stores/ChatStore'
 import { setWhiteboardUrls } from '../stores/WhiteboardStore'
-import { setCodeEditorUrls } from '../stores/CodeEditorStore'
 
 export default class Network {
   private client: Client
@@ -158,12 +157,6 @@ export default class Network {
 
     // new instance added to the codeeditors MapSchema
     this.room.state.codeeditors.onAdd = (codeeditor: ICodeEditor, key: string) => {
-      store.dispatch(
-        setCodeEditorUrls({
-          codeEditorId: key,
-          roomId: codeeditor.roomId,
-        })
-      )
       // track changes on every child object's connectedUser
       codeeditor.connectedUser.onAdd = (item, index) => {
         phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.CODEEDITOR)
