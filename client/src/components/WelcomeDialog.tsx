@@ -34,6 +34,7 @@ const Title = styled.h1`
   color: #eee;
   text-align: center;
   font-family: Font_DungGeun;
+  height: 200px;
 `
 
 const Content = styled.div`
@@ -51,6 +52,20 @@ const Content = styled.div`
   button {
     font-size: 20px;
     font-family: Font_DungGeun;
+  }
+`
+
+const ImageContent = styled.div`
+  display: flex;
+  gap: 20px;
+  margin: 20px 0;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    border-radius: 8px;
+    height: 90px;
+    margin: 0px 0px 20px 0px;
   }
 `
 
@@ -101,7 +116,13 @@ export default function WelcomeDialog() {
         <Wrapper>
           {(
             <>
-              <Title>AlgoEAT</Title>
+              <Title>CodeEAT</Title>
+              <ImageContent>
+                <img src="/assets/character/single/Adam_idle_anim_24.png"></img>
+                <img src="/assets/character/single/Ash_idle_anim_24.png"></img>
+                <img src="/assets/character/single/Lucy_idle_anim_24.png"></img>
+                <img src="/assets/character/single/Nancy_idle_anim_24.png"></img>
+              </ImageContent>
               <Content>
                 <Button variant="contained" onClick={gotoLoginPage}>
                   로그인

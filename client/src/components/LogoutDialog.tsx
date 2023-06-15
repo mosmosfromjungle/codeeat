@@ -29,7 +29,7 @@ export default function AlertDialog() {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Logout AlgoEAT"}
+          {"Logout"}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">

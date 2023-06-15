@@ -150,7 +150,7 @@ li {
 #point-current {
   font-size: 14px;
   font-weight: bold;
-  color: yellow;
+  color: #fbb666;
 }
 
 .ending {
@@ -160,9 +160,9 @@ li {
   font-size: 20px;
   text-align: center;
   top: 20%;
-  left: 35%;
+  left: 40%;
   width: 400px;
-  height: 380px;
+  height: 270px;
   margin: 0 auto;
   background: #3d3f43;
   z-index: 2;
@@ -170,7 +170,7 @@ li {
 
 #ending-box {
   margin: 50px 0 0 0;
-  font-size: 30px;
+  font-size: 20px;
   line-height: 1.8;
   color: #f2ecff;
 }
