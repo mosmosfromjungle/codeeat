@@ -27,7 +27,7 @@ export default class CodeEditor extends Item {
 
   onOverlapDialog() {
     if (this.currentUsers.size === 0) {
-      this.setDialogBox('Press R to use code editor')
+      this.setDialogBox('Press R to play the Whack a Mole')
     } else {
       this.setDialogBox('Press R join')
     }
