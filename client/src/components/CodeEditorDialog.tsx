@@ -69,7 +69,16 @@ export default function CodeEditorDialog() {
   // 1. Start Button Event
 
   const [problemText, setProblemText] = useState("정답을 말하고 있는 두더지를 잡아줘!");
-  const [answerText, setAnswerText] = useState(String);
+
+  const [answerText1, setAnswerText1] = useState(String);
+  const [answerText2, setAnswerText2] = useState(String);
+  const [answerText3, setAnswerText3] = useState(String);
+  const [answerText4, setAnswerText4] = useState(String);
+  const [answerText5, setAnswerText5] = useState(String);
+  const [answerText6, setAnswerText6] = useState(String);
+  const [answerText7, setAnswerText7] = useState(String);
+  const [answerText8, setAnswerText8] = useState(String);
+  const [answerText9, setAnswerText9] = useState(String);
 
   const [startButtonColor, setStartButtonColor] = useState('');
   const [startButtonText, setStartButtonText] = useState('PRESS START');
@@ -104,9 +113,28 @@ export default function CodeEditorDialog() {
 
   const randomHole = () => {
     console.log("Function [randomHole]");
-    
-    return Math.floor(Math.random() * 9) + 1;
-  };
+
+    let luckyMoles = [];
+
+    const makeNum = () => {
+      function notSame (n) {
+        return luckyMoles.every((e) => n !== e);
+      }
+
+      if (luckyMoles.length < 3) {
+        let n = Math.floor(Math.random() * 9) + 1;
+
+        if (notSame(n)) {
+          luckyMoles.push(n);
+        }
+
+        makeNum();
+      }
+    }
+    makeNum();
+
+    return luckyMoles;
+  }
 
   const moleActive = (num) => {
     console.log("Function [moleActive]");
@@ -118,34 +146,178 @@ export default function CodeEditorDialog() {
     console.log("Function [moleHide]");
     
     num.classList.remove('active');
-    setAnswerText('');
+
+    setAnswerText1('');
+    setAnswerText2('');
+    setAnswerText3('');
+    setAnswerText4('');
+    setAnswerText5('');
+    setAnswerText6('');
+    setAnswerText7('');
+    setAnswerText8('');
+    setAnswerText9('');
   }
   
-  let randomNumber;
-  let moleNumber;
   let moleCatch;
 
-  const [activeNumber, setActiveNumber] = useState(0);
-  const [disableStartButton, setDisableStartButton] = React.useState(false);
+  let randomNumber1;
+  let randomNumber2;
+  let randomNumber3;
 
+  let moleNumber1;
+  let moleNumber2;
+  let moleNumber3;
+
+  const [activeNumber, setActiveNumber] = useState(0);
+
+  const [activeNumberList, setActiveNumberList] = useState([0, 0, 0]);
+
+  const [disableStartButton, setDisableStartButton] = React.useState(false);
   const [hideEnding, setHideEnding] = React.useState(true);
+  
+  let luckyMoles = [];
 
   const showingMole = () => {
     console.log("Function [showingMole]");
     
     if (turn < 10) {
-      randomNumber = randomHole();
-      moleNumber = document.getElementById(`${randomNumber}`);
+      luckyMoles = randomHole();
+
+      randomNumber1 = luckyMoles[0];
+      randomNumber2 = luckyMoles[1];
+      randomNumber3 = luckyMoles[2];
+
+      moleNumber1 = document.getElementById(`${randomNumber1}`);
+      moleNumber2 = document.getElementById(`${randomNumber2}`);
+      moleNumber3 = document.getElementById(`${randomNumber3}`);
 
       setProblemText(after[turn][0]);
-      setAnswerText(after[turn][1][0]);
 
-      moleActive(moleNumber);
+      switch(randomNumber1) {
+        case 1:
+          setAnswerText1(after[turn][1][0]);
+          break;
+
+        case 2:
+          setAnswerText2(after[turn][1][0]);
+          break;
+
+        case 3:
+          setAnswerText3(after[turn][1][0]);
+          break;
+
+        case 4:
+          setAnswerText4(after[turn][1][0]);
+          break;
+
+        case 5:
+          setAnswerText5(after[turn][1][0]);
+          break;
+
+        case 6:
+          setAnswerText6(after[turn][1][0]);
+          break;
+
+        case 7:
+          setAnswerText7(after[turn][1][0]);
+          break;
+
+        case 8:
+          setAnswerText8(after[turn][1][0]);
+          break;
+
+        case 9:
+          setAnswerText9(after[turn][1][0]);
+          break;
+      }
+
+      switch(randomNumber2) {
+        case 1:
+          setAnswerText1(after[turn][1][1]);
+          break;
+
+        case 2:
+          setAnswerText2(after[turn][1][1]);
+          break;
+
+        case 3:
+          setAnswerText3(after[turn][1][1]);
+          break;
+
+        case 4:
+          setAnswerText4(after[turn][1][1]);
+          break;
+
+        case 5:
+          setAnswerText5(after[turn][1][1]);
+          break;
+
+        case 6:
+          setAnswerText6(after[turn][1][1]);
+          break;
+
+        case 7:
+          setAnswerText7(after[turn][1][1]);
+          break;
+
+        case 8:
+          setAnswerText8(after[turn][1][1]);
+          break;
+
+        case 9:
+          setAnswerText9(after[turn][1][1]);
+          break;
+      }
+
+      switch(randomNumber3) {
+        case 1:
+          setAnswerText1(after[turn][1][2]);
+          break;
+
+        case 2:
+          setAnswerText2(after[turn][1][2]);
+          break;
+
+        case 3:
+          setAnswerText3(after[turn][1][2]);
+          break;
+
+        case 4:
+          setAnswerText4(after[turn][1][2]);
+          break;
+
+        case 5:
+          setAnswerText5(after[turn][1][2]);
+          break;
+
+        case 6:
+          setAnswerText6(after[turn][1][2]);
+          break;
+
+        case 7:
+          setAnswerText7(after[turn][1][2]);
+          break;
+
+        case 8:
+          setAnswerText8(after[turn][1][2]);
+          break;
+
+        case 9:
+          setAnswerText9(after[turn][1][2]);
+          break;
+      }
+
+      moleActive(moleNumber1);
+      moleActive(moleNumber2);
+      moleActive(moleNumber3);
 
       moleCatch = setTimeout(seeMole, 2000);
       turn++;
 
-      setActiveNumber(randomNumber);
+      setActiveNumber(randomNumber1);
+
+      setActiveNumberList([randomNumber1, randomNumber2, randomNumber3]);
+
       setDisableStartButton(true);
 
     } else {
@@ -164,7 +336,9 @@ export default function CodeEditorDialog() {
   const seeMole = () => {
     console.log("Function [seeMole]");
 
-    moleHide(moleNumber);
+    moleHide(moleNumber1);
+    moleHide(moleNumber2);
+    moleHide(moleNumber3);
     
     clearTimeout(moleCatch);
     setTimeout(showingMole, 1000);
@@ -199,8 +373,6 @@ export default function CodeEditorDialog() {
   const hideModal = () => {
     setHideEnding(true);
     setDisableStartButton(false);
-
-    startMole();
   }
 
   const Modal = () => {
@@ -212,13 +384,14 @@ export default function CodeEditorDialog() {
             YOUR SCORE IS&nbsp;
           </span>
           <span className='last'>{ total }</span>
+          <p></p>
 
           <div className="btn-wrap">
             <button type="button" 
                     className="restart-btn" 
                     style={{ color: "#f9f871" }}
                     onClick={() => hideModal()}>
-              RESTART
+              CLOSE
             </button>
           </div>
         </p>
@@ -256,56 +429,56 @@ export default function CodeEditorDialog() {
             <ul className="whack-a-mole clearfix">
               <li className="mole">
                 <img id="7" src="/assets/game/molegame/mole.png" onClick={() => handleClick(7)}></img>
-                <div id="answer-div-7" className={`answer-text-7 ${activeNumber === 7 ? '' : 'hiding'}`}>
-                  <p id="answer-text-7">{ answerText }</p>
+                <div id="answer-div-7" className={`answer-text-7 ${activeNumberList.includes(7) ? '' : 'hiding'}`}>
+                  <p id="answer-text-7">{ answerText7 }</p>
                 </div>
               </li>
               <li className="mole">
                 <img id="8" src="/assets/game/molegame/mole.png" onClick={() => handleClick(8)}></img>
-                <div id="answer-div-8" className={`answer-text-8 ${activeNumber === 8 ? '' : 'hiding'}`}>
-                  <p id="answer-text-8">{ answerText }</p>
+                <div id="answer-div-8" className={`answer-text-8 ${activeNumberList.includes(8) ? '' : 'hiding'}`}>
+                  <p id="answer-text-8">{ answerText8 }</p>
                 </div>
               </li>
               <li className="mole">
                 <img id="9" src="/assets/game/molegame/mole.png" onClick={() => handleClick(9)}></img>
-                <div id="answer-div-9" className={`answer-text-9 ${activeNumber === 9 ? '' : 'hiding'}`}>
-                  <p id="answer-text-9">{ answerText }</p>
+                <div id="answer-div-9" className={`answer-text-9 ${activeNumberList.includes(9) ? '' : 'hiding'}`}>
+                  <p id="answer-text-9">{ answerText9 }</p>
                 </div>
               </li>
               <li className="mole">
                 <img id="4" src="/assets/game/molegame/mole.png" onClick={() => handleClick(4)}></img>
-                <div id="answer-div-4" className={`answer-text-4 ${activeNumber === 4 ? '' : 'hiding'}`}>
-                  <p id="answer-text-4">{ answerText }</p>
+                <div id="answer-div-4" className={`answer-text-4 ${activeNumberList.includes(4) ? '' : 'hiding'}`}>
+                  <p id="answer-text-4">{ answerText4 }</p>
                 </div>
               </li>
               <li className="mole">
                 <img id="5" src="/assets/game/molegame/mole.png" onClick={() => handleClick(5)}></img>
-                <div id="answer-div-5" className={`answer-text-5 ${activeNumber === 5 ? '' : 'hiding'}`}>
-                  <p id="answer-text-5">{ answerText }</p>
+                <div id="answer-div-5" className={`answer-text-5 ${activeNumberList.includes(5) ? '' : 'hiding'}`}>
+                  <p id="answer-text-5">{ answerText5 }</p>
                 </div>
               </li>
               <li className="mole">
                 <img id="6" src="/assets/game/molegame/mole.png" onClick={() => handleClick(6)}></img>
-                <div id="answer-div-6" className={`answer-text-6 ${activeNumber === 6 ? '' : 'hiding'}`}>
-                  <p id="answer-text-6">{ answerText }</p>
+                <div id="answer-div-6" className={`answer-text-6 ${activeNumberList.includes(6) ? '' : 'hiding'}`}>
+                  <p id="answer-text-6">{ answerText6 }</p>
                 </div>
               </li>
               <li className="mole">
                 <img id="1" src="/assets/game/molegame/mole.png" onClick={() => handleClick(1)}></img>
-                <div id="answer-div-1" className={`answer-text-1 ${activeNumber === 1 ? '' : 'hiding'}`}>
-                  <p id="answer-text-1">{ answerText }</p>
+                <div id="answer-div-1" className={`answer-text-1 ${activeNumberList.includes(1) ? '' : 'hiding'}`}>
+                  <p id="answer-text-1">{ answerText1 }</p>
                 </div>
               </li>
               <li className="mole">
                 <img id="2" src="/assets/game/molegame/mole.png" onClick={() => handleClick(2)}></img>
-                <div id="answer-div-2" className={`answer-text-2 ${activeNumber === 2 ? '' : 'hiding'}`}>
-                  <p id="answer-text-2">{ answerText }</p>
+                <div id="answer-div-2" className={`answer-text-2 ${activeNumberList.includes(2) ? '' : 'hiding'}`}>
+                  <p id="answer-text-2">{ answerText2 }</p>
                 </div>
               </li>
               <li className="mole">
                 <img id="3" src="/assets/game/molegame/mole.png" onClick={() => handleClick(3)}></img>
-                <div id="answer-div-3" className={`answer-text-3 ${activeNumber === 3 ? '' : 'hiding'}`}>
-                  <p id="answer-text-3">{ answerText }</p>
+                <div id="answer-div-3" className={`answer-text-3 ${activeNumberList.includes(3) ? '' : 'hiding'}`}>
+                  <p id="answer-text-3">{ answerText3 }</p>
                 </div>
               </li>
             </ul>
