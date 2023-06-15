@@ -13,7 +13,6 @@ export interface IUserProfile {
     [key: string]: any;
     character?: string;
     userLevel?: string;
-    contactGit?: string;
     contactEmail?: string;
     profileMessage?: string;
 }

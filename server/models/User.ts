@@ -8,7 +8,6 @@ const user = new Schema<IUserInfo>({
     userProfile: {
         character: { type: String, required: true },
         userLevel: { type: String, required: true },
-        contactGit: { type: String, required: false },
         contactEmail: { type: String, required: false },
         profileMessage: { type: String, required: false },
     },

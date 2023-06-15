@@ -1,21 +1,18 @@
 import fs from 'fs';
 import { config } from '../envconfig';
-import Chat from '../models/Chat';
-import LastChat from '../models/LastChat';
+// import Chat from '../models/Chat';
+// import LastChat from '../models/LastChat';
 import User from '../models/User';
 const mongoose = require('mongoose');
 
 export async function connectDB() {
   mongoose.set('strictQuery', false);
-  mongoose.connect('mongodb://localhost:27017/mosmos', {
+  mongoose.connect(process.env.DB_HOST, {
     dbName: 'mosmos',
     useNewUrlParser: true,
+    useUnifiedTopology: true
   })
-
-  // mongoose.connect(config.db.host, {
-  //   dbName: 'para-solo',
-  //   useNewUrlParser: true,
-  // });
+  
   createCollection('user');
   // createCollection('chat');
   // createCollection('lastchat');
