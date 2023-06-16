@@ -327,7 +327,7 @@ export default function CodeEditorDialog() {
       moleActive(moleNumber2);
       moleActive(moleNumber3);
 
-      const timeoutId = setTimeout(seeMole, 1000);
+      const timeoutId = setTimeout(seeMole, 5000);
       setMoleCatch(timeoutId);
 
       setActiveNumber(randomNumber1);
@@ -366,16 +366,16 @@ export default function CodeEditorDialog() {
     seeMole();
 
     clearTimeout(moleCatch);
-
-    setPoint(point + 1);
   }
 
   const handleClick = (num) => {
     console.log("Function [handleClick]");
 
     if (activeNumber === num) {
-      catchMole();
+      setPoint(point + 1);
     }
+
+    catchMole();
   };
 
   // 4. Score Modal
