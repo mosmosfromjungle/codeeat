@@ -1,22 +1,10 @@
 import React, { useState } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { phaserEvents, Event } from 'src/events/EventCenter';
-import { ServerToClientEvents, ClientToServerEvents } from 'src/api/chat';
-import ParasolImg from 'src/assets/directmessage/parasol.png';
-import store from '../stores';
-import { setNewMessageCnt, setNewMessage, setRequestFriendCnt } from 'src/stores/DMboxStore';
-import Cookies from 'universal-cookie';
-import { fireNotification } from 'src/api/notification';
-const cookies = new Cookies();
-export default class chatNetwork {
+export default class datastructureNetwork {
   private socketClient: Socket;
-  public oldMessages: any[];
 
   constructor() {
-    // const socketUrl = `https://www.para-solo.site`
     const socketUrl = `http://localhost:8886/`
-    // const socketUrl = `http://43.201.119.149:3000/socket-server/`
-    // this.socketClient = io("www.parasolo-soc.com")
     this.socketClient = io(socketUrl)
     this.socketClient.on("connect_error", (err) => {
       console.log(`connetion err${err.message}`);
@@ -27,7 +15,6 @@ export default class chatNetwork {
     //   // path:'/socket/',
     //   // withCredentials: true
     // });
-    this.oldMessages = [];
     
     this.socketClient.on('getscore', (data) => {
         this.socketClient.emit('updatescore',this.socketClient.id)

@@ -15,6 +15,7 @@ export const userSlice = createSlice({
   initialState: {
     backgroundMode: getInitialBackgroundMode(),
     sessionId: '',
+    userId: '',
     videoConnected: false,
     loggedIn: false,
     playerNameMap: new Map<string, string>(),
