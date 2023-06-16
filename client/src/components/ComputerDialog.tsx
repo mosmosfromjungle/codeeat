@@ -3,6 +3,7 @@ import styled, { createGlobalStyle } from 'styled-components'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
+import { io, Socket } from 'socket.io-client';
 
 import { useAppSelector, useAppDispatch } from '../hooks'
 import { closeComputerDialog } from '../stores/ComputerStore'
@@ -260,6 +261,7 @@ export default function ComputerDialog() {
       }
     }
     setCommand('');
+    socket.emit('reset')
   };
 
   const handleKeyDown = (event) => {
@@ -275,14 +277,26 @@ export default function ComputerDialog() {
   const handleReset = () => {
     setImages([...originalImages])
     setSelectedOption('')
+    socket.emit('reset')
   }
-
+  let players = [{name:'a', score: 10}, {name:'b', score:20}, {name:'c',score:30}]
   return (
+    
     <>
       <GlobalStyle />
 
       <Backdrop>
+
         <Wrapper>
+          <div id='container'>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+        {players.map((player, index) => (
+          <div key={index} style={{ marginLeft: '10px', textAlign: 'center' }}>
+          <div>{player.name} {player.score}</div>
+        </div>
+          ))}
+        </div>
+        </div>
           <div style={{ fontSize: '40px' }}>
             몬스터 줄세우기!<br></br>
             <br></br>
@@ -294,6 +308,7 @@ export default function ComputerDialog() {
               몬스터 배열을 수정해주세요!
             </span>
           </div>
+          
           <br></br><br></br>
           <br></br><br></br>
           <br></br>
