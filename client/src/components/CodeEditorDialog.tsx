@@ -47,6 +47,39 @@ export default function CodeEditorDialog() {
   const [flag, setFlag] = useState(0);
   const [titleColor, setTitleColor] = useState('#f2ecff');
 
+  const [problemText, setProblemText] = useState("정답을 말하고 있는 두더지를 잡아줘!");
+  const [answerText1, setAnswerText1] = useState(String);
+  const [answerText2, setAnswerText2] = useState(String);
+  const [answerText3, setAnswerText3] = useState(String);
+  const [answerText4, setAnswerText4] = useState(String);
+  const [answerText5, setAnswerText5] = useState(String);
+  const [answerText6, setAnswerText6] = useState(String);
+  const [answerText7, setAnswerText7] = useState(String);
+  const [answerText8, setAnswerText8] = useState(String);
+  const [answerText9, setAnswerText9] = useState(String);
+
+  const [startButtonColor, setStartButtonColor] = useState('');
+  const [startButtonText, setStartButtonText] = useState('PRESS START');
+
+  const [activeNumber, setActiveNumber] = useState(0);
+  const [activeNumberList, setActiveNumberList] = useState([0, 0, 0]);
+
+  const [disableStartButton, setDisableStartButton] = React.useState(false);
+  const [hideEnding, setHideEnding] = React.useState(true);
+  
+  const [point, setPoint] = useState(0);
+  const [turn, setTurn] = useState(0);
+  
+  const [moleCatch, setMoleCatch] = useState(0);
+
+  let randomNumber1 = 0;
+  let randomNumber2 = 0;
+  let randomNumber3 = 0;
+
+  let moleNumber1 = 0;
+  let moleNumber2 = 0;
+  let moleNumber3 = 0;
+
   // 0. Bling the Text
 
   const bling = () => {
@@ -68,30 +101,12 @@ export default function CodeEditorDialog() {
 
   // 1. Start Button Event
 
-  const [problemText, setProblemText] = useState("정답을 말하고 있는 두더지를 잡아줘!");
-
-  const [answerText1, setAnswerText1] = useState(String);
-  const [answerText2, setAnswerText2] = useState(String);
-  const [answerText3, setAnswerText3] = useState(String);
-  const [answerText4, setAnswerText4] = useState(String);
-  const [answerText5, setAnswerText5] = useState(String);
-  const [answerText6, setAnswerText6] = useState(String);
-  const [answerText7, setAnswerText7] = useState(String);
-  const [answerText8, setAnswerText8] = useState(String);
-  const [answerText9, setAnswerText9] = useState(String);
-
-  const [startButtonColor, setStartButtonColor] = useState('');
-  const [startButtonText, setStartButtonText] = useState('PRESS START');
-
-  let point = 0;
-  let turn = 0;
-
   const startMole = () => {
     console.log("Function [startMole]");
 
     setStartButtonColor('#3d3f43');
-    point = 0;
-    turn = 0;
+    setPoint(0);
+    setTurn(0);
 
     setTimeout(showingMole, 1000);
   }
@@ -142,10 +157,28 @@ export default function CodeEditorDialog() {
     num.classList.add('active');
   }
 
-  const moleHide = (num) => {
+  const moleHide = () => {
     console.log("Function [moleHide]");
+
+    let mole1 = document.getElementById('1');
+    let mole2 = document.getElementById('2');
+    let mole3 = document.getElementById('3');
+    let mole4 = document.getElementById('4');
+    let mole5 = document.getElementById('5');
+    let mole6 = document.getElementById('6');
+    let mole7 = document.getElementById('7');
+    let mole8 = document.getElementById('8');
+    let mole9 = document.getElementById('9');
     
-    num.classList.remove('active');
+    if (mole1 !== null) mole1.classList.remove('active');
+    if (mole2 !== null) mole2.classList.remove('active');
+    if (mole3 !== null) mole3.classList.remove('active');
+    if (mole4 !== null) mole4.classList.remove('active');
+    if (mole5 !== null) mole5.classList.remove('active');
+    if (mole6 !== null) mole6.classList.remove('active');
+    if (mole7 !== null) mole7.classList.remove('active');
+    if (mole8 !== null) mole8.classList.remove('active');
+    if (mole9 !== null) mole9.classList.remove('active');
 
     setAnswerText1('');
     setAnswerText2('');
@@ -157,31 +190,12 @@ export default function CodeEditorDialog() {
     setAnswerText8('');
     setAnswerText9('');
   }
-  
-  let moleCatch;
-
-  let randomNumber1;
-  let randomNumber2;
-  let randomNumber3;
-
-  let moleNumber1;
-  let moleNumber2;
-  let moleNumber3;
-
-  const [activeNumber, setActiveNumber] = useState(0);
-
-  const [activeNumberList, setActiveNumberList] = useState([0, 0, 0]);
-
-  const [disableStartButton, setDisableStartButton] = React.useState(false);
-  const [hideEnding, setHideEnding] = React.useState(true);
-  
-  let luckyMoles = [];
 
   const showingMole = () => {
     console.log("Function [showingMole]");
     
     if (turn < 10) {
-      luckyMoles = randomHole();
+      let luckyMoles = randomHole();
 
       randomNumber1 = luckyMoles[0];
       randomNumber2 = luckyMoles[1];
@@ -190,8 +204,6 @@ export default function CodeEditorDialog() {
       moleNumber1 = document.getElementById(`${randomNumber1}`);
       moleNumber2 = document.getElementById(`${randomNumber2}`);
       moleNumber3 = document.getElementById(`${randomNumber3}`);
-
-      setProblemText(after[turn][0]);
 
       switch(randomNumber1) {
         case 1:
@@ -307,18 +319,21 @@ export default function CodeEditorDialog() {
           break;
       }
 
+      setProblemText(after[turn][0]);
+
       moleActive(moleNumber1);
       moleActive(moleNumber2);
       moleActive(moleNumber3);
 
-      moleCatch = setTimeout(seeMole, 2000);
-      turn++;
+      const timeoutId = setTimeout(seeMole, 5000);
+      setMoleCatch(timeoutId);
 
       setActiveNumber(randomNumber1);
-
       setActiveNumberList([randomNumber1, randomNumber2, randomNumber3]);
 
       setDisableStartButton(true);
+
+      setTurn(turn + 1);
 
     } else {
       modalEvent();
@@ -336,11 +351,10 @@ export default function CodeEditorDialog() {
   const seeMole = () => {
     console.log("Function [seeMole]");
 
-    moleHide(moleNumber1);
-    moleHide(moleNumber2);
-    moleHide(moleNumber3);
+    moleHide();
     
     clearTimeout(moleCatch);
+    
     setTimeout(showingMole, 1000);
   }
 
@@ -348,17 +362,18 @@ export default function CodeEditorDialog() {
     console.log("Function [catchMole]");
     
     seeMole();
-    clearTimeout(moleCatch);
 
-    point++;
+    clearTimeout(moleCatch);
   }
 
   const handleClick = (num) => {
     console.log("Function [handleClick]");
 
     if (activeNumber === num) {
-      catchMole();
+      setPoint(point + 1);
     }
+
+    catchMole();
   };
 
   // 4. Score Modal
