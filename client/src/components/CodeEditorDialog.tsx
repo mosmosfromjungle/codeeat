@@ -69,7 +69,8 @@ export default function CodeEditorDialog() {
   const [disableStartButton, setDisableStartButton] = React.useState(false);
   const [hideEnding, setHideEnding] = React.useState(true);
   
-  let turn = 0;
+  // let turn = 0;
+  const [turn, setTurn] = useState(0);
   
   const [moleCatch, setMoleCatch] = useState(0);
 
@@ -107,7 +108,8 @@ export default function CodeEditorDialog() {
 
     setStartButtonColor('#3d3f43');
     setPoint(0);
-    turn = 0;
+    // turn = 0;
+    setTurn(0);
 
     setTimeout(showingMole, 1000);
   }
@@ -335,7 +337,8 @@ export default function CodeEditorDialog() {
 
       setDisableStartButton(true);
 
-      turn += 1;
+      // turn += 1;
+      setTurn(turn + 1);
 
     } else {
       modalEvent();
