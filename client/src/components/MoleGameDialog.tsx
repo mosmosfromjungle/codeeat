@@ -4,7 +4,7 @@ import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 
 import { useAppSelector, useAppDispatch } from '../hooks'
-import { closeCodeEditorDialog } from '../stores/CodeEditorStore'
+import { closeMoleGameDialog } from '../stores/MoleGameStore'
 
 import './MoleGame.css'
 
@@ -41,7 +41,7 @@ const ProblemText = styled.div`
   font-size: 15px;
 `
 
-export default function CodeEditorDialog() {
+export default function MoleGameDialog() {
   const dispatch = useAppDispatch()
 
   const [flag, setFlag] = useState(0);
@@ -420,7 +420,7 @@ export default function CodeEditorDialog() {
         <IconButton
           aria-label="close dialog"
           className="close"
-          onClick={() => dispatch(closeCodeEditorDialog())}
+          onClick={() => dispatch(closeMoleGameDialog())}
         >
           <CloseIcon />
         </IconButton>

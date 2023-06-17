@@ -5,12 +5,15 @@ import { Server, LobbyRoom } from 'colyseus'
 import { monitor } from '@colyseus/monitor'
 import { RoomType } from '../types/Rooms'
 import authRouter from './routes/auth';
+import 'express-async-errors'
 
 // import socialRoutes from "@colyseus/social/express"
 
 import { SkyOffice } from './rooms/SkyOffice'
 import { connectDB } from './DB/db'
 
+const mongoose = require('mongoose')
+var cookieParser = require('cookie-parser')
 const port = Number(process.env.PORT || 2567)
 const app = express()
 
@@ -31,22 +34,10 @@ gameServer.define(RoomType.PUBLIC, SkyOffice, {
   password: null,
   autoDispose: false,
 })
-gameServer.define(RoomType.CUSTOM, SkyOffice).enableRealtimeListing()
-
-/**
- * Register @colyseus/social routes
- *
- * - uncomment if you want to use default authentication (https://docs.colyseus.io/server/authentication/)
- * - also uncomment the import statement
- */
-// app.use("/", socialRoutes);
-
-// register colyseus monitor AFTER registering your room handlers
-app.use('/colyseus', monitor())
-
-app.use('/auth', authRouter);
-gameServer.listen(port)
-// connectDB().then(db => {
-  
-//   console.log(`Listening on ws://localhost:${port}`)
-// }).catch(console.error);
+connectDB()
+.then(() => {
+  gameServer.listen(port)
+})
+.catch((err) => {
+  console.log(err.message)
+})

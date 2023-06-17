@@ -25,6 +25,8 @@
     "react-joystick-component": "^6.0.0",
     "react-redux": "^7.2.5",
     "sass": "^1.42.1",
+    "socket.io": "^4.6.2",
+    "socket.io-client": "^4.6.2",
     "styled-components": "^5.3.5",
     "swiper": "^8.1.4",
     "vite": "^3.0.9"
