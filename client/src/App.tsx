@@ -9,7 +9,7 @@ import LoginDialog from './components/LoginDialog'
 import JoinDialog from './components/JoinDialog'
 import ComputerDialog from './components/ComputerDialog'
 import WhiteboardDialog from './components/WhiteboardDialog'
-import CodeEditorDialog from './components/CodeEditorDialog'
+import MoleGameDialog from './components/MoleGameDialog'
 import VideoConnectionDialog from './components/VideoConnectionDialog'
 import HelperButtonGroup from './components/HelperButtonGroup'
 import MobileVirtualJoystick from './components/MobileVirtualJoystick'
@@ -41,7 +41,7 @@ function App() {
   const whiteboardDialogOpen = useAppSelector((state) => state.whiteboard.whiteboardDialogOpen)
   const videoConnected = useAppSelector((state) => state.user.videoConnected)
   const roomJoined = useAppSelector((state) => state.room.roomJoined)
-  const codeEditorDialogOpen = useAppSelector((state) => state.codeeditor.codeEditorDialogOpen)
+  const moleGameDialogOpen = useAppSelector((state) => state.molegame.moleGameDialogOpen)
   const showLogin = useAppSelector((state) => state.user.showLogin)
   const showJoin = useAppSelector((state) => state.user.showJoin)
 
@@ -62,8 +62,8 @@ function App() {
     } else if (whiteboardDialogOpen) {
       ui = <WhiteboardDialog />
 
-    } else if (codeEditorDialogOpen) {
-      ui = <CodeEditorDialog />
+    } else if (moleGameDialogOpen) {
+      ui = <MoleGameDialog />
 
     } else if (showChat) {
       ui = <ChatDialog />
@@ -103,8 +103,8 @@ function App() {
     <Backdrop>
       {ui}
       {/* Render HelperButtonGroup, ProfileButton if no dialogs are opened. */}
-      {!computerDialogOpen && !whiteboardDialogOpen && !codeEditorDialogOpen && <HelperButtonGroup />}
-      {!computerDialogOpen && !whiteboardDialogOpen && !codeEditorDialogOpen && <ProfileButton />}
+      {!computerDialogOpen && !whiteboardDialogOpen && !moleGameDialogOpen && <HelperButtonGroup />}
+      {!computerDialogOpen && !whiteboardDialogOpen && !moleGameDialogOpen && <ProfileButton />}
       {<GlobalFont />}
     </Backdrop>
   )

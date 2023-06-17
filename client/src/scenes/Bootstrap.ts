@@ -48,7 +48,7 @@ export default class Bootstrap extends Phaser.Scene {
       frameWidth: 48,
       frameHeight: 72,
     })
-    this.load.spritesheet('codeeditors', 'assets/items/gamemachine.png', {
+    this.load.spritesheet('molegames', 'assets/items/gamemachine.png', {
       frameWidth: 30,
       frameHeight: 50,
     })

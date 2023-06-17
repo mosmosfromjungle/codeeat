@@ -20,7 +20,7 @@ export const userSlice = createSlice({
     loggedIn: false,
     playerNameMap: new Map<string, string>(),
     showJoystick: window.innerWidth < 650,
-    showCodeEditor: false,
+    showMoleGame: false,
     showLogin: false,
     showJoin: false,
     showLogout: false,
@@ -53,8 +53,8 @@ export const userSlice = createSlice({
     setShowJoystick: (state, action: PayloadAction<boolean>) => {
       state.showJoystick = action.payload
     },
-    setShowCodeEditor: (state, action: PayloadAction<boolean>) => {
-      state.showCodeEditor = action.payload
+    setShowMoleGame: (state, action: PayloadAction<boolean>) => {
+      state.showMoleGame = action.payload
     },
     setShowLogin: (state, action: PayloadAction<boolean>) => {
       state.showLogin = action.payload
@@ -79,7 +79,7 @@ export const {
   setPlayerNameMap,
   removePlayerNameMap,
   setShowJoystick,
-  setShowCodeEditor,
+  setShowMoleGame,
   setShowLogin,
   setShowJoin,
   setShowLogout,
