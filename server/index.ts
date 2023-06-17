@@ -5,7 +5,7 @@ import { Server, LobbyRoom } from 'colyseus'
 import { monitor } from '@colyseus/monitor'
 import { RoomType } from '../types/Rooms'
 import authRouter from './routes/auth';
-import 'express-async-errors'
+import friendsRouter from './routes/friends';
 
 // import socialRoutes from "@colyseus/social/express"
 
@@ -26,7 +26,7 @@ const gameServer = new Server({
   server,
 })
 
-// register room handlers
+/* register room handlers */
 gameServer.define(RoomType.LOBBY, LobbyRoom)
 gameServer.define(RoomType.PUBLIC, SkyOffice, {
   name: 'Public Lobby',
@@ -34,10 +34,34 @@ gameServer.define(RoomType.PUBLIC, SkyOffice, {
   password: null,
   autoDispose: false,
 })
-connectDB()
-.then(() => {
-  gameServer.listen(port)
-})
-.catch((err) => {
-  console.log(err.message)
-})
+
+gameServer.define(RoomType.CUSTOM, SkyOffice).enableRealtimeListing()
+
+/**
+ * Register @colyseus/social routes
+ *
+ * - uncomment if you want to use default authentication (https://docs.colyseus.io/server/authentication/)
+ * - also uncomment the import statement
+ */
+// app.use("/", socialRoutes);
+
+// register colyseus monitor AFTER registering your room handlers
+app.use('/colyseus', monitor())
+
+/* Routes */
+app.use('/auth', authRouter);
+app.use('/friends', friendsRouter);
+
+/* Connect DB and run game server */
+connectDB().then(db => {
+  gameServer.listen(port)  
+  console.log(`Listening on ws://localhost:${port}`)
+}).catch(console.error);
+
+// connectDB()
+// .then(() => {
+//   gameServer.listen(port)
+// })
+// .catch((err) => {
+//   console.log(err.message)
+// })
