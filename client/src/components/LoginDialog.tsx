@@ -15,6 +15,9 @@ import { setLoggedIn } from '../stores/UserStore'
 import phaserGame from '../PhaserGame'
 import Game from '../scenes/Game'
 
+import axios from 'axios'
+
+
 const Backdrop = styled.div`
   position: absolute;
   top: 50%;
@@ -79,46 +82,11 @@ const ProgressBarWrapper = styled.div`
   }
 `
 
-// Todo: change the parameter in body part
-const doJoin = async(userId: string, password: string) => {
-  const apiUrl: string = 'http://auth/login';
-  await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        userId: "mosmos@gmail.com",
-        password: "mosmosPassword"
-      }),
-  }).then(res => {
-    if (res.status === 200) {
-      console.log("로그인 성공!");
-
-    } else if (res.status === 400) {
-      console.log("error - email id missing");
-      console.log("error - password missing");
-
-    } else if (res.status === 409) {
-      console.log("아이디를 확인해주세요.");
-
-    } else if (res.status === 410) {
-      console.log("비밀번호가 틀렸습니다.");
-
-    } else if (res.status === 411) {
-      console.log("로그인 실패");
-
-    } else {
-      console.log("로그인 실패");
-    }
-    
-    // Todo: need to hanle return codes - 200, 400, 409 ...
-  })
-};
-
 export default function LoginDialog() {
   const [id, setId] = useState<string>('')
   const [password, setPassword] = useState<string>('')
+  const [userIdError, setUserIdError] = useState<string>('');
+  const [passwordError, setPasswordError] = useState<string>('');
 
   const [idFieldEmpty, setIdFieldEmpty] = useState<boolean>(false)
   const [passwordFieldEmpty, setPasswordFieldEmpty] = useState<boolean>(false)
@@ -138,22 +106,38 @@ export default function LoginDialog() {
     event.preventDefault()
 
     if (id === '') {
-      setIdFieldEmpty(true)
-
+      setIdFieldEmpty(true);
     } else if (password === '') {
-      setPasswordFieldEmpty(true)
-      
+      setPasswordFieldEmpty(true);
     } else {
-      // TODO: It need to set the information with login api response data.
-      if (roomJoined) {
-        // console.log('Join! Id:', id, 'Avatar:', avatars[avatarIndex].name)
-        game.registerKeys()
-        game.myPlayer.setPlayerName(id)
-        game.myPlayer.setPlayerTexture('adam')
-        game.network.readyToConnect()
-        dispatch(setLoggedIn(true))
-      }
-    }
+      axios.post('/auth/login', {
+        userId: id,
+        password: password
+      })
+      .then(response => {
+        // Handle successful login
+        const { userId, username, accessToken } = response.data.payload;
+        // Perform necessary actions after successful login
+        game.registerKeys();
+        game.myPlayer.setPlayerName(username);
+        game.myPlayer.setPlayerTexture('adam');
+        game.network.readyToConnect();
+        dispatch(setLoggedIn(true));
+      })
+      .catch(error => {
+        // Handle login error
+        if (error.response) {
+          const { status, message } = error.response.data;
+          if (status === 409) {
+            setUserIdError(message);
+          } else if (status === 410) {
+            setPasswordError(message);
+          }
+        } else {
+          // Handle other errors
+        }
+      });
+    }    
   }
 
   return (
@@ -168,10 +152,11 @@ export default function LoginDialog() {
                 label="아이디"
                 variant="outlined"
                 color="secondary"
-                error={idFieldEmpty}
-                helperText={idFieldEmpty && '아이디를 입력해주세요 !'}
+                error={idFieldEmpty || !!userIdError}  // Update error prop
+                helperText={idFieldEmpty ? '아이디를 입력해주세요 !' : userIdError}  // Update helperText prop
                 onInput={(e) => {
                   setId((e.target as HTMLInputElement).value)
+                  setUserIdError('');  // Reset userId error
                 }}
               />
               <TextField
@@ -179,10 +164,11 @@ export default function LoginDialog() {
                 label="패스워드"
                 variant="outlined"
                 color="secondary"
-                error={passwordFieldEmpty}
-                helperText={passwordFieldEmpty && '패스워드를 입력해주세요 !'}
+                error={passwordFieldEmpty || !!passwordError}  // Update error prop
+                helperText={passwordFieldEmpty ? '패스워드를 입력해주세요 !' : passwordError}  // Update helperText prop
                 onInput={(e) => {
-                  setPassword((e.target as HTMLInputElement).value)
+                  setPassword((e.target as HTMLInputElement).value);
+                  setPasswordError('');  // Reset password error
                 }}
               />
             </Content>

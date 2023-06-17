@@ -1,10 +1,15 @@
-import 'express'
+import { Request, Response } from 'express';
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { v4 } from 'uuid'
-import User, { IUserDocument } from '../../models/User'
-import { IUserInfo } from './types'
+import User from '../../models/User'
 import { config } from '../../envconfig'
+
+const AUTH_ERROR = { message: 'Authentication Error' }
+
+interface CustomRequest extends Request {
+    decoded?: any;
+}
 
 /* 비밀번호 암호화 */
 const hashPassword = async (password: string) => {
@@ -19,20 +24,27 @@ const hashPassword = async (password: string) => {
 };
 
 /* Middleware for authenticating token */
-export const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization']
-    const token = authHeader && authHeader.split(' ')[1]
-    if (!token) return res.sendStatus(401);
+export const authenticateToken = (req: CustomRequest, res: Response, next: any) => {
+    const token = req.headers.authorization?.split(' ')[1]
+    if (!token) return res.status(401).json(AUTH_ERROR)
     
-    jwt.verify(token, config.jwt.accessSecretKey!, (err, decoded) => {
-        if (err) return res.sendStatus(403);
+    jwt.verify(token, config.jwt.accessSecretKey!, (err: any, decoded: any) => {
+        if (err) return res.status(403).json(AUTH_ERROR)
         req.decoded = decoded
         next()
     })
 }
 
+/* Middleware for verifying refresh token */
+const verifyRefreshToken = async (refreshToken: string): Promise<any> => {
+    return jwt.verify(refreshToken, config.jwt.refreshSecretKey!, (err, decoded: any) => {
+        if (err) return false
+        return decoded
+    })
+}
+
 /* 회원가입 */
-export const signUp = async (req, res) => {
+export const signUp = async (req: Request, res: Response) => {
     const user = req.body
 
     /* 누락 정보 확인 (프론트에서 걸러주는 정보) */
@@ -111,7 +123,7 @@ export const signUp = async (req, res) => {
 }
 
 /* 로그인 */
-export const login = async (req, res) => {
+export const login = async (req: Request, res: Response) => {
     const user = req.body
 
     /* 누락 정보 확인 */
@@ -176,18 +188,29 @@ export const login = async (req, res) => {
         }
     )
 
-    res.cookie('refreshToken', refreshToken, { path: '/', secure: true })
+    res.cookie('refreshToken', refreshToken, { 
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+    })
+    res.cookie('username', foundUser.username, { // UGLY: client에서 활용할 수도 있을 것 같아서 추가해 보았음 
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+    })
+
     res.status(200).json({
         status: 200,
         payload: {
             userId: foundUser.userId,
+            username: foundUser.username,
             accessToken: accessToken,
         }
     })
 }
 
 /* 토큰 기반 회원 정보 조회 */
-export const userProfile = async (req, res) => {
+export const myProfile = async (req: CustomRequest, res: Response) => {
     const decoded = req.decoded
     const foundUser = await User.collection.findOne({ userId: decoded.userId })
     
@@ -213,7 +236,7 @@ export const userProfile = async (req, res) => {
 }
 
 /* 토큰 기반 회원 정보 수정 */
-export const updateProfile = async (req, res) => {
+export const updateProfile = async (req: CustomRequest, res: Response) => {
     const decoded = req.decoded
     const newUserData = req.body
     
@@ -222,6 +245,14 @@ export const updateProfile = async (req, res) => {
         status: 404,
         message: '유저 데이터 조회 실패'
     })
+
+    const existingUsername = await User.findOne({ username: newUserData.username })
+    if (existingUsername) {
+        return res.status(410).json({
+            status: 410,
+            message: '이미 사용중인 닉네임입니다.'
+        })
+    }
 
     foundUser.username = newUserData.username
     foundUser.userProfile!.character = newUserData.character
@@ -232,6 +263,12 @@ export const updateProfile = async (req, res) => {
     const updateUser = await foundUser.save()
 
     if (updateUser) {
+        res.cookie('username', foundUser.username, { // UGLY: client에서 활용할 수도 있을 것 같아서 추가해 보았음 
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+        })
+
         return res.status(200).json({
             status: 200,
             payload: newUserData,
@@ -244,16 +281,120 @@ export const updateProfile = async (req, res) => {
     })
 }
 
-
-// TODO: For testing - need to remove 
-export const update = async (req, res) => {
-    const user = req.body;
-
-    console.log('reached')
+/* Access token 재발급 및 refresh token 갱신 */
+export const refreshAccessToken = async (req: Request, res: Response) => {
+    let refreshToken
     
-    const result = await User.collection.insertOne({ username: user.name });
-    if (!result) {
-        return res.json({success: false, message: '유저 등록 실패'})
+    refreshToken = req.headers.authorization?.split(' ')[1]
+
+    if (!refreshToken) {
+        return res.status(400).json({
+            status: 400,
+            message: 'error - refresh token missing',
+        })
     }
-    return res.status(200).send(result)
+
+    try {
+        const decoded = await verifyRefreshToken(refreshToken)
+        if (!decoded) return res.status(403).json(AUTH_ERROR)
+
+        const foundUser = await User.collection.findOne({ userId: decoded.userId })
+        if (!foundUser) return res.status(401).json(AUTH_ERROR)
+
+        if (refreshToken !== foundUser.refreshToken) {
+            return res.status(403).json({
+                status: 403,
+                message: 'Invalid refresh token',
+            })
+        }
+
+        refreshToken = jwt.sign(
+            {
+                userId: foundUser.userId,
+                uuid1: v4(),
+                uuid2: v4(),
+            },
+            config.jwt.refreshSecretKey!,
+            {
+                expiresIn: config.jwt.refreshExpiresIn,
+            }
+        )
+    
+        await User.collection.updateOne( { userId: foundUser.userId }, 
+            {
+                $set: {
+                    refreshToken: refreshToken,
+                    lastUpdated: new Date(),    
+                }
+            }
+        )
+
+        const accessToken = jwt.sign(
+            {
+                userId: foundUser.userId,
+                uuid: v4(),
+            },
+            config.jwt.accessSecretKey!,
+            {
+                expiresIn: config.jwt.accessExpiresIn,
+            }
+        )
+
+        res.cookie('refreshToken', refreshToken, { 
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+        })
+
+        res.status(200).json({
+            status: 200,
+            payload: {
+                userId: foundUser.userId,
+                accessToken: accessToken,
+            },
+        })
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({
+            status: 500,
+            message: `Server Error: ${err}`,
+        })
+    }
+}
+
+/* 토큰 기반 사용자 인증 */
+export const authenticateUser = async (req: CustomRequest, res: Response) => {
+    const decoded = req.decoded
+    const foundUser = await User.collection.findOne({ userId: decoded.userId })
+    if (!foundUser) return res.status(401).json(AUTH_ERROR)
+    return res.status(200).json({
+        status: 200, 
+        payload: {
+            userId: foundUser.userId,
+        }
+    })
+}
+
+/* 닉네임 기반 유저 정보 조회 */
+export const userProfile = async (req: Request, res: Response) => {
+    const foundUser = await User.collection.findOne({ userId: req.params.username })
+    
+    if (foundUser) {
+        return res.status(200).json({
+            status: 200,
+            payload: {
+                username: foundUser.username,
+                character: foundUser.userProfile.character,
+                userLevel: foundUser.userProfile.userLevel,
+                contactGit: foundUser.userProfile.contactGit,
+                contactEmail: foundUser.userProfile.contactEmail,
+                profileMessage: foundUser.userProfile.profileMessage,
+            }
+        })
+    }
+
+    return res.status(404).json({
+        status: 404,
+        message: '유저 데이터 조회 실패'
+    })
 }
