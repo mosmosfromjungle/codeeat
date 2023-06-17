@@ -1,46 +1,41 @@
 import express from 'express';
-// import 'express-async-errors';
 import {
-    update,
     signUp,
     login,
     authenticateToken,
-    userProfile,
+    myProfile,
     updateProfile,
-//   updateUserWithAuth,
-//   inquireUser,
-//   deleteUser,
-//   authenticateUser,
-//   issueAccessToken,
+    refreshAccessToken,
+    authenticateUser,
+    userProfile,
 } from '../controllers/UserControllers/index';
-import User from '../models/User'
 
 express().use(express.json()); 
 
 const router = express.Router();
 
-router.post('/update', update);
-
 router.post('/signup', signUp);
 
 router.post('/login', login);
 
-router.get('/myprofile', authenticateToken, userProfile);
+router.get('/myprofile', authenticateToken, myProfile);
 
 router.patch('/update', authenticateToken, updateProfile);
 
-// router.get('/isAuth', authenticateUser);
+router.post('/refresh', refreshAccessToken);
 
-// router.post('/issueAccessToken', issueAccessToken);
+router.get('/authenticate', authenticateUser)
+
+router.get('/profile/:username', userProfile);
 
 // router.delete('/delete', deleteUser);
 
-// router.use((err, res) => {
-//   console.error(err);
-//   res.status(500).json({
-//     status: 500,
-//     message: `서버 오류: ${err}`,
-//   });
-// });
+router.use((err, res) => {
+  console.error(err);
+  res.status(500).json({
+    status: 500,
+    message: `서버 오류: ${err}`,
+  });
+});
 
 export default router;
