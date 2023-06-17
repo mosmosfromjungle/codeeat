@@ -69,6 +69,68 @@ const ChatBox = styled(Box)`
   border-radius: 0px 0px 10px 10px;
 `
 
+// Todo: change the parameter in body part
+const getProfile = async(userId: string) => {
+  // I think the api need the 'userId' field
+  const apiUrl: string = 'http://auth/myprofile';
+  await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer {...}'
+      },
+  }).then(res => {
+    if (res.status === 200) {
+      console.log("유저 데이터 조회 성공!");
+      console.log(res.payload);
+
+    } else if (res.status === 404) {
+      console.log("유저 데이터 조회 실패");
+
+    } else {
+      console.log("유저 데이터 조회 실패");
+    }
+
+    // Todo: need to hanle return codes - 200, 400, 409 ...
+  })
+};
+
+// Todo: change the parameter in body part
+const updateProfile = async(userId: string) => {
+  // I think the api need the 'userId' field
+  const apiUrl: string = 'http://auth/update';
+  await fetch(apiUrl, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer {...}'
+      },
+      body: JSON.stringify({
+        username: "newUserName",
+        character: 2,
+        contactGit: "differentGit.git",
+        contactEmail: "",
+        profileMessage: "안녕하십니까. 프로필 메세지를 작성해보았습니다."
+      }),
+  }).then(res => {
+    if (res.status === 200) {
+      console.log("유저 데이터 조회 성공!");
+      console.log(res.payload);
+
+    } else if (res.status === 404) {
+      console.log("유저 데이터 조회 실패");
+
+    } else if (res.status === 500) {
+      console.log("정보 변경 실패");
+
+    } else {
+      console.log("유저 데이터 조회 실패");
+    }
+
+    // Todo: need to hanle return codes - 200, 400, 409 ...
+  })
+};
+
 export default function ProfileDialog() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)

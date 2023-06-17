@@ -79,6 +79,43 @@ const ProgressBarWrapper = styled.div`
   }
 `
 
+// Todo: change the parameter in body part
+const doJoin = async(userId: string, password: string) => {
+  const apiUrl: string = 'http://auth/login';
+  await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userId: "mosmos@gmail.com",
+        password: "mosmosPassword"
+      }),
+  }).then(res => {
+    if (res.status === 200) {
+      console.log("로그인 성공!");
+
+    } else if (res.status === 400) {
+      console.log("error - email id missing");
+      console.log("error - password missing");
+
+    } else if (res.status === 409) {
+      console.log("아이디를 확인해주세요.");
+
+    } else if (res.status === 410) {
+      console.log("비밀번호가 틀렸습니다.");
+
+    } else if (res.status === 411) {
+      console.log("로그인 실패");
+
+    } else {
+      console.log("로그인 실패");
+    }
+    
+    // Todo: need to hanle return codes - 200, 400, 409 ...
+  })
+};
+
 export default function LoginDialog() {
   const [id, setId] = useState<string>('')
   const [password, setPassword] = useState<string>('')

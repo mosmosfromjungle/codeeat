@@ -71,6 +71,38 @@ const ChatBox = styled(Box)`
   border-radius: 0px 0px 10px 10px;
 `
 
+// Todo: change the parameter in body part
+const getUser = async() => {
+  const apiUrl: string = 'http://auth/user/list';
+  await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+  }).then(res => {
+    if (res.ok) {
+      console.log("Get user list is success.");
+    }
+    // Todo: need to hanle return codes - 200, 400, 409 ...
+  })
+};
+
+// Todo: change the parameter in body part
+const getUserDetail = async(userId: string) => {
+  const apiUrl: string = 'http://auth/user/detaul/' + userId;
+  await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+  }).then(res => {
+    if (res.ok) {
+      console.log("Get user detail is success.");
+    }
+    // Todo: need to hanle return codes - 200, 400, 409 ...
+  })
+};
+
 export default function UserDialog() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
