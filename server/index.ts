@@ -12,8 +12,8 @@ import friendsRouter from './routes/friends';
 import { SkyOffice } from './rooms/SkyOffice'
 import { connectDB } from './DB/db'
 
-const mongoose = require('mongoose')
-var cookieParser = require('cookie-parser')
+// const mongoose = require('mongoose')
+// var cookieParser = require('cookie-parser')
 const port = Number(process.env.PORT || 2567)
 const app = express()
 

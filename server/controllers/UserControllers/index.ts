@@ -202,7 +202,8 @@ export const login = async (req: Request, res: Response) => {
     res.status(200).json({
         status: 200,
         payload: {
-            userId: foundUser.userId, // FIXME: username으로 변경해야할 수도 있음 
+            userId: foundUser.userId,
+            username: foundUser.username,
             accessToken: accessToken,
         }
     })
