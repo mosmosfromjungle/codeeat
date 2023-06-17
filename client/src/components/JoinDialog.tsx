@@ -129,9 +129,26 @@ const doJoin = async(userId: string, password: string, username: string, charact
         character: 1
       }),
   }).then(res => {
-    if (res.ok) {
-      console.log("Do join is success.");
+    if (res.status === 200) {
+      console.log("회원가입 완료!");
+
+    } else if (res.status === 400) {
+      console.log("error - email id missing");
+      console.log("error - password missing");
+
+    } else if (res.status === 409) {
+      console.log("이미 사용중인 이메일입니다.");
+
+    } else if (res.status === 410) {
+      console.log("이미 사용중인 닉네임입니다.");
+
+    } else if (res.status === 411) {
+      console.log("회원가입 실패");
+
+    } else {
+      console.log("회원가입 실패");
     }
+    
     // Todo: need to hanle return codes - 200, 400, 409 ...
   })
 };

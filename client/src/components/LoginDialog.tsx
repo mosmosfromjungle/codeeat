@@ -92,9 +92,26 @@ const doJoin = async(userId: string, password: string) => {
         password: "mosmosPassword"
       }),
   }).then(res => {
-    if (res.ok) {
-      console.log("Do login is success.");
+    if (res.status === 200) {
+      console.log("로그인 성공!");
+
+    } else if (res.status === 400) {
+      console.log("error - email id missing");
+      console.log("error - password missing");
+
+    } else if (res.status === 409) {
+      console.log("아이디를 확인해주세요.");
+
+    } else if (res.status === 410) {
+      console.log("비밀번호가 틀렸습니다.");
+
+    } else if (res.status === 411) {
+      console.log("로그인 실패");
+
+    } else {
+      console.log("로그인 실패");
     }
+    
     // Todo: need to hanle return codes - 200, 400, 409 ...
   })
 };

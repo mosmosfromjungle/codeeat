@@ -80,9 +80,17 @@ const getProfile = async(userId: string) => {
         'Authorization': 'Bearer {...}'
       },
   }).then(res => {
-    if (res.ok) {
-      console.log("Get my profile is success.");
+    if (res.status === 200) {
+      console.log("유저 데이터 조회 성공!");
+      console.log(res.payload);
+
+    } else if (res.status === 404) {
+      console.log("유저 데이터 조회 실패");
+
+    } else {
+      console.log("유저 데이터 조회 실패");
     }
+
     // Todo: need to hanle return codes - 200, 400, 409 ...
   })
 };
@@ -105,9 +113,20 @@ const updateProfile = async(userId: string) => {
         profileMessage: "안녕하십니까. 프로필 메세지를 작성해보았습니다."
       }),
   }).then(res => {
-    if (res.ok) {
-      console.log("Update my profile is success.");
+    if (res.status === 200) {
+      console.log("유저 데이터 조회 성공!");
+      console.log(res.payload);
+
+    } else if (res.status === 404) {
+      console.log("유저 데이터 조회 실패");
+
+    } else if (res.status === 500) {
+      console.log("정보 변경 실패");
+
+    } else {
+      console.log("유저 데이터 조회 실패");
     }
+
     // Todo: need to hanle return codes - 200, 400, 409 ...
   })
 };
