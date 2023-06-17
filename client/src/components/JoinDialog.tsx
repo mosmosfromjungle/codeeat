@@ -114,6 +114,28 @@ export function isValidEmailFormat(email) {
   else return true;          
 }
 
+// Todo: change the parameter in body part
+const doJoin = async(userId: string, password: string, username: string, character: integer) => {
+  const apiUrl: string = 'http://auth/signUp';
+  await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userId: "mosmos@gmail.com",
+        password: "mosmosPassword",
+        username: "uniqueUsername",
+        character: 1
+      }),
+  }).then(res => {
+    if (res.ok) {
+      console.log("Do join is success.");
+    }
+    // Todo: need to hanle return codes - 200, 400, 409 ...
+  })
+};
+
 export default function JoinDialog() {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')

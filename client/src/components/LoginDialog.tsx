@@ -79,6 +79,26 @@ const ProgressBarWrapper = styled.div`
   }
 `
 
+// Todo: change the parameter in body part
+const doJoin = async(userId: string, password: string) => {
+  const apiUrl: string = 'http://auth/login';
+  await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userId: "mosmos@gmail.com",
+        password: "mosmosPassword"
+      }),
+  }).then(res => {
+    if (res.ok) {
+      console.log("Do login is success.");
+    }
+    // Todo: need to hanle return codes - 200, 400, 409 ...
+  })
+};
+
 export default function LoginDialog() {
   const [id, setId] = useState<string>('')
   const [password, setPassword] = useState<string>('')
