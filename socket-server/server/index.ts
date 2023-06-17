@@ -1,9 +1,9 @@
 import 'express-async-errors';
 import { connectDB } from './DB/db';
 import { Socket, Server } from 'socket.io';
-import {  } from './controllers/MoleGameControllers'
-import {  } from './controllers/ComputerControllers'
-import {  } from './controllers/WhiteboardControllers'
+import { MoleController } from './controllers/MoleGameControllers'
+import { DataController } from './controllers/DataGameControllers'
+import { RainController } from './controllers/RainGameControllers'
 
 const socketPort = 8888
 export const userMap = new Map<string, Socket>();
@@ -46,7 +46,7 @@ io.on('connection', (socket: Socket) => {
 
   })
 
-  
+
 });
 connectDB()
 .then((db) => {

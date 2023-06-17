@@ -13,7 +13,6 @@ export async function connectDB() {
   })
 
   createCollection('user');
-  // createCollection('exp'); 게임 이기면 올라가는 무언가
 }
 
 export const createCollection = (modelName : string) => {
