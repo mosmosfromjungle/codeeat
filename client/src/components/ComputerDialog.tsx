@@ -133,7 +133,7 @@ function getRandomIntInclusive(min, max) {
 export default function ComputerDialog() {
   const dispatch = useAppDispatch()
   const game = phaserGame.scene.keys.game as Game;
-  const socketNetwork = game.network2
+  // const socketNetwork = game.network2
 
   const userId = useAppSelector((state) => state.user.userId);
   // const playerNameMap = useAppSelector((state) => state.user.playerNameMap)

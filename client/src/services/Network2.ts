@@ -11,10 +11,6 @@ export default class datastructureNetwork {
       console.error(err)
       
     })
-    // this.socketClient = io("https://www.para-solo.site/socket-server", {
-    //   // path:'/socket/',
-    //   // withCredentials: true
-    // });
     
     this.socketClient.on('getscore', (data) => {
         this.socketClient.emit('updatescore',this.socketClient.id)

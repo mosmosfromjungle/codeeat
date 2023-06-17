@@ -2,7 +2,7 @@ import fs from 'fs';
 import { config } from '../envconfig';
 // import Chat from '../models/Chat';
 // import LastChat from '../models/LastChat';
-import User from '../models/User';
+import User from '../models/MoleUser';
 const mongoose = require('mongoose');
 
 export async function connectDB() {

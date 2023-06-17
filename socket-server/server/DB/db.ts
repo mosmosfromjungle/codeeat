@@ -2,7 +2,7 @@ import fs from 'fs';
 import { config } from '../envconfig';
 // import Chat from '../models/Chat';
 // import LastChat from '../models/LastChat';
-import User from '../models/User';
+import User from '../models/MoleUser';
 const mongoose = require('mongoose');
 
 export async function connectDB() {
@@ -12,13 +12,8 @@ export async function connectDB() {
     useNewUrlParser: true,
   })
 
-  // mongoose.connect(config.db.host, {
-  //   dbName: 'para-solo',
-  //   useNewUrlParser: true,
-  // });
   createCollection('user');
-  // createCollection('chat');
-  // createCollection('lastchat');
+  // createCollection('exp'); 게임 이기면 올라가는 무언가
 }
 
 export const createCollection = (modelName : string) => {
