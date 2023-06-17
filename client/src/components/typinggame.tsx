@@ -33,18 +33,11 @@ export function TypingGame() {
     const [level, setLevel] = useState<number>(1);
     const [goal, setGoal] = useState<number>(10);
     const [keywordList, setKeywordList] = useState<string[]>([
-        "abs",
-        "print",
-        "list",
-        "row",
-        "col",
-        "set",
-        "style",
-        "font",
-        "div",
-        "h1",
-        "h2",
-        "body"
+        "abs","print","list","row","col","set","style","font",
+        "div","h1","h2","body",'oct','hex','bool','int','dict','enumerate',
+        'divmod','map','format','input','len','max','min','reversed','sort',
+        'type','cin','cout','printf','unsigned',
+
     ]);
     const keywordInput = useRef<HTMLInputElement>(null);
     const canvasHeight = 1170;
