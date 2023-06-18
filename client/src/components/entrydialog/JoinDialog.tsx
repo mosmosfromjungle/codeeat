@@ -8,13 +8,15 @@ import { Navigation } from 'swiper'
 import 'swiper/css'
 import 'swiper/css/navigation'
 
-import Adam from '../images/login/Adam_login.png'
-import Ash from '../images/login/Ash_login.png'
-import Lucy from '../images/login/Lucy_login.png'
-import Nancy from '../images/login/Nancy_login.png'
+import Adam from '../../images/login/Adam_login.png'
+import Ash from '../../images/login/Ash_login.png'
+import Lucy from '../../images/login/Lucy_login.png'
+import Nancy from '../../images/login/Nancy_login.png'
 
-import { useAppDispatch } from '../hooks'
-import { setShowLogin } from '../stores/UserStore'
+import { useAppDispatch } from '../../hooks'
+import { ENTRY_PROCESS, setEntryProcess } from '../../stores/UserStore'
+import { JoinRequest, join } from '../../apicalls/auth'
+
 
 const Wrapper = styled.form`
   position: fixed;
@@ -26,7 +28,6 @@ const Wrapper = styled.form`
   padding: 36px 60px;
   box-shadow: 0px 0px 5px #0000006f;
 `
-
 const Title = styled.p`
 margin: 5px;
 font-size: 50px;
@@ -34,7 +35,6 @@ color: #c2c2c2;
 text-align: center;
 font-family: Font_DungGeun;
 `
-
 const SubTitle = styled.h3`
   width: 160px;
   font-size: 16px;
@@ -42,12 +42,10 @@ const SubTitle = styled.h3`
   text-align: center;
   font-family: Font_DungGeun;
 `
-
 const Content = styled.div`
   display: flex;
   margin: 36px 0;
 `
-
 const Left = styled.div`
   margin-right: 48px;
 
@@ -76,12 +74,10 @@ const Left = styled.div`
     object-fit: contain;
   }
 `
-
 const Right = styled.div`
   width: 300px;
   margin-top: 60px;
 `
-
 const Bottom = styled.div`
   display: flex;
   align-items: center;
@@ -114,45 +110,6 @@ export function isValidEmailFormat(email) {
   else return true;          
 }
 
-// Todo: change the parameter in body part
-const doJoin = async(userId: string, password: string, username: string, character: integer) => {
-  const apiUrl: string = 'http://auth/signUp';
-  await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        userId: "mosmos@gmail.com",
-        password: "mosmosPassword",
-        username: "uniqueUsername",
-        character: 1
-      }),
-  }).then(res => {
-    if (res.status === 200) {
-      console.log("회원가입 완료!");
-
-    } else if (res.status === 400) {
-      console.log("error - email id missing");
-      console.log("error - password missing");
-
-    } else if (res.status === 409) {
-      console.log("이미 사용중인 이메일입니다.");
-
-    } else if (res.status === 410) {
-      console.log("이미 사용중인 닉네임입니다.");
-
-    } else if (res.status === 411) {
-      console.log("회원가입 실패");
-
-    } else {
-      console.log("회원가입 실패");
-    }
-    
-    // Todo: need to hanle return codes - 200, 400, 409 ...
-  })
-};
-
 export default function JoinDialog() {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
@@ -166,7 +123,11 @@ export default function JoinDialog() {
   const [passwordFieldNotMatch, setPasswordFieldNotMatch] = useState<boolean>(false)
   const [nicknameFieldEmpty, setNicknameFieldEmpty] = useState<boolean>(false)
 
-  const [setAvatarIndex] = useState<number>(0)
+  const [emailError, setEmailError] = useState<string>('')
+  const [nicknameError, setNicknameError] = useState<string>('')
+
+  const [avatarIndex, setAvatarIndex] = useState<number>(0)
+
   const dispatch = useAppDispatch()
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -182,24 +143,37 @@ export default function JoinDialog() {
 
     if (email === '') {
       setEmailFieldEmpty(true)
-
     } else if (isValidEmailFormat(email)) {
       setEmailFieldWrongFormat(true)
-
     } else if (password === '') {
       setPasswordFieldEmpty(true)
-
     } else if (passwordCheck === '') {
       setPasswordCheckFieldEmpty(true)
-
     } else if (password !== passwordCheck) {
       setPasswordFieldNotMatch(true)
-
     } else if (nickname === '') {
       setNicknameFieldEmpty(true)
-
     } else {
-      dispatch(setShowLogin(true))
+      const body: JoinRequest = {
+        userId: email,
+        password: password,
+        username: nickname,
+        character: avatars[avatarIndex].name,
+      }
+      join(body).then((response) => {
+        if (response.status === 200) {
+          dispatch(setEntryProcess(ENTRY_PROCESS.LOGIN))
+        }
+      }).catch((error) => {
+        if (error.response) {
+          const { status, message } = error.response.data
+          if (status === 409) {
+            setEmailError(message)
+          } else if (status === 410) {
+            setNicknameError(message)
+          }
+        }
+      })
     }
   }
 
@@ -232,9 +206,11 @@ export default function JoinDialog() {
             label="이메일"
             variant="outlined"
             color="secondary"
-            error={emailFieldEmpty}
+            error={emailFieldEmpty || emailFieldWrongFormat}
             helperText={
-              (emailFieldEmpty && '이메일을 입력해주세요 !') || (emailFieldWrongFormat && '이메일 형식을 확인해주세요 !')
+              (emailFieldEmpty && '이메일을 입력해주세요 !') ||
+              (emailFieldWrongFormat && '이메일 형식을 확인해주세요 !') ||
+              emailError
             }
             onInput={(e) => {
               setEmail((e.target as HTMLInputElement).value)
@@ -269,8 +245,8 @@ export default function JoinDialog() {
             label="닉네임"
             variant="outlined"
             color="secondary"
-            error={nicknameFieldEmpty}
-            helperText={nicknameFieldEmpty && '닉네임을 입력해주세요 !'}
+            error={nicknameFieldEmpty || !!nicknameError}
+            helperText={nicknameFieldEmpty ? '닉네임을 입력해주세요 !' : nicknameError}
             onInput={(e) => {
               setNickname((e.target as HTMLInputElement).value)
             }}
@@ -285,3 +261,4 @@ export default function JoinDialog() {
     </Wrapper>
   )
 }
+
