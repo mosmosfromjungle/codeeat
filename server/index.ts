@@ -17,7 +17,28 @@ import { connectDB } from './DB/db'
 const port = Number(process.env.PORT || 2567)
 const app = express()
 
-app.use(cors())
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+];
+
+const options: cors.CorsOptions = {
+  allowedHeaders: [
+    'Origin',
+    'X-Requested-With',
+    'Content-Type',
+    'Accept',
+    'X-Access-Token',
+    'authorization',
+    '*',
+  ],
+  credentials: true,
+  methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
+  origin: allowedOrigins,
+  preflightContinue: false,
+};
+
+app.use(cors(options))
 app.use(express.json())
 // app.use(express.static('dist'))
 
