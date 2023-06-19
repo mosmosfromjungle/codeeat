@@ -1,7 +1,7 @@
 {
-  "name": "skyoffice",
+  "name": "codeeat",
   "private": true,
-  "description": "Client for SkyOffice",
+  "description": "Client for Code Eat",
   "version": "1.0.0",
   "scripts": {
     "dev": "vite",
