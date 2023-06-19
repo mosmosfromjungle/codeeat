@@ -18,8 +18,6 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 
-import 'emoji-mart/css/emoji-mart.css'
-
 import { setShowUser } from '../stores/ChatStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
 
