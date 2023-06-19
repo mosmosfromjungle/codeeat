@@ -25,28 +25,6 @@ io.on('connection', (socket: Socket) => {
   socket.on('connect_error', (err) => {
     console.log(`connect_error due to ${err.message}`);
   });
-
-  socket.on('Mole_addScore', (player) => {
-
-  })
-  socket.on('Rain_addScore', (player) => {
-
-  })
-  socket.on('Data_addScore', (player) => {
-
-  })
-
-  socket.on('Mole_win', (player) => {
-
-  })
-  socket.on('Rain_win', (player) => {
-
-  })
-  socket.on('Data_win', (player) => {
-
-  })
-
-
 });
 connectDB()
 .then((db) => {

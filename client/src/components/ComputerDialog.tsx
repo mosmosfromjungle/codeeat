@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
@@ -10,6 +10,12 @@ import Game from '../../src/scenes/Game';
 import { useAppSelector, useAppDispatch } from '../hooks'
 import { closeComputerDialog } from '../stores/ComputerStore'
 
+interface Player {
+  id: any;
+  score: number;
+}
+
+const socket = io('http://localhost:2567')
 const WRONG_OPERATION = '해당 자료구조에서 사용되지 않는 연산입니다!'
 const COMMON_MESSAGE = (
   <>
@@ -123,64 +129,64 @@ const CustomList = styled.div`
   text-align: center;
 
 `
-
-function getRandomIntInclusive(min, max) {
+function getRandomIntInclusive(min:number, max:number) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 export default function ComputerDialog() {
+  const [n, setN] = useState(0)
+  const [m, setM] = useState(0)
+  const [x, setX] = useState(0)
+  
+  useEffect(() => {
+    setNum();
+  }, []);
+  
+  const setNum = () => {
+    const newN = getRandomIntInclusive(1, 100);
+    const newM = getRandomIntInclusive(1, newN);
+    const newX = newN - newM;
+
+    setN(newN)
+    setM(newM)
+    setX(newX)
+  }
+  const answer = n
+
   const dispatch = useAppDispatch()
-  const game = phaserGame.scene.keys.game as Game;
-  // const socketNetwork = game.network2
+  const [players, setPlayers] = useState<Player[]>([])
 
-  const userId = useAppSelector((state) => state.user.userId);
-  // const playerNameMap = useAppSelector((state) => state.user.playerNameMap)
-  
-  function getRandomIntInclusive(min: number, max: number): number {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-  
-  const n = getRandomIntInclusive(1, 100);
-  const m = getRandomIntInclusive(1, n);
-  const x = n - m;
+  socket.on('new-player', (id) => {
+    setPlayers((prevPlayers) => [...prevPlayers, { id, score: 0}])
+  })
+  socket.on('addScore',(data) => {
+          const { playerId, score } = data
 
-  const arr: number[] = [m, x];
+          setPlayers((prevPlayers) => {
+            return prevPlayers.map((player) => {
+              if (player.id === playerId) {
+                return { ...player, score:score}
+              }
+              return player
+            })
+          })
+  })
 
-  while (arr.length < 6) {
-    const num = getRandomIntInclusive(1, n);
-    if (!arr.includes(num)) {
-      arr.push(num);
-  }
-}
 
   const [images, setImages] = useState([
-    { src: '/assets/brickGame/52-2.png', text: arr[0].toString() },
-    { src: '/assets/brickGame/25-2.png', text: arr[1].toString() },
-    { src: '/assets/brickGame/37-2.png', text: arr[2].toString() },
-    { src: '/assets/brickGame/51-2.png', text: arr[3].toString() },
-    { src: '/assets/brickGame/50-2.png', text: arr[4].toString() },
-    { src: '/assets/brickGame/39-2.png', text: arr[5].toString() },
+    { src: '/assets/brickGame/52-2.png', text: x.toString() },
+    { src: '/assets/brickGame/25-2.png', text: m.toString() },
+    { src: '/assets/brickGame/37-2.png', text: '1' },
+    { src: '/assets/brickGame/51-2.png', text: '2' },
+    { src: '/assets/brickGame/50-2.png', text: '3' },
+    { src: '/assets/brickGame/39-2.png', text: '4' },
   ])
 
   const [originalImages, setOriginalImages] = useState([...images]) // 원래의 이미지 배열 복사
   const [command, setCommand] = useState('')
   const [selectedOption, setSelectedOption] = useState('')
-
-  // const handleRemoveImage = () => {
-  //   const match = command.match(/remove\((\d+)\)/) || command.match(/discard\((\d+)\)/)
-  //   if (match) {
-  //     const number = match[1]
-  //     const index = images.findIndex((image) => image.text === number)
-  //     if (index !== -1) {
-  //       removeImage(index)
-  //     }
-  //   }
-  //   setCommand('')
-  // }
 
   const handleRemoveImage = () => {
     const match = command.match(/remove\((\d+)\)/) || command.match(/discard\((\d+)\)/);
@@ -208,30 +214,14 @@ export default function ComputerDialog() {
     setImages([...originalImages]) // 원래의 이미지 배열로 복구
   }
 
-  // const handleCommand = () => {
-  //   const lowercaseCommand = command.toLowerCase()
-  //   if (lowercaseCommand === 'popleft' || lowercaseCommand === 'dequeue') {
-  //     removeImage(0)
-  //   } else if (lowercaseCommand === 'pop') {
-  //     removeImage(images.length - 1)
-  //   } else if (lowercaseCommand === 'sum') {
-  //     const sum = images.reduce((total, image) => total + parseInt(image.text), 0)
-  //     alert(`Sum: ${sum}`)
-  //   } else if (lowercaseCommand === 'restore') {
-  //     restoreImages() // 이미지 복구
-  //   } else if (lowercaseCommand.startsWith('remove(') || lowercaseCommand.startsWith('discard(')) {
-  //     handleRemoveImage()
-  //   }
-  //   setCommand('')
-  // }
-
   const handleCommand = () => {
     const lowercaseCommand = command.toLowerCase();
     if (lowercaseCommand === 'sum') {
       const sum = images.reduce((total, image) => total + parseInt(image.text), 0);
       if (n == sum) {
         alert('정답입니다');
-        restoreImages(); // 점수? 추가 필요
+        restoreImages();
+        socket.emit('gotAnswer')
       } else {
         restoreImages();
       }
@@ -313,8 +303,8 @@ export default function ComputerDialog() {
   const handleReset = () => {
     setImages([...originalImages])
     setSelectedOption('')
+    setNum()
   }
-  let players = [{name:'a', score: 10}, {name:'b', score:20}, {name:'c',score:30}]
   return (
     
     <>
@@ -325,21 +315,24 @@ export default function ComputerDialog() {
         <Wrapper>
           <div id='container'>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-        {players.map((player, index) => (
-          <div key={index} style={{ marginLeft: '10px', textAlign: 'center' }}>
-          <div>{player.name} {player.score}</div>
-        </div>
+        <div>
+          {players.map((player) => (
+            <div key={player.id}>
+              {player.id}, {player.score}
+              </div>
           ))}
         </div>
         </div>
+        </div>
           <div style={{ fontSize: '40px' }}>
-            몬스터 줄세우기!<br></br>
+            몬스터 줄세우기!
+            <br></br>
             <br></br>
           </div>
 
           <div style={{ fontSize: '40px', display: 'flex', alignItems: 'center' }}>
             <span style={{ fontSize: '24px', marginLeft: '10px' }}>
-              숫자의 합이 <span style={{ fontSize: '36px', color: 'yellow' }}> {n} </span>이 되도록
+              숫자의 합이 <span style={{ fontSize: '36px', color: 'yellow' }}> {answer} </span>이 되도록
               몬스터 배열을 수정해주세요!
             </span>
           </div>

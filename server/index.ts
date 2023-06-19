@@ -2,18 +2,17 @@ import http from 'http'
 import express from 'express'
 import cors from 'cors'
 import { Server, LobbyRoom } from 'colyseus'
-import { monitor } from '@colyseus/monitor'
 import { RoomType } from '../types/Rooms'
 import authRouter from './routes/auth';
 import 'express-async-errors'
+
+const socketIO = require('socket.io')
 
 // import socialRoutes from "@colyseus/social/express"
 
 import { SkyOffice } from './rooms/SkyOffice'
 import { connectDB } from './DB/db'
 
-const mongoose = require('mongoose')
-var cookieParser = require('cookie-parser')
 const port = Number(process.env.PORT || 2567)
 const app = express()
 
@@ -25,6 +24,35 @@ const server = http.createServer(app)
 const gameServer = new Server({
   server,
 })
+const io = socketIO(server);
+let presentPlayers = new Set()
+
+io.on('connection', onConnect)
+
+function onConnect(socket) {
+  console.log(socket.id, '님이 입장했습니다.')
+  presentPlayers.add({id:socket.id, score: 0})
+  io.emit('new-player', socket.id)
+
+  socket.on('disconnect', () => {
+    console.log(socket.id, '님이 나갔습니다.')
+    presentPlayers.delete(socket.id)
+    io.emit('players', presentPlayers.size)
+  })
+
+  socket.on('gotAnswer', (socket) => {
+    presentPlayers[socket.id].score += 1
+    const data = {
+      socketid:socket.id,
+      score: presentPlayers[socket.id].score
+    }
+    socket.emit('addScore', data)
+  })
+
+  socket.on('win', (socket) => {
+    socket.emit('gameEnd', socket.id)
+  })
+}
 
 // register room handlers
 gameServer.define(RoomType.LOBBY, LobbyRoom)
