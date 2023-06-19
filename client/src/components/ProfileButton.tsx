@@ -1,6 +1,3 @@
-/*
-  Icon: mui 라이브러리 사용 (https://mui.com/material-ui/material-icons/)
-*/
 import React, { useRef, useEffect } from 'react'
 import styled from 'styled-components'
 
@@ -26,10 +23,14 @@ export default function ProfileButton() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const chatMessages = useAppSelector((state) => state.chat.chatMessages)
-  const loggedIn = useAppSelector((state) => state.user.loggedIn)
+  const entered = useAppSelector((state) => state.user.entered)
   const roomJoined = useAppSelector((state) => state.room.roomJoined)
   const focused = useAppSelector((state) => state.chat.focused)
   const showProfile = useAppSelector((state) => state.user.showProfile)
+  const username = useAppSelector((state) => state.user.username)
+  const character = useAppSelector((state) => state.user.character)
+  const userLevel = useAppSelector((state) => state.user.userLevel)
+  const imgpath = `../../public/assets/character/single/${character}_idle_anim_19.png`
 
   const dispatch = useAppDispatch()
 
@@ -49,7 +50,7 @@ export default function ProfileButton() {
 
   return (
     <Backdrop>
-      {roomJoined && loggedIn && (
+      {roomJoined && entered && (
         <Button
           onClick={() => showProfile ? (
             dispatch(setShowProfile(false))
@@ -59,13 +60,13 @@ export default function ProfileButton() {
         >
           <ListItem>
             <ListItemAvatar>
-              <Avatar src="../../public/assets/character/single/Adam_idle_anim_19.png" />
+              <Avatar src={imgpath} />
             </ListItemAvatar>
             <ListItemText
               primary={
                 <React.Fragment>
                   <Typography sx={{ display: 'inline'}} variant="caption" color="white">
-                    Lv.213
+                    Lv.{userLevel}
                   </Typography>
                   <Typography sx={{ display: 'inline', margin: '10px' }} variant="caption" color="yellow">
                     Gold
@@ -75,7 +76,7 @@ export default function ProfileButton() {
               secondary={
                 <React.Fragment>
                   <Typography sx={{ display: 'inline' }} variant="subtitle2" color="white">
-                    Junsu Pooh
+                  {username}
                   </Typography>
                 </React.Fragment>
               }

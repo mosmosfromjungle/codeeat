@@ -189,14 +189,10 @@ export const login = async (req: Request, res: Response) => {
     )
 
     res.cookie('refreshToken', refreshToken, { 
-        httpOnly: true,
-        secure: true,
-        sameSite: 'strict',
-    })
-    res.cookie('username', foundUser.username, { // UGLY: client에서 활용할 수도 있을 것 같아서 추가해 보았음 
-        httpOnly: true,
-        secure: true,
-        sameSite: 'strict',
+        path: '/',
+        // httpOnly: false,
+        // secure: false,
+        // sameSite: 'strict',
     })
 
     res.status(200).json({
@@ -204,6 +200,7 @@ export const login = async (req: Request, res: Response) => {
         payload: {
             userId: foundUser.userId,
             username: foundUser.username,
+            character: foundUser.character,
             accessToken: accessToken,
         }
     })
@@ -263,12 +260,6 @@ export const updateProfile = async (req: CustomRequest, res: Response) => {
     const updateUser = await foundUser.save()
 
     if (updateUser) {
-        res.cookie('username', foundUser.username, { // UGLY: client에서 활용할 수도 있을 것 같아서 추가해 보았음 
-            httpOnly: true,
-            secure: true,
-            sameSite: 'strict',
-        })
-
         return res.status(200).json({
             status: 200,
             payload: newUserData,
@@ -341,9 +332,10 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
         )
 
         res.cookie('refreshToken', refreshToken, { 
-            httpOnly: true,
-            secure: true,
-            sameSite: 'strict',
+            path: '/',
+            // httpOnly: true,
+            // secure: true,
+            // sameSite: 'strict',
         })
 
         res.status(200).json({
@@ -365,14 +357,21 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
 /* 토큰 기반 사용자 인증 */
 export const authenticateUser = async (req: CustomRequest, res: Response) => {
     const decoded = req.decoded
+    if (!decoded) return res.status(405).json(AUTH_ERROR)
     const foundUser = await User.collection.findOne({ userId: decoded.userId })
-    if (!foundUser) return res.status(401).json(AUTH_ERROR)
-    return res.status(200).json({
-        status: 200, 
-        payload: {
-            userId: foundUser.userId,
-        }
-    })
+    if (!foundUser) {
+        return res.status(404).json(AUTH_ERROR)
+    } else {
+        return res.status(200).json({
+            status: 200, 
+            payload: {
+                userId: foundUser.userId,
+                username: foundUser.username,
+                character: foundUser.userProfile.character,
+                userLevel: foundUser.userProfile.userLevel,
+            }
+        })
+    }
 }
 
 /* 닉네임 기반 유저 정보 조회 */
