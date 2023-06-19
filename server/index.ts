@@ -16,40 +16,49 @@ import { connectDB } from './DB/db'
 const port = Number(process.env.PORT || 2567)
 const app = express()
 
-app.use(cors())
+const options: cors.CorsOptions = {
+  methods: 'GET, POST',
+  origin: '*'
+}
+app.use(cors(options))
 app.use(express.json())
 // app.use(express.static('dist'))
 
-const server = http.createServer(app)
-const gameServer = new Server({
-  server,
+const server = app.listen(8888, () => {
+  console.log('socket listening')
 })
-const io = socketIO(server);
-let presentPlayers = new Set()
+
+const gameServer = new Server()
+const io = socketIO(server)
+
+let presentPlayers = new Map()
 
 io.on('connection', onConnect)
 
 function onConnect(socket) {
-  console.log(socket.id, '님이 입장했습니다.')
-  presentPlayers.add({id:socket.id, score: 0})
+  console.log(socket.id, '입장')
+  presentPlayers.set(socket.id, {score: 0})
   io.emit('new-player', socket.id)
 
   socket.on('disconnect', () => {
-    console.log(socket.id, '님이 나갔습니다.')
+    console.log(socket.id, '퇴장')
     presentPlayers.delete(socket.id)
-    io.emit('players', presentPlayers.size)
+    // io.emit('players', presentPlayers.size)
+    console.log(presentPlayers.size)
   })
 
-  socket.on('gotAnswer', (socket) => {
-    presentPlayers[socket.id].score += 1
+  socket.on('gotAnswer', () => {
+    console.log(socket.id, '득점')
+    const player = presentPlayers.get(socket.id)
+    player.score += 1
     const data = {
-      socketid:socket.id,
-      score: presentPlayers[socket.id].score
+      socketid: socket.id,
+      score: player.score
     }
     socket.emit('addScore', data)
   })
 
-  socket.on('win', (socket) => {
+  socket.on('win', () => {
     socket.emit('gameEnd', socket.id)
   })
 }

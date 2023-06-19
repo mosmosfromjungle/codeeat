@@ -15,7 +15,8 @@ interface Player {
   score: number;
 }
 
-const socket = io('http://localhost:2567')
+const socket = io('http://localhost:8888')
+
 const WRONG_OPERATION = '해당 자료구조에서 사용되지 않는 연산입니다!'
 const COMMON_MESSAGE = (
   <>
@@ -163,6 +164,10 @@ export default function ComputerDialog() {
   })
   socket.on('addScore',(data) => {
           const { playerId, score } = data
+          if (score === 10) {
+            socket.emit('win', socket)
+            return
+          }
 
           setPlayers((prevPlayers) => {
             return prevPlayers.map((player) => {
@@ -172,6 +177,10 @@ export default function ComputerDialog() {
               return player
             })
           })
+  })
+  socket.on('gameEnd', () => {
+    console.log('GAME OVER')
+    handleReset()
   })
 
 
@@ -219,9 +228,9 @@ export default function ComputerDialog() {
     if (lowercaseCommand === 'sum') {
       const sum = images.reduce((total, image) => total + parseInt(image.text), 0);
       if (n == sum) {
+        socket.emit('gotAnswer', socket)
         alert('정답입니다');
-        restoreImages();
-        socket.emit('gotAnswer')
+        handleReset();
       } else {
         restoreImages();
       }
@@ -318,7 +327,7 @@ export default function ComputerDialog() {
         <div>
           {players.map((player) => (
             <div key={player.id}>
-              {player.id}, {player.score}
+              <li>{player.id}, {player.score}</li>
               </div>
           ))}
         </div>

@@ -59,7 +59,7 @@ export default function ProfileButton() {
         >
           <ListItem>
             <ListItemAvatar>
-              <Avatar src="../../public/assets/character/single/Adam_idle_anim_19.png" />
+              <Avatar src="/assets/character/single/Adam_idle_anim_19.png" />
             </ListItemAvatar>
             <ListItemText
               primary={
