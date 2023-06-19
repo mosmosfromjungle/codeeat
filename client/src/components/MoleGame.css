@@ -81,6 +81,20 @@ li {
   animation-iteration-count: infinite;
 }
 
+.whack-a-mole .click-correct{
+  bottom: 0;
+  opacity: 1;
+  animation: correct_click 0.5s;
+  animation-iteration-count: infinite;
+}
+
+.whack-a-mole .click-wrong{
+  bottom: 0;
+  opacity: 1;
+  animation: wrong_click 1.0s;
+  animation-iteration-count: infinite;
+}
+
 .hiding{
   display: none;
 }
@@ -97,6 +111,26 @@ li {
   80% { transform: translate(-1px, -1px) rotate(1deg); }
   90% { transform: translate(1px, 2px) rotate(0deg); }
   100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+@keyframes correct_click {
+  0% { bottom: 0px; }
+  25% { bottom: 10px; }
+  50% { bottom: 0px; }
+  75% { bottom: 10px; }
+  100% { bottom: 0px; }
+}
+
+@keyframes wrong_click {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(20deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes point {
+  0% { font-size: 34px; }
+  50% { font-size: 34px; }
+  100% { font-size: 14px; }
 }
 
 .point-wrap{
@@ -151,6 +185,10 @@ li {
   font-size: 14px;
   font-weight: bold;
   color: #fbb666;
+}
+
+.get-point{
+  animation: point 0.3s;
 }
 
 .ending {
