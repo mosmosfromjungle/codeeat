@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 import { Client, Room } from 'colyseus.js'
-import { IComputer, IOfficeState, IPlayer, IAcidRain, IMoleGame } from '../../../types/IOfficeState'
+import { IDataStructure, IOfficeState, IPlayer, IAcidRain, IMoleGame } from '../../../types/IOfficeState'
 import { Message } from '../../../types/Messages'
 import { IRoomData, RoomType } from '../../../types/Rooms'
 import { ItemType } from '../../../types/Items'
@@ -50,18 +50,6 @@ export default class Network {
    */
   async joinLobbyRoom() {
     this.lobby = await this.client.joinOrCreate(RoomType.LOBBY)
-
-    this.lobby.onMessage('rooms', (rooms) => {
-      store.dispatch(setAvailableRooms(rooms))
-    })
-
-    this.lobby.onMessage('+', ([roomId, room]) => {
-      store.dispatch(addAvailableRooms({ roomId, room }))
-    })
-
-    this.lobby.onMessage('-', (roomId) => {
-      store.dispatch(removeAvailableRooms(roomId))
-    })
   }
 
   // method to join the public lobby
@@ -73,18 +61,6 @@ export default class Network {
   // method to join a custom room
   async joinCustomById(roomId: string, password: string | null) {
     this.room = await this.client.joinById(roomId, { password })
-    this.initialize()
-  }
-
-  // method to create a custom room
-  async createCustom(roomData: IRoomData) {
-    const { name, description, password, autoDispose } = roomData
-    this.room = await this.client.create(RoomType.CUSTOM, {
-      name,
-      description,
-      password,
-      autoDispose,
-    })
     this.initialize()
   }
 
@@ -126,14 +102,14 @@ export default class Network {
       store.dispatch(removePlayerNameMap(key))
     }
 
-    // new instance added to the computers MapSchema
-    this.room.state.computers.onAdd = (computer: IComputer, key: string) => {
+    // new instance added to the datastructures MapSchema
+    this.room.state.datastructures.onAdd = (datastructure: IDataStructure, key: string) => {
       // track changes on every child object's connectedUser
-      computer.connectedUser.onAdd = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.COMPUTER)
+      datastructure.connectedUser.onAdd = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.DATASTRUCTURE)
       }
-      computer.connectedUser.onRemove = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.COMPUTER)
+      datastructure.connectedUser.onRemove = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.DATASTRUCTURE)
       }
     }
 
@@ -183,12 +159,6 @@ export default class Network {
     // when a peer disconnects with myPeer
     this.room.onMessage(Message.DISCONNECT_STREAM, (clientId: string) => {
       this.webRTC?.deleteOnCalledVideoStream(clientId)
-    })
-
-    // when a computer user stops sharing screen
-    this.room.onMessage(Message.STOP_SCREEN_SHARE, (clientId: string) => {
-      const computerState = store.getState().computer
-      computerState.shareScreenManager?.onUserLeft(clientId)
     })
   }
 
@@ -271,12 +241,12 @@ export default class Network {
     this.webRTC?.deleteVideoStream(id)
   }
 
-  connectToComputer(id: string) {
-    this.room?.send(Message.CONNECT_TO_COMPUTER, { computerId: id })
+  connectToDataStructure(id: string) {
+    this.room?.send(Message.CONNECT_TO_DATASTRUCTURE, { datastructureId: id })
   }
 
-  disconnectFromComputer(id: string) {
-    this.room?.send(Message.DISCONNECT_FROM_COMPUTER, { computerId: id })
+  disconnectFromDataStructure(id: string) {
+    this.room?.send(Message.DISCONNECT_FROM_DATASTRUCTURE, { datastructureId: id })
   }
 
   connectToAcidRain(id: string) {
@@ -288,7 +258,7 @@ export default class Network {
   }
 
   onStopScreenShare(id: string) {
-    this.room?.send(Message.STOP_SCREEN_SHARE, { computerId: id })
+    this.room?.send(Message.STOP_SCREEN_SHARE, { datastructureId: id })
   }
 
   addChatMessage(content: string) {

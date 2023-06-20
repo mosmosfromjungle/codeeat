@@ -7,7 +7,7 @@ import { useAppSelector } from './hooks'
 import WelcomeDialog from './components/WelcomeDialog'
 import LoginDialog from './components/LoginDialog'
 import JoinDialog from './components/JoinDialog'
-import ComputerDialog from './components/ComputerDialog'
+import DataStructureDialog from './components/DataStructureDialog'
 import AcidRainDialog from './components/AcidRainDialog'
 import MoleGameDialog from './components/MoleGameDialog'
 import VideoConnectionDialog from './components/VideoConnectionDialog'
@@ -37,7 +37,7 @@ const Backdrop = styled.div`
 
 function App() {
   const loggedIn = useAppSelector((state) => state.user.loggedIn)
-  const computerDialogOpen = useAppSelector((state) => state.computer.computerDialogOpen)
+  const datastructureDialogOpen = useAppSelector((state) => state.datastructure.datastructureDialogOpen)
   const acidrainDialogOpen = useAppSelector((state) => state.acidrain.acidrainDialogOpen)
   const videoConnected = useAppSelector((state) => state.user.videoConnected)
   const roomJoined = useAppSelector((state) => state.room.roomJoined)
@@ -56,8 +56,8 @@ function App() {
 
   let ui: JSX.Element
   if (loggedIn) {
-    if (computerDialogOpen) {
-      ui = <ComputerDialog />
+    if (datastructureDialogOpen) {
+      ui = <DataStructureDialog />
 
     } else if (acidrainDialogOpen) {
       ui = <AcidRainDialog />
@@ -103,8 +103,8 @@ function App() {
     <Backdrop>
       {ui}
       {/* Render HelperButtonGroup, ProfileButton if no dialogs are opened. */}
-      {!computerDialogOpen && !acidrainDialogOpen && !moleGameDialogOpen && <HelperButtonGroup />}
-      {!computerDialogOpen && !acidrainDialogOpen && !moleGameDialogOpen && <ProfileButton />}
+      {!datastructureDialogOpen && !acidrainDialogOpen && !moleGameDialogOpen && <HelperButtonGroup />}
+      {!datastructureDialogOpen && !acidrainDialogOpen && !moleGameDialogOpen && <ProfileButton />}
       {<GlobalFont />}
     </Backdrop>
   )

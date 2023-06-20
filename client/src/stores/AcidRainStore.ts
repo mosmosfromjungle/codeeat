@@ -18,7 +18,7 @@ const initialState: AcidRainState = {
 }
 
 export const acidrainSlice = createSlice({
-  name: 'acidrain',
+  name: 'whiteboard',
   initialState,
   reducers: {
     openAcidRainDialog: (state, action: PayloadAction<string>) => {

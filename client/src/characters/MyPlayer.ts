@@ -5,7 +5,7 @@ import { sittingShiftData } from './Player'
 import Player from './Player'
 import Network from '../services/Network'
 import Chair from '../items/Chair'
-import Computer from '../items/Computer'
+import DataStructure from '../items/DataStructure'
 import AcidRain from '../items/AcidRain'
 import MoleGame from '../items/MoleGame'
 
@@ -62,9 +62,9 @@ export default class MyPlayer extends Player {
 
     if (Phaser.Input.Keyboard.JustDown(keyR)) {
       switch (item?.itemType) {
-        case ItemType.COMPUTER:
-          const computer = item as Computer
-          computer.openDialog(this.playerId, network)
+        case ItemType.DATASTRUCTURE:
+          const datastructure = item as DataStructure
+          datastructure.openDialog(this.playerId, network)
           break
         case ItemType.ACIDRAIN:
           const acidrain = item as AcidRain

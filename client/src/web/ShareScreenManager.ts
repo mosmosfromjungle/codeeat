@@ -66,9 +66,9 @@ export default class ShareScreenManager {
 
         // Call all existing users.
         const game = phaserGame.scene.keys.game as Game
-        const computerItem = game.computerMap.get(store.getState().computer.computerId!)
-        if (computerItem) {
-          for (const userId of computerItem.currentUsers) {
+        const datastructureItem = game.datastructureMap.get(store.getState().datastructure.datastructureId!)
+        if (datastructureItem) {
+          for (const userId of datastructureItem.currentUsers) {
             this.onUserJoined(userId)
           }
         }
@@ -85,7 +85,7 @@ export default class ShareScreenManager {
       store.dispatch(setMyStream(null))
       // Manually let all other existing users know screen sharing is stopped
       const game = phaserGame.scene.keys.game as Game
-      game.network.onStopScreenShare(store.getState().computer.computerId!)
+      game.network.onStopScreenShare(store.getState().datastructure.datastructureId!)
     }
   }
 

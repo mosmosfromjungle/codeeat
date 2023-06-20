@@ -91,7 +91,7 @@ io.on('connection', (socket:Socket) => {
   })
   DataController(socket)
   socket.on('disconnect', () => {
-    console.log(`${socket} 퇴장`)
+    console.log(`${socket.id} 퇴장`)
   })
   socket.on('connect_error', (err) => {
     console.log(`connection error: ${err.message}`)

@@ -2,16 +2,16 @@ import { ItemType } from '../../../types/Items'
 import store from '../stores'
 import Item from './Item'
 import Network from '../services/Network'
-import { openComputerDialog } from '../stores/DataGameStore'
+import { openDataStructureDialog } from '../stores/DataGameStore'
 
-export default class Computer extends Item {
+export default class DataGame extends Item {
   id?: string
   currentUsers = new Set<string>()
 
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
     super(scene, x, y, texture, frame)
 
-    this.itemType = ItemType.COMPUTER
+    this.itemType = ItemType.DATASTRUCTURE
   }
 
   private updateStatus() {
@@ -27,35 +27,27 @@ export default class Computer extends Item {
 
   onOverlapDialog() {
     if (this.currentUsers.size === 0) {
-      this.setDialogBox('Press R to use computer')
+      this.setDialogBox('R을 눌러서 자료구조게임 시작')
     } else {
-      this.setDialogBox('Press R join')
+      this.setDialogBox('R 눌러서 입장')
     }
   }
 
   addCurrentUser(userId: string) {
     if (!this.currentUsers || this.currentUsers.has(userId)) return
     this.currentUsers.add(userId)
-    const computerState = store.getState().computer
-    if (computerState.computerId === this.id) {
-      computerState.shareScreenManager?.onUserJoined(userId)
-    }
     this.updateStatus()
   }
 
   removeCurrentUser(userId: string) {
     if (!this.currentUsers || !this.currentUsers.has(userId)) return
     this.currentUsers.delete(userId)
-    const computerState = store.getState().computer
-    if (computerState.computerId === this.id) {
-      computerState.shareScreenManager?.onUserLeft(userId)
-    }
     this.updateStatus()
   }
 
-  openDialog(playerId: string, network: Network) {
+  openDialog(network: Network) {
     if (!this.id) return
-    store.dispatch(openComputerDialog({ computerId: this.id, myUserId: playerId }))
-    network.connectToComputer(this.id)
+    store.dispatch(openDataStructureDialog(this.id))
+    network.connectToDataStructure(this.id)
   }
 }

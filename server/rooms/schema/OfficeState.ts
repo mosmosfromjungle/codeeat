@@ -2,7 +2,7 @@ import { Schema, ArraySchema, SetSchema, MapSchema, type } from '@colyseus/schem
 import {
   IPlayer,
   IOfficeState,
-  IComputer,
+  IDataStructure,
   IAcidRain,
   IMoleGame,
   IChatMessage,
@@ -17,7 +17,7 @@ export class Player extends Schema implements IPlayer {
   @type('boolean') videoConnected = false
 }
 
-export class Computer extends Schema implements IComputer {
+export class DataStructure extends Schema implements IDataStructure {
   @type({ set: 'string' }) connectedUser = new SetSchema<string>()
 }
 
@@ -41,8 +41,8 @@ export class OfficeState extends Schema implements IOfficeState {
   @type({ map: Player })
   players = new MapSchema<Player>()
 
-  @type({ map: Computer })
-  computers = new MapSchema<Computer>()
+  @type({ map: DataStructure })
+  datastructures = new MapSchema<DataStructure>()
 
   @type({ map: AcidRain })
   acidrains = new MapSchema<AcidRain>()

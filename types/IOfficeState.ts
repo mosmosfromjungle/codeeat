@@ -10,7 +10,7 @@ export interface IPlayer extends Schema {
   userId: string
 }
 
-export interface IComputer extends Schema {
+export interface IDataStructure extends Schema {
   connectedUser: SetSchema<string>
 }
 
@@ -32,7 +32,7 @@ export interface IChatMessage extends Schema {
 
 export interface IOfficeState extends Schema {
   players: MapSchema<IPlayer>
-  computers: MapSchema<IComputer>
+  datastructures: MapSchema<IDataStructure>
   acidrains: MapSchema<IAcidRain>
   molegames: MapSchema<IMoleGame>
   chatMessages: ArraySchema<IChatMessage>

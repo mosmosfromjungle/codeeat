@@ -1,7 +1,7 @@
 import { enableMapSet } from 'immer'
 import { configureStore } from '@reduxjs/toolkit'
 import userReducer from './UserStore'
-import computerReducer from './DataGameStore'
+import datastructureReducer from './DataGameStore'
 import acidrainReducer from './AcidRainStore'
 import chatReducer from './ChatStore'
 import roomReducer from './RoomStore'
@@ -12,7 +12,7 @@ enableMapSet()
 const store = configureStore({
   reducer: {
     user: userReducer,
-    computer: computerReducer,
+    datastructure: datastructureReducer,
     acidrain: acidrainReducer,
     chat: chatReducer,
     room: roomReducer,

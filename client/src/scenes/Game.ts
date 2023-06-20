@@ -5,7 +5,7 @@ import { createCharacterAnims } from '../anims/CharacterAnims'
 
 import Item from '../items/Item'
 import Chair from '../items/Chair'
-import Computer from '../items/Computer'
+import DataStructure from '../items/DataStructure'
 import AcidRain from '../items/AcidRain'
 import VendingMachine from '../items/VendingMachine'
 import MoleGame from '../items/MoleGame'
@@ -36,7 +36,7 @@ export default class Game extends Phaser.Scene {
   private playerSelector!: Phaser.GameObjects.Zone
   private otherPlayers!: Phaser.Physics.Arcade.Group
   private otherPlayerMap = new Map<string, OtherPlayer>()
-  computerMap = new Map<string, Computer>()
+  datastructureMap = new Map<string, DataStructure>()
   private acidrainMap = new Map<string, AcidRain>()
   private molegameMap = new Map<String, MoleGame>()
 
@@ -60,7 +60,6 @@ export default class Game extends Phaser.Scene {
     })
     this.input.keyboard.on('keydown-ESC', (event) => {
       store.dispatch(setShowChat(false))
-      store.dispatch(setShowDM(false))
     })
   }
 
@@ -71,12 +70,16 @@ export default class Game extends Phaser.Scene {
   enableKeys() {
     this.input.keyboard.enabled = true
   }
+  allOtherPlayers () {
+    return this.otherPlayerMap;
+  }
 
-  create(data: { network: Network }) {
+  create(data: { network: Network; network2: Network2 }) {
     if (!data.network) {
       throw new Error('server instance missing')
     } else {
       this.network = data.network
+      this.network2 = data.network2
     }
 
     createCharacterAnims(this.anims)
@@ -101,15 +104,15 @@ export default class Game extends Phaser.Scene {
       item.itemDirection = chairObj.properties[0].value
     })
 
-    // import computers objects from Tiled map to Phaser
-    const computers = this.physics.add.staticGroup({ classType: Computer })
-    const computerLayer = this.map.getObjectLayer('Computer')
-    computerLayer.objects.forEach((obj, i) => {
-      const item = this.addObjectFromTiled(computers, obj, 'computers', 'computer') as Computer
+    // import datastructures objects from Tiled map to Phaser
+    const datastructures = this.physics.add.staticGroup({ classType: DataStructure })
+    const datastructureLayer = this.map.getObjectLayer('DataStructure')
+    datastructureLayer.objects.forEach((obj, i) => {
+      const item = this.addObjectFromTiled(datastructures, obj, 'datastructures', 'datastructure') as DataStructure
       item.setDepth(item.y + item.height * 0.27)
       const id = `${i}`
       item.id = id
-      this.computerMap.set(id, item)
+      this.datastructureMap.set(id, item)
     })
 
     // import acidrains objects from Tiled map to Phaser
@@ -168,7 +171,7 @@ export default class Game extends Phaser.Scene {
     // 상호작용 추가하는 부분..?
     this.physics.add.overlap(
       this.playerSelector,
-      [chairs, computers, acidrains, vendingMachines, molegames],
+      [chairs, datastructures, acidrains, vendingMachines, molegames],
       this.handleItemSelectorOverlap,
       undefined,
       this
@@ -245,7 +248,13 @@ export default class Game extends Phaser.Scene {
 
   // function to add new player to the otherPlayer group
   private handlePlayerJoined(newPlayer: IPlayer, id: string) {
-    const otherPlayer = this.add.otherPlayer(newPlayer.x, newPlayer.y, 'adam', id, newPlayer.name)
+    const otherPlayer = this.add.otherPlayer(
+      newPlayer.x, 
+      newPlayer.y, 
+      'adam', 
+      id, 
+      newPlayer.name
+      )
     this.otherPlayers.add(otherPlayer)
     this.otherPlayerMap.set(id, otherPlayer)
   }
@@ -279,9 +288,9 @@ export default class Game extends Phaser.Scene {
   }
 
   private handleItemUserAdded(playerId: string, itemId: string, itemType: ItemType) {
-    if (itemType === ItemType.COMPUTER) {
-      const computer = this.computerMap.get(itemId)
-      computer?.addCurrentUser(playerId)
+    if (itemType === ItemType.DATASTRUCTURE) {
+      const datastructure = this.datastructureMap.get(itemId)
+      datastructure?.addCurrentUser(playerId)
 
     } else if (itemType === ItemType.ACIDRAIN) {
       const acidrain = this.acidrainMap.get(itemId)
@@ -294,9 +303,9 @@ export default class Game extends Phaser.Scene {
   }
 
   private handleItemUserRemoved(playerId: string, itemId: string, itemType: ItemType) {
-    if (itemType === ItemType.COMPUTER) {
-      const computer = this.computerMap.get(itemId)
-      computer?.removeCurrentUser(playerId)
+    if (itemType === ItemType.DATASTRUCTURE) {
+      const datastructure = this.datastructureMap.get(itemId)
+      datastructure?.removeCurrentUser(playerId)
 
     } else if (itemType === ItemType.ACIDRAIN) {
       const acidrain = this.acidrainMap.get(itemId)
@@ -316,7 +325,10 @@ export default class Game extends Phaser.Scene {
   update(t: number, dt: number) {
     if (this.myPlayer && this.network) {
       this.playerSelector.update(this.myPlayer, this.cursors)
-      this.myPlayer.update(this.playerSelector, this.cursors, this.keyE, this.keyR, this.network)
+      this.myPlayer.update(
+        this.playerSelector, 
+        this.cursors, this.keyE, 
+        this.keyR, this.network)
     }
   }
 }

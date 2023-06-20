@@ -5,7 +5,7 @@ import store from '../stores';
 // import { setNewMessageCnt, setNewMessage, setRequestFriendCnt } from 'src/stores/DMboxStore';
 // import Cookies from 'universal-cookie';
 import { fireNotification } from '../api/notification';
-import ComputerStore from '../stores/DataGameStore';
+import DataStructureStore from '../stores/DataGameStore';
 // const cookies = new Cookies();
 
 interface Player{
@@ -27,14 +27,32 @@ export default class gameNetwork {
       transports: ['websocket', 'polling', 'flashsocket'],
       withCredentials: true,
     });
+    this.socketClient.on('connection_mole', (data) => {
+      
+    });
+    this.socketClient.on('connection_data', (data) => {
+      
+    });
+    this.socketClient.on('connection_rain', (data) => {
+      
+    });
     this.socketClient.on('addscore_mole', (data) => {
-      store.dispatch()
+      
     });
     this.socketClient.on('addscore_data', (data) => {
-      store.dispatch()
+      
     });
     this.socketClient.on('addscore_rain', (data) => {
-      store.dispatch()
+      
+    });
+    this.socketClient.on('win_mole', (data) => {
+      
+    });
+    this.socketClient.on('win_data', (data) => {
+      
+    });
+    this.socketClient.on('win_rain', (data) => {
+      
     });
   }
 

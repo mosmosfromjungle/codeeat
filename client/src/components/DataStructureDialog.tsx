@@ -8,14 +8,14 @@ import phaserGame from '../PhaserGame';
 import Game from '../../src/scenes/Game';
 
 import { useAppSelector, useAppDispatch } from '../hooks'
-import { closeComputerDialog } from '../stores/DataGameStore'
+import { closeDataStructureDialog } from '../stores/DataGameStore'
 
 interface Player {
   id: any;
   score: number;
 }
 
-const socket = io('http://localhost:3001')
+const socket = io('http://localhost:8888')
 
 const WRONG_OPERATION = '해당 자료구조에서 사용되지 않는 연산입니다!'
 const COMMON_MESSAGE = (
@@ -136,7 +136,7 @@ function getRandomIntInclusive(min:number, max:number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-export default function ComputerDialog() {
+export default function DataStructureDialog() {
   const [n, setN] = useState(0)
   const [m, setM] = useState(0)
   const [x, setX] = useState(0)
@@ -369,7 +369,7 @@ export default function ComputerDialog() {
           <IconButton
             aria-label="close dialog"
             className="close"
-            onClick={() => dispatch(closeComputerDialog())}
+            onClick={() => dispatch(closeDataStructureDialog())}
           >
             <CloseIcon />
           </IconButton>
