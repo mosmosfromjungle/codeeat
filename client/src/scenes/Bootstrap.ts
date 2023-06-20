@@ -27,11 +27,62 @@ export default class Bootstrap extends Phaser.Scene {
     this.load.image('backdrop_night', 'assets/background/backdrop_night.png')
     this.load.image('sun_moon', 'assets/background/sun_moon.png')
 
-    this.load.tilemapTiledJSON('tilemap', 'assets/map/map.json')
+    // this.load.tilemapTiledJSON('tilemap', 'assets/map/map.json')
+    this.load.tilemapTiledJSON('tilemap', 'assets/map/codeEatMap.json')
     this.load.spritesheet('tiles_wall', 'assets/map/FloorAndGround.png', {
       frameWidth: 32,
       frameHeight: 32,
     })
+
+    // codeEatMap
+    this.load.spritesheet('chairs', 'assets/items/bench.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+
+    this.load.spritesheet('chairs', 'assets/items/bench.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+
+    this.load.spritesheet('School', 'assets/tileset/School.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+    this.load.spritesheet('Generic', 'assets/tileset/Generic.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+    this.load.spritesheet('camping', 'assets/tileset/camping.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+    this.load.spritesheet('floorTiles', 'assets/tileset/floorTiles.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+    this.load.spritesheet('Interiors', 'assets/tileset/Interiors.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+    this.load.spritesheet('ModernExteriorsCompleteFinal', 'assets/tileset/ModernExteriorsCompleteFinal.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+    this.load.spritesheet('ModernExteriorsComplete', 'assets/tileset/ModernExteriorsComplete.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+    this.load.spritesheet('Room_Builder', 'assets/tileset/Room_Builder.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+    this.load.spritesheet('Tilesets', 'assets/tileset/Tilesets.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+
+
     this.load.spritesheet('chairs', 'assets/items/chair.png', {
       frameWidth: 32,
       frameHeight: 64,

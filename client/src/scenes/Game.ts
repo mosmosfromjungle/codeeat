@@ -82,10 +82,37 @@ export default class Game extends Phaser.Scene {
     createCharacterAnims(this.anims)
 
     this.map = this.make.tilemap({ key: 'tilemap' })
-    const FloorAndGround = this.map.addTilesetImage('FloorAndGround', 'tiles_wall')
+    // const FloorAndGround = this.map.addTilesetImage('FloorAndGround', 'tiles_wall')
 
-    const groundLayer = this.map.createLayer('Ground', FloorAndGround)
-    groundLayer.setCollisionByProperty({ collides: true })
+    // const groundLayer = this.map.createLayer('Ground', FloorAndGround)
+    // groundLayer.setCollisionByProperty({ collides: true })
+
+    const schoolImage = this.map.addTilesetImage('School', 'School')
+
+    const genericImage = this.map.addTilesetImage('Generic', 'Generic')
+
+    const campingImage = this.map.addTilesetImage('camping', 'camping')
+
+    const floorTilesImage = this.map.addTilesetImage('floorTiles', 'floorTiles')
+
+    const interiorsImage = this.map.addTilesetImage('Interiors', 'Interiors')
+
+    const modernExteriorsCompleteFmage = this.map.addTilesetImage('ModernExteriorsCompleteFinal', 'ModernExteriorsCompleteFinal')
+
+    const roomBuilderImage = this.map.addTilesetImage('Room_Builder', 'Room_Builder')
+
+    const modernExteriorsImage = this.map.addTilesetImage('ModernExteriorsComplete', 'ModernExteriorsComplete')
+
+    const tilesetsImage = this.map.addTilesetImage('Tilesets', 'Tilesets')
+
+    this.map.createLayer('ground', [
+      modernExteriorsImage,
+      modernExteriorsCompleteFmage,
+      tileImage,
+      waterBridgeImage,
+      ModernExteriorsCompleteImage,
+    ]);
+
 
     // debugDraw(groundLayer, this)
 
