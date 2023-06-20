@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 
 export async function connectDB() {
   mongoose.set('strictQuery', false);
-  mongoose.connect('mongodb://localhost:27017/mosmos', {
+  mongoose.connect(config.db.host, {
     dbName: 'mosmos',
     useNewUrlParser: true,
   })
