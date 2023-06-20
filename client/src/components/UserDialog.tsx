@@ -18,8 +18,6 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 
-import 'emoji-mart/css/emoji-mart.css'
-
 import { setShowUser } from '../stores/ChatStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
 
@@ -159,7 +157,7 @@ export default function UserDialog() {
                 <Button>
                   <ListItem>
                     <ListItemAvatar>
-                      <Avatar src="../../public/assets/character/single/Adam_idle_anim_19.png" />
+                      <Avatar src="/assets/character/single/Adam_idle_anim_19.png" />
                     </ListItemAvatar>
                     <ListItemText
                       primary={
