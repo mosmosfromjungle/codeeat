@@ -18,8 +18,6 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 
-import 'emoji-mart/css/emoji-mart.css'
-
 import { setShowUser } from '../stores/ChatStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
 
@@ -70,6 +68,38 @@ const ChatBox = styled(Box)`
   padding: 10px 10px;
   border-radius: 0px 0px 10px 10px;
 `
+
+// Todo: change the parameter in body part
+const getUser = async() => {
+  const apiUrl: string = 'http://auth/user/list';
+  await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+  }).then(res => {
+    if (res.ok) {
+      console.log("Get user list is success.");
+    }
+    // Todo: need to hanle return codes - 200, 400, 409 ...
+  })
+};
+
+// Todo: change the parameter in body part
+const getUserDetail = async(userId: string) => {
+  const apiUrl: string = 'http://auth/user/detaul/' + userId;
+  await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+  }).then(res => {
+    if (res.ok) {
+      console.log("Get user detail is success.");
+    }
+    // Todo: need to hanle return codes - 200, 400, 409 ...
+  })
+};
 
 export default function UserDialog() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -127,7 +157,7 @@ export default function UserDialog() {
                 <Button>
                   <ListItem>
                     <ListItemAvatar>
-                      <Avatar src="../../public/assets/character/single/Adam_idle_anim_19.png" />
+                      <Avatar src="/assets/character/single/Adam_idle_anim_19.png" />
                     </ListItemAvatar>
                     <ListItemText
                       primary={

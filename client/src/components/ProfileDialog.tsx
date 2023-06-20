@@ -1,6 +1,3 @@
-/*
-  Icon: mui 라이브러리 사용 (https://mui.com/material-ui/material-icons/)
-*/
 import React, { useRef, useState, useEffect } from 'react'
 import styled from 'styled-components'
 
@@ -16,10 +13,10 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 
-import 'emoji-mart/css/emoji-mart.css'
-
 import { setShowProfile } from '../stores/UserStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
+import { getMyProfile } from '../apicalls/auth';
+
 
 const Backdrop = styled.div`
   position: fixed;
@@ -75,8 +72,16 @@ export default function ProfileDialog() {
   const chatMessages = useAppSelector((state) => state.chat.chatMessages)
   const focused = useAppSelector((state) => state.chat.focused)
   const showProfile = useAppSelector((state) => state.user.showProfile)
+  const username = useAppSelector((state) => state.user.username)
+  const character = useAppSelector((state) => state.user.character)
+  const userLevel = useAppSelector((state) => state.user.userLevel)
+  const imgpath = `../../public/assets/character/single/${character}_idle_anim_19.png`
 
   const dispatch = useAppDispatch()
+
+  const [git, setGit] = useState<string>('')
+  const [email, setEmail] = useState<string>('')
+  const [message, setMessage] = useState<string>('')
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -91,6 +96,22 @@ export default function ProfileDialog() {
   useEffect(() => {
     scrollToBottom()
   }, [chatMessages, showProfile])
+
+  useEffect(() => {
+    (async () => {
+      getMyProfile()
+        .then((response) => {
+          if (!response) return;
+          const { contactGit, contactEmail, profileMessage } = response
+          setGit(contactGit)
+          setEmail(contactEmail)
+          setMessage(profileMessage)
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    })();
+  }, []);
 
   const [open, setOpen] = React.useState(true);
 
@@ -117,13 +138,13 @@ export default function ProfileDialog() {
               <List>
                   <ListItem>
                     <ListItemAvatar>
-                      <Avatar src="../../public/assets/character/single/Adam_idle_anim_19.png" />
+                      <Avatar src={imgpath} />
                     </ListItemAvatar>
                     <ListItemText
                       primary={
                         <React.Fragment>
                           <Typography sx={{ display: 'inline'}} variant="caption" color="white">
-                            Lv.213
+                            Lv.{userLevel}
                           </Typography>
                           <Typography sx={{ display: 'inline', margin: '10px' }} variant="caption" color="yellow">
                             Gold
@@ -133,12 +154,15 @@ export default function ProfileDialog() {
                       secondary={
                         <React.Fragment>
                           <Typography sx={{ display: 'inline' }} variant="subtitle2" color="white">
-                            Junsu Pooh
+                            {username}
                           </Typography>
                         </React.Fragment>
                       }
                     />
                   </ListItem>
+                  <Typography color="white">{git}</Typography>
+                  <Typography color="white">{email}</Typography>
+                  <Typography color="white">{message}</Typography>
               </List>
             </ChatBox>
           </Content>

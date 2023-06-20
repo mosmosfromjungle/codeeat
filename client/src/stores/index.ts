@@ -5,7 +5,7 @@ import computerReducer from './ComputerStore'
 import typinggameReducer from './TypingGameStore'
 import chatReducer from './ChatStore'
 import roomReducer from './RoomStore'
-import codeEditorReducer from './CodeEditorStore'
+import moleGameReducer from './MoleGameStore'
 
 enableMapSet()
 
@@ -18,7 +18,7 @@ const store = configureStore({
     typingGame: typinggameReducer,
     chat: chatReducer,
     room: roomReducer,
-    codeeditor: codeEditorReducer,
+    molegame: moleGameReducer,
   },
   // Temporary disable serialize check for redux as we store MediaStream in ComputerStore.
   // https://stackoverflow.com/a/63244831

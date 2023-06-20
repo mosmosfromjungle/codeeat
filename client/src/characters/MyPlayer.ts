@@ -6,8 +6,13 @@ import Player from './Player'
 import Network from '../services/Network'
 import Chair from '../items/Chair'
 import Computer from '../items/Computer'
+<<<<<<< HEAD
 import Typinggame from '../items/Typinggame'
 import CodeEditor from '../items/CodeEditor'
+=======
+import Whiteboard from '../items/Whiteboard'
+import MoleGame from '../items/MoleGame'
+>>>>>>> 48c509604bc502c87a941ca6a921efaf7bc8b6b6
 
 import { phaserEvents, Event } from '../events/EventCenter'
 import store from '../stores'
@@ -75,9 +80,9 @@ export default class MyPlayer extends Player {
           const url = 'https://www.buymeacoffee.com/skyoffice'
           openURL(url)
           break
-        case ItemType.CODEEDITOR:
-          const codeeditor = item as CodeEditor
-          codeeditor.openDialog(network)
+        case ItemType.MOLEGAME:
+          const molegame = item as MoleGame
+          molegame.openDialog(network)
           break
       }
     }

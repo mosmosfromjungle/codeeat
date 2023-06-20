@@ -1,11 +1,19 @@
 import bcrypt from 'bcrypt'
 import { Room, Client, ServerError } from 'colyseus'
 import { Dispatcher } from '@colyseus/command'
+<<<<<<< HEAD
 import { Player, OfficeState, Computer, Typinggame, CodeEditor } from './schema/OfficeState'
 import { Message } from '../../types/Messages'
 import { IRoomData } from '../../types/Rooms'
 import { typinggameRoomIds } from './schema/OfficeState'
 import { codeEditorRoomIds } from './schema/OfficeState'
+=======
+import { Player, OfficeState, Computer, Whiteboard, MoleGame } from './schema/OfficeState'
+import { Message } from '../../types/Messages'
+import { IRoomData } from '../../types/Rooms'
+import { whiteboardRoomIds } from './schema/OfficeState'
+import { moleGameRoomIds } from './schema/OfficeState'
+>>>>>>> 48c509604bc502c87a941ca6a921efaf7bc8b6b6
 import PlayerUpdateCommand from './commands/PlayerUpdateCommand'
 import PlayerUpdateNameCommand from './commands/PlayerUpdateNameCommand'
 import {
@@ -17,9 +25,9 @@ import {
   TypinggameRemoveUserCommand,
 } from './commands/TypinggameUpdateArrayCommand'
 import {
-  CodeEditorAddUserCommand,
-  CodeEditorRemoveUserCommand,
-} from './commands/CodeEditorUpdateArrayCommand'
+  MoleGameAddUserCommand,
+  MoleGameRemoveUserCommand,
+} from './commands/MoleGameUpdateArrayCommand'
 import ChatMessageUpdateCommand from './commands/ChatMessageUpdateCommand'
 
 export class SkyOffice extends Room<OfficeState> {
@@ -54,9 +62,9 @@ export class SkyOffice extends Room<OfficeState> {
       this.state.typinggames.set(String(i), new Typinggame())
     }
 
-    // HARD-CODED: Add 1 codeeditors in a room
+    // HARD-CODED: Add 1 molegames in a room
     for (let i = 0; i < 1; i++) {
-      this.state.codeeditors.set(String(i), new CodeEditor())
+      this.state.molegames.set(String(i), new MoleGame())
     }
 
     // when a player connect to a computer, add to the computer connectedUser array
@@ -106,21 +114,21 @@ export class SkyOffice extends Room<OfficeState> {
       }
     )
 
-    // when a player connect to a codeeditor, add to the codeeditor connectedUser array
-    this.onMessage(Message.CONNECT_TO_CODEEDITOR, (client, message: { codeEditorId: string }) => {
-      this.dispatcher.dispatch(new CodeEditorAddUserCommand(), {
+    // when a player connect to a molegame, add to the molegame connectedUser array
+    this.onMessage(Message.CONNECT_TO_MOLEGAME, (client, message: { moleGameId: string }) => {
+      this.dispatcher.dispatch(new MoleGameAddUserCommand(), {
         client,
-        codeEditorId: message.codeEditorId,
+        moleGameId: message.moleGameId,
       })
     })
 
-    // when a player disconnect from a codeeditor, remove from the codeeditor connectedUser array
+    // when a player disconnect from a molegame, remove from the molegame connectedUser array
     this.onMessage(
-      Message.DISCONNECT_FROM_CODEEDITOR,
-      (client, message: { codeEditorId: string }) => {
-        this.dispatcher.dispatch(new CodeEditorRemoveUserCommand(), {
+      Message.DISCONNECT_FROM_MOLEGAME,
+      (client, message: { moleGameId: string }) => {
+        this.dispatcher.dispatch(new MoleGameRemoveUserCommand(), {
           client,
-          codeEditorId: message.codeEditorId,
+          moleGameId: message.moleGameId,
         })
       }
     )
@@ -217,14 +225,15 @@ export class SkyOffice extends Room<OfficeState> {
         typinggame.connectedUser.delete(client.sessionId)
       }
     })
-    this.state.codeeditors.forEach((codeeditor) => {
-      if (codeeditor.connectedUser.has(client.sessionId)) {
-        codeeditor.connectedUser.delete(client.sessionId)
+    this.state.molegames.forEach((molegame) => {
+      if (molegame.connectedUser.has(client.sessionId)) {
+        molegame.connectedUser.delete(client.sessionId)
       }
     })
   }
 
   onDispose() {
+<<<<<<< HEAD
     this.state.typinggames.forEach((wtypinggame) => {
       if (typinggameRoomIds.has(typinggame.roomId)) typinggameRoomIds.delete(typinggame.roomId)
     })
@@ -233,6 +242,8 @@ export class SkyOffice extends Room<OfficeState> {
       if (typinggameRoomIds.has(codeeditor.roomId)) typinggameRoomIds.delete(codeeditor.roomId)
     })
 
+=======
+>>>>>>> 48c509604bc502c87a941ca6a921efaf7bc8b6b6
     console.log('room', this.roomId, 'disposing...')
     this.dispatcher.stop()
   }

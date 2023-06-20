@@ -12,8 +12,9 @@ import InputBase from '@mui/material/InputBase'
 import CloseIcon from '@mui/icons-material/Close'
 
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon'
-import 'emoji-mart/css/emoji-mart.css'
-import { Picker } from 'emoji-mart'
+
+import data from '@emoji-mart/data'
+import Picker from '@emoji-mart/react'
 
 import { MessageType, setFocused, setShowChat, setShowDM, setShowUser } from '../stores/ChatStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
@@ -258,11 +259,12 @@ export default function DMDialog() {
               <div ref={messagesEndRef} />
               {showEmojiPicker && (
                 <EmojiPickerWrapper>
-                  <Picker
+                  <Picker 
+                    data={data}
                     theme="dark"
                     showSkinTones={false}
                     showPreview={false}
-                    onSelect={(emoji) => {
+                    onEmojiSelect={(emoji) => {
                       setInputValue(inputValue + emoji.native)
                       setShowEmojiPicker(!showEmojiPicker)
                       dispatch(setFocused(true))

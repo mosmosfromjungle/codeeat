@@ -21,7 +21,7 @@ const GlobalStyle = createGlobalStyle`
 
 export function TypingGame() {
     const keywordInput = useRef<HTMLInputElement>(null);
-    const canvasHeight = 1000;
+    const canvasHeight = 1170;
     const lineHeight = canvasHeight - 500;
 
     const state = useSelector((state: any) => state.typingGame)
@@ -108,7 +108,7 @@ export function TypingGame() {
             <GlobalStyle />
             <div>
                 <div style={{
-                    width: "1000px", height: lineHeight,
+                    width: "1250px", height: lineHeight,
                     backgroundImage : `url(${typing_Background})`,
                     backgroundSize : "cover",
                     backgroundPositionY : "-63px",

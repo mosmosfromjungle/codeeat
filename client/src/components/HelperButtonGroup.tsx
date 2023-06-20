@@ -6,8 +6,6 @@ import styled from 'styled-components'
 
 import Fab from '@mui/material/Fab'
 
-import 'emoji-mart/css/emoji-mart.css'
-
 import ChatIcon from '@mui/icons-material/Chat'
 import DMIcon from '@mui/icons-material/Send'
 import UserIcon from '@mui/icons-material/SupervisorAccount'

@@ -1,7 +1,11 @@
 import axios from 'axios'
 
 import { Client, Room } from 'colyseus.js'
+<<<<<<< HEAD
 import { IComputer, IOfficeState, IPlayer, ITypinggame, ICodeEditor } from '../../../types/IOfficeState'
+=======
+import { IComputer, IOfficeState, IPlayer, IWhiteboard, IMoleGame } from '../../../types/IOfficeState'
+>>>>>>> 48c509604bc502c87a941ca6a921efaf7bc8b6b6
 import { Message } from '../../../types/Messages'
 import { IRoomData, RoomType } from '../../../types/Rooms'
 import { ItemType } from '../../../types/Items'
@@ -21,8 +25,12 @@ import {
   pushPlayerJoinedMessage,
   pushPlayerLeftMessage,
 } from '../stores/ChatStore'
+<<<<<<< HEAD
 import { setCodeEditorUrls } from '../stores/CodeEditorStore'
 // import { setTypinggameUrls } from '../stores/TypingGameStore'
+=======
+import { setWhiteboardUrls } from '../stores/WhiteboardStore'
+>>>>>>> 48c509604bc502c87a941ca6a921efaf7bc8b6b6
 
 export default class Network {
   private client: Client
@@ -159,20 +167,14 @@ export default class Network {
     //   }
     //}
 
-    // new instance added to the codeeditors MapSchema
-    this.room.state.codeeditors.onAdd = (codeeditor: ICodeEditor, key: string) => {
-      store.dispatch(
-        setCodeEditorUrls({
-          codeEditorId: key,
-          roomId: codeeditor.roomId,
-        })
-      )
+    // new instance added to the molegames MapSchema
+    this.room.state.molegames.onAdd = (molegame: IMoleGame, key: string) => {
       // track changes on every child object's connectedUser
-      codeeditor.connectedUser.onAdd = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.CODEEDITOR)
+      molegame.connectedUser.onAdd = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.MOLEGAME)
       }
-      codeeditor.connectedUser.onRemove = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.CODEEDITOR)
+      molegame.connectedUser.onRemove = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.MOLEGAME)
       }
     }
 
@@ -260,8 +262,6 @@ export default class Network {
   // method to send player name to Colyseus server
   updatePlayerName(currentName: string) {
     this.room?.send(Message.UPDATE_PLAYER_NAME, { name: currentName })
-    // const response = axios.post('auth/update', { name: currentName });
-    // console.log(response)
   }
 
   // method to send ready-to-connect signal to Colyseus server
@@ -306,11 +306,11 @@ export default class Network {
     this.room?.send(Message.ADD_CHAT_MESSAGE, { content: content })
   }
 
-  connectToCodeEditor(id: string) {
-    this.room?.send(Message.CONNECT_TO_CODEEDITOR, { codeEditorId: id })
+  connectToMoleGame(id: string) {
+    this.room?.send(Message.CONNECT_TO_MOLEGAME, { moleGameId: id })
   }
 
-  disconnectFromCodeEditor(id: string) {
-    this.room?.send(Message.DISCONNECT_FROM_CODEEDITOR, { codeEditorId: id })
+  disconnectFromMoleGame(id: string) {
+    this.room?.send(Message.DISCONNECT_FROM_MOLEGAME, { moleGameId: id })
   }
 }

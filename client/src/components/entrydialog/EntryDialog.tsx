@@ -1,14 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Button from '@mui/material/Button'
 import Alert from '@mui/material/Alert'
 import Snackbar from '@mui/material/Snackbar'
 
-import phaserGame from '../PhaserGame'
-import Bootstrap from '../scenes/Bootstrap'
+import phaserGame from '../../PhaserGame'
+import Bootstrap from '../../scenes/Bootstrap'
 
-import { useAppSelector, useAppDispatch } from '../hooks'
-import { setShowLogin, setShowJoin } from '../stores/UserStore'
+import { useAppSelector, useAppDispatch } from '../../hooks'
+import { ENTRY_PROCESS, setEntryProcess } from '../../stores/UserStore'
+
 
 const Backdrop = styled.div`
   position: absolute;
@@ -34,6 +35,7 @@ const Title = styled.h1`
   color: #eee;
   text-align: center;
   font-family: Font_DungGeun;
+  height: 200px;
 `
 
 const Content = styled.div`
@@ -54,28 +56,45 @@ const Content = styled.div`
   }
 `
 
-export default function WelcomeDialog() {
+const ImageContent = styled.div`
+  display: flex;
+  gap: 20px;
+  margin: 20px 0;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    border-radius: 8px;
+    height: 90px;
+    margin: 0px 0px 20px 0px;
+  }
+`
+
+
+export default function EntryDialog() {
   const [showSnackbar, setShowSnackbar] = useState(false)
   const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)
 
   const dispatch = useAppDispatch()
 
-  const gotoLoginPage = () => {
+  const handleConnect = () => {
     if (lobbyJoined) {
-      const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-      bootstrap.network
-        .joinOrCreatePublic()
-        .then(() => bootstrap.launchGame())
-        .catch((error) => console.error(error))
+      // const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
+      // bootstrap.network
+      //   .joinOrCreatePublic()
+      //   .then(() => bootstrap.launchGame())
+      //   .catch((error) => console.error(error))
     } else {
       setShowSnackbar(true)
     }
-    
-    dispatch(setShowLogin(true))
+  }
+
+  const gotoLoginPage = () => {
+    dispatch(setEntryProcess(ENTRY_PROCESS.LOGIN))
   }
 
   const gotoJoinPage = () => {
-    dispatch(setShowJoin(true))
+    dispatch(setEntryProcess(ENTRY_PROCESS.JOIN))
   }
 
   return (
@@ -101,7 +120,13 @@ export default function WelcomeDialog() {
         <Wrapper>
           {(
             <>
-              <Title>AlgoEAT</Title>
+              <Title>CodeEAT</Title>
+              <ImageContent>
+                <img src="/assets/character/single/Adam_idle_anim_24.png"></img>
+                <img src="/assets/character/single/Ash_idle_anim_24.png"></img>
+                <img src="/assets/character/single/Lucy_idle_anim_24.png"></img>
+                <img src="/assets/character/single/Nancy_idle_anim_24.png"></img>
+              </ImageContent>
               <Content>
                 <Button variant="contained" onClick={gotoLoginPage}>
                   로그인

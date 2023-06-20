@@ -2,16 +2,16 @@ import { ItemType } from '../../../types/Items'
 import store from '../stores'
 import Item from './Item'
 import Network from '../services/Network'
-import { openCodeEditorDialog } from '../stores/CodeEditorStore'
+import { openMoleGameDialog } from '../stores/MoleGameStore'
 
-export default class CodeEditor extends Item {
+export default class MoleGame extends Item {
   id?: string
   currentUsers = new Set<string>()
 
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
     super(scene, x, y, texture, frame)
 
-    this.itemType = ItemType.CODEEDITOR
+    this.itemType = ItemType.MOLEGAME
   }
 
   private updateStatus() {
@@ -27,7 +27,7 @@ export default class CodeEditor extends Item {
 
   onOverlapDialog() {
     if (this.currentUsers.size === 0) {
-      this.setDialogBox('Press R to use code editor')
+      this.setDialogBox('Press R to play the Whack a Mole')
     } else {
       this.setDialogBox('Press R join')
     }
@@ -47,7 +47,7 @@ export default class CodeEditor extends Item {
 
   openDialog(network: Network) {
     if (!this.id) return
-    store.dispatch(openCodeEditorDialog(this.id))
-    network.connectToCodeEditor(this.id)
+    store.dispatch(openMoleGameDialog(this.id))
+    network.connectToMoleGame(this.id)
   }
 }

@@ -4233,7 +4233,7 @@
         {
          "draworder":"topdown",
          "id":15,
-         "name":"CodeEditor",
+         "name":"MoleGame",
          "objects":[
                 {
                  "gid":5489,
@@ -27408,15 +27408,15 @@
         {
          "columns":1,
          "firstgid":5489,
-         "image":"..\/items\/codeeditor.png",
-         "imageheight":72,
-         "imagewidth":48,
+         "image":"..\/items\/gamemachine.png",
+         "imageheight":30,
+         "imagewidth":50,
          "margin":0,
-         "name":"codeeditor",
+         "name":"molegame",
          "spacing":0,
          "tilecount":1,
-         "tileheight":72,
-         "tilewidth":48
+         "tileheight":30,
+         "tilewidth":50
         }],
  "tilewidth":32,
  "type":"map",

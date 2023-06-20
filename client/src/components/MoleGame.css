@@ -17,6 +17,7 @@ h1 {
   color: #f2ecff;
   text-align: center;
   line-height: 1.5;
+  font-size: 20px;
 }
 
 .main{
@@ -27,19 +28,19 @@ h1 {
 .whack-a-mole {
   margin: 0 auto;
   list-style: none;
-  width: 600px;
+  width: 450px;
   border-radius: 20px;
 }
 
 .mole{
   float: left;
-  width: 160px;
-  height: 160px;
-  margin: 10px;
+  width: 120px;
+  height: 120px;
+  margin: 5px;
   overflow: hidden;
   cursor: pointer;
   border-radius: 20px;
-  background: no-repeat center/cover url('./hole.png'), #004b21;
+  background: no-repeat center/cover url('/assets/game/molegame/hole.png'), #004b21;
 }
 
 li {
@@ -60,6 +61,7 @@ li {
   position: absolute;
 	top: 50%;
   left: 50%;
+  font-size: 15px;
   transform: translate( -50%, -50% );
 }
 
@@ -76,6 +78,20 @@ li {
   bottom: 0;
   opacity: 1;
   animation: shake 0.5s;
+  animation-iteration-count: infinite;
+}
+
+.whack-a-mole .click-correct{
+  bottom: 0;
+  opacity: 1;
+  animation: correct_click 0.5s;
+  animation-iteration-count: infinite;
+}
+
+.whack-a-mole .click-wrong{
+  bottom: 0;
+  opacity: 1;
+  animation: wrong_click 1.0s;
   animation-iteration-count: infinite;
 }
 
@@ -97,11 +113,31 @@ li {
   100% { transform: translate(1px, -2px) rotate(-1deg); }
 }
 
+@keyframes correct_click {
+  0% { bottom: 0px; }
+  25% { bottom: 10px; }
+  50% { bottom: 0px; }
+  75% { bottom: 10px; }
+  100% { bottom: 0px; }
+}
+
+@keyframes wrong_click {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(20deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes point {
+  0% { font-size: 34px; }
+  50% { font-size: 34px; }
+  100% { font-size: 14px; }
+}
+
 .point-wrap{
   float: left;
   width: 100%;
-  height: 60px;
-  margin: 20px 0 0 0;
+  height: 40px;
+  overflow:hiddlen;
 }
 
 .btn-wrap{
@@ -109,13 +145,13 @@ li {
   width: 100%;
 }
 
-.start-btn {
+.start-btn, .restart-btn {
   width: 50%;
-  height: 70px;
-  font-size: 20px;
+  height: 40px;
+  font-size: 15px;
   font-weight: 900;
-  margin: 20px 0 30px 0;
-  background: #222;
+  margin: 10px 0 10px 0;
+  background: #d6806e;
   border: none;
   color: #f2ecff;
   border-radius: 20px;
@@ -124,6 +160,11 @@ li {
 .start-btn:hover{
   opacity: 0.5;
   color: #f9f871;
+}
+
+.restart-btn:hover{
+  opacity: 0.5;
+  color: white;
 }
 
 .point-box {
@@ -135,27 +176,19 @@ li {
 }
 
 #point-text {
-  float: left;
-  font-size: 24px;
+  font-size: 14px;
   font-weight: bold;
   color: #f2ecff;
-  margin: 15px 0 0 20%;
 }
 
-#count-mole {
-  float: left;
-  font-size: 30px;
+#point-current {
+  font-size: 14px;
   font-weight: bold;
-  color: #f9f871;
-  margin: 10px 10px 0 60px;
+  color: #fbb666;
 }
 
-#count-mole2 {
-  float: left;
-  font-size: 24px;
-  font-weight: bold;
-  color: #f2ecff;
-  margin: 15px 0 0 0;
+.get-point{
+  animation: point 0.3s;
 }
 
 .ending {
@@ -165,9 +198,9 @@ li {
   font-size: 20px;
   text-align: center;
   top: 20%;
-  left: 30%;
+  left: 40%;
   width: 400px;
-  height: 250px;
+  height: 270px;
   margin: 0 auto;
   background: #3d3f43;
   z-index: 2;
@@ -175,7 +208,7 @@ li {
 
 #ending-box {
   margin: 50px 0 0 0;
-  font-size: 30px;
+  font-size: 20px;
   line-height: 1.8;
   color: #f2ecff;
 }
@@ -203,7 +236,7 @@ li {
   border-color: white;
   border-style: dashed;
   text-align: center;
-  width: 600px;
-  height: 100px;
-  margin: 30px auto 30px auto;
+  width: 800px;
+  height: 70px;
+  margin: 20px auto 10px auto;
 }

@@ -1,7 +1,7 @@
 {
-  "name": "skyoffice",
+  "name": "codeeat",
   "version": "1.0.0",
-  "description": "Server for SkyOffice",
+  "description": "Server for Code Eat",
   "main": ".eslintrc.js",
   "scripts": {
     "start": "cd server && ts-node-dev --project tsconfig.server.json --respawn --transpile-only index.ts",
@@ -10,15 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kevinshen56714/SkyOffice.git"
+    "url": "git+https://github.com/mosmosfromjungle/mosmos.git"
   },
   "keywords": [],
   "author": "kevinshen56714",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/kevinshen56714/SkyOffice/issues"
+    "url": "https://github.com/mosmosfromjungle/mosmos/issues"
   },
-  "homepage": "https://github.com/kevinshen56714/SkyOffice#readme",
+  "homepage": "https://github.com/mosmosfromjungle/mosmos#readme",
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.2",
     "@types/uuid": "^9.0.2",
@@ -46,9 +46,11 @@
     "express": "^4.16.4",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.2.2",
+    "peerjs": "^1.4.7",
     "phaser": "^3.55.2",
     "react-router-dom": "^6.12.1",
     "regenerator-runtime": "^0.13.7",
+    "socket.io": "^4.6.2",
     "typescript": "^4.8.2",
     "uuid": "^9.0.0"
   }
