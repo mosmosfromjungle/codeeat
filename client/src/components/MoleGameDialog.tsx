@@ -55,8 +55,6 @@ const ProblemText = styled.div`
 export default function MoleGameDialog() {
   const dispatch = useAppDispatch()
 
-  const [music, setMusic] = useState(false);
-
   const [flag, setFlag] = useState(0);
   const [titleColor, setTitleColor] = useState('#f2ecff');
 
@@ -119,7 +117,6 @@ export default function MoleGameDialog() {
 
     setStartButtonColor('#3d3f43');
     setPoint(0);
-    setTurn(0);
 
     setTimeout(showingMole, 1000);
   }
@@ -206,6 +203,8 @@ export default function MoleGameDialog() {
 
   const showingMole = () => {
     console.log("Function [showingMole]");
+
+    console.log(turn);
     
     if (turn < 10) {
       let luckyMoles = randomHole();
@@ -351,6 +350,8 @@ export default function MoleGameDialog() {
     } else {
       modalEvent();
       
+      setTurn(0);
+      
       setHideEnding(false);
 
       const FinishAudio = new Audio(FinishBGM);
@@ -358,6 +359,7 @@ export default function MoleGameDialog() {
 
       setStartButtonText('PRESS AGAIN');
       setStartButtonColor('#f2ecff');
+
       setDisableStartButton(false);
     }
   }
@@ -396,7 +398,6 @@ export default function MoleGameDialog() {
         CorrectAudio.play();
 
         const getPoint = document.getElementById('point-current');
-        console.log(getPoint);
         getPoint.classList.add('get-point');
 
         setPoint(point + 1);
