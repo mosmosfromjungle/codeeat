@@ -4,7 +4,7 @@ import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 
 import { useAppSelector, useAppDispatch } from '../hooks'
-import { closeCodeEditorDialog } from '../stores/CodeEditorStore'
+import { closeMoleGameDialog } from '../stores/MoleGameStore'
 
 import ButtonBGM from '/assets/audios/mole_button.mp3';
 import CorrectBGM from '/assets/audios/mole_correct.mp3';
@@ -52,7 +52,7 @@ const ProblemText = styled.div`
   font-size: 15px;
 `
 
-export default function CodeEditorDialog() {
+export default function MoleGameDialog() {
   const dispatch = useAppDispatch()
 
   const [music, setMusic] = useState(false);
@@ -477,7 +477,7 @@ export default function CodeEditorDialog() {
   // 6. Close
 
   const handleClose = () => {
-    dispatch(closeCodeEditorDialog());
+    dispatch(closeMoleGameDialog());
   }
   
   return (

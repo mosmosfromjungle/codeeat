@@ -8,7 +8,7 @@ import Chair from '../items/Chair'
 import Computer from '../items/Computer'
 import Whiteboard from '../items/Whiteboard'
 import VendingMachine from '../items/VendingMachine'
-import CodeEditor from '../items/CodeEditor'
+import MoleGame from '../items/MoleGame'
 
 import '../characters/MyPlayer'
 import '../characters/OtherPlayer'
@@ -16,6 +16,7 @@ import MyPlayer from '../characters/MyPlayer'
 import OtherPlayer from '../characters/OtherPlayer'
 import PlayerSelector from '../characters/PlayerSelector'
 import Network from '../services/Network'
+import Network2 from '../services/Network2'
 import { IPlayer } from '../../../types/IOfficeState'
 import { PlayerBehavior } from '../../../types/PlayerBehavior'
 import { ItemType } from '../../../types/Items'
@@ -26,6 +27,7 @@ import { NavKeys, Keyboard } from '../../../types/KeyboardState'
 
 export default class Game extends Phaser.Scene {
   network!: Network
+  network2!: Network2
   private cursors!: NavKeys
   private keyE!: Phaser.Input.Keyboard.Key
   private keyR!: Phaser.Input.Keyboard.Key
@@ -36,7 +38,7 @@ export default class Game extends Phaser.Scene {
   private otherPlayerMap = new Map<string, OtherPlayer>()
   computerMap = new Map<string, Computer>()
   private whiteboardMap = new Map<string, Whiteboard>()
-  private codeeditorMap = new Map<String, CodeEditor>()
+  private molegameMap = new Map<String, MoleGame>()
 
   constructor() {
     super('game')
@@ -133,18 +135,18 @@ export default class Game extends Phaser.Scene {
     })
 
     // import code editor objects from Tiled map to Phaser
-    const codeeditors = this.physics.add.staticGroup({ classType: CodeEditor })
-    const codeeditorLayer = this.map.getObjectLayer('CodeEditor')
-    codeeditorLayer.objects.forEach((obj, i) => {
+    const molegames = this.physics.add.staticGroup({ classType: MoleGame })
+    const molegameLayer = this.map.getObjectLayer('MoleGame')
+    molegameLayer.objects.forEach((obj, i) => {
       const item = this.addObjectFromTiled(
-        codeeditors,
+        molegames,
         obj,
-        'codeeditors',
-        'codeeditor'
-      ) as CodeEditor
+        'molegames',
+        'molegame'
+      ) as MoleGame
       const id = `${i}`
       item.id = id
-      this.codeeditorMap.set(id, item)
+      this.molegameMap.set(id, item)
     })
 
     // import other objects from Tiled map to Phaser
@@ -163,9 +165,10 @@ export default class Game extends Phaser.Scene {
     this.physics.add.collider([this.myPlayer, this.myPlayer.playerContainer], groundLayer)
     this.physics.add.collider([this.myPlayer, this.myPlayer.playerContainer], vendingMachines)
 
+    // 상호작용 추가하는 부분..?
     this.physics.add.overlap(
       this.playerSelector,
-      [chairs, computers, whiteboards, vendingMachines, codeeditors],
+      [chairs, computers, whiteboards, vendingMachines, molegames],
       this.handleItemSelectorOverlap,
       undefined,
       this
@@ -284,9 +287,9 @@ export default class Game extends Phaser.Scene {
       const whiteboard = this.whiteboardMap.get(itemId)
       whiteboard?.addCurrentUser(playerId)
 
-    } else if (itemType === ItemType.CODEEDITOR) {
-      const codeeditor = this.codeeditorMap.get(itemId)
-      codeeditor?.addCurrentUser(playerId)
+    } else if (itemType === ItemType.MOLEGAME) {
+      const molegame = this.molegameMap.get(itemId)
+      molegame?.addCurrentUser(playerId)
     }
   }
 
@@ -299,9 +302,9 @@ export default class Game extends Phaser.Scene {
       const whiteboard = this.whiteboardMap.get(itemId)
       whiteboard?.removeCurrentUser(playerId)
 
-    } else if (itemType === ItemType.CODEEDITOR) {
-      const codeeditor = this.codeeditorMap.get(itemId)
-      codeeditor?.removeCurrentUser(playerId)
+    } else if (itemType === ItemType.MOLEGAME) {
+      const molegame = this.molegameMap.get(itemId)
+      molegame?.removeCurrentUser(playerId)
     }
   }
 

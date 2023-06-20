@@ -1,14 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Button from '@mui/material/Button'
 import Alert from '@mui/material/Alert'
 import Snackbar from '@mui/material/Snackbar'
 
-import phaserGame from '../PhaserGame'
-import Bootstrap from '../scenes/Bootstrap'
+import phaserGame from '../../PhaserGame'
+import Bootstrap from '../../scenes/Bootstrap'
 
-import { useAppSelector, useAppDispatch } from '../hooks'
-import { setShowLogin, setShowJoin } from '../stores/UserStore'
+import { useAppSelector, useAppDispatch } from '../../hooks'
+import { ENTRY_PROCESS, setEntryProcess } from '../../stores/UserStore'
+
 
 const Backdrop = styled.div`
   position: absolute;
@@ -69,28 +70,31 @@ const ImageContent = styled.div`
   }
 `
 
-export default function WelcomeDialog() {
+
+export default function EntryDialog() {
   const [showSnackbar, setShowSnackbar] = useState(false)
   const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)
 
   const dispatch = useAppDispatch()
 
-  const gotoLoginPage = () => {
+  const handleConnect = () => {
     if (lobbyJoined) {
-      const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-      bootstrap.network
-        .joinOrCreatePublic()
-        .then(() => bootstrap.launchGame())
-        .catch((error) => console.error(error))
+      // const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
+      // bootstrap.network
+      //   .joinOrCreatePublic()
+      //   .then(() => bootstrap.launchGame())
+      //   .catch((error) => console.error(error))
     } else {
       setShowSnackbar(true)
     }
-    
-    dispatch(setShowLogin(true))
+  }
+
+  const gotoLoginPage = () => {
+    dispatch(setEntryProcess(ENTRY_PROCESS.LOGIN))
   }
 
   const gotoJoinPage = () => {
-    dispatch(setShowJoin(true))
+    dispatch(setEntryProcess(ENTRY_PROCESS.JOIN))
   }
 
   return (
