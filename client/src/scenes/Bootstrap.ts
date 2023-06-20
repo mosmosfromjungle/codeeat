@@ -29,18 +29,33 @@ export default class Bootstrap extends Phaser.Scene {
 
     // this.load.tilemapTiledJSON('tilemap', 'assets/map/map.json')
     this.load.tilemapTiledJSON('tilemap', 'assets/map/codeEatMap.json')
-    this.load.spritesheet('tiles_wall', 'assets/map/FloorAndGround.png', {
-      frameWidth: 32,
-      frameHeight: 32,
-    })
+    // this.load.spritesheet('tiles_wall', 'assets/map/FloorAndGround.png', {
+    //   frameWidth: 32,
+    //   frameHeight: 32,
+    // })
 
     // codeEatMap
-    this.load.spritesheet('chairs', 'assets/items/bench.png', {
+    this.load.spritesheet('bench', 'assets/items/bench.png', {
       frameWidth: 16,
       frameHeight: 16,
     })
 
-    this.load.spritesheet('chairs', 'assets/items/bench.png', {
+    this.load.spritesheet('codeEatChair', 'assets/items/codeEatChair.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+
+    this.load.spritesheet('mole', 'assets/items/mole.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+
+    this.load.spritesheet('picnic2', 'assets/items/picnic2.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+
+    this.load.spritesheet('codeEatInteriors', 'assets/tileset/codeEatInteriors.png', {
       frameWidth: 16,
       frameHeight: 16,
     })
@@ -65,15 +80,11 @@ export default class Bootstrap extends Phaser.Scene {
       frameWidth: 16,
       frameHeight: 16,
     })
-    this.load.spritesheet('ModernExteriorsCompleteFinal', 'assets/tileset/ModernExteriorsCompleteFinal.png', {
+    this.load.spritesheet('ModernExteriorsFinal', 'assets/tileset/ModernExteriorsFinal.png', {
       frameWidth: 16,
       frameHeight: 16,
     })
     this.load.spritesheet('ModernExteriorsComplete', 'assets/tileset/ModernExteriorsComplete.png', {
-      frameWidth: 16,
-      frameHeight: 16,
-    })
-    this.load.spritesheet('Room_Builder', 'assets/tileset/Room_Builder.png', {
       frameWidth: 16,
       frameHeight: 16,
     })
@@ -83,38 +94,39 @@ export default class Bootstrap extends Phaser.Scene {
     })
 
 
-    this.load.spritesheet('chairs', 'assets/items/chair.png', {
-      frameWidth: 32,
-      frameHeight: 64,
-    })
-    this.load.spritesheet('computers', 'assets/items/computer.png', {
-      frameWidth: 96,
-      frameHeight: 64,
-    })
-    this.load.spritesheet('whiteboards', 'assets/items/whiteboard.png', {
-      frameWidth: 64,
-      frameHeight: 64,
-    })
-    this.load.spritesheet('vendingmachines', 'assets/items/vendingmachine.png', {
-      frameWidth: 48,
-      frameHeight: 72,
-    })
-    this.load.spritesheet('molegames', 'assets/items/gamemachine.png', {
-      frameWidth: 30,
-      frameHeight: 50,
-    })
-    this.load.spritesheet('office', 'assets/tileset/Modern_Office_Black_Shadow.png', {
-      frameWidth: 32,
-      frameHeight: 32,
-    })
-    this.load.spritesheet('basement', 'assets/tileset/Basement.png', {
-      frameWidth: 32,
-      frameHeight: 32,
-    })
-    this.load.spritesheet('generic', 'assets/tileset/Generic.png', {
-      frameWidth: 32,
-      frameHeight: 32,
-    })
+    // 기존 스카이오피스 코드
+    // this.load.spritesheet('chairs', 'assets/items/chair.png', {
+    //   frameWidth: 32,
+    //   frameHeight: 64,
+    // })
+    // this.load.spritesheet('computers', 'assets/items/computer.png', {
+    //   frameWidth: 96,
+    //   frameHeight: 64,
+    // })
+    // this.load.spritesheet('whiteboards', 'assets/items/whiteboard.png', {
+    //   frameWidth: 64,
+    //   frameHeight: 64,
+    // })
+    // this.load.spritesheet('vendingmachines', 'assets/items/vendingmachine.png', {
+    //   frameWidth: 48,
+    //   frameHeight: 72,
+    // })
+    // this.load.spritesheet('molegames', 'assets/items/gamemachine.png', {
+    //   frameWidth: 30,
+    //   frameHeight: 50,
+    // })
+    // this.load.spritesheet('office', 'assets/tileset/Modern_Office_Black_Shadow.png', {
+    //   frameWidth: 32,
+    //   frameHeight: 32,
+    // })
+    // this.load.spritesheet('basement', 'assets/tileset/Basement.png', {
+    //   frameWidth: 32,
+    //   frameHeight: 32,
+    // })
+    // this.load.spritesheet('generic', 'assets/tileset/Generic.png', {
+    //   frameWidth: 32,
+    //   frameHeight: 32,
+    // })
     this.load.spritesheet('adam', 'assets/character/adam.png', {
       frameWidth: 32,
       frameHeight: 48,
