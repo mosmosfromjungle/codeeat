@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import styled, { createGlobalStyle } from 'styled-components';
 import Background from "../scenes/Background";
 import typing_Background from "../../public/img/typinggame/blackboard.png"
+import { SSL_OP_NETSCAPE_DEMO_CIPHER_CHANGE_BUG } from "constants";
 
 
 const GlobalStyle = createGlobalStyle`
