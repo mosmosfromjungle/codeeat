@@ -2,7 +2,7 @@ import Phaser from 'phaser'
 import Network from '../services/Network'
 import { BackgroundMode } from '../../../types/BackgroundMode'
 import store from '../stores'
-import { setRoomJoined } from '../stores/RoomStore'
+import { setLobbyJoined } from '../stores/RoomStore'
 
 export default class Bootstrap extends Phaser.Scene {
   private preloadComplete = false
@@ -40,7 +40,7 @@ export default class Bootstrap extends Phaser.Scene {
       frameWidth: 96,
       frameHeight: 64,
     })
-    this.load.spritesheet('whiteboards', 'assets/items/whiteboard.png', {
+    this.load.spritesheet('acidrains', 'assets/items/acidrain.png', {
       frameWidth: 64,
       frameHeight: 64,
     })
@@ -103,7 +103,7 @@ export default class Bootstrap extends Phaser.Scene {
     })
 
     // update Redux state
-    store.dispatch(setRoomJoined(true))
+    store.dispatch(setLobbyJoined(true))
   }
 
   changeBackgroundMode(backgroundMode: BackgroundMode) {

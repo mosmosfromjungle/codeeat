@@ -2,7 +2,7 @@ import { ItemType } from '../../../types/Items'
 import store from '../stores'
 import Item from './Item'
 import Network from '../services/Network'
-import { openComputerDialog } from '../stores/ComputerStore'
+import { openComputerDialog } from '../stores/DataGameStore'
 
 export default class Computer extends Item {
   id?: string

@@ -1,9 +1,8 @@
-import RainUser from '../../models/RainUser';
+import User from '../../models/User';
 import { Socket } from 'socket.io';
-// import { io } from '../..';
 import { v4 as uuidV4 } from 'uuid';
 import { Request, Response } from 'express';
-import { userMap } from '../..';
+import Data from '../../models/DataGame';
 
 const rooms: Record<string, string[]> = {};
 // const rooms_chat: Record<string, Object[]> = {};
@@ -12,16 +11,14 @@ interface IRoomParams {
   userId: string;
 }
 
-// const time_diff = 9 * 60 * 60 * 1000; ????
-
 const createRoom = () => {
   const roomId = uuidV4();
   rooms[roomId] = [];
-  console.log('Rain-game room[', roomId, '] created.');
+  console.log('Data-game room[', roomId, '] created.');
   return roomId;
 };
 
-export const RainController = (socket: Socket) => {
+export const DataController = (socket: Socket) => {
   const joinRoom = (host: { roomId: string; userId: string; }) => {
     let { roomId } = host;
     const { userId } = host;
@@ -36,18 +33,43 @@ export const RainController = (socket: Socket) => {
     }
     startGame({ roomId, userId });
     // -- 게임 ---
+    socket.on('playerScore', (playerInfo) => {
+      addScore(playerInfo)
+      socket.to(roomId).emit(playerInfo)
+    })
+    //-----------
     socket.on('disconnect', () => {
       console.log('user left the room', host);
-      leftGame(roomId);
+      leaveRoom({roomId, userId: userId});
     });
   };
 
   const startGame = ({ roomId, userId: userId }: IRoomParams) => {
     socket.to(roomId).emit('user-started-game', userId);
   };
-  const leftGame = (roomId: string) => {
-    socket.to(roomId).emit('user-left-game');
-  };
+  const leaveRoom = ({ roomId, userId: userId }: IRoomParams) => {
+    rooms[roomId] = rooms[roomId].filter((id) => id !== userId);
+    deleteHistory({ playerId: userId})
+    socket.to(roomId).emit('user-disconnected', userId);
+  }
 
   socket.on('join-room', joinRoom);
 };
+
+export const addScore = (playerInfo: {
+  playerId: string;
+  playerScore: number;
+}) => {
+  Data.collection.findAndModify({
+    playerId: playerInfo.playerId,
+    playerScore: playerInfo.playerScore + 1
+  })
+}
+
+export const deleteHistory = (playerInfo: {
+  playerId: string;
+}) => {
+  Data.collection.findOneAndDelete({
+    playerId: playerInfo.playerId
+  })
+}

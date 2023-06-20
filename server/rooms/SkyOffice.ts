@@ -1,10 +1,10 @@
 import bcrypt from 'bcrypt'
 import { Room, Client, ServerError } from 'colyseus'
 import { Dispatcher } from '@colyseus/command'
-import { Player, OfficeState, Computer, Whiteboard, MoleGame } from './schema/OfficeState'
+import { Player, OfficeState, Computer, AcidRain, MoleGame } from './schema/OfficeState'
 import { Message } from '../../types/Messages'
 import { IRoomData } from '../../types/Rooms'
-import { whiteboardRoomIds } from './schema/OfficeState'
+import { acidrainRoomIds } from './schema/OfficeState'
 import { moleGameRoomIds } from './schema/OfficeState'
 import PlayerUpdateCommand from './commands/PlayerUpdateCommand'
 import PlayerUpdateNameCommand from './commands/PlayerUpdateNameCommand'
@@ -13,9 +13,9 @@ import {
   ComputerRemoveUserCommand,
 } from './commands/ComputerUpdateArrayCommand'
 import {
-  WhiteboardAddUserCommand,
-  WhiteboardRemoveUserCommand,
-} from './commands/WhiteboardUpdateArrayCommand'
+  AcidRainAddUserCommand,
+  AcidRainRemoveUserCommand,
+} from './commands/AcidRainUpdateArrayCommand'
 import {
   MoleGameAddUserCommand,
   MoleGameRemoveUserCommand,
@@ -49,9 +49,9 @@ export class SkyOffice extends Room<OfficeState> {
       this.state.computers.set(String(i), new Computer())
     }
 
-    // HARD-CODED: Add 3 whiteboards in a room
+    // HARD-CODED: Add 3 acidrains in a room
     for (let i = 0; i < 3; i++) {
-      this.state.whiteboards.set(String(i), new Whiteboard())
+      this.state.acidrains.set(String(i), new AcidRain())
     }
 
     // HARD-CODED: Add 1 molegames in a room
@@ -87,21 +87,21 @@ export class SkyOffice extends Room<OfficeState> {
       })
     })
 
-    // when a player connect to a whiteboard, add to the whiteboard connectedUser array
-    this.onMessage(Message.CONNECT_TO_WHITEBOARD, (client, message: { whiteboardId: string }) => {
-      this.dispatcher.dispatch(new WhiteboardAddUserCommand(), {
+    // when a player connect to a acidrain, add to the acidrain connectedUser array
+    this.onMessage(Message.CONNECT_TO_ACIDRAIN, (client, message: { acidrainId: string }) => {
+      this.dispatcher.dispatch(new AcidRainAddUserCommand(), {
         client,
-        whiteboardId: message.whiteboardId,
+        acidrainId: message.acidrainId,
       })
     })
 
-    // when a player disconnect from a whiteboard, remove from the whiteboard connectedUser array
+    // when a player disconnect from a acidrain, remove from the acidrain connectedUser array
     this.onMessage(
-      Message.DISCONNECT_FROM_WHITEBOARD,
-      (client, message: { whiteboardId: string }) => {
-        this.dispatcher.dispatch(new WhiteboardRemoveUserCommand(), {
+      Message.DISCONNECT_FROM_ACIDRAIN,
+      (client, message: { acidrainId: string }) => {
+        this.dispatcher.dispatch(new AcidRainRemoveUserCommand(), {
           client,
-          whiteboardId: message.whiteboardId,
+          acidrainId: message.acidrainId,
         })
       }
     )
@@ -212,9 +212,9 @@ export class SkyOffice extends Room<OfficeState> {
         computer.connectedUser.delete(client.sessionId)
       }
     })
-    this.state.whiteboards.forEach((whiteboard) => {
-      if (whiteboard.connectedUser.has(client.sessionId)) {
-        whiteboard.connectedUser.delete(client.sessionId)
+    this.state.acidrains.forEach((acidrain) => {
+      if (acidrain.connectedUser.has(client.sessionId)) {
+        acidrain.connectedUser.delete(client.sessionId)
       }
     })
     this.state.molegames.forEach((molegame) => {

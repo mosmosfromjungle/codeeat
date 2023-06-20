@@ -1,39 +1,53 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { io, Socket } from 'socket.io-client';
-export default class datastructureNetwork {
+import ParasolImg from 'src/assets/directmessage/parasol.png';
+import store from '../stores';
+// import { setNewMessageCnt, setNewMessage, setRequestFriendCnt } from 'src/stores/DMboxStore';
+// import Cookies from 'universal-cookie';
+import { fireNotification } from '../api/notification';
+import ComputerStore from '../stores/DataGameStore';
+// const cookies = new Cookies();
+
+interface Player{
+  player: string;
+  playerScore: number;
+}
+
+export default class gameNetwork {
   private socketClient: Socket;
+  public playerScores: Player[] = [];
 
   constructor() {
-    const socketUrl = `http://localhost:8886/`
-    this.socketClient = io(socketUrl)
-    this.socketClient.on("connect_error", (err) => {
-      console.log(`connetion err${err.message}`);
-      console.error(err)
-      
-    })
-    
-    this.socketClient.on('getscore', (data) => {
-        this.socketClient.emit('updatescore',this.socketClient.id)
-      console.log('getscore', data);
-    });
+    const socketUrl =
+      process.env.NODE_ENV === 'production' || import.meta.env.VITE_SERVER === 'PRO'
+        ? `https://${import.meta.env.VITE_SOCKET_SERVER_URL}`
+        : `http://${window.location.hostname}:8888`;
 
-    this.socketClient.on('win', (data) => {
-      data.player.score += 1
+    this.socketClient = io(socketUrl, {
+      transports: ['websocket', 'polling', 'flashsocket'],
+      withCredentials: true,
+    });
+    this.socketClient.on('addscore_mole', (data) => {
+      store.dispatch()
+    });
+    this.socketClient.on('addscore_data', (data) => {
+      store.dispatch()
+    });
+    this.socketClient.on('addscore_rain', (data) => {
+      store.dispatch()
     });
   }
 
-  async getSocket () {
+  getSocket = () => {
     return this.socketClient;
   };
 
-  async joinRoom (roomId: string, userId: string, friendId: string, callback: any) {
-    console.log('join!');
-    console.log(this.socketClient)
-    this.socketClient.emit('join-room', { roomId: roomId, userId: userId, friendId: friendId });
+  joinRoom = (roomId: string, userId: string) => {
+    this.socketClient.emit('join-room', { roomId: roomId, userId: userId });
+
   };
 
-  async whoAmI (userId: string) {
-    console.log('myId is ....', userId);
-    this.socketClient.emit('whoAmI', userId)
+  whoRU = (userId: string) => {
+    this.socketClient.emit('whoRU', userId);
   };
 }

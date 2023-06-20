@@ -8,14 +8,14 @@ import phaserGame from '../PhaserGame';
 import Game from '../../src/scenes/Game';
 
 import { useAppSelector, useAppDispatch } from '../hooks'
-import { closeComputerDialog } from '../stores/ComputerStore'
+import { closeComputerDialog } from '../stores/DataGameStore'
 
 interface Player {
   id: any;
   score: number;
 }
 
-const socket = io('http://localhost:8888')
+const socket = io('http://localhost:3001')
 
 const WRONG_OPERATION = '해당 자료구조에서 사용되지 않는 연산입니다!'
 const COMMON_MESSAGE = (
@@ -153,7 +153,22 @@ export default function ComputerDialog() {
     setN(newN)
     setM(newM)
     setX(newX)
+    
   }
+
+  const[array, setArray] = useState([0, 0, 0, 0, 0, 0])
+  useEffect(() => {
+    setArr();
+  }, [])
+  const setArr = () => {
+    const a = getRandomIntInclusive(1,n)
+    const b = getRandomIntInclusive(1,n)
+    const c = getRandomIntInclusive(1,n)
+    
+
+    setArray([a, b, c, n, m, x].sort(() => Math.random() - 0.5))
+  }
+  const arr = array
   const answer = n
 
   const dispatch = useAppDispatch()
@@ -185,13 +200,13 @@ export default function ComputerDialog() {
 
 
   const [images, setImages] = useState([
-    { src: '/assets/brickGame/52-2.png', text: x.toString() },
-    { src: '/assets/brickGame/25-2.png', text: m.toString() },
-    { src: '/assets/brickGame/37-2.png', text: '1' },
-    { src: '/assets/brickGame/51-2.png', text: '2' },
-    { src: '/assets/brickGame/50-2.png', text: '3' },
-    { src: '/assets/brickGame/39-2.png', text: '4' },
-  ])
+    { src: '/assets/brickGame/52-2.png', text: arr[0].toString() },
+    { src: '/assets/brickGame/25-2.png', text: arr[1].toString() },
+    { src: '/assets/brickGame/37-2.png', text: arr[2].toString() },
+    { src: '/assets/brickGame/51-2.png', text: arr[3].toString() },
+    { src: '/assets/brickGame/50-2.png', text: arr[4].toString() },
+    { src: '/assets/brickGame/39-2.png', text: arr[5].toString() },
+  ],)
 
   const [originalImages, setOriginalImages] = useState([...images]) // 원래의 이미지 배열 복사
   const [command, setCommand] = useState('')
@@ -299,8 +314,9 @@ export default function ComputerDialog() {
     setCommand('');
   };
 
-  const handleKeyDown = (event) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
+      event.preventDefault()
       handleCommand()
     }
   }

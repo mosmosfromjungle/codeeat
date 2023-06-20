@@ -4,7 +4,7 @@ import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 
 import { useAppSelector, useAppDispatch } from '../hooks'
-import { closeWhiteboardDialog } from '../stores/WhiteboardStore'
+import { closeAcidRainDialog } from '../stores/AcidRainStore'
 import { TypingGame } from './typinggame'
 // 원래 패딩 : 16px, 180px, 16px, 10px
 const Backdrop = styled.div`
@@ -37,7 +37,7 @@ const Wrapper = styled.div`
   }
 `
 
-const WhiteboardWrapper = styled.div`
+const AcidRainWrapper = styled.div`
   flex: 1;
   border-radius: 25px;
   overflow: hidden;
@@ -50,8 +50,8 @@ const WhiteboardWrapper = styled.div`
   }
 `
 
-export default function WhiteboardDialog() {
-  const whiteboardUrl = useAppSelector((state) => state.whiteboard.whiteboardUrl)
+export default function AcidRainDialog() {
+  const acidrainUrl = useAppSelector((state) => state.acidrain.acidrainUrl)
   const dispatch = useAppDispatch()
 
   return (
@@ -61,15 +61,15 @@ export default function WhiteboardDialog() {
         { <IconButton
           aria-label="close dialog"
           className="close"
-          onClick={() => dispatch(closeWhiteboardDialog())}
+          onClick={() => dispatch(closeAcidRainDialog())}
         >
           <CloseIcon />
         </IconButton>
         /*
-        {whiteboardUrl && (
-          <WhiteboardWrapper>
-            <iframe title="white board" src={whiteboardUrl} />
-          </WhiteboardWrapper>
+        {acidrainUrl && (
+          <AcidRainWrapper>
+            <iframe title="white board" src={acidrainUrl} />
+          </AcidRainWrapper>
         )} */}
       </Wrapper>
     </Backdrop>

@@ -3,7 +3,7 @@ import {
   IPlayer,
   IOfficeState,
   IComputer,
-  IWhiteboard,
+  IAcidRain,
   IMoleGame,
   IChatMessage,
 } from '../../../types/IOfficeState'
@@ -21,7 +21,7 @@ export class Computer extends Schema implements IComputer {
   @type({ set: 'string' }) connectedUser = new SetSchema<string>()
 }
 
-export class Whiteboard extends Schema implements IWhiteboard {
+export class AcidRain extends Schema implements IAcidRain {
   @type('string') roomId = getRoomId()
   @type({ set: 'string' }) connectedUser = new SetSchema<string>()
 }
@@ -44,8 +44,8 @@ export class OfficeState extends Schema implements IOfficeState {
   @type({ map: Computer })
   computers = new MapSchema<Computer>()
 
-  @type({ map: Whiteboard })
-  whiteboards = new MapSchema<Whiteboard>()
+  @type({ map: AcidRain })
+  acidrains = new MapSchema<AcidRain>()
 
   @type({ map: MoleGame })
   molegames = new MapSchema<MoleGame>()
@@ -54,7 +54,7 @@ export class OfficeState extends Schema implements IOfficeState {
   chatMessages = new ArraySchema<ChatMessage>()
 }
 
-export const whiteboardRoomIds = new Set<string>()
+export const acidrainRoomIds = new Set<string>()
 export const moleGameRoomIds = new Set<string>()
 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 const charactersLength = characters.length
@@ -64,8 +64,8 @@ function getRoomId() {
   for (let i = 0; i < 12; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength))
   }
-  if (!whiteboardRoomIds.has(result)) {
-    whiteboardRoomIds.add(result)
+  if (!acidrainRoomIds.has(result)) {
+    acidrainRoomIds.add(result)
     return result
   } else {
     console.log('roomId exists, remaking another one.')

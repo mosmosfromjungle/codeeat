@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 import { Client, Room } from 'colyseus.js'
-import { IComputer, IOfficeState, IPlayer, IWhiteboard, IMoleGame } from '../../../types/IOfficeState'
+import { IComputer, IOfficeState, IPlayer, IAcidRain, IMoleGame } from '../../../types/IOfficeState'
 import { Message } from '../../../types/Messages'
 import { IRoomData, RoomType } from '../../../types/Rooms'
 import { ItemType } from '../../../types/Items'
@@ -12,16 +12,13 @@ import { setSessionId, setPlayerNameMap, removePlayerNameMap } from '../stores/U
 import {
   setLobbyJoined,
   setJoinedRoomData,
-  setAvailableRooms,
-  addAvailableRooms,
-  removeAvailableRooms,
 } from '../stores/RoomStore'
 import {
   pushChatMessage,
   pushPlayerJoinedMessage,
   pushPlayerLeftMessage,
 } from '../stores/ChatStore'
-import { setWhiteboardUrls } from '../stores/WhiteboardStore'
+import { setAcidRainUrls } from '../stores/AcidRainStore'
 
 export default class Network {
   private client: Client
@@ -140,20 +137,20 @@ export default class Network {
       }
     }
 
-    // new instance added to the whiteboards MapSchema
-    this.room.state.whiteboards.onAdd = (whiteboard: IWhiteboard, key: string) => {
+    // new instance added to the acidrains MapSchema
+    this.room.state.acidrains.onAdd = (acidrain: IAcidRain, key: string) => {
       store.dispatch(
-        setWhiteboardUrls({
-          whiteboardId: key,
-          roomId: whiteboard.roomId,
+        setAcidRainUrls({
+          acidrainId: key,
+          roomId: acidrain.roomId,
         })
       )
       // track changes on every child object's connectedUser
-      whiteboard.connectedUser.onAdd = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.WHITEBOARD)
+      acidrain.connectedUser.onAdd = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.ACIDRAIN)
       }
-      whiteboard.connectedUser.onRemove = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.WHITEBOARD)
+      acidrain.connectedUser.onRemove = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.ACIDRAIN)
       }
     }
 
@@ -282,12 +279,12 @@ export default class Network {
     this.room?.send(Message.DISCONNECT_FROM_COMPUTER, { computerId: id })
   }
 
-  connectToWhiteboard(id: string) {
-    this.room?.send(Message.CONNECT_TO_WHITEBOARD, { whiteboardId: id })
+  connectToAcidRain(id: string) {
+    this.room?.send(Message.CONNECT_TO_ACIDRAIN, { acidrainId: id })
   }
 
-  disconnectFromWhiteboard(id: string) {
-    this.room?.send(Message.DISCONNECT_FROM_WHITEBOARD, { whiteboardId: id })
+  disconnectFromAcidRain(id: string) {
+    this.room?.send(Message.DISCONNECT_FROM_ACIDRAIN, { acidrainId: id })
   }
 
   onStopScreenShare(id: string) {

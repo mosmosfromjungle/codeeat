@@ -8,7 +8,7 @@ import WelcomeDialog from './components/WelcomeDialog'
 import LoginDialog from './components/LoginDialog'
 import JoinDialog from './components/JoinDialog'
 import ComputerDialog from './components/ComputerDialog'
-import WhiteboardDialog from './components/WhiteboardDialog'
+import AcidRainDialog from './components/AcidRainDialog'
 import MoleGameDialog from './components/MoleGameDialog'
 import VideoConnectionDialog from './components/VideoConnectionDialog'
 import HelperButtonGroup from './components/HelperButtonGroup'
@@ -38,7 +38,7 @@ const Backdrop = styled.div`
 function App() {
   const loggedIn = useAppSelector((state) => state.user.loggedIn)
   const computerDialogOpen = useAppSelector((state) => state.computer.computerDialogOpen)
-  const whiteboardDialogOpen = useAppSelector((state) => state.whiteboard.whiteboardDialogOpen)
+  const acidrainDialogOpen = useAppSelector((state) => state.acidrain.acidrainDialogOpen)
   const videoConnected = useAppSelector((state) => state.user.videoConnected)
   const roomJoined = useAppSelector((state) => state.room.roomJoined)
   const moleGameDialogOpen = useAppSelector((state) => state.molegame.moleGameDialogOpen)
@@ -59,8 +59,8 @@ function App() {
     if (computerDialogOpen) {
       ui = <ComputerDialog />
 
-    } else if (whiteboardDialogOpen) {
-      ui = <WhiteboardDialog />
+    } else if (acidrainDialogOpen) {
+      ui = <AcidRainDialog />
 
     } else if (moleGameDialogOpen) {
       ui = <MoleGameDialog />
@@ -103,8 +103,8 @@ function App() {
     <Backdrop>
       {ui}
       {/* Render HelperButtonGroup, ProfileButton if no dialogs are opened. */}
-      {!computerDialogOpen && !whiteboardDialogOpen && !moleGameDialogOpen && <HelperButtonGroup />}
-      {!computerDialogOpen && !whiteboardDialogOpen && !moleGameDialogOpen && <ProfileButton />}
+      {!computerDialogOpen && !acidrainDialogOpen && !moleGameDialogOpen && <HelperButtonGroup />}
+      {!computerDialogOpen && !acidrainDialogOpen && !moleGameDialogOpen && <ProfileButton />}
       {<GlobalFont />}
     </Backdrop>
   )

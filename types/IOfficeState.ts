@@ -7,13 +7,14 @@ export interface IPlayer extends Schema {
   anim: string
   readyToConnect: boolean
   videoConnected: boolean
+  userId: string
 }
 
 export interface IComputer extends Schema {
   connectedUser: SetSchema<string>
 }
 
-export interface IWhiteboard extends Schema {
+export interface IAcidRain extends Schema {
   roomId: string
   connectedUser: SetSchema<string>
 }
@@ -32,7 +33,7 @@ export interface IChatMessage extends Schema {
 export interface IOfficeState extends Schema {
   players: MapSchema<IPlayer>
   computers: MapSchema<IComputer>
-  whiteboards: MapSchema<IWhiteboard>
+  acidrains: MapSchema<IAcidRain>
   molegames: MapSchema<IMoleGame>
   chatMessages: ArraySchema<IChatMessage>
 }

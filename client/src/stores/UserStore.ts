@@ -9,7 +9,6 @@ export function getInitialBackgroundMode() {
   const currentHour = new Date().getHours()
   return currentHour > 6 && currentHour <= 18 ? BackgroundMode.DAY : BackgroundMode.NIGHT
 }
-
 export const userSlice = createSlice({
   name: 'user',
   initialState: {
@@ -67,7 +66,7 @@ export const userSlice = createSlice({
     },
     setShowProfile: (state, action: PayloadAction<boolean>) => {
       state.showProfile = action.payload
-    }
+    },
   },
 })
 

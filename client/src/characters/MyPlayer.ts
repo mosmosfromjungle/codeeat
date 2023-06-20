@@ -6,7 +6,7 @@ import Player from './Player'
 import Network from '../services/Network'
 import Chair from '../items/Chair'
 import Computer from '../items/Computer'
-import Whiteboard from '../items/Whiteboard'
+import AcidRain from '../items/AcidRain'
 import MoleGame from '../items/MoleGame'
 
 import { phaserEvents, Event } from '../events/EventCenter'
@@ -66,9 +66,9 @@ export default class MyPlayer extends Player {
           const computer = item as Computer
           computer.openDialog(this.playerId, network)
           break
-        case ItemType.WHITEBOARD:
-          const whiteboard = item as Whiteboard
-          whiteboard.openDialog(network)
+        case ItemType.ACIDRAIN:
+          const acidrain = item as AcidRain
+          acidrain.openDialog(network)
           break
         case ItemType.VENDINGMACHINE:
           // hacky and hard-coded, but leaving it as is for now
