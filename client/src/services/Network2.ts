@@ -21,7 +21,7 @@ export default class gameNetwork {
     const socketUrl =
       process.env.NODE_ENV === 'production' || import.meta.env.VITE_SERVER === 'PRO'
         ? `https://${import.meta.env.VITE_SOCKET_SERVER_URL}`
-        : `http://${window.location.hostname}:8888`;
+        : `http://${window.location.hostname}:5173`;
 
     this.socketClient = io(socketUrl, {
       transports: ['websocket', 'polling', 'flashsocket'],
