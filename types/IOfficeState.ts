@@ -32,12 +32,7 @@ export interface IChatMessage extends Schema {
 export interface IOfficeState extends Schema {
   players: MapSchema<IPlayer>
   computers: MapSchema<IComputer>
-<<<<<<< HEAD
   typinggames: MapSchema<ITypinggame>
-  codeeditors: MapSchema<ICodeEditor>
-=======
-  whiteboards: MapSchema<IWhiteboard>
   molegames: MapSchema<IMoleGame>
->>>>>>> 48c509604bc502c87a941ca6a921efaf7bc8b6b6
   chatMessages: ArraySchema<IChatMessage>
 }

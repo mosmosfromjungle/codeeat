@@ -1,11 +1,7 @@
 import axios from 'axios'
 
 import { Client, Room } from 'colyseus.js'
-<<<<<<< HEAD
-import { IComputer, IOfficeState, IPlayer, ITypinggame, ICodeEditor } from '../../../types/IOfficeState'
-=======
-import { IComputer, IOfficeState, IPlayer, IWhiteboard, IMoleGame } from '../../../types/IOfficeState'
->>>>>>> 48c509604bc502c87a941ca6a921efaf7bc8b6b6
+import { IComputer, IOfficeState, IPlayer, ITypinggame, IMoleGame } from '../../../types/IOfficeState'
 import { Message } from '../../../types/Messages'
 import { IRoomData, RoomType } from '../../../types/Rooms'
 import { ItemType } from '../../../types/Items'
@@ -25,12 +21,7 @@ import {
   pushPlayerJoinedMessage,
   pushPlayerLeftMessage,
 } from '../stores/ChatStore'
-<<<<<<< HEAD
-import { setCodeEditorUrls } from '../stores/CodeEditorStore'
-// import { setTypinggameUrls } from '../stores/TypingGameStore'
-=======
-import { setWhiteboardUrls } from '../stores/WhiteboardStore'
->>>>>>> 48c509604bc502c87a941ca6a921efaf7bc8b6b6
+
 
 export default class Network {
   private client: Client

@@ -2,9 +2,9 @@ import React, { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import typing_Background from "../../public/img/typinggame/blackboard.png"
 import styled, { createGlobalStyle } from 'styled-components';
-import {addKeyword, updateGame, removeKeyword} from "../stores/TypingGameStore";
+import { addKeyword, updateGame, removeKeyword } from "../stores/TypingGameStore";
 import * as Colyseus from "colyseus.js";
-var client = new Colyseus.Client('ws://localhost:5173')
+
 
 const GlobalStyle = createGlobalStyle`
   @font-face {
@@ -29,32 +29,20 @@ export function TypingGame() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-
-        client.joinOrCreate("room_name").then(room => {
-            console.log(room.sessionId, "joined", room.name);
-        }).catch(e => {
-            console.log("Join ERROR", e);
-        });
-        
         let wordCreationInterval = 1000;
-
         const interval1 = setInterval(() => {
-            const unusedkeywords = state.keywordList.filter(candidateKeyword => {
-                return !state.game.some(item => item.keyword === candidateKeyword && item.used === true);    
+
+            const unusedkeywords = state.keywordList.filter(keyword => {
+                // game 배열에서 해당 키워드가 이미 있는지 확인
+                return !state.game.some(item => item.keyword === keyword);
             });
-            
-            if (unusedkeywords.length > 0){
-                const randomIndex = Math.floor(Math.random() * state.keywordList.length);
+            if (unusedkeywords.length > 0) {
+                const randomIndex = Math.floor(Math.random() * unusedkeywords.length);
                 const keyword = unusedkeywords[randomIndex];
 
-                const isKeywordUsed = state.game.some(
-                    item => item.keyword === keyword && item.used === true
-                );
-
-                if(!isKeywordUsed){
+                // 중복된 키워드가 아니라면 추가
                 dispatch(addKeyword(keyword));
             }
-        }
         }, wordCreationInterval);
 
         const speedIncreaseInterval = setInterval(() => {
@@ -62,17 +50,16 @@ export function TypingGame() {
         }, 7000);
 
         const interval2 = setInterval(() => {
-            dispatch({ type: 'UPDATE_GAME', payload: { lineHeight }
-        });
-    },15);
-        
+            dispatch(updateGame({ lineHeight }));
+        }, 15);
+
 
         const hasReachedLineHeight = state.game.some(item => item.y + item.speed > lineHeight && item.y <= lineHeight);
         if (hasReachedLineHeight) {
-            dispatch({type: 'DECREMENT_HEART'});
+            dispatch({ type: 'DECREMENT_HEART' });
             console.log(state.heart)
         }
-        
+
 
         return () => {
             clearInterval(interval1);
@@ -82,7 +69,7 @@ export function TypingGame() {
     }, [state.game, state.keywordList, lineHeight, dispatch]);
 
     const removeNode = (keywordToRemove) => {
-        dispatch({ type: 'REMOVE_KEYWORD', payload: keywordToRemove });
+        dispatch(removeKeyword(keywordToRemove));
     };
 
     const keydown = (keyCode) => {
@@ -109,32 +96,32 @@ export function TypingGame() {
             <div>
                 <div style={{
                     width: "1250px", height: lineHeight,
-                    backgroundImage : `url(${typing_Background})`,
-                    backgroundSize : "cover",
-                    backgroundPositionY : "-63px",
+                    backgroundImage: `url(${typing_Background})`,
+                    backgroundSize: "cover",
+                    backgroundPositionY: "-63px",
                     backgroundRepeat: "no-repeat",
                     position: "relative",
                     overflow: "hidden",
                     borderBottom: "2px solid white"
                 }}>
                     {state.game.map((item, index) => (
-                        <h5 
-                            key={index} 
+                        <h5
+                            key={index}
                             style={{
-                                position: "absolute", 
-                                fontFamily : 'CustomFont',
-                                fontSize : 25,
-                                letterSpacing :'3px',
-                                top: item.y, 
-                                left: item.x, 
-                                color : '#FFFFFF',
-                                backgroundImage : '',
-                                backgroundSize : '100px 100px',
-                                }}>
+                                position: "absolute",
+                                fontFamily: 'CustomFont',
+                                fontSize: 25,
+                                letterSpacing: '3px',
+                                top: item.y,
+                                left: item.x,
+                                color: '#FFFFFF',
+                                backgroundImage: '',
+                                backgroundSize: '100px 100px',
+                            }}>
                             {item.keyword}
                         </h5>
                     ))}
-        
+
                 </div>
 
 
@@ -146,7 +133,7 @@ export function TypingGame() {
                     />
                     <button onClick={() => keydown(13)}>입력</button>
                     <span style={{ marginRight: "10px" }}>점수: {state.point}</span>
-<span style={{ marginLeft: "10px" }}>Coin: {state.heart}</span>
+                    <span style={{ marginLeft: "10px" }}>Coin: {state.heart}</span>
                 </div>
             </div>
         </>

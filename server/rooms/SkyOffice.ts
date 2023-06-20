@@ -1,19 +1,11 @@
 import bcrypt from 'bcrypt'
 import { Room, Client, ServerError } from 'colyseus'
 import { Dispatcher } from '@colyseus/command'
-<<<<<<< HEAD
-import { Player, OfficeState, Computer, Typinggame, CodeEditor } from './schema/OfficeState'
+import { Player, OfficeState, Computer, Typinggame, MoleGame } from './schema/OfficeState'
 import { Message } from '../../types/Messages'
 import { IRoomData } from '../../types/Rooms'
 import { typinggameRoomIds } from './schema/OfficeState'
-import { codeEditorRoomIds } from './schema/OfficeState'
-=======
-import { Player, OfficeState, Computer, Whiteboard, MoleGame } from './schema/OfficeState'
-import { Message } from '../../types/Messages'
-import { IRoomData } from '../../types/Rooms'
-import { whiteboardRoomIds } from './schema/OfficeState'
-import { moleGameRoomIds } from './schema/OfficeState'
->>>>>>> 48c509604bc502c87a941ca6a921efaf7bc8b6b6
+// import { moleGameRoomIds } from './schema/OfficeState'
 import PlayerUpdateCommand from './commands/PlayerUpdateCommand'
 import PlayerUpdateNameCommand from './commands/PlayerUpdateNameCommand'
 import {
@@ -233,17 +225,6 @@ export class SkyOffice extends Room<OfficeState> {
   }
 
   onDispose() {
-<<<<<<< HEAD
-    this.state.typinggames.forEach((wtypinggame) => {
-      if (typinggameRoomIds.has(typinggame.roomId)) typinggameRoomIds.delete(typinggame.roomId)
-    })
-
-    this.state.codeeditors.forEach((codeeditor) => {
-      if (typinggameRoomIds.has(codeeditor.roomId)) typinggameRoomIds.delete(codeeditor.roomId)
-    })
-
-=======
->>>>>>> 48c509604bc502c87a941ca6a921efaf7bc8b6b6
     console.log('room', this.roomId, 'disposing...')
     this.dispatcher.stop()
   }

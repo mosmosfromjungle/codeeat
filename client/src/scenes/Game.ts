@@ -37,13 +37,8 @@ export default class Game extends Phaser.Scene {
   private otherPlayers!: Phaser.Physics.Arcade.Group
   private otherPlayerMap = new Map<string, OtherPlayer>()
   computerMap = new Map<string, Computer>()
-<<<<<<< HEAD
   private typinggameMap = new Map<string, Typinggame>()
-  private codeeditorMap = new Map<String, CodeEditor>()
-=======
-  private whiteboardMap = new Map<string, Whiteboard>()
   private molegameMap = new Map<String, MoleGame>()
->>>>>>> 48c509604bc502c87a941ca6a921efaf7bc8b6b6
 
   constructor() {
     super('game')
@@ -174,11 +169,7 @@ export default class Game extends Phaser.Scene {
     // 상호작용 추가하는 부분..?
     this.physics.add.overlap(
       this.playerSelector,
-<<<<<<< HEAD
-      [chairs, computers, typinggames, vendingMachines, codeeditors],
-=======
-      [chairs, computers, whiteboards, vendingMachines, molegames],
->>>>>>> 48c509604bc502c87a941ca6a921efaf7bc8b6b6
+      [chairs, computers, typinggames, vendingMachines, molegames],
       this.handleItemSelectorOverlap,
       undefined,
       this

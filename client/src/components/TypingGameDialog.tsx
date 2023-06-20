@@ -5,7 +5,7 @@ import CloseIcon from '@mui/icons-material/Close'
 
 import { useAppSelector, useAppDispatch } from '../hooks'
 import { closeTypinggameDialog } from '../stores/TypingGameStore'
-import TypingGame  from './TypingGame'
+import TypingGame from './TypingGame'
 import * as Colyseus from "colyseus.js";
 
 var client = new Colyseus.Client('ws://localhost:5173');
@@ -61,7 +61,7 @@ export default function TypingGameDialog() {
     <Backdrop>
       <Wrapper>
         <TypingGame />
-        { <IconButton
+        {<IconButton
           aria-label="close dialog"
           className="close"
           onClick={() => dispatch(closeTypinggameDialog())}

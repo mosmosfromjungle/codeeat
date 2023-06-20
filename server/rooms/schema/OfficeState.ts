@@ -3,13 +3,8 @@ import {
   IPlayer,
   IOfficeState,
   IComputer,
-<<<<<<< HEAD
   ITypinggame,
-  ICodeEditor,
-=======
-  IWhiteboard,
   IMoleGame,
->>>>>>> 48c509604bc502c87a941ca6a921efaf7bc8b6b6
   IChatMessage,
 } from '../../../types/IOfficeState'
 
@@ -59,13 +54,8 @@ export class OfficeState extends Schema implements IOfficeState {
   chatMessages = new ArraySchema<ChatMessage>()
 }
 
-<<<<<<< HEAD
 export const typinggameRoomIds = new Set<string>()
-export const codeEditorRoomIds = new Set<string>()
-=======
-export const whiteboardRoomIds = new Set<string>()
 export const moleGameRoomIds = new Set<string>()
->>>>>>> 48c509604bc502c87a941ca6a921efaf7bc8b6b6
 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 const charactersLength = characters.length
 

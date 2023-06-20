@@ -11,13 +11,8 @@ import JoinDialog from './components/entrydialog/JoinDialog'
 import WelcomeDialog from './components/entrydialog/WelcomeDialog'
 
 import ComputerDialog from './components/ComputerDialog'
-<<<<<<< HEAD
 import TypingGameDialog from './components/TypingGameDialog'
-import CodeEditorDialog from './components/CodeEditorDialog'
-=======
-import WhiteboardDialog from './components/WhiteboardDialog'
 import MoleGameDialog from './components/MoleGameDialog'
->>>>>>> 48c509604bc502c87a941ca6a921efaf7bc8b6b6
 import VideoConnectionDialog from './components/VideoConnectionDialog'
 import HelperButtonGroup from './components/HelperButtonGroup'
 import MobileVirtualJoystick from './components/MobileVirtualJoystick'
@@ -55,17 +50,8 @@ function App() {
   const videoConnected = useAppSelector((state) => state.user.videoConnected)
   const audioConnected = useAppSelector((state) => state.user.audioConnected)
   const computerDialogOpen = useAppSelector((state) => state.computer.computerDialogOpen)
-<<<<<<< HEAD
-  const TypingGameDialogOpen = useAppSelector((state) => state.typingGame.typingGameDialogOpen)
-  const videoConnected = useAppSelector((state) => state.user.videoConnected)
-  const roomJoined = useAppSelector((state) => state.room.roomJoined)
-  const codeEditorDialogOpen = useAppSelector((state) => state.codeeditor.codeEditorDialogOpen)
-  const showLogin = useAppSelector((state) => state.user.showLogin)
-  const showJoin = useAppSelector((state) => state.user.showJoin)
-=======
-  const whiteboardDialogOpen = useAppSelector((state) => state.whiteboard.whiteboardDialogOpen)
+  const typinggameDialogOpen = useAppSelector((state) => state.typingGame.typingGameDialogOpen)
   const moleGameDialogOpen = useAppSelector((state) => state.molegame.moleGameDialogOpen)
->>>>>>> 48c509604bc502c87a941ca6a921efaf7bc8b6b6
 
   // ↓ HelperButtonGroup Dialog
   const showChat = useAppSelector((state) => state.chat.showChat)
@@ -95,20 +81,10 @@ function App() {
   if (entered) {
     if (computerDialogOpen) {
       ui = <ComputerDialog />
-<<<<<<< HEAD
-
-    } else if (TypingGameDialogOpen) {
+    } else if (typinggameDialogOpen) {
       ui = <TypingGameDialog />
-
-    } else if (codeEditorDialogOpen) {
-      ui = <CodeEditorDialog />
-
-=======
-    } else if (whiteboardDialogOpen) {
-      ui = <WhiteboardDialog />
     } else if (moleGameDialogOpen) {
       ui = <MoleGameDialog />
->>>>>>> 48c509604bc502c87a941ca6a921efaf7bc8b6b6
     } else if (showChat) {
       ui = <ChatDialog /> // UGLY: Need to move to HelperButtonGroup 
     } else if (showDM) {
@@ -141,13 +117,8 @@ function App() {
     <Backdrop>
       {ui}
       {/* Render HelperButtonGroup, ProfileButton if no dialogs are opened. */}
-<<<<<<< HEAD
-      {!computerDialogOpen && !TypingGameDialogOpen && !codeEditorDialogOpen && <HelperButtonGroup />}
-      {!computerDialogOpen && !TypingGameDialogOpen && !codeEditorDialogOpen && <ProfileButton />}
-=======
-      {!computerDialogOpen && !whiteboardDialogOpen && !moleGameDialogOpen && <HelperButtonGroup />}
-      {!computerDialogOpen && !whiteboardDialogOpen && !moleGameDialogOpen && <ProfileButton />}
->>>>>>> 48c509604bc502c87a941ca6a921efaf7bc8b6b6
+      {!computerDialogOpen && !typinggameDialogOpen && !moleGameDialogOpen && <HelperButtonGroup />}
+      {!computerDialogOpen && !typinggameDialogOpen && !moleGameDialogOpen && <ProfileButton />}
       {<GlobalFont />}
     </Backdrop>
   )

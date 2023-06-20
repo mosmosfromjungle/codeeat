@@ -9,7 +9,6 @@ interface KeywordRain {
     speed: number;
     keyword: string;
     x: number;
-    used: boolean;
     a_effect: boolean;
     b_effect: boolean;
     c_effect: boolean;
@@ -18,10 +17,8 @@ interface KeywordRain {
 interface TypingGameState {
     typingGameDialogOpen: boolean,
     typinggameId: null | string,
-    typinggameUrl: null | string,
-    urls: Map<string, string>,
     game: KeywordRain[],
-    point : number,
+    point: number,
     heart: number,
     level: number,
     goal: number,
@@ -30,10 +27,8 @@ interface TypingGameState {
 
 // Define initial state
 const initialState: TypingGameState = {
-    typingGameDialogOpen: true,
+    typingGameDialogOpen: false,
     typinggameId: null,
-    typinggameUrl: null,
-    urls: new Map(),
     game: [],
     point: 0,
     heart: 5,
@@ -55,9 +50,10 @@ const initialState: TypingGameState = {
     ] as string[],
 };
 
+
 // Define Slice
 export const typinggameSlice = createSlice({
-    name: "typinggame",
+    name: "typingGame",
     initialState,
     reducers: {
         openTypinggameDialog: (state, action: PayloadAction<string>) => {
@@ -72,31 +68,17 @@ export const typinggameSlice = createSlice({
             state.typingGameDialogOpen = false
             state.typinggameId = null
         },
-        setTypinggameUrls:(state, action: PayloadAction<{ typeinggameId:string; roomId: string}>) => {
-            state.urls.set(
-                action.payload.typeinggameId,
-                `https://타이핑게임서버-${action.payload.roomId}`
-            )
-        },
         addKeyword: (state, action: PayloadAction<string>) => {
-            const keyword = action.payload;
-
-            const isKeywordUsed = state.game.some(
-                item => item.keyword === keyword && item.used === true
-            );
-
-            if(!isKeywordUsed) {
-             state.game.push({
+            const keywordToAdd = action.payload;
+            state.game.push({
                 y: 0,
-                speed: Math.random() * 2,
-                keyword,
+                speed: 3,
+                keyword: keywordToAdd,
                 x: 100 + Math.random() * 600,
-                used: true,
                 a_effect: false,
                 b_effect: false,
                 c_effect: false,
-                });   
-            }
+            });
         },
         updateGame: (state, action: PayloadAction<{ lineHeight: number }>) => {
             const lineHeight = action.payload.lineHeight;
@@ -129,6 +111,6 @@ export const typinggameSlice = createSlice({
 });
 
 
-export const { openTypinggameDialog, closeTypinggameDialog,addKeyword, updateGame, removeKeyword } = typinggameSlice.actions;
+export const { openTypinggameDialog, closeTypinggameDialog, addKeyword, updateGame, removeKeyword } = typinggameSlice.actions;
 
 export default typinggameSlice.reducer
