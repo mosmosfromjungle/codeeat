@@ -52,7 +52,7 @@ const ProblemText = styled.div`
   font-size: 15px;
 `
 
-export default function CodeEditorDialog() {
+export default function MoleGameDialog() {
   const dispatch = useAppDispatch()
 
   const [flag, setFlag] = useState(0);
