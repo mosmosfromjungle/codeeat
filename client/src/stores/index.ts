@@ -2,18 +2,20 @@ import { enableMapSet } from 'immer'
 import { configureStore } from '@reduxjs/toolkit'
 import userReducer from './UserStore'
 import computerReducer from './ComputerStore'
-import whiteboardReducer from './WhiteboardStore'
+import typinggameReducer from './TypingGameStore'
 import chatReducer from './ChatStore'
 import roomReducer from './RoomStore'
 import codeEditorReducer from './CodeEditorStore'
 
 enableMapSet()
 
+
+
 const store = configureStore({
   reducer: {
     user: userReducer,
     computer: computerReducer,
-    whiteboard: whiteboardReducer,
+    typingGame: typinggameReducer,
     chat: chatReducer,
     room: roomReducer,
     codeeditor: codeEditorReducer,

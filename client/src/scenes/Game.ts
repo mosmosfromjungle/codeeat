@@ -6,7 +6,7 @@ import { createCharacterAnims } from '../anims/CharacterAnims'
 import Item from '../items/Item'
 import Chair from '../items/Chair'
 import Computer from '../items/Computer'
-import Whiteboard from '../items/Whiteboard'
+import Typinggame from '../items/Typinggame'
 import VendingMachine from '../items/VendingMachine'
 import CodeEditor from '../items/CodeEditor'
 
@@ -35,7 +35,7 @@ export default class Game extends Phaser.Scene {
   private otherPlayers!: Phaser.Physics.Arcade.Group
   private otherPlayerMap = new Map<string, OtherPlayer>()
   computerMap = new Map<string, Computer>()
-  private whiteboardMap = new Map<string, Whiteboard>()
+  private typinggameMap = new Map<string, Typinggame>()
   private codeeditorMap = new Map<String, CodeEditor>()
 
   constructor() {
@@ -111,18 +111,19 @@ export default class Game extends Phaser.Scene {
     })
 
     // import whiteboards objects from Tiled map to Phaser
-    const whiteboards = this.physics.add.staticGroup({ classType: Whiteboard })
-    const whiteboardLayer = this.map.getObjectLayer('Whiteboard')
-    whiteboardLayer.objects.forEach((obj, i) => {
+    // 준코 : 바꿈
+    const typinggames = this.physics.add.staticGroup({ classType: Typinggame })
+    const typinggameLayer = this.map.getObjectLayer('Typinggame')
+    typinggameLayer.objects.forEach((obj, i) => {
       const item = this.addObjectFromTiled(
-        whiteboards,
+        typinggames,
         obj,
-        'whiteboards',
-        'whiteboard'
-      ) as Whiteboard
+        'typinggames',
+        'typinggame'
+      ) as Typinggame
       const id = `${i}`
       item.id = id
-      this.whiteboardMap.set(id, item)
+      this.typinggameMap.set(id, item)
     })
 
     // import vending machine objects from Tiled map to Phaser
@@ -166,7 +167,7 @@ export default class Game extends Phaser.Scene {
     // 상호작용 추가하는 부분..?
     this.physics.add.overlap(
       this.playerSelector,
-      [chairs, computers, whiteboards, vendingMachines, codeeditors],
+      [chairs, computers, typinggames, vendingMachines, codeeditors],
       this.handleItemSelectorOverlap,
       undefined,
       this
@@ -281,9 +282,9 @@ export default class Game extends Phaser.Scene {
       const computer = this.computerMap.get(itemId)
       computer?.addCurrentUser(playerId)
 
-    } else if (itemType === ItemType.WHITEBOARD) {
-      const whiteboard = this.whiteboardMap.get(itemId)
-      whiteboard?.addCurrentUser(playerId)
+    } else if (itemType === ItemType.TYPINGGAME) {
+      const typinggame = this.typinggameMap.get(itemId)
+      typinggame?.addCurrentUser(playerId)
 
     } else if (itemType === ItemType.CODEEDITOR) {
       const codeeditor = this.codeeditorMap.get(itemId)
@@ -296,9 +297,9 @@ export default class Game extends Phaser.Scene {
       const computer = this.computerMap.get(itemId)
       computer?.removeCurrentUser(playerId)
 
-    } else if (itemType === ItemType.WHITEBOARD) {
-      const whiteboard = this.whiteboardMap.get(itemId)
-      whiteboard?.removeCurrentUser(playerId)
+    } else if (itemType === ItemType.TYPINGGAME) {
+      const typinggame = this.typinggameMap.get(itemId)
+      typinggame?.removeCurrentUser(playerId)
 
     } else if (itemType === ItemType.CODEEDITOR) {
       const codeeditor = this.codeeditorMap.get(itemId)

@@ -8,7 +8,7 @@ import WelcomeDialog from './components/WelcomeDialog'
 import LoginDialog from './components/LoginDialog'
 import JoinDialog from './components/JoinDialog'
 import ComputerDialog from './components/ComputerDialog'
-import WhiteboardDialog from './components/WhiteboardDialog'
+import TypingGameDialog from './components/TypingGameDialog'
 import CodeEditorDialog from './components/CodeEditorDialog'
 import VideoConnectionDialog from './components/VideoConnectionDialog'
 import HelperButtonGroup from './components/HelperButtonGroup'
@@ -38,7 +38,7 @@ const Backdrop = styled.div`
 function App() {
   const loggedIn = useAppSelector((state) => state.user.loggedIn)
   const computerDialogOpen = useAppSelector((state) => state.computer.computerDialogOpen)
-  const whiteboardDialogOpen = useAppSelector((state) => state.whiteboard.whiteboardDialogOpen)
+  const TypingGameDialogOpen = useAppSelector((state) => state.typingGame.typingGameDialogOpen)
   const videoConnected = useAppSelector((state) => state.user.videoConnected)
   const roomJoined = useAppSelector((state) => state.room.roomJoined)
   const codeEditorDialogOpen = useAppSelector((state) => state.codeeditor.codeEditorDialogOpen)
@@ -59,8 +59,8 @@ function App() {
     if (computerDialogOpen) {
       ui = <ComputerDialog />
 
-    } else if (whiteboardDialogOpen) {
-      ui = <WhiteboardDialog />
+    } else if (TypingGameDialogOpen) {
+      ui = <TypingGameDialog />
 
     } else if (codeEditorDialogOpen) {
       ui = <CodeEditorDialog />
@@ -103,8 +103,8 @@ function App() {
     <Backdrop>
       {ui}
       {/* Render HelperButtonGroup, ProfileButton if no dialogs are opened. */}
-      {!computerDialogOpen && !whiteboardDialogOpen && !codeEditorDialogOpen && <HelperButtonGroup />}
-      {!computerDialogOpen && !whiteboardDialogOpen && !codeEditorDialogOpen && <ProfileButton />}
+      {!computerDialogOpen && !TypingGameDialogOpen && !codeEditorDialogOpen && <HelperButtonGroup />}
+      {!computerDialogOpen && !TypingGameDialogOpen && !codeEditorDialogOpen && <ProfileButton />}
       {<GlobalFont />}
     </Backdrop>
   )

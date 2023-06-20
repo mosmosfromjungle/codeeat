@@ -1,10 +1,10 @@
 import bcrypt from 'bcrypt'
 import { Room, Client, ServerError } from 'colyseus'
 import { Dispatcher } from '@colyseus/command'
-import { Player, OfficeState, Computer, Whiteboard, CodeEditor } from './schema/OfficeState'
+import { Player, OfficeState, Computer, Typinggame, CodeEditor } from './schema/OfficeState'
 import { Message } from '../../types/Messages'
 import { IRoomData } from '../../types/Rooms'
-import { whiteboardRoomIds } from './schema/OfficeState'
+import { typinggameRoomIds } from './schema/OfficeState'
 import { codeEditorRoomIds } from './schema/OfficeState'
 import PlayerUpdateCommand from './commands/PlayerUpdateCommand'
 import PlayerUpdateNameCommand from './commands/PlayerUpdateNameCommand'
@@ -13,9 +13,9 @@ import {
   ComputerRemoveUserCommand,
 } from './commands/ComputerUpdateArrayCommand'
 import {
-  WhiteboardAddUserCommand,
-  WhiteboardRemoveUserCommand,
-} from './commands/WhiteboardUpdateArrayCommand'
+  TypinggameAddUserCommand,
+  TypinggameRemoveUserCommand,
+} from './commands/TypinggameUpdateArrayCommand'
 import {
   CodeEditorAddUserCommand,
   CodeEditorRemoveUserCommand,
@@ -51,7 +51,7 @@ export class SkyOffice extends Room<OfficeState> {
 
     // HARD-CODED: Add 3 whiteboards in a room
     for (let i = 0; i < 3; i++) {
-      this.state.whiteboards.set(String(i), new Whiteboard())
+      this.state.typinggames.set(String(i), new Typinggame())
     }
 
     // HARD-CODED: Add 1 codeeditors in a room
@@ -88,20 +88,20 @@ export class SkyOffice extends Room<OfficeState> {
     })
 
     // when a player connect to a whiteboard, add to the whiteboard connectedUser array
-    this.onMessage(Message.CONNECT_TO_WHITEBOARD, (client, message: { whiteboardId: string }) => {
-      this.dispatcher.dispatch(new WhiteboardAddUserCommand(), {
+    this.onMessage(Message.CONNECT_TO_TYPINGGAME, (client, message: { typinggameId: string }) => {
+      this.dispatcher.dispatch(new TypinggameAddUserCommand(), {
         client,
-        whiteboardId: message.whiteboardId,
+        typinggameId: message.typinggameId,
       })
     })
 
     // when a player disconnect from a whiteboard, remove from the whiteboard connectedUser array
     this.onMessage(
-      Message.DISCONNECT_FROM_WHITEBOARD,
-      (client, message: { whiteboardId: string }) => {
-        this.dispatcher.dispatch(new WhiteboardRemoveUserCommand(), {
+      Message.DISCONNECT_FROM_TYPINGGAME,
+      (client, message: { typinggameId: string }) => {
+        this.dispatcher.dispatch(new TypinggameRemoveUserCommand(), {
           client,
-          whiteboardId: message.whiteboardId,
+          typinggameId: message.typinggameId,
         })
       }
     )
@@ -212,9 +212,9 @@ export class SkyOffice extends Room<OfficeState> {
         computer.connectedUser.delete(client.sessionId)
       }
     })
-    this.state.whiteboards.forEach((whiteboard) => {
-      if (whiteboard.connectedUser.has(client.sessionId)) {
-        whiteboard.connectedUser.delete(client.sessionId)
+    this.state.typinggames.forEach((typinggame) => {
+      if (typinggame.connectedUser.has(client.sessionId)) {
+        typinggame.connectedUser.delete(client.sessionId)
       }
     })
     this.state.codeeditors.forEach((codeeditor) => {
@@ -225,12 +225,12 @@ export class SkyOffice extends Room<OfficeState> {
   }
 
   onDispose() {
-    this.state.whiteboards.forEach((whiteboard) => {
-      if (whiteboardRoomIds.has(whiteboard.roomId)) whiteboardRoomIds.delete(whiteboard.roomId)
+    this.state.typinggames.forEach((wtypinggame) => {
+      if (typinggameRoomIds.has(typinggame.roomId)) typinggameRoomIds.delete(typinggame.roomId)
     })
 
     this.state.codeeditors.forEach((codeeditor) => {
-      if (whiteboardRoomIds.has(codeeditor.roomId)) whiteboardRoomIds.delete(codeeditor.roomId)
+      if (typinggameRoomIds.has(codeeditor.roomId)) typinggameRoomIds.delete(codeeditor.roomId)
     })
 
     console.log('room', this.roomId, 'disposing...')
