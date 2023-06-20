@@ -106,7 +106,7 @@ export default class Game extends Phaser.Scene {
 
     // import datastructures objects from Tiled map to Phaser
     const datastructures = this.physics.add.staticGroup({ classType: DataStructure })
-    const datastructureLayer = this.map.getObjectLayer('DataStructure')
+    const datastructureLayer = this.map.getObjectLayer('Computer')
     datastructureLayer.objects.forEach((obj, i) => {
       const item = this.addObjectFromTiled(datastructures, obj, 'datastructures', 'datastructure') as DataStructure
       item.setDepth(item.y + item.height * 0.27)

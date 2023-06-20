@@ -12815,11 +12815,11 @@
  <tileset firstgid="3432" name="Generic" tilewidth="32" tileheight="32" tilecount="1248" columns="16">
   <image source="../tileset/Generic.png" width="512" height="2496"/>
  </tileset>
- <tileset firstgid="4680" name="computer" tilewidth="96" tileheight="64" tilecount="5" columns="5">
-  <image source="../items/computer.png" width="480" height="64"/>
+ <tileset firstgid="4680" name="datastructure" tilewidth="96" tileheight="64" tilecount="5" columns="5">
+  <image source="../items/datastructure.png" width="480" height="64"/>
  </tileset>
- <tileset firstgid="4685" name="whiteboard" tilewidth="64" tileheight="64" tilecount="3" columns="1">
-  <image source="../items/whiteboard.png" width="64" height="192"/>
+ <tileset firstgid="4685" name="acidrain" tilewidth="64" tileheight="64" tilecount="3" columns="1">
+  <image source="../items/acidrain.png" width="64" height="192"/>
  </tileset>
  <tileset firstgid="4688" name="Basement" tilewidth="32" tileheight="32" tilecount="800" columns="16">
   <image source="../tileset/Basement.png" width="512" height="1600"/>
@@ -12828,7 +12828,7 @@
   <image source="../items/vendingmachine.png" width="48" height="72"/>
  </tileset>
  <tileset firstgid="5489" name="molegame" tilewidth="30" tileheight="50" tilecount="1" columns="1">
-  <image source="../items/gamemachine.png" width="30" height="50"/>
+  <image source="../items/molegame.png" width="30" height="50"/>
  </tileset>
  <layer id="2" name="Ground" width="40" height="30" locked="1">
   <data encoding="csv">
