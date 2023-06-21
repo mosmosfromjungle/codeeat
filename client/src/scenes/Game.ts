@@ -105,6 +105,10 @@ export default class Game extends Phaser.Scene {
 
     const tilesetsImage = this.map.addTilesetImage('Tilesets', 'Tilesets')
 
+    const treeImage = this.map.addTilesetImage('tree', 'tree')
+
+    const interiorImage = this.map.addTilesetImage('interior', 'interior')
+
     // const benchImage = this.map.addTilesetImage('bench', 'bench')
 
     // const codeEatChairImage = this.map.addTilesetImage('codeEatChair', 'codeEatChair')
@@ -138,48 +142,35 @@ export default class Game extends Phaser.Scene {
       ModernExteriorsFinalImage,
       schoolImage,
       codeEatInteriorsImage,
-
-    ]);
-
-    const backtree1Layer = this.map.createLayer('backtree1', [
       campingImage,
+      treeImage,
     ]);
 
-    const backtree2Layer = this.map.createLayer('backtree2', [
-      campingImage,
+    const secondGroundLayer = this.map.createLayer('secondground', [
+      interiorImage
     ]);
 
-    const backtree3Layer = this.map.createLayer('backtree3', [
-      campingImage,
+    const fenceLayer = this.map.createLayer('fence', [
+      interiorImage
     ]);
 
-    const backtree4Layer = this.map.createLayer('backtree4', [
-      campingImage,
-    ]);
-
-    const backtree5Layer = this.map.createLayer('backtree5', [
-      campingImage,
-    ]);
-
-    const sidetree1Layer = this.map.createLayer('sidetree1', [
-      campingImage,
-    ]);
-
-    const sidetree2Layer = this.map.createLayer('sidetree2', [
-      campingImage,
-    ]);
-
-    const sidetree3Layer = this.map.createLayer('sidetree4', [
-      campingImage,
-    ]);
-
-
-    this.map.createLayer('foreground', [
+    const foreGroundLayer = this.map.createLayer('foreground', [
       modernExteriorsImage,
       ModernExteriorsFinalImage,
       codeEatInteriorsImage,
       schoolImage,
+      campingImage,
+      treeImage,
     ]);
+
+    // thirdGroundLayer.setDepth(6500);
+    foreGroundLayer.setDepth(6000);
+
+    secondGroundLayer.setCollisionByProperty({ collisions: true });
+    fenceLayer.setCollisionByProperty({ collisions: true });
+
+
+    
 
 
 
@@ -258,8 +249,8 @@ export default class Game extends Phaser.Scene {
     this.cameras.main.zoom = 1.5
     this.cameras.main.startFollow(this.myPlayer, true)
 
-    // this.physics.add.collider([this.myPlayer, this.myPlayer.playerContainer], wallLayer)
-    // this.physics.add.collider([this.myPlayer, this.myPlayer.playerContainer], buildingsLayer)
+    this.physics.add.collider([this.myPlayer, this.myPlayer.playerContainer], secondGroundLayer)
+    this.physics.add.collider([this.myPlayer, this.myPlayer.playerContainer], fenceLayer)
 
     // 상호작용 추가하는 부분..?
     // this.physics.add.overlap(

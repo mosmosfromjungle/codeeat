@@ -80,6 +80,10 @@ export default class Bootstrap extends Phaser.Scene {
       frameWidth: 16,
       frameHeight: 16,
     })
+    this.load.spritesheet('interior', 'assets/tileset/interior.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
     this.load.spritesheet('ModernExteriorsFinal', 'assets/tileset/ModernExteriorsFinal.png', {
       frameWidth: 16,
       frameHeight: 16,
@@ -89,6 +93,10 @@ export default class Bootstrap extends Phaser.Scene {
       frameHeight: 16,
     })
     this.load.spritesheet('Tilesets', 'assets/tileset/Tilesets.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+       this.load.spritesheet('tree', 'assets/tileset/tree.png', {
       frameWidth: 16,
       frameHeight: 16,
     })
