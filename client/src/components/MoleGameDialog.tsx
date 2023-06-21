@@ -206,8 +206,6 @@ export default function MoleGameDialog() {
   const showingMole = () => {
     console.log("Function [showingMole]");
 
-    console.log(turn);
-    
     if (turn < 10) {
       let luckyMoles = randomHole();
 
@@ -395,13 +393,13 @@ export default function MoleGameDialog() {
       return;
     }
 
-    setCanClick(false);
-
     // Click Other
     if (!activeNumberList.includes(num)) {
       return;
 
     } else {
+      setCanClick(false);
+
       // Correct Answer
       if (activeNumber === num) {
         const CorrectAudio = new Audio(CorrectBGM);
@@ -488,6 +486,12 @@ export default function MoleGameDialog() {
   // 6. Close
 
   const handleClose = () => {
+    // Clear the game
+    setTurn(0);
+    setPoint(0);
+
+    clearTimeout(moleCatch);
+
     dispatch(closeMoleGameDialog());
   }
   
