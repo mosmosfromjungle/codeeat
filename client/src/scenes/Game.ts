@@ -210,15 +210,15 @@ export default class Game extends Phaser.Scene {
     // })
 
     // // import computers objects from Tiled map to Phaser
-    // const computers = this.physics.add.staticGroup({ classType: Computer })
-    // const computerLayer = this.map.getObjectLayer('Computer')
-    // computerLayer.objects.forEach((obj, i) => {
-    //   const item = this.addObjectFromTiled(computers, obj, 'computers', 'computer') as Computer
-    //   item.setDepth(item.y + item.height * 0.27)
-    //   const id = `${i}`
-    //   item.id = id
-    //   this.computerMap.set(id, item)
-    // })
+    const computers = this.physics.add.staticGroup({ classType: Computer })
+    const computerLayer = this.map.getObjectLayer('playground')
+    computerLayer.objects.forEach((obj, i) => {
+      const item = this.addObjectFromTiled(computers, obj, 'picnic2', 'picnic2') as Computer
+      item.setDepth(item.y + item.height * 0.27)
+      const id = `${i}`
+      item.id = id
+      this.computerMap.set(id, item)
+    })
 
     // // import whiteboards objects from Tiled map to Phaser
     const whiteboards = this.physics.add.staticGroup({ classType: Whiteboard })
@@ -280,7 +280,7 @@ export default class Game extends Phaser.Scene {
     this.physics.add.overlap(
       this.playerSelector,
       // [chairs, computers, whiteboards, vendingMachines, molegames],
-      [chairs, molegames, whiteboards],
+      [chairs, molegames, whiteboards, computers],
       this.handleItemSelectorOverlap,
       undefined,
       this
@@ -397,42 +397,42 @@ export default class Game extends Phaser.Scene {
 
   // ********************************* //
   private handleItemUserAdded(playerId: string, itemId: string, itemType: ItemType) {
-    // if (itemType === ItemType.COMPUTER) {
-    //   const computer = this.computerMap.get(itemId)
-    //   computer?.addCurrentUser(playerId)
+    if (itemType === ItemType.COMPUTER) {
+      const computer = this.computerMap.get(itemId)
+      computer?.addCurrentUser(playerId)
 
-    // } else if (itemType === ItemType.WHITEBOARD) {
-    //   const whiteboard = this.whiteboardMap.get(itemId)
-    //   whiteboard?.addCurrentUser(playerId)
+    } else if (itemType === ItemType.WHITEBOARD) {
+      const whiteboard = this.whiteboardMap.get(itemId)
+      whiteboard?.addCurrentUser(playerId)
 
-    // } else if (itemType === ItemType.MOLEGAME) {
-    //   const molegame = this.molegameMap.get(itemId)
-    //   molegame?.addCurrentUser(playerId)
-    // } 
-
-    if (itemType === ItemType.MOLEGAME) {
+    } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.addCurrentUser(playerId)
-    }
+    } 
+
+    // if (itemType === ItemType.MOLEGAME) {
+    //   const molegame = this.molegameMap.get(itemId)
+    //   molegame?.addCurrentUser(playerId)
+    // }
   }
 
   private handleItemUserRemoved(playerId: string, itemId: string, itemType: ItemType) {
-    // if (itemType === ItemType.COMPUTER) {
-    //   const computer = this.computerMap.get(itemId)
-    //   computer?.removeCurrentUser(playerId)
+    if (itemType === ItemType.COMPUTER) {
+      const computer = this.computerMap.get(itemId)
+      computer?.removeCurrentUser(playerId)
 
-    // } else if (itemType === ItemType.WHITEBOARD) {
-    //   const whiteboard = this.whiteboardMap.get(itemId)
-    //   whiteboard?.removeCurrentUser(playerId)
+    } else if (itemType === ItemType.WHITEBOARD) {
+      const whiteboard = this.whiteboardMap.get(itemId)
+      whiteboard?.removeCurrentUser(playerId)
 
-    // } else if (itemType === ItemType.MOLEGAME) {
-    //   const molegame = this.molegameMap.get(itemId)
-    //   molegame?.removeCurrentUser(playerId)
-    // }
-    if (itemType === ItemType.MOLEGAME) {
+    } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.removeCurrentUser(playerId)
     }
+    // if (itemType === ItemType.MOLEGAME) {
+    //   const molegame = this.molegameMap.get(itemId)
+    //   molegame?.removeCurrentUser(playerId)
+    // }
   }
 
   // ********************************** //
