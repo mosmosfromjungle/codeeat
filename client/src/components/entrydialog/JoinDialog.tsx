@@ -3,6 +3,15 @@ import styled from 'styled-components'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import LinearProgress from '@mui/material/LinearProgress'
+import FormControl from '@mui/material/FormControl';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import FormHelperText from '@mui/material/FormHelperText'
+import ArrowBack from '@mui/icons-material/ArrowBack'
 
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation } from 'swiper'
@@ -77,7 +86,7 @@ const Left = styled.div`
 `
 const Right = styled.div`
   width: 300px;
-  // margin-top: 60px;
+  margin-top: 10px;
 `
 const Bottom = styled.div`
   display: flex;
@@ -136,10 +145,19 @@ export default function JoinDialog() {
   const [passwordFieldNotMatch, setPasswordFieldNotMatch] = useState<boolean>(false)
   const [nicknameFieldEmpty, setNicknameFieldEmpty] = useState<boolean>(false)
 
+  const [passwordError, setPasswordError] = useState<string>('');
   const [emailError, setEmailError] = useState<string>('')
   const [nicknameError, setNicknameError] = useState<string>('')
 
   const [avatarIndex, setAvatarIndex] = useState<number>(0)
+
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
 
   const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)
   const dispatch = useAppDispatch()
@@ -191,10 +209,21 @@ export default function JoinDialog() {
     }
   }
 
+  const handleBack = () => {
+    dispatch(setEntryProcess(ENTRY_PROCESS.ENTRY))
+  }
+
   return (
     <>
       <Wrapper onSubmit={handleSubmit}>
-        <Title>Join Us</Title>
+        <IconButton
+          className="back"
+          onClick={ handleBack }
+        >
+          <ArrowBack />
+        </IconButton>
+
+        <Title>회원가입</Title>
         <Content>
           <Left>
             <SubTitle>좌우로 이동하여 캐릭터를 골라보세요 !</SubTitle>
@@ -232,32 +261,69 @@ export default function JoinDialog() {
                 setEmail((e.target as HTMLInputElement).value)
               }}
             />
-            <TextField
-              fullWidth
-              label="패스워드"
+
+            <FormControl 
               variant="outlined"
-              color="secondary"
-              margin="dense"
+              fullWidth
+              color='secondary'
               error={passwordFieldEmpty}
-              helperText={passwordFieldEmpty && '패스워드를 입력해주세요 !'}
-              onInput={(e) => {
-                setPassword((e.target as HTMLInputElement).value)
-              }}
-            />
-            <TextField
-              fullWidth
-              label="패스워드 확인"
+              margin="dense">
+              <InputLabel htmlFor="outlined-adornment-password">비밀번호</InputLabel>
+              <OutlinedInput
+                id="outlined-adornment-password"
+                label="비밀번호"
+                type={showPassword ? 'text' : 'password'}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                onInput={(e) => {
+                  setPassword((e.target as HTMLInputElement).value);
+                  setPasswordError('')
+                }}
+              />
+              <FormHelperText id="my-helper-text">{passwordFieldEmpty ? '비밀번호를 입력해주세요 !' : passwordError}</FormHelperText>
+            </FormControl>
+
+            <FormControl 
               variant="outlined"
-              color="secondary"
-              margin="dense"
+              fullWidth
+              color='secondary'
               error={passwordCheckFieldEmpty}
-              helperText={
-                (passwordCheckFieldEmpty && '패스워드를 입력해주세요 !') || (passwordFieldNotMatch && '패스워드를 확인해주세요 !')
-              }
-              onInput={(e) => {
-                setPasswordCheck((e.target as HTMLInputElement).value)
-              }}
-            />
+              margin="dense">
+              <InputLabel htmlFor="outlined-adornment-password">비밀번호</InputLabel>
+              <OutlinedInput
+                id="outlined-adornment-password"
+                label="비밀번호"
+                type={showPassword ? 'text' : 'password'}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                onInput={(e) => {
+                  setPasswordCheck((e.target as HTMLInputElement).value);
+                  setPasswordError('')
+                }}
+              />
+              <FormHelperText id="my-helper-text">{(passwordCheckFieldEmpty && '비밀번호를 입력해주세요 !') || (passwordFieldNotMatch && '비밀번호를 확인해주세요 !')}</FormHelperText>
+            </FormControl>
+
             <TextField
               fullWidth
               label="닉네임"
@@ -273,14 +339,14 @@ export default function JoinDialog() {
           </Right>
         </Content>
         <Bottom>
-          <Button variant="contained" color="secondary" size="large" type="submit">
-            Join
+          <Button variant="contained" size="large" type="submit">
+            가입하기
           </Button>
         </Bottom>
       </Wrapper>
       {!lobbyJoined && (
         <ProgressBarWrapper>
-          <h3> Connecting to server...</h3>
+          <h3>서버와 연결중 ...</h3>
           <ProgressBar color="secondary" />
         </ProgressBarWrapper>
       )}

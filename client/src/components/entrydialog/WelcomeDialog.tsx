@@ -70,19 +70,28 @@ const ImgContainer = styled.div`
     }
 `
 const Right = styled.div`
-  width: 300px;
+  width: 310px;
+
+  h1 {
+    margin: 10px 0 0 10px;
+  }
 `
 const Bottom = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  button {
+    font-size: 20px;
+    font-family: Font_DungGeun;
+  }
 `
 const Warning = styled.div`
   margin-top: 30px;
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 10px;
 `
 
 const avatars = [
@@ -150,7 +159,7 @@ export default function WelcomeDialog() {
     <>
     <GlobalStyle />
     <Wrapper onSubmit={handleSubmit}>
-      <Title>코드잇에 환영합니다!</Title>
+      <Title>코드잇에 온 걸 환영합니다!</Title>
       <Content>
         <Left>
           <ImgContainer>
@@ -164,8 +173,8 @@ export default function WelcomeDialog() {
           {!videoConnected && (
             <Warning>
               <Alert variant="outlined" severity="warning">
-                <AlertTitle> 🤣아차! </AlertTitle>
-                비디오와 마이크가 연결되지 않았어요 <br></br>
+                <AlertTitle>아차!</AlertTitle>
+                비디오와 마이크가 연결되지 않았어요.<br></br>
                 <strong>연결하면 친구들과 대화할 수 있어요!</strong>
               </Alert>
               <Button
@@ -174,7 +183,7 @@ export default function WelcomeDialog() {
                 onClick={() => {
                   game.network.webRTC?.getUserMedia()
                 }}>
-                비디오, 마이크 연결하기
+                비디오 연결하기
               </Button>
             </Warning>
           )}
@@ -186,7 +195,7 @@ export default function WelcomeDialog() {
         </Right>
       </Content>
       <Bottom>
-        <Button variant="contained" color="secondary" size="large" type="submit">
+        <Button variant="contained" size="large" type="submit">
           입장하기
         </Button>
       </Bottom>
