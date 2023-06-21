@@ -4,7 +4,7 @@ import cors from 'cors'
 import { Server, LobbyRoom } from 'colyseus'
 import { RoomType } from '../types/Rooms'
 import authRouter from './routes/auth';
-import 'express-async-errors'
+import friendsRouter from './routes/friends';
 import { SkyOffice } from './rooms/SkyOffice'
 import { connectDB, createCollection } from './DB/db'
 import { DataController } from './controllers/DataGameControllers'
@@ -19,13 +19,12 @@ const mongoose = require('mongoose');
 const port = Number(process.env.PORT || 2567)
 const socketPort = Number(process.env.SOCKET_PORT || 8888)
 const app = express()
-app.get('/', (req, res) => {
-  res.json({ message: `Server is running on ${req.secure ? 'HTTPS' : 'HTTP'}`});
-})
+
 const allowedOrigins = [
   'http://localhost:5173',
-  'http://localhost:3001'
-]
+  'http://127.0.0.1:5173',
+];
+
 const options: cors.CorsOptions = {
   allowedHeaders: [
     'Origin',
@@ -36,9 +35,12 @@ const options: cors.CorsOptions = {
     'authorization',
     '*',
   ],
-  methods: 'GET, POST, OPTIONS, PUT, PATCH, POST, DELETE',
-  origin: allowedOrigins
-}
+  credentials: true,
+  methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
+  origin: allowedOrigins,
+  preflightContinue: false,
+};
+
 app.use(cors(options))
 app.use(express.json())
 // app.use(express.static('dist'))
@@ -48,7 +50,7 @@ const gameServer = new Server({
   server,
 })
 
-// register room handlers
+/* register room handlers */
 gameServer.define(RoomType.LOBBY, LobbyRoom)
 gameServer.define(RoomType.PUBLIC, SkyOffice, {
   name: '모스모스로',
@@ -58,15 +60,40 @@ gameServer.define(RoomType.PUBLIC, SkyOffice, {
 })
 app.use('auth', authRouter)
 
-connectDB()
-.then(() => {
-  gameServer.listen(port)
 
+gameServer.define(RoomType.CUSTOM, SkyOffice).enableRealtimeListing()
+
+/**
+ * Register @colyseus/social routes
+ *
+ * - uncomment if you want to use default authentication (https://docs.colyseus.io/server/authentication/)
+ * - also uncomment the import statement
+ */
+// app.use("/", socialRoutes);
+
+// register colyseus monitor AFTER registering your room handlers
+app.use('/colyseus', monitor())
+
+/* Routes */
+app.use('/auth', authRouter);
+app.use('/friends', friendsRouter);
+
+/* Connect DB and run game server */
+connectDB().then(db => {
+  gameServer.listen(port)  
+  console.log(`Listening on ws://localhost:${port}`)
+}).catch(console.error);
+
+// connectDB()
+// .then(() => {
+//   gameServer.listen(port)
+// 
   console.log(`gameServer is listening on port ${port}`)
 })
-.catch((err) => {
-  console.log(err.message)
-})
+// .catch((err) => {
+//   console.log(err.message)
+// })
+
 
 const socketServer = http.createServer(app);
 socketServer.listen(socketPort, () => console.log(`socketServer is listening on port${socketPort}`));

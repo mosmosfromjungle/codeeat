@@ -1,14 +1,22 @@
-import React from 'react'
+import { useEffect } from 'react'
 import styled from 'styled-components'
 import axios from 'axios'
 
-import { useAppSelector } from './hooks'
+import { useAppSelector, useAppDispatch } from './hooks'
+import { ENTRY_PROCESS, setEntryProcess } from './stores/UserStore'
+
+import EntryDialog from './components/entrydialog/EntryDialog'
+import LoginDialog from './components/entrydialog/LoginDialog'
+import JoinDialog from './components/entrydialog/JoinDialog'
+import WelcomeDialog from './components/entrydialog/WelcomeDialog'
 
 import WelcomeDialog from './components/WelcomeDialog'
 import LoginDialog from './components/LoginDialog'
 import JoinDialog from './components/JoinDialog'
 import DataStructureDialog from './components/DataStructureDialog'
 import AcidRainDialog from './components/AcidRainDialog'
+import ComputerDialog from './components/ComputerDialog'
+import WhiteboardDialog from './components/WhiteboardDialog'
 import MoleGameDialog from './components/MoleGameDialog'
 import VideoConnectionDialog from './components/VideoConnectionDialog'
 import HelperButtonGroup from './components/HelperButtonGroup'
@@ -26,6 +34,12 @@ import ProfileDialog from './components/ProfileDialog'
 
 import GlobalFont from '../public/assets/fonts/GlobalFont'
 
+import { authenticateUser } from './apicalls/auth';
+
+// import Cookies from 'universal-cookie';
+// const cookies = new Cookies();
+
+// TODO: Production 서버에 옮겨가면 해당 부분 수정 필요 
 axios.defaults.baseURL = 'http://localhost:2567'
 console.log('axios.defaults.baseURL ', axios.defaults.baseURL);
 
@@ -41,9 +55,13 @@ function App() {
   const acidrainDialogOpen = useAppSelector((state) => state.acidrain.acidrainDialogOpen)
   const videoConnected = useAppSelector((state) => state.user.videoConnected)
   const roomJoined = useAppSelector((state) => state.room.roomJoined)
+  const entryProcess = useAppSelector((state) => state.user.entryProcess)
+  const entered = useAppSelector((state) => state.user.entered)
+  const videoConnected = useAppSelector((state) => state.user.videoConnected)
+  const audioConnected = useAppSelector((state) => state.user.audioConnected)
+  const computerDialogOpen = useAppSelector((state) => state.computer.computerDialogOpen)
+  const whiteboardDialogOpen = useAppSelector((state) => state.whiteboard.whiteboardDialogOpen)
   const moleGameDialogOpen = useAppSelector((state) => state.molegame.moleGameDialogOpen)
-  const showLogin = useAppSelector((state) => state.user.showLogin)
-  const showJoin = useAppSelector((state) => state.user.showJoin)
 
   // ↓ HelperButtonGroup Dialog
   const showChat = useAppSelector((state) => state.chat.showChat)
@@ -54,32 +72,39 @@ function App() {
   // ↓ Profile Dialog
   const showProfile = useAppSelector((state) => state.user.showProfile)
 
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    // 첫 렌더링 시, refresh token이 있다면 token 인증을 통해 entry 상태를 설정 // TODO: cookie 가져오는 부분 해결 필요 
+    // const refreshToken = cookies.get('refreshToken');
+    // console.log('refresh token: ', refreshToken)
+    // if (refreshToken) { 
+    authenticateUser().then((result) => {
+      if (result.status === 200) {
+        dispatch(setEntryProcess(ENTRY_PROCESS.WELCOME));
+      }
+    })
+    // }
+  }, [])
+
   let ui: JSX.Element
-  if (loggedIn) {
-    if (datastructureDialogOpen) {
-      ui = <DataStructureDialog />
-
-    } else if (acidrainDialogOpen) {
-      ui = <AcidRainDialog />
-
+  if (entered) {
+    if (computerDialogOpen) {
+      ui = <ComputerDialog />
+    } else if (whiteboardDialogOpen) {
+      ui = <WhiteboardDialog />
     } else if (moleGameDialogOpen) {
       ui = <MoleGameDialog />
-
     } else if (showChat) {
-      ui = <ChatDialog />
-      
+      ui = <ChatDialog /> // UGLY: Need to move to HelperButtonGroup 
     } else if (showDM) {
-      ui = <DMDialog />
-      
+      ui = <DMDialog />   // UGLY: Need to move to HelperButtonGroup 
     } else if (showUser) {
-      ui = <UserDialog />
-      
+      ui = <UserDialog /> // UGLY: Need to move to HelperButtonGroup 
     } else if (showLogout) {
       ui = <LogoutDialog />
-      
     } else if (showProfile) {
-      ui = <ProfileDialog />
-      
+      ui = <ProfileDialog />  // UGLY: Need to move to HelperButtonGroup 
     } else {
       ui = (
         <>
@@ -88,15 +113,14 @@ function App() {
         </>
       )
     }
-
-  } else if (showLogin) {
+  } else if (entryProcess === ENTRY_PROCESS.ENTRY) {
+    ui = <EntryDialog />
+  } else if (entryProcess === ENTRY_PROCESS.LOGIN) {
     ui = <LoginDialog />
-
-  } else if (showJoin) {
+  } else if (entryProcess === ENTRY_PROCESS.JOIN) {
     ui = <JoinDialog />
-
   } else {
-    ui = <WelcomeDialog />
+    ui = <WelcomeDialog/>
   }
 
   return (
