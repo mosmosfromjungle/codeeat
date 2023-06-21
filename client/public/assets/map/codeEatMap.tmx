@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="90" height="90" tilewidth="16" tileheight="16" infinite="0" nextlayerid="55" nextobjectid="398">
+<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="90" height="90" tilewidth="16" tileheight="16" infinite="0" nextlayerid="56" nextobjectid="480">
  <editorsettings>
   <export target="codeEatMap.json" format="json"/>
  </editorsettings>
@@ -181,9 +181,6 @@
  </tileset>
  <tileset firstgid="124956" name="chair" tilewidth="32" tileheight="64" tilecount="23" columns="1">
   <image source="../tileset/chair.png" width="32" height="1472"/>
- </tileset>
- <tileset firstgid="124979" name="gamemachine" tilewidth="30" tileheight="50" tilecount="1" columns="1">
-  <image source="../tileset/gamemachine.png" width="30" height="50"/>
  </tileset>
  <layer id="1" name="ground" width="90" height="90">
   <data encoding="csv">
@@ -485,13 +482,13 @@
 113688,113689,113690,113691,113692,0,0,109705,109706,109738,109515,109706,109674,109517,109610,109520,109642,109516,0,0,109604,109605,109606,109976,109977,109970,109971,109976,109977,0,109974,109975,0,86401,86402,86403,86404,86405,86406,86407,86408,86409,86410,86411,86412,86413,86414,86415,86416,86417,86418,86419,86420,86421,86422,86423,86424,0,109636,109637,0,109633,109634,109635,109539,109540,109389,109390,0,0,0,0,0,110263,0,110370,110369,110370,0,0,0,0,0,0,0,112712,112713,112714,112715,112716,
 113752,113753,113754,113755,113756,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,109913,109914,109915,109916,109917,109918,0,109990,109991,0,86433,86434,86435,86436,86437,86438,86439,86440,86441,86442,86443,86444,86445,86446,86447,86448,86449,86450,86451,86452,86453,86454,86455,86456,0,109652,109653,0,0,0,0,0,0,0,0,0,0,0,0,110343,110279,110312,110386,110385,110386,110277,110278,110313,110314,110315,0,0,112776,112777,112778,112779,112780,
 113816,113817,113818,113819,113820,0,0,0,109627,109628,109629,109630,109631,109632,109629,109630,109631,109632,0,0,0,0,0,109929,109930,109931,109932,109933,109934,0,0,0,0,86465,86466,86467,86468,86469,86470,86471,86472,86473,86474,86475,86476,86477,86478,86479,86480,86481,86482,86483,86484,86485,86486,86487,86488,0,109668,109669,0,109910,0,0,109910,0,0,109910,0,0,0,0,110359,110295,110328,110402,110401,110402,110291,110292,110329,110330,110331,0,0,112840,112841,112842,112843,112844,
-113880,113881,113882,113883,113884,0,0,0,109708,0,109739,109740,0,0,109741,109742,0,109712,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,86497,86498,86499,86500,86501,86502,86503,86504,86505,86506,86507,86508,86509,86510,86511,86512,86513,86514,86515,86516,86517,86518,86519,86520,0,0,0,0,109926,97620,0,109926,97620,0,109926,97620,0,0,110415,110416,0,0,0,0,0,0,0,0,0,0,0,0,112904,112905,112906,112907,112908,
+113880,113881,113882,113883,113884,0,0,0,109708,0,109739,109740,0,0,109741,109742,0,109712,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,86497,86498,86499,86500,86501,86502,86503,86504,86505,86506,86507,86508,86509,86510,86511,86512,86513,86514,86515,86516,86517,86518,86519,86520,0,0,0,0,49685,49667,0,49685,49667,0,49685,49667,0,0,110415,110416,0,0,0,0,0,0,0,0,0,0,0,0,112904,112905,112906,112907,112908,
 113944,113945,113946,113947,113948,0,0,0,0,109629,109630,109631,109632,0,0,109631,109632,109788,0,0,0,109875,109876,109877,0,109876,109876,0,109876,109877,109878,0,0,86529,86530,86531,86532,86533,86534,86535,86536,86537,86538,86539,86540,86541,86542,86543,86544,86545,86546,86547,86548,86549,86550,86551,86552,0,109865,109866,0,0,0,0,0,0,0,0,0,0,0,110431,110432,0,0,0,0,110309,110310,110297,110298,110281,110282,0,0,112968,112969,112970,112971,112972,
 114008,114009,114010,114011,114012,0,0,0,0,109743,109744,109710,0,0,0,109711,0,0,0,0,0,109891,109892,109893,0,109892,109892,0,109892,109893,109894,0,0,86561,86562,86563,86564,86565,86566,86567,86568,86569,86570,86571,86572,86573,86574,86575,86576,86577,86578,86579,86580,86581,86582,86583,86584,0,109881,109882,0,109910,0,0,109910,0,0,109910,0,0,0,0,0,0,0,0,110316,110317,110493,110494,110495,110459,110460,0,0,113032,113033,113034,113035,113036,
-114072,114073,114074,114075,114076,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,86593,86594,86595,86596,86597,86598,86599,86600,86601,86602,86603,86604,86605,86606,86607,86608,86609,86610,86611,86612,86613,86614,86615,86616,0,109897,109898,0,109926,97620,0,109926,97620,0,109926,97620,0,0,0,0,0,0,0,110332,110333,110509,110510,110511,110475,110476,0,0,113096,113097,113098,113099,113100,
+114072,114073,114074,114075,114076,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,49682,0,49682,0,49682,49682,0,49682,49682,49682,0,0,86593,86594,86595,86596,86597,86598,86599,86600,86601,86602,86603,86604,86605,86606,86607,86608,86609,86610,86611,86612,86613,86614,86615,86616,0,109897,109898,0,49685,49667,0,49685,49667,0,49685,49667,0,0,0,0,0,0,0,110332,110333,110509,110510,110511,110475,110476,0,0,113096,113097,113098,113099,113100,
 114136,114137,114138,114139,114140,0,0,0,0,0,0,0,0,0,0,0,109854,109855,0,0,0,109875,109876,109877,0,109876,109876,0,109876,109876,109875,0,0,86625,86626,86627,86628,86629,86630,86631,86632,86633,86634,86635,86636,86637,86638,86639,86640,86641,86642,86643,86644,86645,86646,86647,86648,0,0,0,0,0,0,0,0,0,0,0,0,0,0,109490,109491,0,0,0,110348,110349,110525,110526,110527,110491,110492,0,0,113160,113161,113162,113163,113164,
 114200,114201,114202,114203,114204,0,0,109752,109753,0,0,0,0,0,0,0,0,0,0,0,0,109891,109892,109893,0,109892,109892,0,109892,109892,109891,0,0,86657,86658,86659,86660,86661,86662,86663,86664,86665,86666,86667,86668,86669,86670,86671,86672,86673,86674,86675,86676,86677,86678,86679,86680,0,0,0,0,109910,0,0,109910,0,0,109910,0,0,0,0,0,0,0,0,0,0,0,0,110391,0,0,0,0,113224,113225,113226,113227,113228,
-114264,114265,114266,114267,114268,0,0,0,0,109776,0,0,0,0,0,0,0,109823,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,86689,86690,86691,86692,86693,86694,86695,86696,86697,86698,86699,86700,86701,86702,86703,86704,86705,86706,86707,86708,86709,86710,86711,86712,0,0,0,0,109926,97620,0,109926,97620,0,109926,97620,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,113288,113289,113290,113291,113292,
+114264,114265,114266,114267,114268,0,0,0,0,109776,0,0,0,0,0,0,0,109823,0,0,0,49682,49682,49682,0,49682,49682,0,0,49682,0,0,0,86689,86690,86691,86692,86693,86694,86695,86696,86697,86698,86699,86700,86701,86702,86703,86704,86705,86706,86707,86708,86709,86710,86711,86712,0,0,0,0,49685,49667,0,49685,49667,0,49685,49667,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,113288,113289,113290,113291,113292,
 114328,114329,114330,114331,114332,0,0,109265,109266,0,0,0,0,109265,109266,0,0,0,0,0,0,0,0,0,109265,109266,0,0,0,0,109265,109266,0,86721,86722,86723,86724,86725,86726,86727,86728,86729,86730,86731,86732,86733,86734,86735,86736,86737,86738,86739,86740,86741,86742,86743,86744,0,109265,109266,0,0,0,0,109265,109266,0,0,0,0,0,0,0,0,0,109265,109266,0,0,0,0,109265,109266,0,0,113352,113353,113354,113355,113356,
 114392,114393,114394,114395,114396,0,0,109281,109282,109950,109950,109950,109950,109281,109282,0,0,0,0,0,0,0,0,0,109281,109282,109950,109950,109950,109950,109281,109282,0,86753,86754,86755,86756,86757,86758,86759,86760,86761,86762,86763,86764,86765,86766,86767,86768,86769,86770,86771,86772,86773,86774,86775,86776,0,109281,109282,109950,109950,109950,109950,109281,109282,0,0,0,0,0,0,0,0,0,109281,109282,109950,109950,109950,109950,109281,109282,0,0,113416,113417,113418,113419,113420,
 114456,114457,114458,114459,114460,0,0,109297,109298,109966,109966,109966,109966,109297,109298,0,0,0,0,0,0,0,0,0,109297,109298,109966,109966,109966,109966,109297,109298,0,86785,86786,86787,86788,86789,86790,86791,86792,86793,86794,86795,86796,86797,86798,86799,86800,86801,86802,86803,86804,86805,86806,86807,86808,0,109297,109298,109966,109966,109966,109966,109297,109298,0,0,0,0,0,0,0,0,0,109297,109298,109966,109966,109966,109966,109297,109298,0,0,113480,113481,113482,113483,113484,
@@ -1797,9 +1794,6 @@
   <object id="280" gid="49348" x="112" y="736" width="16" height="16"/>
   <object id="281" gid="49349" x="128" y="736" width="16" height="16"/>
  </objectgroup>
- <objectgroup id="54" name="mole2">
-  <object id="397" gid="124979" x="1296.5" y="563" width="30" height="50"/>
- </objectgroup>
  <objectgroup id="53" name="Chair2">
   <object id="393" gid="124956" x="736" y="640" width="32" height="64">
    <properties>
@@ -1816,56 +1810,245 @@
     <property name="direction" value="right"/>
    </properties>
   </object>
-  <object id="396" gid="124961" x="736" y="736" width="32" height="64">
+  <object id="403" gid="124961" x="736" y="752" width="32" height="64">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
+  </object>
+  <object id="404" gid="124956" x="736" y="640" width="32" height="64">
+   <properties>
+    <property name="direction" value="down"/>
+   </properties>
+  </object>
+  <object id="405" gid="124958" x="768" y="688" width="32" height="64">
+   <properties>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object id="406" gid="124959" x="688" y="688" width="32" height="64">
+   <properties>
+    <property name="direction" value="right"/>
+   </properties>
+  </object>
+  <object id="407" gid="124961" x="736" y="752" width="32" height="64">
    <properties>
     <property name="direction" value="up"/>
    </properties>
   </object>
  </objectgroup>
+ <objectgroup id="55" name="chair2">
+  <object id="441" gid="49651" x="1136" y="560" width="16" height="16">
+   <properties>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object id="442" gid="49651" x="1152" y="560" width="16" height="16">
+   <properties>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object id="443" gid="49651" x="1168" y="560" width="16" height="16">
+   <properties>
+    <property name="direction" value="right"/>
+   </properties>
+  </object>
+  <object id="444" gid="49651" x="1184" y="560" width="16" height="16">
+   <properties>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object id="445" gid="49655" x="1200" y="560" width="16" height="16">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
+  </object>
+  <object id="446" gid="49691" x="1216" y="560" width="16" height="16">
+   <properties>
+    <property name="direction" value="down"/>
+   </properties>
+  </object>
+  <object id="447" gid="49666" x="1232" y="560" width="16" height="16">
+   <properties>
+    <property name="direction" value="down"/>
+   </properties>
+  </object>
+ </objectgroup>
  <objectgroup id="46" name="chair">
-  <object id="339" gid="109723" x="160" y="256" width="16" height="16"/>
-  <object id="340" gid="109724" x="176" y="256" width="16" height="16"/>
-  <object id="341" gid="109725" x="224" y="256" width="16" height="16"/>
-  <object id="342" gid="109726" x="240" y="256" width="16" height="16"/>
-  <object id="343" gid="109727" x="144" y="288" width="16" height="16"/>
-  <object id="344" gid="109728" x="160" y="288" width="16" height="16"/>
-  <object id="345" gid="109907" x="336" y="304" width="16" height="16"/>
-  <object id="346" gid="109907" x="368" y="304" width="16" height="16"/>
-  <object id="347" gid="109907" x="400" y="304" width="16" height="16"/>
-  <object id="348" gid="109907" x="416" y="304" width="16" height="16"/>
-  <object id="349" gid="109907" x="448" y="304" width="16" height="16"/>
-  <object id="350" gid="109907" x="464" y="304" width="16" height="16"/>
-  <object id="351" gid="109907" x="480" y="304" width="16" height="16"/>
-  <object id="352" gid="109907" x="336" y="352" width="16" height="16"/>
-  <object id="353" gid="109907" x="352" y="352" width="16" height="16"/>
-  <object id="354" gid="109907" x="368" y="352" width="16" height="16"/>
-  <object id="355" gid="109907" x="400" y="352" width="16" height="16"/>
-  <object id="356" gid="109907" x="416" y="352" width="16" height="16"/>
-  <object id="357" gid="109907" x="464" y="352" width="16" height="16"/>
-  <object id="358" gid="109923" x="336" y="320" width="16" height="16"/>
-  <object id="359" gid="109923" x="368" y="320" width="16" height="16"/>
-  <object id="360" gid="109923" x="400" y="320" width="16" height="16"/>
-  <object id="361" gid="109923" x="416" y="320" width="16" height="16"/>
-  <object id="362" gid="109923" x="448" y="320" width="16" height="16"/>
-  <object id="363" gid="109923" x="464" y="320" width="16" height="16"/>
-  <object id="364" gid="109923" x="480" y="320" width="16" height="16"/>
-  <object id="365" gid="109923" x="336" y="368" width="16" height="16"/>
-  <object id="366" gid="109923" x="352" y="368" width="16" height="16"/>
-  <object id="367" gid="109923" x="368" y="368" width="16" height="16"/>
-  <object id="368" gid="109923" x="400" y="368" width="16" height="16"/>
-  <object id="369" gid="109923" x="416" y="368" width="16" height="16"/>
-  <object id="370" gid="109923" x="464" y="368" width="16" height="16"/>
-  <object id="371" gid="109909" x="992" y="256" width="16" height="16"/>
-  <object id="372" gid="109909" x="1040" y="256" width="16" height="16"/>
-  <object id="373" gid="109909" x="1088" y="256" width="16" height="16"/>
-  <object id="374" gid="109909" x="1088" y="304" width="16" height="16"/>
-  <object id="375" gid="109909" x="1040" y="304" width="16" height="16"/>
-  <object id="376" gid="109909" x="992" y="304" width="16" height="16"/>
-  <object id="377" gid="109909" x="992" y="352" width="16" height="16"/>
-  <object id="378" gid="109909" x="1040" y="352" width="16" height="16"/>
-  <object id="379" gid="109909" x="1088" y="352" width="16" height="16"/>
-  <object id="380" gid="109507" x="1152" y="352" width="16" height="16"/>
-  <object id="381" gid="109506" x="1136" y="352" width="16" height="16"/>
+  <object id="374" gid="109909" x="1088" y="304" width="16" height="16">
+   <properties>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object id="377" gid="109909" x="992" y="352" width="16" height="16">
+   <properties>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object id="378" gid="109909" x="1040" y="352" width="16" height="16">
+   <properties>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object id="379" gid="109909" x="1088" y="352" width="16" height="16">
+   <properties>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object id="380" gid="109507" x="1145" y="352" width="16" height="16">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
+  </object>
+  <object id="381" gid="109506" x="1136" y="352" width="16" height="16">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
+  </object>
+  <object id="400" gid="49692" x="1152" y="352" width="16" height="16">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
+  </object>
+  <object id="408" gid="49651" x="1088" y="352" width="16" height="16">
+   <properties>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object id="409" gid="49651" x="1040" y="352" width="16" height="16">
+   <properties>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object id="410" gid="49651" x="992" y="352" width="16" height="16">
+   <properties>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object id="411" gid="49651" x="1088" y="304" width="16" height="16">
+   <properties>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object id="448" gid="49656" x="160" y="256" width="16" height="16">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
+  </object>
+  <object id="449" gid="49657" x="176" y="256" width="16" height="16">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
+  </object>
+  <object id="450" gid="49658" x="224" y="256" width="16" height="16">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
+  </object>
+  <object id="451" gid="49659" x="240" y="256" width="16" height="16">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
+  </object>
+  <object id="452" gid="49660" x="144" y="288" width="16" height="16">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
+  </object>
+  <object id="453" gid="49661" x="160" y="288" width="16" height="16">
+   <properties>
+    <property name="up" value=""/>
+   </properties>
+  </object>
+  <object id="456" gid="49651" x="1040" y="304" width="16" height="16">
+   <properties>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object id="457" gid="49651" x="992" y="304" width="16" height="16">
+   <properties>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object id="458" gid="49651" x="992" y="256" width="16" height="16">
+   <properties>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object id="459" gid="49651" x="1040" y="256" width="16" height="16">
+   <properties>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object id="460" gid="49651" x="1088" y="256" width="16" height="16">
+   <properties>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object id="466" gid="49666" x="336" y="352" width="16" height="16">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
+  </object>
+  <object id="467" gid="49666" x="336" y="304" width="16" height="16">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
+  </object>
+  <object id="468" gid="49666" x="368" y="304" width="16" height="16">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
+  </object>
+  <object id="469" gid="49666" x="400" y="304" width="16" height="16">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
+  </object>
+  <object id="470" gid="49666" x="416" y="304" width="16" height="16">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
+  </object>
+  <object id="471" gid="49666" x="448" y="304" width="16" height="16">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
+  </object>
+  <object id="472" gid="49666" x="464" y="304" width="16" height="16">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
+  </object>
+  <object id="473" gid="49666" x="480" y="304" width="16" height="16">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
+  </object>
+  <object id="475" gid="49666" x="352" y="352" width="16" height="16">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
+  </object>
+  <object id="476" gid="49666" x="368" y="352" width="16" height="16">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
+  </object>
+  <object id="477" gid="49666" x="400" y="352" width="16" height="16">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
+  </object>
+  <object id="478" gid="49666" x="416" y="352" width="16" height="16">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
+  </object>
+  <object id="479" gid="49666" x="464" y="352" width="16" height="16">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup id="47" name="bench">
   <object id="194" gid="48898" x="944" y="1360" width="16" height="16"/>
