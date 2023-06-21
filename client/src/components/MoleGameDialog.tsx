@@ -83,6 +83,8 @@ export default function MoleGameDialog() {
   
   const [moleCatch, setMoleCatch] = useState(0);
 
+  const [canClick, setCanClick] = useState(true);
+
   let randomNumber1 = 0;
   let randomNumber2 = 0;
   let randomNumber3 = 0;
@@ -331,6 +333,8 @@ export default function MoleGameDialog() {
           break;
       }
 
+      setCanClick(true);
+
       setProblemText(after[turn][0]);
 
       moleActive(moleNumber1);
@@ -386,6 +390,12 @@ export default function MoleGameDialog() {
 
   const handleClick = (num) => {
     console.log("Function [handleClick]");
+    
+    if (!canClick) {
+      return;
+    }
+
+    setCanClick(false);
 
     // Click Other
     if (!activeNumberList.includes(num)) {
