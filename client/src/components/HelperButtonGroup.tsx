@@ -10,9 +10,10 @@ import ChatIcon from '@mui/icons-material/Chat'
 import DMIcon from '@mui/icons-material/Send'
 import UserIcon from '@mui/icons-material/SupervisorAccount'
 import LogoutIcon from '@mui/icons-material/ExitToApp';
+import HelpIcon from '@mui/icons-material/Help';
 
 import { setFocused, setShowChat, setShowDM, setShowUser } from '../stores/ChatStore'
-import { setShowLogout } from '../stores/UserStore'
+import { setShowLogout, setShowProfile, setShowVersion } from '../stores/UserStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
 
 const Backdrop = styled.div`
@@ -48,6 +49,7 @@ export default function HelperButtonGroup() {
   const showDM = useAppSelector((state) => state.chat.showDM)
   const showUser = useAppSelector((state) => state.chat.showUser)
   const showLogout = useAppSelector((state) => state.user.showLogout)
+  const showVersion = useAppSelector((state) => state.user.showVersion)
 
   const dispatch = useAppDispatch()
 
@@ -77,7 +79,12 @@ export default function HelperButtonGroup() {
                   dispatch(setFocused(false))
                 ) : (
                   dispatch(setShowChat(true)),
-                  dispatch(setFocused(true))
+                  dispatch(setFocused(true)),
+                  dispatch(setShowDM(false)),
+                  dispatch(setShowUser(false)),
+                  dispatch(setShowLogout(false)),
+                  dispatch(setShowProfile(false)),
+                  dispatch(setShowVersion(false))
                 )}
               >
                 <ChatIcon />
@@ -95,7 +102,12 @@ export default function HelperButtonGroup() {
                   dispatch(setFocused(false))
                 ) : (
                   dispatch(setShowDM(true)),
-                  dispatch(setFocused(true))
+                  dispatch(setFocused(true)),
+                  dispatch(setShowChat(false)),
+                  dispatch(setShowUser(false)),
+                  dispatch(setShowLogout(false)),
+                  dispatch(setShowProfile(false)),
+                  dispatch(setShowVersion(false))
                 )}
               >
                 <DMIcon />
@@ -111,7 +123,12 @@ export default function HelperButtonGroup() {
                 onClick={() => showUser ? (
                   dispatch(setShowUser(false))
                 ) : (
-                  dispatch(setShowUser(true))
+                  dispatch(setShowUser(true)),
+                  dispatch(setShowChat(false)),
+                  dispatch(setShowDM(false)),
+                  dispatch(setShowLogout(false)),
+                  dispatch(setShowProfile(false)),
+                  dispatch(setShowVersion(false))
                 )}
               >
                 <UserIcon />
@@ -120,19 +137,47 @@ export default function HelperButtonGroup() {
           )}
         </Wrapper>
 
-        {roomJoined && (
-          <FabWrapper>
-          <Fab
-            onClick={() => showLogout ? (
-              dispatch(setShowLogout(false))
-            ) : (
-              dispatch(setShowLogout(true))
-            )}
-          >
-            <LogoutIcon />
-          </Fab>
-          </FabWrapper>
-        )}
+        <Wrapper>
+          {roomJoined && (
+            <FabWrapper>
+            <Fab
+              onClick={() => showLogout ? (
+                dispatch(setShowLogout(false))
+              ) : (
+                dispatch(setShowLogout(true)),
+                dispatch(setShowChat(false)),
+                dispatch(setShowDM(false)),
+                dispatch(setShowUser(false)),
+                dispatch(setShowProfile(false)),
+                dispatch(setShowVersion(false))
+              )}
+            >
+              <LogoutIcon />
+            </Fab>
+            </FabWrapper>
+          )}
+        </Wrapper>
+
+        <Wrapper>
+          {roomJoined && (
+            <FabWrapper>
+            <Fab
+              onClick={() => showVersion ? (
+                dispatch(setShowVersion(false))
+              ) : (
+                dispatch(setShowVersion(true)),
+                dispatch(setShowChat(false)),
+                dispatch(setShowDM(false)),
+                dispatch(setShowUser(false)),
+                dispatch(setShowLogout(false)),
+                dispatch(setShowProfile(false))
+              )}
+            >
+              <HelpIcon />
+            </Fab>
+            </FabWrapper>
+          )}
+        </Wrapper>
       </ButtonGroup>
     </Backdrop>
   )

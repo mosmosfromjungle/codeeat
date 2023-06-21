@@ -14,6 +14,7 @@ import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import FormHelperText from '@mui/material/FormHelperText'
+import ArrowBack from '@mui/icons-material/ArrowBack'
 
 import { useAppSelector, useAppDispatch } from '../../hooks'
 import { ENTRY_PROCESS, setAccessToken, setEntryProcess } from '../../stores/UserStore'
@@ -149,11 +150,22 @@ export default function LoginDialog() {
     }    
   }
 
+  const handleBack = () => {
+    dispatch(setEntryProcess(ENTRY_PROCESS.ENTRY))
+  }
+
   return (
     <>
       <Backdrop>
         <Wrapper onSubmit={handleSubmit}>
-          <Title>Login</Title>
+          <IconButton
+            className="back"
+            onClick={ handleBack }
+          >
+            <ArrowBack />
+          </IconButton>
+          
+          <Title>로그인</Title>
           <Content>
             <TextField
               autoFocus
@@ -169,29 +181,17 @@ export default function LoginDialog() {
                 setUserIdError('')
               }}
             />
-            {/* <TextField
-              fullWidth
-              label="패스워드"
-              variant="outlined"
-              color="secondary"
-              error={passwordFieldEmpty || !!passwordError}
-              helperText={passwordFieldEmpty ? '패스워드를 입력해주세요 !' : passwordError}
-              onInput={(e) => {
-                setPassword((e.target as HTMLInputElement).value);
-                setPasswordError('')
-              }}
-            /> */}
+            
             <FormControl 
               variant="outlined"
               fullWidth
               color='secondary'
               error={passwordFieldEmpty || !!passwordError}
               margin="dense">
-              <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+              <InputLabel htmlFor="outlined-adornment-password">비밀번호</InputLabel>
               <OutlinedInput
                 id="outlined-adornment-password"
-                label="Password"
-                autoFocus
+                label="비밀번호"
                 type={showPassword ? 'text' : 'password'}
                 endAdornment={
                   <InputAdornment position="end">
@@ -210,7 +210,7 @@ export default function LoginDialog() {
                   setPasswordError('')
                 }}
               />
-              <FormHelperText id="my-helper-text">{passwordFieldEmpty ? '패스워드를 입력해주세요 !' : passwordError}</FormHelperText>
+              <FormHelperText id="my-helper-text">{passwordFieldEmpty ? '비밀번호를 입력해주세요 !' : passwordError}</FormHelperText>
             </FormControl>
           </Content>
 
@@ -218,9 +218,9 @@ export default function LoginDialog() {
             {!videoConnected && (
               <Warning>
                 <Alert variant="outlined" severity="warning">
-                  <AlertTitle>Warning</AlertTitle>
-                  No webcam/mic connected - <strong>connect one for best experience!</strong>
-                </Alert>
+                  <AlertTitle>아차!</AlertTitle>
+                  비디오와 마이크가 연결되지 않았어요.<br></br>
+                  <strong>연결하면 친구들과 대화할 수 있어요!</strong></Alert>
                 <Button
                   variant="outlined"
                   color="secondary"
@@ -228,7 +228,7 @@ export default function LoginDialog() {
                     game.network.webRTC?.getUserMedia()
                   }}
                 >
-                  Connect Webcam
+                  비디오 연결하기
                 </Button>
               </Warning>
             )}
@@ -241,14 +241,14 @@ export default function LoginDialog() {
           </Content>
           <Bottom>
             <Button variant="contained" size="large" type="submit">
-              Login
+              로그인하기
             </Button>
           </Bottom>
         </Wrapper>
         
         {!lobbyJoined && (
           <ProgressBarWrapper>
-            <h3> Connecting to server...</h3>
+            <h3>서버와 연결중 ...</h3>
             <ProgressBar color="secondary" />
           </ProgressBarWrapper>
         )}
