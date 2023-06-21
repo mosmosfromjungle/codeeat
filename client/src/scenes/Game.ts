@@ -82,10 +82,13 @@ export default class Game extends Phaser.Scene {
     createCharacterAnims(this.anims)
 
     this.map = this.make.tilemap({ key: 'tilemap' })
+
+    // ******************************** //
     // const FloorAndGround = this.map.addTilesetImage('FloorAndGround', 'tiles_wall')
 
     // const groundLayer = this.map.createLayer('Ground', FloorAndGround)
     // groundLayer.setCollisionByProperty({ collides: true })
+    // ******************************* //
 
     const schoolImage = this.map.addTilesetImage('School', 'School')
 
@@ -163,11 +166,11 @@ export default class Game extends Phaser.Scene {
       treeImage,
     ]);
 
+    // ************************************** (codeEat) //
     // thirdGroundLayer.setDepth(6500);
     foreGroundLayer.setDepth(6000);
-
     secondGroundLayer.setCollisionByProperty({ collisions: true });
-    fenceLayer.setCollisionByProperty({ collisions: true });
+    fenceLayer.setCollisionByProperty({ collsions: true });
 
 
     
@@ -179,14 +182,23 @@ export default class Game extends Phaser.Scene {
     this.myPlayer = this.add.myPlayer(705, 500, 'adam', this.network.mySessionId)
     this.playerSelector = new PlayerSelector(this, 0, 0, 16, 16)
 
-    // import chair objects from Tiled map to Phaser
+    // import chair objects from Tiled map to Phaser (codeEat object)
     // const chairs = this.physics.add.staticGroup({ classType: Chair })
-    // const chairLayer = this.map.getObjectLayer('Chair')
-    // chairLayer.objects.forEach((chairObj) => {
-    //   const item = this.addObjectFromTiled(chairs, chairObj, 'chairs', 'chair') as Chair
+    // const chairLayer = this.map.getObjectLayer('chair')
+    // chairLayer.objects.forEach((Obj) => {
+    //   const item = this.addObjectFromTiled(chairs, Obj, 'codeEatChair', 'codeEatChair') as Chair
     //   // custom properties[0] is the object direction specified in Tiled
-    //   item.itemDirection = chairObj.properties[0].value
+    //   item.itemDirection = Obj.properties[0].value
     // })
+
+    // import chair objects from Tiled map to Phaser
+    const chairs = this.physics.add.staticGroup({ classType: Chair })
+    const chairLayer = this.map.getObjectLayer('Chair2')
+    chairLayer.objects.forEach((chairObj) => {
+      const item = this.addObjectFromTiled(chairs, chairObj, 'chairs', 'chair') as Chair
+      // custom properties[0] is the object direction specified in Tiled
+      item.itemDirection = chairObj.properties[0].value
+    })
 
     // // import computers objects from Tiled map to Phaser
     // const computers = this.physics.add.staticGroup({ classType: Computer })
@@ -222,19 +234,19 @@ export default class Game extends Phaser.Scene {
     // })
 
     // // import code editor objects from Tiled map to Phaser
-    // const molegames = this.physics.add.staticGroup({ classType: MoleGame })
-    // const molegameLayer = this.map.getObjectLayer('MoleGame')
-    // molegameLayer.objects.forEach((obj, i) => {
-    //   const item = this.addObjectFromTiled(
-    //     molegames,
-    //     obj,
-    //     'molegames',
-    //     'molegame'
-    //   ) as MoleGame
-    //   const id = `${i}`
-    //   item.id = id
-    //   this.molegameMap.set(id, item)
-    // })
+    const molegames = this.physics.add.staticGroup({ classType: MoleGame })
+    const molegameLayer = this.map.getObjectLayer('mole')
+    molegameLayer.objects.forEach((obj, i) => {
+      const item = this.addObjectFromTiled(
+        molegames,
+        obj,
+        'mole',
+        'mole'
+      ) as MoleGame
+      const id = `${i}`
+      item.id = id
+      this.molegameMap.set(id, item)
+    })
 
     // // import other objects from Tiled map to Phaser
     // this.addGroupFromTiled('Wall', 'tiles_wall', 'FloorAndGround', false)
@@ -243,6 +255,9 @@ export default class Game extends Phaser.Scene {
     // this.addGroupFromTiled('GenericObjects', 'generic', 'Generic', false)
     // this.addGroupFromTiled('GenericObjectsOnCollide', 'generic', 'Generic', true)
     // this.addGroupFromTiled('Basement', 'basement', 'Basement', true)
+
+    // ****************************************************************** //
+
 
     this.otherPlayers = this.physics.add.group({ classType: OtherPlayer })
 
@@ -253,13 +268,14 @@ export default class Game extends Phaser.Scene {
     this.physics.add.collider([this.myPlayer, this.myPlayer.playerContainer], fenceLayer)
 
     // 상호작용 추가하는 부분..?
-    // this.physics.add.overlap(
-    //   this.playerSelector,
-    //   [chairs, computers, whiteboards, vendingMachines, molegames],
-    //   this.handleItemSelectorOverlap,
-    //   undefined,
-    //   this
-    // )
+    this.physics.add.overlap(
+      this.playerSelector,
+      // [chairs, computers, whiteboards, vendingMachines, molegames],
+      [chairs, molegames],
+      this.handleItemSelectorOverlap,
+      undefined,
+      this
+    )
 
     this.physics.add.overlap(
       this.myPlayer,
@@ -275,8 +291,12 @@ export default class Game extends Phaser.Scene {
     this.network.onMyPlayerReady(this.handleMyPlayerReady, this)
     this.network.onMyPlayerVideoConnected(this.handleMyVideoConnected, this)
     this.network.onPlayerUpdated(this.handlePlayerUpdated, this)
-    // this.network.onItemUserAdded(this.handleItemUserAdded, this)
-    // this.network.onItemUserRemoved(this.handleItemUserRemoved, this)
+
+    // ********************************* //
+    this.network.onItemUserAdded(this.handleItemUserAdded, this)
+    this.network.onItemUserRemoved(this.handleItemUserRemoved, this)
+    // ********************************* // 
+
     this.network.onChatMessageAdded(this.handleChatMessageAdded, this)
   }
 
@@ -365,35 +385,48 @@ export default class Game extends Phaser.Scene {
     otherPlayer.makeCall(myPlayer, this.network?.webRTC)
   }
 
-  // private handleItemUserAdded(playerId: string, itemId: string, itemType: ItemType) {
-  //   if (itemType === ItemType.COMPUTER) {
-  //     const computer = this.computerMap.get(itemId)
-  //     computer?.addCurrentUser(playerId)
 
-  //   } else if (itemType === ItemType.WHITEBOARD) {
-  //     const whiteboard = this.whiteboardMap.get(itemId)
-  //     whiteboard?.addCurrentUser(playerId)
+  // ********************************* //
+  private handleItemUserAdded(playerId: string, itemId: string, itemType: ItemType) {
+    // if (itemType === ItemType.COMPUTER) {
+    //   const computer = this.computerMap.get(itemId)
+    //   computer?.addCurrentUser(playerId)
 
-  //   } else if (itemType === ItemType.MOLEGAME) {
-  //     const molegame = this.molegameMap.get(itemId)
-  //     molegame?.addCurrentUser(playerId)
-  //   }
-  // }
+    // } else if (itemType === ItemType.WHITEBOARD) {
+    //   const whiteboard = this.whiteboardMap.get(itemId)
+    //   whiteboard?.addCurrentUser(playerId)
 
-  // private handleItemUserRemoved(playerId: string, itemId: string, itemType: ItemType) {
-  //   if (itemType === ItemType.COMPUTER) {
-  //     const computer = this.computerMap.get(itemId)
-  //     computer?.removeCurrentUser(playerId)
+    // } else if (itemType === ItemType.MOLEGAME) {
+    //   const molegame = this.molegameMap.get(itemId)
+    //   molegame?.addCurrentUser(playerId)
+    // } 
 
-  //   } else if (itemType === ItemType.WHITEBOARD) {
-  //     const whiteboard = this.whiteboardMap.get(itemId)
-  //     whiteboard?.removeCurrentUser(playerId)
+    if (itemType === ItemType.MOLEGAME) {
+      const molegame = this.molegameMap.get(itemId)
+      molegame?.addCurrentUser(playerId)
+    }
+  }
 
-  //   } else if (itemType === ItemType.MOLEGAME) {
-  //     const molegame = this.molegameMap.get(itemId)
-  //     molegame?.removeCurrentUser(playerId)
-  //   }
-  // }
+  private handleItemUserRemoved(playerId: string, itemId: string, itemType: ItemType) {
+    // if (itemType === ItemType.COMPUTER) {
+    //   const computer = this.computerMap.get(itemId)
+    //   computer?.removeCurrentUser(playerId)
+
+    // } else if (itemType === ItemType.WHITEBOARD) {
+    //   const whiteboard = this.whiteboardMap.get(itemId)
+    //   whiteboard?.removeCurrentUser(playerId)
+
+    // } else if (itemType === ItemType.MOLEGAME) {
+    //   const molegame = this.molegameMap.get(itemId)
+    //   molegame?.removeCurrentUser(playerId)
+    // }
+    if (itemType === ItemType.MOLEGAME) {
+      const molegame = this.molegameMap.get(itemId)
+      molegame?.removeCurrentUser(playerId)
+    }
+  }
+
+  // ********************************** //
 
   private handleChatMessageAdded(playerId: string, content: string) {
     const otherPlayer = this.otherPlayerMap.get(playerId)

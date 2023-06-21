@@ -1863,6 +1863,112 @@
         }, 
         {
          "draworder":"topdown",
+         "id":54,
+         "name":"mole2",
+         "objects":[
+                {
+                 "gid":124979,
+                 "height":50,
+                 "id":397,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":30,
+                 "x":1296.5,
+                 "y":563
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":53,
+         "name":"Chair2",
+         "objects":[
+                {
+                 "gid":124956,
+                 "height":64,
+                 "id":393,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"direction",
+                         "type":"string",
+                         "value":"down"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":736,
+                 "y":640
+                }, 
+                {
+                 "gid":124958,
+                 "height":64,
+                 "id":394,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"direction",
+                         "type":"string",
+                         "value":"left"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":768,
+                 "y":688
+                }, 
+                {
+                 "gid":124959,
+                 "height":64,
+                 "id":395,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"direction",
+                         "type":"string",
+                         "value":"right"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":688,
+                 "y":688
+                }, 
+                {
+                 "gid":124961,
+                 "height":64,
+                 "id":396,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"direction",
+                         "type":"string",
+                         "value":"up"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":736,
+                 "y":736
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":46,
          "name":"chair",
          "objects":[
@@ -3298,8 +3404,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":53,
- "nextobjectid":382,
+ "nextlayerid":55,
+ "nextobjectid":398,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.1",
@@ -3738,6 +3844,32 @@
                         }]
                 }],
          "tilewidth":16
+        }, 
+        {
+         "columns":1,
+         "firstgid":124956,
+         "image":"..\/tileset\/chair.png",
+         "imageheight":1472,
+         "imagewidth":32,
+         "margin":0,
+         "name":"chair",
+         "spacing":0,
+         "tilecount":23,
+         "tileheight":64,
+         "tilewidth":32
+        }, 
+        {
+         "columns":1,
+         "firstgid":124979,
+         "image":"..\/tileset\/gamemachine.png",
+         "imageheight":50,
+         "imagewidth":30,
+         "margin":0,
+         "name":"gamemachine",
+         "spacing":0,
+         "tilecount":1,
+         "tileheight":50,
+         "tilewidth":30
         }],
  "tilewidth":16,
  "type":"map",

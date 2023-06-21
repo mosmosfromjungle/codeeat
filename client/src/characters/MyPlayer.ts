@@ -7,7 +7,7 @@ import Network from '../services/Network'
 import Chair from '../items/Chair'
 // import Computer from '../items/Computer'
 // import Whiteboard from '../items/Whiteboard'
-// import MoleGame from '../items/MoleGame'
+import MoleGame from '../items/MoleGame'
 
 import { phaserEvents, Event } from '../events/EventCenter'
 import store from '../stores'
@@ -60,27 +60,27 @@ export default class MyPlayer extends Player {
 
     const item = playerSelector.selectedItem
 
-    // if (Phaser.Input.Keyboard.JustDown(keyR)) {
-    //   switch (item?.itemType) {
-    //     case ItemType.COMPUTER:
-    //       const computer = item as Computer
-    //       computer.openDialog(this.playerId, network)
-    //       break
-    //     case ItemType.WHITEBOARD:
-    //       const whiteboard = item as Whiteboard
-    //       whiteboard.openDialog(network)
-    //       break
-    //     case ItemType.VENDINGMACHINE:
-    //       // hacky and hard-coded, but leaving it as is for now
-    //       const url = 'https://www.buymeacoffee.com/skyoffice'
-    //       openURL(url)
-    //       break
-    //     case ItemType.MOLEGAME:
-    //       const molegame = item as MoleGame
-    //       molegame.openDialog(network)
-    //       break
-    //   }
-    // }
+    if (Phaser.Input.Keyboard.JustDown(keyR)) {
+      switch (item?.itemType) {
+        // case ItemType.COMPUTER:
+        //   const computer = item as Computer
+        //   computer.openDialog(this.playerId, network)
+        //   break
+        // case ItemType.WHITEBOARD:
+        //   const whiteboard = item as Whiteboard
+        //   whiteboard.openDialog(network)
+        //   break
+        // case ItemType.VENDINGMACHINE:
+        //   // hacky and hard-coded, but leaving it as is for now
+        //   const url = 'https://www.buymeacoffee.com/skyoffice'
+        //   openURL(url)
+        //   break
+        case ItemType.MOLEGAME:
+          const molegame = item as MoleGame
+          molegame.openDialog(network)
+          break
+      }
+    }
 
     switch (this.playerBehavior) {
       case PlayerBehavior.IDLE:
