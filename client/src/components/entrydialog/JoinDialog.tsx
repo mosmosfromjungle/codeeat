@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
+import LinearProgress from '@mui/material/LinearProgress'
 
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation } from 'swiper'
@@ -13,7 +14,7 @@ import Ash from '../../images/login/Ash_login.png'
 import Lucy from '../../images/login/Lucy_login.png'
 import Nancy from '../../images/login/Nancy_login.png'
 
-import { useAppDispatch } from '../../hooks'
+import { useAppSelector, useAppDispatch } from '../../hooks'
 import { ENTRY_PROCESS, setEntryProcess } from '../../stores/UserStore'
 import { JoinRequest, join } from '../../apicalls/auth'
 
@@ -76,7 +77,7 @@ const Left = styled.div`
 `
 const Right = styled.div`
   width: 300px;
-  margin-top: 60px;
+  // margin-top: 60px;
 `
 const Bottom = styled.div`
   display: flex;
@@ -86,6 +87,18 @@ const Bottom = styled.div`
   button {
     font-size: 20px;
     font-family: Font_DungGeun;
+  }
+`
+const ProgressBar = styled(LinearProgress)`
+  width: 360px;
+`
+const ProgressBarWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  h3 {
+    color: #33ac96;
   }
 `
 
@@ -128,6 +141,7 @@ export default function JoinDialog() {
 
   const [avatarIndex, setAvatarIndex] = useState<number>(0)
 
+  const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)
   const dispatch = useAppDispatch()
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -178,87 +192,99 @@ export default function JoinDialog() {
   }
 
   return (
-    <Wrapper onSubmit={handleSubmit}>
-      <Title>Join Us</Title>
-      <Content>
-        <Left>
-          <SubTitle>좌우로 이동하여 캐릭터를 골라보세요 !</SubTitle>
-            <Swiper
-              modules={[Navigation]}
-              navigation
-              spaceBetween={0}
-              slidesPerView={1}
-              onSlideChange={(swiper) => {
-                setAvatarIndex(swiper.activeIndex)
+    <>
+      <Wrapper onSubmit={handleSubmit}>
+        <Title>Join Us</Title>
+        <Content>
+          <Left>
+            <SubTitle>좌우로 이동하여 캐릭터를 골라보세요 !</SubTitle>
+              <Swiper
+                modules={[Navigation]}
+                navigation
+                spaceBetween={0}
+                slidesPerView={1}
+                onSlideChange={(swiper) => {
+                  setAvatarIndex(swiper.activeIndex)
+                }}
+              >
+              {avatars.map((avatar) => (
+                <SwiperSlide key={avatar.name}>
+                  <img src={avatar.img} alt={avatar.name} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </Left>
+          <Right>
+            <TextField
+              autoFocus
+              fullWidth
+              label="이메일"
+              variant="outlined"
+              color="secondary"
+              margin="dense"
+              error={emailFieldEmpty || emailFieldWrongFormat}
+              helperText={
+                (emailFieldEmpty && '이메일을 입력해주세요 !') ||
+                (emailFieldWrongFormat && '이메일 형식을 확인해주세요 !') ||
+                emailError
+              }
+              onInput={(e) => {
+                setEmail((e.target as HTMLInputElement).value)
               }}
-            >
-            {avatars.map((avatar) => (
-              <SwiperSlide key={avatar.name}>
-                <img src={avatar.img} alt={avatar.name} />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </Left>
-        <Right>
-          <TextField
-            autoFocus
-            fullWidth
-            label="이메일"
-            variant="outlined"
-            color="secondary"
-            error={emailFieldEmpty || emailFieldWrongFormat}
-            helperText={
-              (emailFieldEmpty && '이메일을 입력해주세요 !') ||
-              (emailFieldWrongFormat && '이메일 형식을 확인해주세요 !') ||
-              emailError
-            }
-            onInput={(e) => {
-              setEmail((e.target as HTMLInputElement).value)
-            }}
-          />
-          <TextField
-            fullWidth
-            label="패스워드"
-            variant="outlined"
-            color="secondary"
-            error={passwordFieldEmpty}
-            helperText={passwordFieldEmpty && '패스워드를 입력해주세요 !'}
-            onInput={(e) => {
-              setPassword((e.target as HTMLInputElement).value)
-            }}
-          />
-          <TextField
-            fullWidth
-            label="패스워드 확인"
-            variant="outlined"
-            color="secondary"
-            error={passwordCheckFieldEmpty}
-            helperText={
-              (passwordCheckFieldEmpty && '패스워드를 입력해주세요 !') || (passwordFieldNotMatch && '패스워드를 확인해주세요 !')
-            }
-            onInput={(e) => {
-              setPasswordCheck((e.target as HTMLInputElement).value)
-            }}
-          />
-          <TextField
-            fullWidth
-            label="닉네임"
-            variant="outlined"
-            color="secondary"
-            error={nicknameFieldEmpty || !!nicknameError}
-            helperText={nicknameFieldEmpty ? '닉네임을 입력해주세요 !' : nicknameError}
-            onInput={(e) => {
-              setNickname((e.target as HTMLInputElement).value)
-            }}
-          />
-        </Right>
-      </Content>
-      <Bottom>
-        <Button variant="contained" color="secondary" size="large" type="submit">
-          Join
-        </Button>
-      </Bottom>
-    </Wrapper>
+            />
+            <TextField
+              fullWidth
+              label="패스워드"
+              variant="outlined"
+              color="secondary"
+              margin="dense"
+              error={passwordFieldEmpty}
+              helperText={passwordFieldEmpty && '패스워드를 입력해주세요 !'}
+              onInput={(e) => {
+                setPassword((e.target as HTMLInputElement).value)
+              }}
+            />
+            <TextField
+              fullWidth
+              label="패스워드 확인"
+              variant="outlined"
+              color="secondary"
+              margin="dense"
+              error={passwordCheckFieldEmpty}
+              helperText={
+                (passwordCheckFieldEmpty && '패스워드를 입력해주세요 !') || (passwordFieldNotMatch && '패스워드를 확인해주세요 !')
+              }
+              onInput={(e) => {
+                setPasswordCheck((e.target as HTMLInputElement).value)
+              }}
+            />
+            <TextField
+              fullWidth
+              label="닉네임"
+              variant="outlined"
+              color="secondary"
+              margin="dense"
+              error={nicknameFieldEmpty || !!nicknameError}
+              helperText={nicknameFieldEmpty ? '닉네임을 입력해주세요 !' : nicknameError}
+              onInput={(e) => {
+                setNickname((e.target as HTMLInputElement).value)
+              }}
+            />
+          </Right>
+        </Content>
+        <Bottom>
+          <Button variant="contained" color="secondary" size="large" type="submit">
+            Join
+          </Button>
+        </Bottom>
+      </Wrapper>
+      {!lobbyJoined && (
+        <ProgressBarWrapper>
+          <h3> Connecting to server...</h3>
+          <ProgressBar color="secondary" />
+        </ProgressBarWrapper>
+      )}
+    </>
   )
 }
 
