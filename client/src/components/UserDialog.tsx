@@ -17,8 +17,9 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
 
-import { setShowUser } from '../stores/ChatStore'
+import { setShowDM, setShowUser } from '../stores/ChatStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
 
 const Backdrop = styled.div`
@@ -41,7 +42,7 @@ const Content = styled.div`
 
 const ChatHeader = styled.div`
   position: relative;
-  height: 35px;
+  height: 40px;
   background: #000000a7;
   border-radius: 10px 10px 0px 0px;
 
@@ -55,9 +56,11 @@ const ChatHeader = styled.div`
 const Title = styled.div`
   position: absolute;
   color: white;
-  font-size: 15px;
+  font-size: 20px;
+  font-weight: bold;
   top: 10px;
   left: 150px;
+  font-family: Font_DungGeun;
 `
 
 const ChatBox = styled(Box)`
@@ -68,6 +71,38 @@ const ChatBox = styled(Box)`
   border: 1px solid #00000029;
   padding: 10px 10px;
   border-radius: 0px 0px 10px 10px;
+
+  Button {
+    font-size: 17px;
+    font-family: Font_DungGeun;
+  }
+`
+
+const UserList = styled.div`
+  Button {
+    width: 100%;
+  }
+`
+
+const User = styled.div`
+  margin: 10px 10px 10px 10px; 
+`
+
+const Profile = styled.div`
+  color: white;
+  width: 120px;
+  font-size: 20px;
+  font-family: Font_DungGeun;
+`
+
+const ProfileButton = styled.div`
+  Button {
+    width: 150px;
+    color: white;
+    margin-left: 20px;
+    font-size: 15px;
+    font-family: Font_DungGeun;
+  }
 `
 
 // Todo: change the parameter in body part
@@ -109,6 +144,11 @@ export default function UserDialog() {
   const focused = useAppSelector((state) => state.chat.focused)
   const showUser = useAppSelector((state) => state.chat.showUser)
 
+  const username = useAppSelector((state) => state.user.username)
+  const character = useAppSelector((state) => state.user.character)
+  const userLevel = useAppSelector((state) => state.user.userLevel)
+  const imgpath = `../../public/assets/character/single/${character}_idle_anim_19.png`
+
   const dispatch = useAppDispatch()
 
   const scrollToBottom = () => {
@@ -137,7 +177,7 @@ export default function UserDialog() {
           <Content>
             <ChatHeader>
               <Title>
-                User
+                친구들
               </Title>
               <IconButton
                 aria-label="close dialog"
@@ -156,34 +196,30 @@ export default function UserDialog() {
                 <Button>Platinum</Button>
                 <Button>Ruby</Button>
               </ButtonGroup>
-              <List>
-                <Button>
-                  <ListItem>
+
+              <UserList>
+                <User>
+                  <ListItem divider>
                     <ListItemAvatar>
-                      <Avatar src="/assets/character/single/Adam_idle_anim_19.png" />
+                      <Avatar src={imgpath} />
                     </ListItemAvatar>
-                    <ListItemText
-                      primary={
-                        <React.Fragment>
-                          <Typography sx={{ display: 'inline'}} variant="caption" color="white">
-                            Lv.213
-                          </Typography>
-                          <Typography sx={{ display: 'inline', margin: '10px' }} variant="caption" color="yellow">
-                            Gold
-                          </Typography>
-                        </React.Fragment>
-                      }
-                      secondary={
-                        <React.Fragment>
-                          <Typography sx={{ display: 'inline' }} variant="subtitle2" color="white">
-                            Junsu Pooh
-                          </Typography>
-                        </React.Fragment>
-                      }
-                    />
+
+                    <Profile>
+                      레벨 {userLevel}<br/><br/>
+                      <strong>{username}</strong>님
+                    </Profile>
+
+                    <ProfileButton>
+                      <Button>
+                        친구 추가하기
+                      </Button>
+                      <Button onClick={() => dispatch(setShowDM(true)) }>
+                        메세지 보내기
+                      </Button>
+                    </ProfileButton>
                   </ListItem>
-                </Button>
-              </List>
+                </User>
+              </UserList>
             </ChatBox>
           </Content>
         </Wrapper>

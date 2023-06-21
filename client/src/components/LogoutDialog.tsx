@@ -34,7 +34,7 @@ const Content = styled.div`
 
 const ChatHeader = styled.div`
   position: relative;
-  height: 35px;
+  height: 40px;
   background: #000000a7;
   border-radius: 10px 10px 0px 0px;
 
@@ -48,13 +48,15 @@ const ChatHeader = styled.div`
 const Title = styled.div`
   position: absolute;
   color: white;
-  font-size: 15px;
+  font-size: 20px;
+  font-weight: bold;
   top: 10px;
-  left: 140px;
+  left: 150px;
+  font-family: Font_DungGeun;
 `
 
 const ChatBox = styled(Box)`
-  height: 150px;
+  height: 130px;
   width: 360px;
   overflow: auto;
   background: #2c2c2c;
@@ -66,15 +68,14 @@ const ChatBox = styled(Box)`
 `
 
 const Question = styled.div`
-  font-size: 20px;
+  font-size: 18px;
   font-family: Font_DungGeun;
   margin-bottom: 20px;
 `
 
 const Buttons = styled.div`
   button {
-    margin: 10px 10px;
-    font-size: 15px;
+    font-size: 18px;
     font-family: Font_DungGeun;
   }
 `
@@ -108,7 +109,7 @@ export default function LogoutDialog() {
           <Content>
             <ChatHeader>
               <Title>
-                Logout
+                나가기
               </Title>
               <IconButton
                 aria-label="close dialog"
@@ -124,10 +125,10 @@ export default function LogoutDialog() {
                   정말 로그아웃 하시겠습니까 ?
                 </Question>
                 <Buttons>
-                  <Button variant="contained" size="large" onClick={() => dispatch(setEntryProcess(ENTRY_PROCESS.ENTRY)) }>
+                  <Button onClick={() => dispatch(setEntryProcess(ENTRY_PROCESS.ENTRY)) }>
                     네
                   </Button>
-                  <Button variant="contained" size="large" onClick={() => dispatch(setShowLogout(false)) }>
+                  <Button onClick={() => dispatch(setShowLogout(false)) }>
                     아니요
                   </Button>
                 </Buttons>

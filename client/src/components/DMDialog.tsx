@@ -49,7 +49,7 @@ const Content = styled.div`
 
 const ChatHeader = styled.div`
   position: relative;
-  height: 35px;
+  height: 40px;
   background: #000000a7;
   border-radius: 10px 10px 0px 0px;
 
@@ -63,9 +63,11 @@ const ChatHeader = styled.div`
 const Title = styled.div`
   position: absolute;
   color: white;
-  font-size: 15px;
+  font-size: 20px;
+  font-weight: bold;
   top: 10px;
-  left: 180px;
+  left: 150px;
+  font-family: Font_DungGeun;
 `
 
 const ChatBox = styled(Box)`
@@ -85,10 +87,10 @@ const MessageWrapper = styled.div`
   p {
     margin: 3px;
     text-shadow: 0.3px 0.3px black;
-    font-size: 15px;
+    font-size: 20px;
     font-weight: bold;
-    line-height: 1.4;
     overflow-wrap: anywhere;
+    font-family: Font_DungGeun;
   }
 
   span {
@@ -119,6 +121,7 @@ const InputTextField = styled(InputBase)`
   border-radius: 0px 0px 10px 10px;
   input {
     padding: 5px;
+    font-family: Font_DungGeun;
   }
 `
 
@@ -246,7 +249,7 @@ export default function DMDialog() {
           <Content>
             <ChatHeader>
               <Title>
-                DM
+                개인 메세지
               </Title>
               <IconButton
                 aria-label="close dialog"

@@ -12,10 +12,13 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
 
 import { setShowProfile } from '../stores/UserStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
 import { getMyProfile } from '../apicalls/auth';
+
+import Button from '@mui/material/Button'
 
 
 const Backdrop = styled.div`
@@ -38,7 +41,7 @@ const Content = styled.div`
 
 const ChatHeader = styled.div`
   position: relative;
-  height: 35px;
+  height: 40px;
   background: #000000a7;
   border-radius: 10px 10px 0px 0px;
 
@@ -52,19 +55,40 @@ const ChatHeader = styled.div`
 const Title = styled.div`
   position: absolute;
   color: white;
-  font-size: 15px;
+  font-size: 20px;
+  font-weight: bold;
   top: 10px;
-  left: 80px;
+  left: 95px;
+  font-family: Font_DungGeun;
 `
 
 const ChatBox = styled(Box)`
-  height: 300px;
+  height: 370px;
   width: 250px;
   overflow: auto;
   background: #2c2c2c;
   border: 1px solid #00000029;
-  padding: 10px 10px;
+  padding: 10px 30px;
   border-radius: 0px 0px 10px 10px;
+`
+
+const TextDiv = styled.div`
+  margin-bottom: 10px;
+`
+
+const Buttons = styled.div`
+  button {
+    left: 30px;
+    margin: 10px 10px 10px 10px;
+    font-size: 20px;
+    font-family: Font_DungGeun;
+  }
+`
+
+const Profile = styled.div`
+  color: white;
+  font-size: 20px;
+  font-family: Font_DungGeun;
 `
 
 export default function ProfileDialog() {
@@ -126,7 +150,7 @@ export default function ProfileDialog() {
           <Content>
             <ChatHeader>
               <Title>
-                Profile
+                내소개
               </Title>
               <IconButton
                 aria-label="close dialog"
@@ -139,34 +163,49 @@ export default function ProfileDialog() {
             </ChatHeader>
             <ChatBox>
               <List>
-                  <ListItem>
-                    <ListItemAvatar>
-                      <Avatar src={imgpath} />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={
-                        <React.Fragment>
-                          <Typography sx={{ display: 'inline'}} variant="caption" color="white">
-                            Lv.{userLevel}
-                          </Typography>
-                          <Typography sx={{ display: 'inline', margin: '10px' }} variant="caption" color="yellow">
-                            Gold
-                          </Typography>
-                        </React.Fragment>
-                      }
-                      secondary={
-                        <React.Fragment>
-                          <Typography sx={{ display: 'inline' }} variant="subtitle2" color="white">
-                            {username}
-                          </Typography>
-                        </React.Fragment>
-                      }
-                    />
-                  </ListItem>
-                  <Typography color="white">{git}</Typography>
-                  <Typography color="white">{email}</Typography>
-                  <Typography color="white">{message}</Typography>
+                <ListItem>
+                  <ListItemAvatar>
+                    <Avatar src={imgpath} />
+                  </ListItemAvatar>
+                  <Profile>
+                    레벨 {userLevel}<br/><br/>
+                    <strong>{username}</strong>님
+                  </Profile>
+                </ListItem>
               </List>
+
+              <TextDiv>
+              <TextField
+                label="학교"
+                id="standard-size-normal"
+                defaultValue=""
+                variant="standard"
+              />
+              </TextDiv>
+
+              <TextDiv>
+              <TextField
+                label="학년"
+                id="standard-size-normal"
+                defaultValue=""
+                variant="standard"
+              />
+              </TextDiv>
+
+              <TextDiv>
+              <TextField
+                id="standard-size-normal"
+                label="자기소개"
+                defaultValue=""
+                variant="standard"
+              />
+              </TextDiv>
+
+              <Buttons>
+                <Button onClick={() => console.log("click") }>
+                  수정하기
+                </Button>
+              </Buttons>
             </ChatBox>
           </Content>
         </Wrapper>
