@@ -17,6 +17,7 @@ import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 
 import { MessageType, setFocused, setShowChat, setShowDM, setShowUser } from '../stores/ChatStore'
+import { setShowLogout } from '../stores/UserStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
 import { getColorByString } from '../util'
 
@@ -52,18 +53,19 @@ const ChatHeader = styled.div`
   background: #000000a7;
   border-radius: 10px 10px 0px 0px;
 
-  h3 {
-    color: #fff;
-    margin: 7px;
-    font-size: 17px;
-    text-align: center;
-  }
-
   .close {
     position: absolute;
     top: 0;
     right: 0;
   }
+`
+
+const Title = styled.div`
+  position: absolute;
+  color: white;
+  font-size: 15px;
+  top: 10px;
+  left: 170px;
 `
 
 const ChatBox = styled(Box)`
@@ -191,6 +193,7 @@ export default function ChatDialog() {
       dispatch(setShowChat(false))
       dispatch(setShowDM(false))
       dispatch(setShowUser(false))
+      dispatch(setShowLogout(false))
     }
   }
 
@@ -243,6 +246,9 @@ export default function ChatDialog() {
           <Content>
             <ChatHeader>
               <h3>Chat</h3>
+              <Title>
+                Chat
+              </Title>
               <IconButton
                 aria-label="close dialog"
                 className="close"
@@ -279,7 +285,7 @@ export default function ChatDialog() {
                 inputRef={inputRef}
                 autoFocus={focused}
                 fullWidth
-                placeholder="Press Enter to Chat"
+                placeholder="친구들에게 메세지를 보내보세요 !"
                 value={inputValue}
                 onKeyDown={handleKeyDown}
                 onChange={handleChange}

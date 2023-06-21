@@ -152,7 +152,7 @@ export default function EntryDialog() {
         </Wrapper>
         {!lobbyJoined && (
           <ProgressBarWrapper>
-            <h3> Connecting to server...</h3>
+          <h3>서버와 연결중 ...</h3>
             <ProgressBar color="secondary" />
           </ProgressBarWrapper>
         )}

@@ -45,18 +45,19 @@ const ChatHeader = styled.div`
   background: #000000a7;
   border-radius: 10px 10px 0px 0px;
 
-  h3 {
-    color: #fff;
-    margin: 7px;
-    font-size: 17px;
-    text-align: center;
-  }
-
   .close {
     position: absolute;
     top: 0;
     right: 0;
   }
+`
+
+const Title = styled.div`
+  position: absolute;
+  color: white;
+  font-size: 15px;
+  top: 10px;
+  left: 150px;
 `
 
 const ChatBox = styled(Box)`
@@ -135,7 +136,9 @@ export default function UserDialog() {
         <Wrapper>
           <Content>
             <ChatHeader>
-              <h3>User</h3>
+              <Title>
+                User
+              </Title>
               <IconButton
                 aria-label="close dialog"
                 className="close"
