@@ -6,6 +6,11 @@ import CloseIcon from '@mui/icons-material/Close'
 import { useAppSelector, useAppDispatch } from '../hooks'
 import { closeMoleGameDialog } from '../stores/MoleGameStore'
 
+import ButtonBGM from '/assets/audios/mole_button.mp3';
+import CorrectBGM from '/assets/audios/mole_correct.mp3';
+import WrongBGM from '/assets/audios/mole_wrong.mp3';
+import FinishBGM from '/assets/audios/mole_finish.mp3';
+
 import './MoleGame.css'
 
 const Backdrop = styled.div`
@@ -34,6 +39,12 @@ const Wrapper = styled.div`
     top: 0px;
     right: 0px;
   }
+
+  .music {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+  }
 `
 
 const ProblemText = styled.div`
@@ -47,7 +58,7 @@ export default function MoleGameDialog() {
   const [flag, setFlag] = useState(0);
   const [titleColor, setTitleColor] = useState('#f2ecff');
 
-  const [problemText, setProblemText] = useState("정답을 말하고 있는 두더지를 잡아줘!");
+  const [problemText, setProblemText] = useState("정답을 말하고 있는 두더지를 잡아라!");
   const [answerText1, setAnswerText1] = useState(String);
   const [answerText2, setAnswerText2] = useState(String);
   const [answerText3, setAnswerText3] = useState(String);
@@ -106,7 +117,6 @@ export default function MoleGameDialog() {
 
     setStartButtonColor('#3d3f43');
     setPoint(0);
-    setTurn(0);
 
     setTimeout(showingMole, 1000);
   }
@@ -193,6 +203,8 @@ export default function MoleGameDialog() {
 
   const showingMole = () => {
     console.log("Function [showingMole]");
+
+    console.log(turn);
     
     if (turn < 10) {
       let luckyMoles = randomHole();
@@ -337,11 +349,17 @@ export default function MoleGameDialog() {
 
     } else {
       modalEvent();
-
+      
+      setTurn(0);
+      
       setHideEnding(false);
+
+      const FinishAudio = new Audio(FinishBGM);
+      FinishAudio.play();
 
       setStartButtonText('PRESS AGAIN');
       setStartButtonColor('#f2ecff');
+
       setDisableStartButton(false);
     }
   }
@@ -369,11 +387,48 @@ export default function MoleGameDialog() {
   const handleClick = (num) => {
     console.log("Function [handleClick]");
 
-    if (activeNumber === num) {
-      setPoint(point + 1);
-    }
+    // Click Other
+    if (!activeNumberList.includes(num)) {
+      return;
 
-    catchMole();
+    } else {
+      // Correct Answer
+      if (activeNumber === num) {
+        const CorrectAudio = new Audio(CorrectBGM);
+        CorrectAudio.play();
+
+        const getPoint = document.getElementById('point-current');
+        getPoint.classList.add('get-point');
+
+        setPoint(point + 1);
+
+        setTimeout(function() {
+          const removePoint = document.getElementById('point-current');
+          removePoint.classList.remove('get-point');
+        }, 1000);
+
+        const number = document.getElementById(`${num}`);
+        number.classList.add('click-correct');
+  
+        setTimeout(function() {
+          number.classList.remove('click-correct');
+        }, 1000);
+
+      // Wrong Answer
+      } else {
+        const WrongAudio = new Audio(WrongBGM);
+        WrongAudio.play();
+
+        const number = document.getElementById(`${num}`);
+        number.classList.add('click-wrong');
+
+        setTimeout(function() {
+          number.classList.remove('click-wrong');
+        }, 1000);
+      }
+
+      catchMole();
+    }
   };
 
   // 4. Score Modal
@@ -405,13 +460,25 @@ export default function MoleGameDialog() {
             <button type="button" 
                     className="restart-btn" 
                     style={{ color: "#f9f871" }}
-                    onClick={() => hideModal()}>
+                    onClick={() => hideModal()}
+                    onMouseEnter={ handleMouseOver }>
               CLOSE
             </button>
           </div>
         </p>
       </div>
     )
+  }
+
+  const handleMouseOver = () => {
+    const ButtonAudio = new Audio(ButtonBGM);
+    ButtonAudio.play();
+  }
+
+  // 6. Close
+
+  const handleClose = () => {
+    dispatch(closeMoleGameDialog());
   }
   
   return (
@@ -420,7 +487,7 @@ export default function MoleGameDialog() {
         <IconButton
           aria-label="close dialog"
           className="close"
-          onClick={() => dispatch(closeMoleGameDialog())}
+          onClick={ handleClose }
         >
           <CloseIcon />
         </IconButton>
@@ -442,56 +509,56 @@ export default function MoleGameDialog() {
             </div>
             
             <ul className="whack-a-mole clearfix">
-              <li className="mole">
-                <img id="7" src="/assets/game/molegame/mole.png" onClick={() => handleClick(7)}></img>
+              <li className="mole" onClick={() => handleClick(7)}>
+                <img id="7" src="/assets/game/molegame/mole.png"></img>
                 <div id="answer-div-7" className={`answer-text-7 ${activeNumberList.includes(7) ? '' : 'hiding'}`}>
                   <p id="answer-text-7">{ answerText7 }</p>
                 </div>
               </li>
-              <li className="mole">
-                <img id="8" src="/assets/game/molegame/mole.png" onClick={() => handleClick(8)}></img>
+              <li className="mole" onClick={() => handleClick(8)}>
+                <img id="8" src="/assets/game/molegame/mole.png"></img>
                 <div id="answer-div-8" className={`answer-text-8 ${activeNumberList.includes(8) ? '' : 'hiding'}`}>
                   <p id="answer-text-8">{ answerText8 }</p>
                 </div>
               </li>
-              <li className="mole">
-                <img id="9" src="/assets/game/molegame/mole.png" onClick={() => handleClick(9)}></img>
+              <li className="mole" onClick={() => handleClick(9)}>
+                <img id="9" src="/assets/game/molegame/mole.png"></img>
                 <div id="answer-div-9" className={`answer-text-9 ${activeNumberList.includes(9) ? '' : 'hiding'}`}>
                   <p id="answer-text-9">{ answerText9 }</p>
                 </div>
               </li>
-              <li className="mole">
-                <img id="4" src="/assets/game/molegame/mole.png" onClick={() => handleClick(4)}></img>
+              <li className="mole" onClick={() => handleClick(4)}>
+                <img id="4" src="/assets/game/molegame/mole.png"></img>
                 <div id="answer-div-4" className={`answer-text-4 ${activeNumberList.includes(4) ? '' : 'hiding'}`}>
                   <p id="answer-text-4">{ answerText4 }</p>
                 </div>
               </li>
-              <li className="mole">
-                <img id="5" src="/assets/game/molegame/mole.png" onClick={() => handleClick(5)}></img>
+              <li className="mole" onClick={() => handleClick(5)}>
+                <img id="5" src="/assets/game/molegame/mole.png"></img>
                 <div id="answer-div-5" className={`answer-text-5 ${activeNumberList.includes(5) ? '' : 'hiding'}`}>
                   <p id="answer-text-5">{ answerText5 }</p>
                 </div>
               </li>
-              <li className="mole">
-                <img id="6" src="/assets/game/molegame/mole.png" onClick={() => handleClick(6)}></img>
+              <li className="mole" onClick={() => handleClick(6)}>
+                <img id="6" src="/assets/game/molegame/mole.png"></img>
                 <div id="answer-div-6" className={`answer-text-6 ${activeNumberList.includes(6) ? '' : 'hiding'}`}>
                   <p id="answer-text-6">{ answerText6 }</p>
                 </div>
               </li>
-              <li className="mole">
-                <img id="1" src="/assets/game/molegame/mole.png" onClick={() => handleClick(1)}></img>
+              <li className="mole" onClick={() => handleClick(1)}>
+                <img id="1" src="/assets/game/molegame/mole.png"></img>
                 <div id="answer-div-1" className={`answer-text-1 ${activeNumberList.includes(1) ? '' : 'hiding'}`}>
                   <p id="answer-text-1">{ answerText1 }</p>
                 </div>
               </li>
-              <li className="mole">
-                <img id="2" src="/assets/game/molegame/mole.png" onClick={() => handleClick(2)}></img>
+              <li className="mole" onClick={() => handleClick(2)}>
+                <img id="2" src="/assets/game/molegame/mole.png"></img>
                 <div id="answer-div-2" className={`answer-text-2 ${activeNumberList.includes(2) ? '' : 'hiding'}`}>
                   <p id="answer-text-2">{ answerText2 }</p>
                 </div>
               </li>
-              <li className="mole">
-                <img id="3" src="/assets/game/molegame/mole.png" onClick={() => handleClick(3)}></img>
+              <li className="mole" onClick={() => handleClick(3)}>
+                <img id="3" src="/assets/game/molegame/mole.png"></img>
                 <div id="answer-div-3" className={`answer-text-3 ${activeNumberList.includes(3) ? '' : 'hiding'}`}>
                   <p id="answer-text-3">{ answerText3 }</p>
                 </div>
@@ -508,7 +575,8 @@ export default function MoleGameDialog() {
                         className="start-btn" 
                         style={{ color: startButtonColor }} 
                         disabled={ disableStartButton } 
-                        onClick={() => startMole()}>
+                        onClick={() => startMole()}
+                        onMouseEnter={ handleMouseOver }>
                   { startButtonText }
                 </button>
               </div>

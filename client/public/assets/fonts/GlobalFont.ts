@@ -1,6 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 
-import font_dunggeunmo from './DungGeunMo.woff';
+import font_dunggeunmo from '/assets/fonts/DungGeunMo.woff';
 
 export default createGlobalStyle`
     @font-face {
