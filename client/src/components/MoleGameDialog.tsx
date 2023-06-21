@@ -48,7 +48,13 @@ const Wrapper = styled.div`
 `
 
 const ProblemText = styled.div`
+  margin-top: 10px;
   font-size: 20px;
+  font-family: Font_DungGeun;
+`
+
+const ProblemText2 = styled.div`
+  font-size: 30px;
   font-family: Font_DungGeun;
 `
 
@@ -74,7 +80,9 @@ export default function MoleGameDialog() {
   const [flag, setFlag] = useState(0);
   const [titleColor, setTitleColor] = useState('#f2ecff');
 
-  const [problemText, setProblemText] = useState("정답을 말하고 있는 두더지를 잡아라!");
+  const [problemText1, setProblemText1] = useState("정답을 말하고 있는 두더지를 잡아라!");
+  const [problemText2, setProblemText2] = useState("");
+
   const [answerText1, setAnswerText1] = useState(String);
   const [answerText2, setAnswerText2] = useState(String);
   const [answerText3, setAnswerText3] = useState(String);
@@ -144,16 +152,16 @@ export default function MoleGameDialog() {
   // 2. Show Event
 
   var after = [
-    ['Q01. 파이썬에서 리스트에 들어있는 모든 수를 합하는 함수는?', ['sum', 'len', 'map', 'list']],
-    ['Q02. 파이썬에서 리스트의 개수를 구하는 함수는?', ['len', 'abs', 'map', 'list']],
-    ['Q03. 파이썬에서 새로운 정렬된 리스트를 반환하는 함수는?', ['sorted', 'len', 'map', 'list']],
-    ['Q04. 파이썬에서 리스트 자체를 정렬시켜버리는 것은?', ['sort', 'len', 'map', 'list']],
-    ['Q05. 파이썬에서 내림차순 정렬을 위해 사용하는 옵션은?', ['reverse', 'len', 'map', 'list']],
-    ['Q06. 파이썬에서 숫자의 절댓값을 리턴하는 함수는?', ['abs', 'len', 'map', 'list']],
-    ['Q07. 파이썬에서 문자열로 구성된 표현식을 입력으로 받아 해당 문자열을 실행한 결괏값을 리턴하는 함수는?', ['eval', 'len', 'map', 'list']],
-    ['Q08. 파이썬에서 문자의 유니코드 숫자 값을 리턴하는 함수는?', ['ord', 'len', 'map', 'list']],
-    ['Q09. 파이썬에서 유니코드 숫자값을 입력받아 그 코드에 해당하는 문자를 리턴하는 함수는?', ['char', 'len', 'map', 'list']],
-    ['Q10. 파이썬에서 for문과 함께 자주 사용하는 함수로, 입력받은 숫자에 해당하는 범위 값을 반복 가능한 객체로 만들어 리턴하는 함수는?', ['range', 'len', 'map', 'list']]  
+    [['네모칸에 알맞은 기호를 넣어줘!', '4 + 19 □ 27'], ['<', '>', '=']],
+    [['신호등 색이 아닌 것을 골라줘!', '힌트: 🚥'], ['보라', '빨강', '노랑']],
+    [['기차가 목적지로 이동할 수 있도록 기찻길을 완성해줘!', '🚩 □ 🚈'], ['⬅', '➡', '⬆']],
+    [['단어가 완성될 수 있도록 네모칸에 알맞은 알파벳을 넣어줘!', 'A P □ L E'], ['P', 'L', 'A']],
+    [['소녀가 학교에 도착할 수 있도록 방향을 선택해줘!', '🗻 □ 👧 □ 🏫'], ['➡', '⬅', '⬇']],
+    [['규칙에 맞게 네모칸에 알맞은 숫자를 넣어줘!', '2 4 8 □ 32'], ['16', '10', '26']],
+    [['네모칸에 들어갈 알맞은 색을 골라줘!', '🔴 + 🟢 = □'], ['🟡', '🔵', '🟣']],
+    [['규칙에 맞게 네모칸에 알맞은 색의 공을 골라줘!', '🔴 ⬛ □ ⬛ 🔴 ⬛'], ['🔴', '⬛', '🟥']],
+    [['소년이 학교에 도착할 수 있도록 올바른 방향을 선택해줘!', '🗻 □ 🧑 □ ⛲ □ 🏫'], ['➡➡', '⬇⬅', '➡']],
+    [['규칙에 맞게 네모칸에 들어갈 알맞은 기호를 골라줘!', '▙ □ ▜ ▟'], ['▛', '▞', '▜']]
   ];
 
   const randomHole = () => {
@@ -351,7 +359,8 @@ export default function MoleGameDialog() {
 
       setCanClick(true);
 
-      setProblemText(after[turn][0]);
+      setProblemText1(after[turn][0][0]);
+      setProblemText2(after[turn][0][1]);
 
       moleActive(moleNumber1);
       moleActive(moleNumber2);
@@ -536,8 +545,11 @@ export default function MoleGameDialog() {
           <div className="main">
             <div id="problem" className="problem">
               <ProblemText>
-                <p id="problem-box">{ problemText }</p>
+                { problemText1 }
               </ProblemText>
+              <ProblemText2>
+                { problemText2 }
+              </ProblemText2>
             </div>
 
             <Content>

@@ -62,7 +62,7 @@ li {
 	top: 50%;
   left: 50%;
   font-weight: bold;
-  font-size: 25px;
+  font-size: 30px;
   transform: translate( -50%, -50% );
 }
 
@@ -238,6 +238,6 @@ li {
   border-style: dashed;
   text-align: center;
   width: 800px;
-  height: 70px;
-  margin: 20px auto 10px auto;
+  height: 90px;
+  margin: 10px auto 10px auto;
 }
