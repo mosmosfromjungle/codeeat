@@ -37,6 +37,7 @@ export const userSlice = createSlice({
     entryProcess: ENTRY_PROCESS.ENTRY,
     entered: false,   // welcome 화면에서 확인을 눌러 게임 화면에서 캐릭터를 보게되는 시점
     showLogout: false,
+    showVersion: false,
 
     /* Video and Audio connection */
     videoConnected: false,
@@ -93,6 +94,9 @@ export const userSlice = createSlice({
     setShowLogout: (state, action: PayloadAction<boolean>) => {
       state.showLogout = action.payload
     },
+    setShowVersion: (state, action: PayloadAction<boolean>) => {
+      state.showVersion = action.payload
+    },
 
     setVideoConnected: (state, action: PayloadAction<boolean>) => {
       state.videoConnected = action.payload
@@ -124,6 +128,7 @@ export const {
   setEntryProcess,
   setEntered,
   setShowLogout,
+  setShowVersion,
   setVideoConnected,
   setAudioConnected,
   setShowProfile,

@@ -8,7 +8,8 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 
-import { setShowProfile } from '../stores/UserStore'
+import { setFocused, setShowChat, setShowDM, setShowUser } from '../stores/ChatStore'
+import { setShowLogout, setShowProfile } from '../stores/UserStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
 
 const Backdrop = styled.div`
@@ -17,6 +18,13 @@ const Backdrop = styled.div`
   bottom: 16px;
   left: 16px;
   align-items: flex-end;
+  background-color: lightgray;
+  border-radius: 30px 30px 30px 30px;
+`
+
+const Profile = styled.div`
+  font-size: 15px;
+  font-family: Font_DungGeun;
 `
 
 export default function ProfileButton() {
@@ -55,32 +63,22 @@ export default function ProfileButton() {
           onClick={() => showProfile ? (
             dispatch(setShowProfile(false))
           ) : (
-            dispatch(setShowProfile(true))
+            dispatch(setShowProfile(true)),
+            dispatch(setShowLogout(false)),
+            dispatch(setShowChat(false)),
+            dispatch(setShowDM(false)),
+            dispatch(setShowUser(false)),
+            dispatch(setShowLogout(false))
           )}
         >
           <ListItem>
             <ListItemAvatar>
               <Avatar src={imgpath} />
             </ListItemAvatar>
-            <ListItemText
-              primary={
-                <React.Fragment>
-                  <Typography sx={{ display: 'inline'}} variant="caption" color="white">
-                    Lv.{userLevel}
-                  </Typography>
-                  <Typography sx={{ display: 'inline', margin: '10px' }} variant="caption" color="yellow">
-                    Gold
-                  </Typography>
-                </React.Fragment>
-              }
-              secondary={
-                <React.Fragment>
-                  <Typography sx={{ display: 'inline' }} variant="subtitle2" color="white">
-                  {username}
-                  </Typography>
-                </React.Fragment>
-              }
-            />
+            <Profile>
+              레벨 {userLevel}<br/>
+              <strong>{username}</strong>
+            </Profile>
           </ListItem>
         </Button>
       )}

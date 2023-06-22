@@ -28,14 +28,14 @@ h1 {
 .whack-a-mole {
   margin: 0 auto;
   list-style: none;
-  width: 450px;
+  width: 500px;
   border-radius: 20px;
 }
 
 .mole{
   float: left;
-  width: 120px;
-  height: 120px;
+  width: 135px;
+  height: 135px;
   margin: 5px;
   overflow: hidden;
   cursor: pointer;
@@ -61,7 +61,8 @@ li {
   position: absolute;
 	top: 50%;
   left: 50%;
-  font-size: 15px;
+  font-weight: bold;
+  font-size: 30px;
   transform: translate( -50%, -50% );
 }
 
@@ -128,9 +129,9 @@ li {
 }
 
 @keyframes point {
-  0% { font-size: 34px; }
-  50% { font-size: 34px; }
-  100% { font-size: 14px; }
+  0% { font-size: 60px; }
+  50% { font-size: 40px; }
+  100% { font-size: 20px; }
 }
 
 .point-wrap{
@@ -170,19 +171,19 @@ li {
 .point-box {
   background-color: #4e4e4e;
   width: 600px;
-  margin: 30px auto 0 auto;
+  margin: 10px auto 0 auto;
   text-align: center;
   border-radius: 20px;
 }
 
 #point-text {
-  font-size: 14px;
+  font-size: 20px;
   font-weight: bold;
   color: #f2ecff;
 }
 
 #point-current {
-  font-size: 14px;
+  font-size: 20px;
   font-weight: bold;
   color: #fbb666;
 }
@@ -237,6 +238,6 @@ li {
   border-style: dashed;
   text-align: center;
   width: 800px;
-  height: 70px;
-  margin: 20px auto 10px auto;
+  height: 90px;
+  margin: 10px auto 10px auto;
 }
