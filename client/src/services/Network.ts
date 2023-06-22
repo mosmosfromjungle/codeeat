@@ -21,6 +21,7 @@ import {
   pushPlayerJoinedMessage,
   pushPlayerLeftMessage,
 } from '../stores/ChatStore'
+import { FacebookInstantGamesLeaderboard } from 'phaser'
 
 
 export default class Network {
@@ -86,7 +87,7 @@ export default class Network {
       name,
       description,
       password,
-      autoDispose,
+      autoDispose:false,
     })
     this.initialize()
   }

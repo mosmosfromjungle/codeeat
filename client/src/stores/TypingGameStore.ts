@@ -14,6 +14,11 @@ interface KeywordRain {
     c_effect: boolean;
 }
 
+interface AddKeywordPayload{
+    keyword: string,
+    speed: number;
+}
+
 interface TypingGameState {
     typingGameDialogOpen: boolean,
     typinggameId: null | string,
@@ -68,13 +73,13 @@ export const typinggameSlice = createSlice({
             state.typingGameDialogOpen = false
             state.typinggameId = null
         },
-        addKeyword: (state, action: PayloadAction<string>) => {
-            const keywordToAdd = action.payload;
+        addKeyword: (state, action: PayloadAction<{keyword: string; speed: number}>) => {
+            const { keyword, speed } = action.payload;
             state.game.push({
                 y: 0,
-                speed: 3,
-                keyword: keywordToAdd,
-                x: 100 + Math.random() * 600,
+                speed: speed,
+                keyword: keyword,
+                x: Math.floor(Math.random() * (550-50+1))+50,
                 a_effect: false,
                 b_effect: false,
                 c_effect: false,

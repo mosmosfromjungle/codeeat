@@ -56,7 +56,6 @@ const TypinggameWrapper = styled.div`
 
 export default function TypingGameDialog() {
   const dispatch = useAppDispatch()
-
   return (
     <Backdrop>
       <Wrapper>

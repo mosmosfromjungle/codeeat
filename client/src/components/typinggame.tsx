@@ -1,23 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import typing_Background from "../../public/img/typinggame/blackboard.png"
-import styled, { createGlobalStyle } from 'styled-components';
+import styled from 'styled-components';
 import { addKeyword, updateGame, removeKeyword } from "../stores/TypingGameStore";
 import * as Colyseus from "colyseus.js";
 
-
-const GlobalStyle = createGlobalStyle`
-  @font-face {
-    font-family: 'CustomFont';
-    src: url('/assets/fonts/neodgm_code.woff') format('woff');
-  }
-
-  body {
-    font-family: 'CustomFont', sans-serif;
-    font-size: 24px;
-    color : #000000;
-  }
-`;
 
 export function TypingGame() {
     const keywordInput = useRef<HTMLInputElement>(null);
@@ -29,44 +16,35 @@ export function TypingGame() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        let wordCreationInterval = 1000;
-        const interval1 = setInterval(() => {
+        if (state.heart <= 0){
+            return;
+        }
+        // 초기 speed, period 설정
+        let speed = 0.5;
+        let period = 2000;
 
-            const unusedkeywords = state.keywordList.filter(keyword => {
-                // game 배열에서 해당 키워드가 이미 있는지 확인
-                return !state.game.some(item => item.keyword === keyword);
-            });
-            if (unusedkeywords.length > 0) {
-                const randomIndex = Math.floor(Math.random() * unusedkeywords.length);
-                const keyword = unusedkeywords[randomIndex];
-
-                // 중복된 키워드가 아니라면 추가
-                dispatch(addKeyword(keyword));
-            }
-        }, wordCreationInterval);
-
-        const speedIncreaseInterval = setInterval(() => {
-            wordCreationInterval = Math.max(wordCreationInterval - 50, 100);
+        // 7초마다 speed 변경, 최대 1
+        const interval3 = setInterval(() => {
+            speed = Math.max(speed + 0.005, 1);
+        }, 7000);
+        
+        // 7초마다 period 변경, 최대 1000
+        const interval4 = setInterval(() => {
+            period = Math.max(period - 50, 1000);
         }, 7000);
 
+        // period 마다 단어 생성
+        const interval1 = setInterval(() => {
+            const randomIndex = Math.floor(Math.random() * state.keywordList.length);
+            const keyword = state.keywordList[randomIndex];
+            dispatch(addKeyword({keyword, speed}));
+        },period);
+
+        // 15ms 마다 게임 상태를 업데이트
         const interval2 = setInterval(() => {
             dispatch(updateGame({ lineHeight }));
         }, 15);
-
-
-        const hasReachedLineHeight = state.game.some(item => item.y + item.speed > lineHeight && item.y <= lineHeight);
-        if (hasReachedLineHeight) {
-            dispatch({ type: 'DECREMENT_HEART' });
-            console.log(state.heart)
-        }
-
-
-        return () => {
-            clearInterval(interval1);
-            clearInterval(interval2);
-            clearInterval(speedIncreaseInterval);
-        };
-    }, [state.game, state.keywordList, lineHeight, dispatch]);
+    },[]);
 
     const removeNode = (keywordToRemove) => {
         dispatch(removeKeyword(keywordToRemove));
@@ -84,6 +62,7 @@ export function TypingGame() {
 
     if (state.heart < 1) {
         return <h1 style={{ textAlign: 'center' }}>게임 오버 :(</h1>;
+
     }
 
     if (state.point >= state.goal) {
@@ -92,17 +71,15 @@ export function TypingGame() {
 
     return (
         <>
-            <GlobalStyle />
             <div>
                 <div style={{
-                    width: "1250px", height: lineHeight,
+                    width: "100%", height: lineHeight,
                     backgroundImage: `url(${typing_Background})`,
-                    backgroundSize: "cover",
-                    backgroundPositionY: "-63px",
+                    backgroundSize: "50%",
                     backgroundRepeat: "no-repeat",
                     position: "relative",
                     overflow: "hidden",
-                    borderBottom: "2px solid white"
+                    borderBottom: "10px solid white"
                 }}>
                     {state.game.map((item, index) => (
                         <h5
@@ -116,7 +93,7 @@ export function TypingGame() {
                                 left: item.x,
                                 color: '#FFFFFF',
                                 backgroundImage: '',
-                                backgroundSize: '100px 100px',
+                                backgroundSize: '10px 10px',
                             }}>
                             {item.keyword}
                         </h5>
