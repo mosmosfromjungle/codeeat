@@ -22,6 +22,7 @@ import ChatDialog from './components/ChatDialog'
 import DMDialog from './components/DMDialog'
 import UserDialog from './components/UserDialog'
 import LogoutDialog from './components/LogoutDialog'
+import VersionDialog from './components/VersionDialog'
 
 // ↓ Profile Button & Dialog
 import ProfileButton from './components/ProfileButton'
@@ -58,6 +59,7 @@ function App() {
   const showDM = useAppSelector((state) => state.chat.showDM)
   const showUser = useAppSelector((state) => state.chat.showUser)
   const showLogout = useAppSelector((state) => state.user.showLogout)
+  const showVersion = useAppSelector((state) => state.user.showVersion)
 
   // ↓ Profile Dialog
   const showProfile = useAppSelector((state) => state.user.showProfile)
@@ -93,6 +95,8 @@ function App() {
       ui = <UserDialog /> // UGLY: Need to move to HelperButtonGroup 
     } else if (showLogout) {
       ui = <LogoutDialog />
+    } else if (showVersion) {
+      ui = <VersionDialog />
     } else if (showProfile) {
       ui = <ProfileDialog />  // UGLY: Need to move to HelperButtonGroup 
     } else {

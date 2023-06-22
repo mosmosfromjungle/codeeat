@@ -6,6 +6,15 @@ import Button from '@mui/material/Button'
 import LinearProgress from '@mui/material/LinearProgress'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
+import FormControl from '@mui/material/FormControl';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import FormHelperText from '@mui/material/FormHelperText'
+import ArrowBack from '@mui/icons-material/ArrowBack'
 
 import { useAppSelector, useAppDispatch } from '../../hooks'
 import { ENTRY_PROCESS, setAccessToken, setEntryProcess } from '../../stores/UserStore'
@@ -89,6 +98,14 @@ export default function LoginDialog() {
   const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)
   const game = phaserGame.scene.keys.game as Game
 
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     // reset the error message
     setIdFieldEmpty(false)
@@ -119,8 +136,8 @@ export default function LoginDialog() {
               .joinOrCreatePublic()
               .then(() => bootstrap.launchGame())
               .catch((error) => console.error(error))
+            dispatch(setEntryProcess(ENTRY_PROCESS.WELCOME))
           }
-          dispatch(setEntryProcess(ENTRY_PROCESS.WELCOME))
         }
       }).catch((error) => {
         const { status, message } = error.response.data
@@ -133,74 +150,105 @@ export default function LoginDialog() {
     }    
   }
 
+  const handleBack = () => {
+    dispatch(setEntryProcess(ENTRY_PROCESS.ENTRY))
+  }
+
   return (
     <>
       <Backdrop>
         <Wrapper onSubmit={handleSubmit}>
-          <Title>Login</Title>
-            <Content>
-              <TextField
-                autoFocus
-                fullWidth
-                label="아이디"
-                variant="outlined"
-                color="secondary"
-                error={idFieldEmpty || !!userIdError}
-                helperText={idFieldEmpty ? '아이디를 입력해주세요 !' : userIdError}
-                onInput={(e) => {
-                  setId((e.target as HTMLInputElement).value)
-                  setUserIdError('')
-                }}
-              />
-              <TextField
-                fullWidth
-                label="패스워드"
-                variant="outlined"
-                color="secondary"
-                error={passwordFieldEmpty || !!passwordError}
-                helperText={passwordFieldEmpty ? '패스워드를 입력해주세요 !' : passwordError}
+          <IconButton
+            className="back"
+            onClick={ handleBack }
+          >
+            <ArrowBack />
+          </IconButton>
+          
+          <Title>로그인</Title>
+          <Content>
+            <TextField
+              autoFocus
+              fullWidth
+              label="아이디"
+              variant="outlined"
+              color="secondary"
+              margin="dense"
+              error={idFieldEmpty || !!userIdError}
+              helperText={idFieldEmpty ? '아이디를 입력해주세요 !' : userIdError}
+              onInput={(e) => {
+                setId((e.target as HTMLInputElement).value)
+                setUserIdError('')
+              }}
+            />
+            
+            <FormControl 
+              variant="outlined"
+              fullWidth
+              color='secondary'
+              error={passwordFieldEmpty || !!passwordError}
+              margin="dense">
+              <InputLabel htmlFor="outlined-adornment-password">비밀번호</InputLabel>
+              <OutlinedInput
+                id="outlined-adornment-password"
+                label="비밀번호"
+                type={showPassword ? 'text' : 'password'}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
                 onInput={(e) => {
                   setPassword((e.target as HTMLInputElement).value);
                   setPasswordError('')
                 }}
               />
-            </Content>
+              <FormHelperText id="my-helper-text">{passwordFieldEmpty ? '비밀번호를 입력해주세요 !' : passwordError}</FormHelperText>
+            </FormControl>
+          </Content>
 
-            <Content>
-              {!videoConnected && (
-                <Warning>
-                  <Alert variant="outlined" severity="warning">
-                    <AlertTitle>Warning</AlertTitle>
-                    No webcam/mic connected - <strong>connect one for best experience!</strong>
-                  </Alert>
-                  <Button
-                    variant="outlined"
-                    color="secondary"
-                    onClick={() => {
-                      game.network.webRTC?.getUserMedia()
-                    }}
-                  >
-                    Connect Webcam
-                  </Button>
-                </Warning>
-              )}
+          <Content>
+            {!videoConnected && (
+              <Warning>
+                <Alert variant="outlined" severity="warning">
+                  <AlertTitle>아차!</AlertTitle>
+                  비디오와 마이크가 연결되지 않았어요.<br></br>
+                  <strong>연결하면 친구들과 대화할 수 있어요!</strong></Alert>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => {
+                    game.network.webRTC?.getUserMedia()
+                  }}
+                >
+                  비디오 연결하기
+                </Button>
+              </Warning>
+            )}
 
-              {videoConnected && (
-                <Warning>
-                  <Alert variant="outlined">Webcam connected!</Alert>
-                </Warning>
-              )}
-            </Content>
+            {videoConnected && (
+              <Warning>
+                <Alert variant="outlined">Webcam connected!</Alert>
+              </Warning>
+            )}
+          </Content>
           <Bottom>
             <Button variant="contained" size="large" type="submit">
-              Login
+              로그인하기
             </Button>
           </Bottom>
         </Wrapper>
         
         {!lobbyJoined && (
           <ProgressBarWrapper>
-            <h3> Connecting to server...</h3>
+            <h3>서버와 연결중 ...</h3>
             <ProgressBar color="secondary" />
           </ProgressBarWrapper>
         )}
