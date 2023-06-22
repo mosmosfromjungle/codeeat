@@ -10,16 +10,17 @@ export interface IPlayer extends Schema {
 }
 
 export interface IComputer extends Schema {
+  roomId: string | undefined
   connectedUser: SetSchema<string>
 }
 
 export interface IWhiteboard extends Schema {
-  roomId: string
+  roomId: string | undefined
   connectedUser: SetSchema<string>
 }
 
 export interface IMoleGame extends Schema {
-  roomId: string
+  roomId: string | undefined
   connectedUser: SetSchema<string>
 }
 

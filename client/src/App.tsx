@@ -71,7 +71,8 @@ function App() {
     // const refreshToken = cookies.get('refreshToken');
     // console.log('refresh token: ', refreshToken)
     // if (refreshToken) { 
-    authenticateUser().then((result) => {
+    authenticateUser()
+    .then((result) => {
       if (result.status === 200) {
         dispatch(setEntryProcess(ENTRY_PROCESS.WELCOME));
       }

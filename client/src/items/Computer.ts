@@ -23,6 +23,7 @@ export default class Computer extends Item {
     } else if (numberOfUsers > 1) {
       this.setStatusBox(`${numberOfUsers} users`)
     }
+    console.log(this.currentUsers)
   }
 
   onOverlapDialog() {
@@ -36,26 +37,18 @@ export default class Computer extends Item {
   addCurrentUser(userId: string) {
     if (!this.currentUsers || this.currentUsers.has(userId)) return
     this.currentUsers.add(userId)
-    const computerState = store.getState().computer
-    if (computerState.computerId === this.id) {
-      computerState.shareScreenManager?.onUserJoined(userId)
-    }
     this.updateStatus()
   }
 
   removeCurrentUser(userId: string) {
     if (!this.currentUsers || !this.currentUsers.has(userId)) return
     this.currentUsers.delete(userId)
-    const computerState = store.getState().computer
-    if (computerState.computerId === this.id) {
-      computerState.shareScreenManager?.onUserLeft(userId)
-    }
     this.updateStatus()
   }
 
   openDialog(playerId: string, network: Network) {
     if (!this.id) return
-    store.dispatch(openComputerDialog({ computerId: this.id, myUserId: playerId }))
-    network.connectToComputer(this.id)
+    store.dispatch(openComputerDialog(this.id))
+    network.connectToWhiteboard(this.id)
   }
 }

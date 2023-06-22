@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
@@ -124,63 +124,60 @@ const CustomList = styled.div`
 
 `
 
-function getRandomIntInclusive(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
 export default function ComputerDialog() {
-  const dispatch = useAppDispatch()
-  const game = phaserGame.scene.keys.game as Game;
-  const socketNetwork = game.network2
-
-  const userId = useAppSelector((state) => state.user.userId);
-  // const playerNameMap = useAppSelector((state) => state.user.playerNameMap)
-  
-  function getRandomIntInclusive(min: number, max: number): number {
+  function getRandomIntInclusive(min:number, max:number) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
-  
-  const n = getRandomIntInclusive(1, 100);
-  const m = getRandomIntInclusive(1, n);
-  const x = n - m;
 
-  const arr: number[] = [m, x];
-
-  while (arr.length < 6) {
-    const num = getRandomIntInclusive(1, n);
-    if (!arr.includes(num)) {
-      arr.push(num);
+  const [n, setN] = useState(0)
+  const setNum = () => {
+    const newN = getRandomIntInclusive(1, 100);
+    setN(newN)
   }
-}
+  
+  useEffect(() => {
+    setNum();
+  }, []);
+  
+  const [m, setM] = useState(0)
+  const [x, setX] = useState(0)
+  const [a, setA] = useState(0)
+  const [b, setB] = useState(0)
+  const [c, setC] = useState(0)
+  const setRest = () => {
+    const newM = getRandomIntInclusive(1, n);
+    const newA = getRandomIntInclusive(1, n);
+    const newB = getRandomIntInclusive(1, n);
+    const newC = getRandomIntInclusive(1, n);
+    const newX = n - newM;
+    
+    setM(newM)
+    setX(newX)
+    setA(newA)
+    setB(newB)
+    setC(newC)
+  }
+  useEffect(() => {
+    setRest();
+  }, []);
+  const answer = n
+
+  const dispatch = useAppDispatch()
 
   const [images, setImages] = useState([
-    { src: '/assets/brickGame/52-2.png', text: arr[0].toString() },
-    { src: '/assets/brickGame/25-2.png', text: arr[1].toString() },
-    { src: '/assets/brickGame/37-2.png', text: arr[2].toString() },
-    { src: '/assets/brickGame/51-2.png', text: arr[3].toString() },
-    { src: '/assets/brickGame/50-2.png', text: arr[4].toString() },
-    { src: '/assets/brickGame/39-2.png', text: arr[5].toString() },
+    { src: '/assets/brickGame/52-2.png', text: a.toString() },
+    { src: '/assets/brickGame/25-2.png', text: b.toString() },
+    { src: '/assets/brickGame/37-2.png', text: c.toString() },
+    { src: '/assets/brickGame/51-2.png', text: n.toString() },
+    { src: '/assets/brickGame/50-2.png', text: m.toString() },
+    { src: '/assets/brickGame/39-2.png', text: x.toString() },
   ])
 
   const [originalImages, setOriginalImages] = useState([...images]) // 원래의 이미지 배열 복사
   const [command, setCommand] = useState('')
   const [selectedOption, setSelectedOption] = useState('')
-
-  // const handleRemoveImage = () => {
-  //   const match = command.match(/remove\((\d+)\)/) || command.match(/discard\((\d+)\)/)
-  //   if (match) {
-  //     const number = match[1]
-  //     const index = images.findIndex((image) => image.text === number)
-  //     if (index !== -1) {
-  //       removeImage(index)
-  //     }
-  //   }
-  //   setCommand('')
-  // }
 
   const handleRemoveImage = () => {
     const match = command.match(/remove\((\d+)\)/) || command.match(/discard\((\d+)\)/);
@@ -208,28 +205,11 @@ export default function ComputerDialog() {
     setImages([...originalImages]) // 원래의 이미지 배열로 복구
   }
 
-  // const handleCommand = () => {
-  //   const lowercaseCommand = command.toLowerCase()
-  //   if (lowercaseCommand === 'popleft' || lowercaseCommand === 'dequeue') {
-  //     removeImage(0)
-  //   } else if (lowercaseCommand === 'pop') {
-  //     removeImage(images.length - 1)
-  //   } else if (lowercaseCommand === 'sum') {
-  //     const sum = images.reduce((total, image) => total + parseInt(image.text), 0)
-  //     alert(`Sum: ${sum}`)
-  //   } else if (lowercaseCommand === 'restore') {
-  //     restoreImages() // 이미지 복구
-  //   } else if (lowercaseCommand.startsWith('remove(') || lowercaseCommand.startsWith('discard(')) {
-  //     handleRemoveImage()
-  //   }
-  //   setCommand('')
-  // }
-
   const handleCommand = () => {
     const lowercaseCommand = command.toLowerCase();
     if (lowercaseCommand === 'sum') {
       const sum = images.reduce((total, image) => total + parseInt(image.text), 0);
-      if (n == sum) {
+      if (answer == sum) {
         alert('정답입니다');
         restoreImages(); // 점수? 추가 필요
       } else {
