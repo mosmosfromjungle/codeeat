@@ -1,4 +1,3 @@
-import { config } from '../envconfig'
 import User from '../models/User'
 import Friends from '../models/Friends'
 import FriendRequest from '../models/FriendRequest'
@@ -9,7 +8,7 @@ const mongoose = require('mongoose')
 
 export async function connectDB() {
   mongoose.set('strictQuery', false)
-  mongoose.connect('mongodb://127.0.0.1:27017/mosmos', {
+  mongoose.connect(process.env.DB_HOST, {
     dbName: 'mosmos',
     useNewUrlParser: true,
   })

@@ -5,7 +5,7 @@ import { Player, OfficeState, Computer, Whiteboard, MoleGame } from './schema/Of
 import { Message } from '../../types/Messages'
 import { IRoomData } from '../../types/Rooms'
 import { whiteboardRoomIds } from './schema/OfficeState'
-import { moleGameRoomIds } from './schema/OfficeState'
+import { molegameRoomIds } from './schema/OfficeState'
 import PlayerUpdateCommand from './commands/PlayerUpdateCommand'
 import PlayerUpdateNameCommand from './commands/PlayerUpdateNameCommand'
 import {
@@ -67,25 +67,28 @@ export class SkyOffice extends Room<OfficeState> {
       })
     })
 
-    // when a player disconnect from a computer, remove from the computer connectedUser array
-    this.onMessage(Message.DISCONNECT_FROM_COMPUTER, (client, message: { computerId: string }) => {
-      this.dispatcher.dispatch(new ComputerRemoveUserCommand(), {
-        client,
-        computerId: message.computerId,
-      })
-    })
-
-    // when a player stop sharing screen
-    this.onMessage(Message.STOP_SCREEN_SHARE, (client, message: { computerId: string }) => {
-      const computer = this.state.computers.get(message.computerId)
-      computer.connectedUser.forEach((id) => {
-        this.clients.forEach((cli) => {
-          if (cli.sessionId === id && cli.sessionId !== client.sessionId) {
-            cli.send(Message.STOP_SCREEN_SHARE, client.sessionId)
-          }
+    // when a player disconnect from a whiteboard, remove from the whiteboard connectedUser array
+    this.onMessage(
+      Message.DISCONNECT_FROM_COMPUTER,
+      (client, message: { computerId: string }) => {
+        this.dispatcher.dispatch(new ComputerRemoveUserCommand(), {
+          client,
+          computerId: message.computerId,
         })
-      })
-    })
+      }
+    )
+
+    // // when a player stop sharing screen
+    // this.onMessage(Message.STOP_SCREEN_SHARE, (client, message: { computerId: string }) => {
+    //   const computer = this.state.computers.get(message.computerId)
+    //   computer.connectedUser.forEach((id) => {
+    //     this.clients.forEach((cli) => {
+    //       if (cli.sessionId === id && cli.sessionId !== client.sessionId) {
+    //         cli.send(Message.STOP_SCREEN_SHARE, client.sessionId)
+    //       }
+    //     })
+    //   })
+    // })
 
     // when a player connect to a whiteboard, add to the whiteboard connectedUser array
     this.onMessage(Message.CONNECT_TO_WHITEBOARD, (client, message: { whiteboardId: string }) => {

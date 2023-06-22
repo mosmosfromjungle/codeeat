@@ -18,16 +18,17 @@ export class Player extends Schema implements IPlayer {
 }
 
 export class Computer extends Schema implements IComputer {
+  @type('string') roomId = getcomputerRoomId()
   @type({ set: 'string' }) connectedUser = new SetSchema<string>()
 }
 
 export class Whiteboard extends Schema implements IWhiteboard {
-  @type('string') roomId = getRoomId()
+  @type('string') roomId = getwhiteboardRoomId()
   @type({ set: 'string' }) connectedUser = new SetSchema<string>()
 }
 
 export class MoleGame extends Schema implements IMoleGame {
-  @type('string') roomId = getRoomId()
+  @type('string') roomId = getmolegameRoomId()
   @type({ set: 'string' }) connectedUser = new SetSchema<string>()
 }
 
@@ -55,11 +56,12 @@ export class OfficeState extends Schema implements IOfficeState {
 }
 
 export const whiteboardRoomIds = new Set<string>()
-export const moleGameRoomIds = new Set<string>()
+export const computerRoomIds = new Set<string>()
+export const molegameRoomIds = new Set<string>()
 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 const charactersLength = characters.length
 
-function getRoomId() {
+function getwhiteboardRoomId() {
   let result = ''
   for (let i = 0; i < 12; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength))
@@ -69,6 +71,32 @@ function getRoomId() {
     return result
   } else {
     console.log('roomId exists, remaking another one.')
-    getRoomId()
+    getwhiteboardRoomId()
+  }
+}
+function getmolegameRoomId() {
+  let result = ''
+  for (let i = 0; i < 12; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength))
+  }
+  if (!molegameRoomIds.has(result)) {
+    molegameRoomIds.add(result)
+    return result
+  } else {
+    console.log('roomId exists, remaking another one.')
+    getmolegameRoomId()
+  }
+}
+function getcomputerRoomId() {
+  let result = ''
+  for (let i = 0; i < 12; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength))
+  }
+  if (!computerRoomIds.has(result)) {
+    computerRoomIds.add(result)
+    return result
+  } else {
+    console.log('roomId exists, remaking another one.')
+    getcomputerRoomId()
   }
 }
