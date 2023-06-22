@@ -3,7 +3,8 @@
 */
 import React, { useRef, useState, useEffect } from 'react'
 import styled from 'styled-components'
-
+import bg from '../images/ChatHeader.png'
+import bg2 from '../images/ChatBox.png'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import Box from '@mui/material/Box'
@@ -49,8 +50,11 @@ const Content = styled.div`
 
 const ChatHeader = styled.div`
   position: relative;
-  height: 40px;
+  height: 48px;
+  // background: url(${bg});
   background: #000000a7;
+  // opacity: 0.8;
+
   border-radius: 10px 10px 0px 0px;
 
   .close {
@@ -74,7 +78,9 @@ const ChatBox = styled(Box)`
   height: 400px;
   width: 400px;
   overflow: auto;
-  background: #2c2c2c;
+  // background: url(${bg2});
+  background: #2c2c2c;s
+
   border: 1px solid #00000029;
   padding: 10px 10px;
 `

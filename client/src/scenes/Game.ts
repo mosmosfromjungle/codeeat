@@ -9,6 +9,8 @@ import Computer from '../items/Computer'
 import Whiteboard from '../items/Whiteboard'
 import VendingMachine from '../items/VendingMachine'
 import MoleGame from '../items/MoleGame'
+import FaceChat from '../items/FaceChat'
+
 
 import '../characters/MyPlayer'
 import '../characters/OtherPlayer'
@@ -39,6 +41,7 @@ export default class Game extends Phaser.Scene {
   computerMap = new Map<string, Computer>()
   private whiteboardMap = new Map<string, Whiteboard>()
   private molegameMap = new Map<String, MoleGame>()
+  private facechatMap = new Map<String, FaceChat>()
 
   constructor() {
     super('game')
@@ -176,6 +179,16 @@ export default class Game extends Phaser.Scene {
 
     // debugDraw(groundLayer, this)
 
+    //  this.myPlayer = this.add.myPlayer(
+    //   Phaser.Math.RND.between(400, 900),
+    //   Phaser.Math.RND.between(400, 900),
+    //   'kevin',
+    //   this.network.mySessionId,
+    //   // userId,
+    //   // userProfile
+    //   // 로건 케빈 엠마
+    // );
+    // this.myPlayer = this.add.myPlayer(400, 900, 'kevin', this.network.mySessionId)
     this.myPlayer = this.add.myPlayer(705, 500, 'adam', this.network.mySessionId)
     this.playerSelector = new PlayerSelector(this, 0, 0, 16, 16)
 
@@ -236,6 +249,20 @@ export default class Game extends Phaser.Scene {
       this.molegameMap.set(id, item)
     })
 
+    const facechats = this.physics.add.staticGroup({ classType: FaceChat })
+    const facechatLayer = this.map.getObjectLayer('facechat')
+    facechatLayer.objects.forEach((obj, i) => {
+      const item = this.addObjectFromTiled(
+        facechats,
+        obj,
+        'bench',
+        'bench'
+      ) as FaceChat
+      const id = `${i}`
+      item.id = id
+      this.facechatMap.set(id, item)
+    })
+
     // ************************************** (codeEat) //
 
     // // import other objects from Tiled map to Phaser
@@ -257,7 +284,7 @@ export default class Game extends Phaser.Scene {
     // 상호작용 추가하는 부분..?
     this.physics.add.overlap(
       this.playerSelector,
-      [chairs, molegames, whiteboards, computers],
+      [chairs, molegames, whiteboards, computers, facechats],
       this.handleItemSelectorOverlap,
       undefined,
       this
@@ -379,6 +406,10 @@ export default class Game extends Phaser.Scene {
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.addCurrentUser(playerId)
+
+    } else if (itemType === ItemType.FACECHAT) {
+      const facechat = this.facechatMap.get(itemId)
+      facechat?.addCurrentUser(playerId)
     } 
   }
 
