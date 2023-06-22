@@ -83,7 +83,7 @@ export default class Game extends Phaser.Scene {
 
     this.map = this.make.tilemap({ key: 'tilemap' })
 
-    // ******************************** //
+    // ************************************** (codeEat) //
     // const FloorAndGround = this.map.addTilesetImage('FloorAndGround', 'tiles_wall')
 
     // const groundLayer = this.map.createLayer('Ground', FloorAndGround)
@@ -138,6 +138,7 @@ export default class Game extends Phaser.Scene {
     this.map.createLayer('shadow', [
       modernExteriorsImage,
       campingImage,
+      floorTilesImage,
     ]);
 
     const buildingsLayer = this.map.createLayer('buildings', [
@@ -167,30 +168,17 @@ export default class Game extends Phaser.Scene {
       treeImage,
     ]);
 
-    // ************************************** (codeEat) //
+
     // thirdGroundLayer.setDepth(6500);
     foreGroundLayer.setDepth(6000);
     secondGroundLayer.setCollisionByProperty({ collisions: true });
     fenceLayer.setCollisionByProperty({ collsions: true });
-
-
-    
-
-
 
     // debugDraw(groundLayer, this)
 
     this.myPlayer = this.add.myPlayer(705, 500, 'adam', this.network.mySessionId)
     this.playerSelector = new PlayerSelector(this, 0, 0, 16, 16)
 
-    // import chair objects from Tiled map to Phaser (codeEat object)
-    // const chairs = this.physics.add.staticGroup({ classType: Chair })
-    // const chairLayer = this.map.getObjectLayer('chair')
-    // chairLayer.objects.forEach((Obj) => {
-    //   const item = this.addObjectFromTiled(chairs, Obj, 'codeEatChair', 'codeEatChair') as Chair
-    //   // custom properties[0] is the object direction specified in Tiled
-    //   item.itemDirection = Obj.properties[0].value
-    // })
 
     const chairs = this.physics.add.staticGroup({ classType: Chair })
     const chairLayer = this.map.getObjectLayer('chair')
@@ -200,21 +188,12 @@ export default class Game extends Phaser.Scene {
       item.itemDirection = Obj.properties[0].value
     })
 
-    // import chair objects from Tiled map to Phaser
-    // const chairs = this.physics.add.staticGroup({ classType: Chair })
-    // const chairLayer = this.map.getObjectLayer('Chair2')
-    // chairLayer.objects.forEach((chairObj) => {
-    //   const item = this.addObjectFromTiled(chairs, chairObj, 'chairs', 'chair') as Chair
-    //   // custom properties[0] is the object direction specified in Tiled
-    //   item.itemDirection = chairObj.properties[0].value
-    // })
-
     // // import computers objects from Tiled map to Phaser
     const computers = this.physics.add.staticGroup({ classType: Computer })
     const computerLayer = this.map.getObjectLayer('playground')
     computerLayer.objects.forEach((obj, i) => {
       const item = this.addObjectFromTiled(computers, obj, 'picnic2', 'picnic2') as Computer
-      item.setDepth(item.y + item.height * 0.27)
+      // item.setDepth(item.y + item.height * 0.27)
       const id = `${i}`
       item.id = id
       this.computerMap.set(id, item)
@@ -257,6 +236,8 @@ export default class Game extends Phaser.Scene {
       this.molegameMap.set(id, item)
     })
 
+    // ************************************** (codeEat) //
+
     // // import other objects from Tiled map to Phaser
     // this.addGroupFromTiled('Wall', 'tiles_wall', 'FloorAndGround', false)
     // this.addGroupFromTiled('Objects', 'office', 'Modern_Office_Black_Shadow', false)
@@ -264,9 +245,6 @@ export default class Game extends Phaser.Scene {
     // this.addGroupFromTiled('GenericObjects', 'generic', 'Generic', false)
     // this.addGroupFromTiled('GenericObjectsOnCollide', 'generic', 'Generic', true)
     // this.addGroupFromTiled('Basement', 'basement', 'Basement', true)
-
-    // ****************************************************************** //
-
 
     this.otherPlayers = this.physics.add.group({ classType: OtherPlayer })
 
@@ -279,7 +257,6 @@ export default class Game extends Phaser.Scene {
     // 상호작용 추가하는 부분..?
     this.physics.add.overlap(
       this.playerSelector,
-      // [chairs, computers, whiteboards, vendingMachines, molegames],
       [chairs, molegames, whiteboards, computers],
       this.handleItemSelectorOverlap,
       undefined,
@@ -300,12 +277,8 @@ export default class Game extends Phaser.Scene {
     this.network.onMyPlayerReady(this.handleMyPlayerReady, this)
     this.network.onMyPlayerVideoConnected(this.handleMyVideoConnected, this)
     this.network.onPlayerUpdated(this.handlePlayerUpdated, this)
-
-    // ********************************* //
     this.network.onItemUserAdded(this.handleItemUserAdded, this)
     this.network.onItemUserRemoved(this.handleItemUserRemoved, this)
-    // ********************************* // 
-
     this.network.onChatMessageAdded(this.handleChatMessageAdded, this)
   }
 
@@ -336,7 +309,7 @@ export default class Game extends Phaser.Scene {
     const actualY = object.y! - object.height! * 0.5
     const obj = group
       .get(actualX, actualY, key, object.gid! - this.map.getTileset(tilesetName).firstgid)
-      .setDepth(actualY)
+      .setDepth(actualY * 0.5)
     return obj
   }
 
@@ -394,8 +367,6 @@ export default class Game extends Phaser.Scene {
     otherPlayer.makeCall(myPlayer, this.network?.webRTC)
   }
 
-
-  // ********************************* //
   private handleItemUserAdded(playerId: string, itemId: string, itemType: ItemType) {
     if (itemType === ItemType.COMPUTER) {
       const computer = this.computerMap.get(itemId)
@@ -409,11 +380,6 @@ export default class Game extends Phaser.Scene {
       const molegame = this.molegameMap.get(itemId)
       molegame?.addCurrentUser(playerId)
     } 
-
-    // if (itemType === ItemType.MOLEGAME) {
-    //   const molegame = this.molegameMap.get(itemId)
-    //   molegame?.addCurrentUser(playerId)
-    // }
   }
 
   private handleItemUserRemoved(playerId: string, itemId: string, itemType: ItemType) {
@@ -429,13 +395,7 @@ export default class Game extends Phaser.Scene {
       const molegame = this.molegameMap.get(itemId)
       molegame?.removeCurrentUser(playerId)
     }
-    // if (itemType === ItemType.MOLEGAME) {
-    //   const molegame = this.molegameMap.get(itemId)
-    //   molegame?.removeCurrentUser(playerId)
-    // }
   }
-
-  // ********************************** //
 
   private handleChatMessageAdded(playerId: string, content: string) {
     const otherPlayer = this.otherPlayerMap.get(playerId)
