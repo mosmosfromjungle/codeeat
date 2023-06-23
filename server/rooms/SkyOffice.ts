@@ -46,17 +46,17 @@ export class SkyOffice extends Room<OfficeState> {
     this.setState(new OfficeState())
 
     // HARD-CODED: Add 5 computers in a room
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 30; i++) {
       this.state.computers.set(String(i), new Computer())
     }
 
     // HARD-CODED: Add 3 whiteboards in a room
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 30; i++) {
       this.state.whiteboards.set(String(i), new Whiteboard())
     }
 
     // HARD-CODED: Add 1 molegames in a room
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 20; i++) {
       this.state.molegames.set(String(i), new MoleGame())
     }
 

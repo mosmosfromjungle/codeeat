@@ -27,11 +27,82 @@ export default class Bootstrap extends Phaser.Scene {
     this.load.image('backdrop_night', 'assets/background/backdrop_night.png')
     this.load.image('sun_moon', 'assets/background/sun_moon.png')
 
-    this.load.tilemapTiledJSON('tilemap', 'assets/map/map.json')
-    this.load.spritesheet('tiles_wall', 'assets/map/FloorAndGround.png', {
-      frameWidth: 32,
-      frameHeight: 32,
+    // this.load.tilemapTiledJSON('tilemap', 'assets/map/map.json')
+    this.load.tilemapTiledJSON('tilemap', 'assets/map/codeEatMap.json')
+    // this.load.spritesheet('tiles_wall', 'assets/map/FloorAndGround.png', {
+    //   frameWidth: 32,
+    //   frameHeight: 32,
+    // })
+
+    // codeEatMap //////
+    this.load.spritesheet('bench', 'assets/items/bench.png', {
+      frameWidth: 16,
+      frameHeight: 16,
     })
+
+    this.load.spritesheet('codeEatChair', 'assets/items/codeEatChair.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+
+    this.load.spritesheet('mole', 'assets/items/mole.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+
+    this.load.spritesheet('picnic2', 'assets/items/picnic2.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+
+    this.load.spritesheet('codeEatInteriors', 'assets/tileset/codeEatInteriors.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+
+    this.load.spritesheet('School', 'assets/tileset/School.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+    this.load.spritesheet('Generic', 'assets/tileset/Generic.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+    this.load.spritesheet('camping', 'assets/tileset/camping.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+    this.load.spritesheet('floorTiles', 'assets/tileset/floorTiles.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+    this.load.spritesheet('Interiors', 'assets/tileset/Interiors.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+    this.load.spritesheet('interior', 'assets/tileset/interior.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+    this.load.spritesheet('ModernExteriorsFinal', 'assets/tileset/ModernExteriorsFinal.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+    this.load.spritesheet('ModernExteriorsComplete', 'assets/tileset/ModernExteriorsComplete.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+    this.load.spritesheet('Tilesets', 'assets/tileset/Tilesets.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+       this.load.spritesheet('tree', 'assets/tileset/tree.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+
+
+    // 기존 스카이오피스 코드
     this.load.spritesheet('chairs', 'assets/items/chair.png', {
       frameWidth: 32,
       frameHeight: 64,
@@ -80,6 +151,24 @@ export default class Bootstrap extends Phaser.Scene {
       frameWidth: 32,
       frameHeight: 48,
     })
+
+    // ***새롭게 16px 캐릭터로 변경하기 위한 코드***
+    // this.load.spritesheet('logan', 'assets/character/logan.png', {
+    //   frameWidth: 16,
+    //   frameHeight: 32,
+    // });
+    // this.load.spritesheet('kevin', 'assets/character/kevin.png', {
+    //   frameWidth: 16,
+    //   frameHeight: 32,
+    // });
+    // this.load.spritesheet('zoey', 'assets/character/zoey.png', {
+    //   frameWidth: 16,
+    //   frameHeight: 32,
+    // });
+    // this.load.spritesheet('emma', 'assets/character/emma.png', {
+    //   frameWidth: 16,
+    //   frameHeight: 32,
+    // });
 
     this.load.on('complete', () => {
       this.preloadComplete = true
