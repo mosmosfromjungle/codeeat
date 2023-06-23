@@ -70,11 +70,11 @@ export default class MyPlayer extends Player {
           const typinggame = item as Typinggame
           typinggame.openDialog(network)
           break
-        case ItemType.VENDINGMACHINE:
-          // hacky and hard-coded, but leaving it as is for now
-          const url = 'https://www.buymeacoffee.com/skyoffice'
-          openURL(url)
-          break
+        // case ItemType.VENDINGMACHINE:
+        //   // hacky and hard-coded, but leaving it as is for now
+        //   const url = 'https://www.buymeacoffee.com/skyoffice'
+        //   openURL(url)
+        //   break
         case ItemType.MOLEGAME:
           const molegame = item as MoleGame
           molegame.openDialog(network)

@@ -4,4 +4,5 @@ export enum ItemType {
   TYPINGGAME,
   VENDINGMACHINE,
   MOLEGAME,
+  FACECHAT,
 }

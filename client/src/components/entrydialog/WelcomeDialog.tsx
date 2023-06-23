@@ -12,6 +12,13 @@ import Ash from '../../images/login/Ash_login.png'
 import Lucy from '../../images/login/Lucy_login.png'
 import Nancy from '../../images/login/Nancy_login.png'
 
+// ***새롭게 16px 캐릭터로 변경하기 위한 코드*** //
+// import Logan from '../../images/login/Logan_login.png'
+// import Kevin from '../../images/login/Kevin_login.png'
+// import Zoey from '../../images/login/Zoey_login.png'
+// import Emma from '../../images/login/Emma_login.png'
+
+
 import phaserGame from '../../PhaserGame'
 import Game from '../../scenes/Game'
 import Bootstrap from '../../scenes/Bootstrap'
@@ -99,6 +106,12 @@ const avatars = [
   { name: 'ash', img: Ash },
   { name: 'lucy', img: Lucy },
   { name: 'nancy', img: Nancy },
+
+  // ***새롭게 16px 캐릭터로 변경하기 위한 코드***
+  // { name: 'logan', img: Logan },
+  // { name: 'kevin', img: Kevin },
+  // { name: 'zoey', img: Zoey },
+  // { name: 'emma', img: Emma },
 ]
 
 export default function WelcomeDialog() {
