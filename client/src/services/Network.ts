@@ -15,6 +15,8 @@ import {
   setAvailableRooms,
   addAvailableRooms,
   removeAvailableRooms,
+  setNumPlayer,
+  setRoomPlayers,
 } from '../stores/RoomStore'
 import {
   pushChatMessage,
@@ -193,7 +195,19 @@ export default class Network {
       const computerState = store.getState().computer
       computerState.shareScreenManager?.onUserLeft(clientId)
     })
+    this.room.onStateChange((state) => {
+      const playerSize = this.room?.state.players.size;
+      if (playerSize === undefined) return;
+      let numPlayers: number = playerSize;
+      store.dispatch(setNumPlayer(numPlayers));
+      const players: any = [];
+      this.room?.state.players.forEach((value) => {
+        players.push(value);
+      });
+      store.dispatch(setRoomPlayers(players));
+    });
   }
+  
 
   // method to register event listener and call back function when a item user added
   onChatMessageAdded(callback: (playerId: string, content: string) => void, context?: any) {

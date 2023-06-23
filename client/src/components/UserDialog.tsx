@@ -21,6 +21,14 @@ import Divider from '@mui/material/Divider';
 
 import { setShowDM, setShowUser } from '../stores/ChatStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
+import { addFriendReq } from '../../src/apicalls/friend'
+import {AddFriendRequestDto} from '../../src/apicalls/friend';
+import { IPlayer } from '../../../types/IOfficeState'
+import {
+  fetchRoomList,
+  RoomListResponse,
+} from '../../src/apicalls/DM'
+import RequestFriendResultModal from './RequestFriendResultModal';
 
 const Backdrop = styled.div`
   position: fixed;
@@ -123,7 +131,7 @@ const getUser = async() => {
 
 // Todo: change the parameter in body part
 const getUserDetail = async(userId: string) => {
-  const apiUrl: string = 'http://auth/user/detaul/' + userId;
+  const apiUrl: string = 'http://auth/user/detail/' + userId;
   await fetch(apiUrl, {
       method: 'GET',
       headers: {
@@ -143,41 +151,83 @@ export default function UserDialog() {
   const chatMessages = useAppSelector((state) => state.chat.chatMessages)
   const focused = useAppSelector((state) => state.chat.focused)
   const showUser = useAppSelector((state) => state.chat.showUser)
-
+  
+  const userId = useAppSelector((state) => state.user.userId)
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
   const userLevel = useAppSelector((state) => state.user.userLevel)
+  const [addFriendResult, setAddFriendResult] = useState<number>(0)
   const imgpath = `../../public/assets/character/single/${character}_idle_anim_19.png`
+  const players = useAppSelector((state) => state.room.players);
+  const [otherPlayers, setOtherPlayers] = useState<IPlayer[]>();
+  const [playerNum, setPlayerNum] = useState<number>(0);
+  const [rooms, setRooms] = useState<RoomListResponse[]>([]);
 
   const dispatch = useAppDispatch()
-
+  
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
   useEffect(() => {
+    fetchRoomList(userId).then((data) => {
+      data && setRooms(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    setOtherPlayers(players);
+    setPlayerNum(players.length);
+  }, [players.length]);
+  
+  useEffect(() => {
     if (focused) {
       inputRef.current?.focus()
     }
   }, [focused])
-
+  
   useEffect(() => {
     scrollToBottom()
   }, [chatMessages, showUser])
-
+  
   const [open, setOpen] = React.useState(true);
-
+  
   const handleClick = () => {
     setOpen(!open);
   };
 
+  async function requestFriend(id: string, name: string) {
+    const body:AddFriendRequestDto = {
+      myInfo: {
+        userId: userId,
+        username: username,
+      },
+      friendInfo: {
+        userId: id,
+        username: name,
+      },
+      status: 0,
+      message: '친구 요청이 왔습니다',
+    };
+    try {
+      const result = await addFriendReq(body);
+      if (result === 1) {
+        setAddFriendResult(result!);
+      } else if (result === 2) {
+        setAddFriendResult(result!);
+      }
+    } catch (error) {
+      console.error('error:', error);
+    }
+  }
+  
   return (
     <Backdrop>
         <Wrapper>
           <Content>
             <ChatHeader>
               <Title>
-                친구들
+                접속중
               </Title>
               <IconButton
                 aria-label="close dialog"
@@ -197,7 +247,8 @@ export default function UserDialog() {
                 <Button>Ruby</Button>
               </ButtonGroup>
 
-              <UserList>
+              {otherPlayers?.map((player, i: number) => {
+              return player.userId !== userId ? (<UserList key={i}>
                 <User>
                   <ListItem divider>
                     <ListItemAvatar>
@@ -205,21 +256,36 @@ export default function UserDialog() {
                     </ListItemAvatar>
 
                     <Profile>
-                      레벨 {userLevel}<br/><br/>
-                      <strong>{username}</strong>님
+                      레벨 {player.userlevel}<br/><br/>
+                      <strong>{player.username}</strong>님
                     </Profile>
 
                     <ProfileButton>
-                      <Button>
+                      /* 친구인지 확인 */
+                      <Button onClick={(event) => {
+                        event.preventDefault();
+                        requestFriend(
+                          player.userId,
+                          player.username,
+                        )
+                        setAddFriendResult(1);
+                      }}>
                         친구 추가하기
-                      </Button>
+                      </Button>{addFriendResult === 0 ? null : (
+                        <RequestFriendResultModal
+                          setAddFriendResult={setAddFriendResult}
+                          addFriendResult={addFriendResult}
+                          />
+                          )}
+                        /* */
                       <Button onClick={() => dispatch(setShowDM(true)) }>
                         메세지 보내기
                       </Button>
                     </ProfileButton>
                   </ListItem>
                 </User>
-              </UserList>
+              </UserList>): null;
+              })}
             </ChatBox>
           </Content>
         </Wrapper>
