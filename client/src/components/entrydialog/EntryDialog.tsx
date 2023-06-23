@@ -6,7 +6,7 @@ import LinearProgress from '@mui/material/LinearProgress'
 import Snackbar from '@mui/material/Snackbar'
 
 import { useAppSelector, useAppDispatch } from '../../hooks'
-import { ENTRY_PROCESS, setEntryProcess } from '../../stores/UserStore'
+import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore'
 
 
 const Backdrop = styled.div`
@@ -87,15 +87,16 @@ export default function EntryDialog() {
 
   const gotoLoginPage = () => {
     if (lobbyJoined) {
-      dispatch(setEntryProcess(ENTRY_PROCESS.LOGIN))
+      dispatch(setDialogStatus(DIALOG_STATUS.LOGIN))
     } else {
       setShowSnackbar(true);
     }
   }
 
+
   const gotoJoinPage = () => {
     if (lobbyJoined) {
-      dispatch(setEntryProcess(ENTRY_PROCESS.JOIN))
+      dispatch(setDialogStatus(DIALOG_STATUS.JOIN))
     } else {
       setShowSnackbar(true);
     }

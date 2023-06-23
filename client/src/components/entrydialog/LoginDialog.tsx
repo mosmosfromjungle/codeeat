@@ -17,7 +17,7 @@ import FormHelperText from '@mui/material/FormHelperText'
 import ArrowBack from '@mui/icons-material/ArrowBack'
 
 import { useAppSelector, useAppDispatch } from '../../hooks'
-import { ENTRY_PROCESS, setAccessToken, setEntryProcess } from '../../stores/UserStore'
+import { DIALOG_STATUS, setAccessToken, setDialogStatus } from '../../stores/UserStore'
 
 import phaserGame from '../../PhaserGame'
 import Game from '../../scenes/Game'
@@ -136,7 +136,7 @@ export default function LoginDialog() {
               .joinOrCreatePublic()
               .then(() => bootstrap.launchGame())
               .catch((error) => console.error(error))
-            dispatch(setEntryProcess(ENTRY_PROCESS.WELCOME))
+            dispatch(setDialogStatus(DIALOG_STATUS.WELCOME))
           }
         }
       }).catch((error) => {
@@ -151,7 +151,7 @@ export default function LoginDialog() {
   }
 
   const handleBack = () => {
-    dispatch(setEntryProcess(ENTRY_PROCESS.ENTRY))
+    dispatch(setDialogStatus(DIALOG_STATUS.ENTRY))
   }
 
   return (

@@ -4,11 +4,11 @@ import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import { io, Socket } from 'socket.io-client';
-import phaserGame from '../PhaserGame';
-import Game from '../../src/scenes/Game';
+import phaserGame from '../../PhaserGame';
+import Game from '../../scenes/Game';
 
-import { useAppSelector, useAppDispatch } from '../hooks'
-import { closeComputerDialog } from '../stores/ComputerStore'
+import { useAppSelector, useAppDispatch } from '../../hooks'
+import { closeBrickGameDialog } from '../../stores/BrickGameStore'
 
 const WRONG_OPERATION = '해당 자료구조에서 사용되지 않는 연산입니다!'
 const COMMON_MESSAGE = (
@@ -130,10 +130,10 @@ function getRandomIntInclusive(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-export default function ComputerDialog() {
+export default function BrickGameDialog() {
   const dispatch = useAppDispatch()
-  const game = phaserGame.scene.keys.game as Game;
-  const socketNetwork = game.network2
+  // const game = phaserGame.scene.keys.game as Game;
+  // const socketNetwork = game.network2
 
   const userId = useAppSelector((state) => state.user.userId);
   // const playerNameMap = useAppSelector((state) => state.user.playerNameMap)
@@ -158,12 +158,12 @@ export default function ComputerDialog() {
 }
 
   const [images, setImages] = useState([
-    { src: '/assets/brickGame/52-2.png', text: arr[0].toString() },
-    { src: '/assets/brickGame/25-2.png', text: arr[1].toString() },
-    { src: '/assets/brickGame/37-2.png', text: arr[2].toString() },
-    { src: '/assets/brickGame/51-2.png', text: arr[3].toString() },
-    { src: '/assets/brickGame/50-2.png', text: arr[4].toString() },
-    { src: '/assets/brickGame/39-2.png', text: arr[5].toString() },
+    { src: '/assets/game/brickGame/52-2.png', text: arr[0].toString() },
+    { src: '/assets/game/brickGame/25-2.png', text: arr[1].toString() },
+    { src: '/assets/game/brickGame/37-2.png', text: arr[2].toString() },
+    { src: '/assets/game/brickGame/51-2.png', text: arr[3].toString() },
+    { src: '/assets/game/brickGame/50-2.png', text: arr[4].toString() },
+    { src: '/assets/game/brickGame/39-2.png', text: arr[5].toString() },
   ])
 
   const [originalImages, setOriginalImages] = useState([...images]) // 원래의 이미지 배열 복사
@@ -314,7 +314,10 @@ export default function ComputerDialog() {
     setImages([...originalImages])
     setSelectedOption('')
   }
+
   let players = [{name:'a', score: 10}, {name:'b', score:20}, {name:'c',score:30}]
+
+  
   return (
     
     <>
@@ -324,14 +327,14 @@ export default function ComputerDialog() {
 
         <Wrapper>
           <div id='container'>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-        {players.map((player, index) => (
-          <div key={index} style={{ marginLeft: '10px', textAlign: 'center' }}>
-          <div>{player.name} {player.score}</div>
-        </div>
-          ))}
-        </div>
-        </div>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              {players.map((player, index) => (
+                <div key={index} style={{ marginLeft: '10px', textAlign: 'center' }}>
+                  <div>{player.name} {player.score}</div>
+                </div>
+              ))}
+            </div>
+          </div>
           <div style={{ fontSize: '40px' }}>
             몬스터 줄세우기!<br></br>
             <br></br>
@@ -351,7 +354,7 @@ export default function ComputerDialog() {
           <IconButton
             aria-label="close dialog"
             className="close"
-            onClick={() => dispatch(closeComputerDialog())}
+            onClick={() => dispatch(closeBrickGameDialog())}
           >
             <CloseIcon />
           </IconButton>

@@ -20,8 +20,7 @@ interface AddKeywordPayload{
 }
 
 interface TypingGameState {
-    typingGameDialogOpen: boolean,
-    typinggameId: null | string,
+    typingGameOpen: boolean,
     game: KeywordRain[],
     point: number,
     heart: number,
@@ -32,8 +31,7 @@ interface TypingGameState {
 
 // Define initial state
 const initialState: TypingGameState = {
-    typingGameDialogOpen: false,
-    typinggameId: null,
+    typingGameOpen: false,
     game: [],
     point: 0,
     heart: 5,
@@ -57,21 +55,19 @@ const initialState: TypingGameState = {
 
 
 // Define Slice
-export const typinggameSlice = createSlice({
+export const typingGameSlice = createSlice({
     name: "typingGame",
     initialState,
     reducers: {
-        openTypinggameDialog: (state, action: PayloadAction<string>) => {
-            state.typingGameDialogOpen = true
+        openTypingGameDialog: (state) => {
+            state.typingGameOpen = true
             const game = phaserGame.scene.keys.game as Game
             game.disableKeys()
         },
-        closeTypinggameDialog: (state) => {
+        closeTypingGameDialog: (state) => {
             const game = phaserGame.scene.keys.game as Game
             game.enableKeys()
-            game.network.disconnectFromTypinggame(state.typinggameId!)
-            state.typingGameDialogOpen = false
-            state.typinggameId = null
+            state.typingGameOpen = false
         },
         addKeyword: (state, action: PayloadAction<{keyword: string; speed: number}>) => {
             const { keyword, speed } = action.payload;
@@ -116,6 +112,6 @@ export const typinggameSlice = createSlice({
 });
 
 
-export const { openTypinggameDialog, closeTypinggameDialog, addKeyword, updateGame, removeKeyword } = typinggameSlice.actions;
+export const { openTypingGameDialog, closeTypingGameDialog, addKeyword, updateGame, removeKeyword } = typingGameSlice.actions;
 
-export default typinggameSlice.reducer
+export default typingGameSlice.reducer

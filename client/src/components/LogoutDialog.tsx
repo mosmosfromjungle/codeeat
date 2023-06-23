@@ -1,6 +1,3 @@
-/*
-  Icon: mui 라이브러리 사용 (https://mui.com/material-ui/material-icons/)
-*/
 import React, { useRef, useState, useEffect } from 'react'
 import styled from 'styled-components'
 
@@ -10,9 +7,8 @@ import Button from '@mui/material/Button'
 
 import CloseIcon from '@mui/icons-material/Close'
 
-import { setShowLogout } from '../stores/UserStore'
+import { DIALOG_STATUS, setDialogStatus, setShowLogout } from '../stores/UserStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
-import { ENTRY_PROCESS, setAccessToken, setEntryProcess } from '../stores/UserStore'
 
 const Backdrop = styled.div`
   position: fixed;
@@ -103,6 +99,10 @@ export default function LogoutDialog() {
     scrollToBottom()
   }, [chatMessages, showLogout])
 
+  const handleLogout = () => {
+    ;
+  }
+
   return (
     <Backdrop>
         <Wrapper>
@@ -125,7 +125,8 @@ export default function LogoutDialog() {
                   정말 로그아웃 하시겠습니까 ?
                 </Question>
                 <Buttons>
-                  <Button onClick={() => dispatch(setEntryProcess(ENTRY_PROCESS.ENTRY)) }>
+                  {/* <Button onClick={() => dispatch(setDialogStatus(DIALOG_STATUS.ENTRY)) }> */} 
+                  <Button onClick={() => window.location.href = '/' }>
                     네
                   </Button>
                   <Button onClick={() => dispatch(setShowLogout(false)) }>

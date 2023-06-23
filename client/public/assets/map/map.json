@@ -3805,7 +3805,7 @@
         {
          "draworder":"topdown",
          "id":9,
-         "name":"Computer",
+         "name":"BrickGame",
          "objects":[
                 {
                  "gid":4680,
@@ -3876,7 +3876,7 @@
         {
          "draworder":"topdown",
          "id":10,
-         "name":"Typinggame",
+         "name":"TypingGame",
          "objects":[
                 {
                  "gid":4685,
@@ -27360,7 +27360,7 @@
          "imageheight":64,
          "imagewidth":480,
          "margin":0,
-         "name":"computer",
+         "name":"brickgame",
          "spacing":0,
          "tilecount":5,
          "tileheight":64,

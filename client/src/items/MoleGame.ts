@@ -3,9 +3,11 @@ import store from '../stores'
 import Item from './Item'
 import Network from '../services/Network'
 import { openMoleGameDialog } from '../stores/MoleGameStore'
+import { DIALOG_STATUS, setDialogStatus } from '../stores/UserStore'
+
 
 export default class MoleGame extends Item {
-  id?: string
+  // id?: string
   currentUsers = new Set<string>()
 
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
@@ -46,8 +48,9 @@ export default class MoleGame extends Item {
   }
 
   openDialog(network: Network) {
-    if (!this.id) return
-    store.dispatch(openMoleGameDialog(this.id))
-    network.connectToMoleGame(this.id)
+    // if (!this.id) return
+    store.dispatch(openMoleGameDialog())
+    store.dispatch(setDialogStatus(DIALOG_STATUS.GAME_LOBBY))
+    // network.connectToMoleGame(this.id)
   }
 }

@@ -3,26 +3,30 @@ import styled from 'styled-components'
 import axios from 'axios'
 
 import { useAppSelector, useAppDispatch } from './hooks'
-import { ENTRY_PROCESS, setEntryProcess } from './stores/UserStore'
+import { DIALOG_STATUS } from './stores/UserStore'
 
+// ↓ Entry Dialog
 import EntryDialog from './components/entrydialog/EntryDialog'
 import LoginDialog from './components/entrydialog/LoginDialog'
 import JoinDialog from './components/entrydialog/JoinDialog'
 import WelcomeDialog from './components/entrydialog/WelcomeDialog'
 
-import ComputerDialog from './components/ComputerDialog'
-import TypingGameDialog from './components/TypingGameDialog'
-import MoleGameDialog from './components/MoleGameDialog'
-import VideoConnectionDialog from './components/VideoConnectionDialog'
-import HelperButtonGroup from './components/HelperButtonGroup'
-import MobileVirtualJoystick from './components/MobileVirtualJoystick'
+// ↓ Game Dialog
+import GameLobbyDialog from './components/gamedialog/GameLobbyDialog'
+import GameWelcomeDialog from './components/gamedialog/GameWelcomeDialog'
+import MoleGameDialog from './components/games/MoleGameDialog'
+import BrickGameDialog from './components/games/BrickGameDialog'
+import TypingGameDialog from './components/games/TypingGameDialog'
 
 // ↓ HelperButtonGroup Dialog
+import HelperButtonGroup from './components/helperdialog/HelperButtonGroup'
 import ChatDialog from './components/ChatDialog'
 import DMDialog from './components/DMDialog'
 import UserDialog from './components/UserDialog'
 import LogoutDialog from './components/LogoutDialog'
-import VersionDialog from './components/VersionDialog'
+import VersionDialog from './components/helperdialog/VersionDialog'
+import MobileVirtualJoystick from './components/helperdialog/MobileVirtualJoystick'
+import VideoConnectionDialog from './components/VideoConnectionDialog'
 
 // ↓ Profile Button & Dialog
 import ProfileButton from './components/ProfileButton'
@@ -46,84 +50,80 @@ const Backdrop = styled.div`
 `
 
 function App() {
-  const entryProcess = useAppSelector((state) => state.user.entryProcess)
-  const entered = useAppSelector((state) => state.user.entered)
-  const videoConnected = useAppSelector((state) => state.user.videoConnected)
-  const audioConnected = useAppSelector((state) => state.user.audioConnected)
-  const computerDialogOpen = useAppSelector((state) => state.computer.computerDialogOpen)
-  const typinggameDialogOpen = useAppSelector((state) => state.typingGame.typingGameDialogOpen)
-  const moleGameDialogOpen = useAppSelector((state) => state.molegame.moleGameDialogOpen)
-
+  const dialogStatus = useAppSelector((state) => state.user.dialogStatus)
+  
+  // ↓ Game Dialog
+  const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
+  const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
+  const typingGameOpen = useAppSelector((state) => state.typinggame.typingGameOpen)
+  
   // ↓ HelperButtonGroup Dialog
   const showChat = useAppSelector((state) => state.chat.showChat)
   const showDM = useAppSelector((state) => state.chat.showDM)
   const showUser = useAppSelector((state) => state.chat.showUser)
   const showLogout = useAppSelector((state) => state.user.showLogout)
   const showVersion = useAppSelector((state) => state.user.showVersion)
+  const videoConnected = useAppSelector((state) => state.user.videoConnected)
+  const audioConnected = useAppSelector((state) => state.user.audioConnected)
 
   // ↓ Profile Dialog
   const showProfile = useAppSelector((state) => state.user.showProfile)
 
   const dispatch = useAppDispatch()
 
-  useEffect(() => {
-    // 첫 렌더링 시, refresh token이 있다면 token 인증을 통해 entry 상태를 설정 // TODO: cookie 가져오는 부분 해결 필요 
-    // const refreshToken = cookies.get('refreshToken');
-    // console.log('refresh token: ', refreshToken)
-    // if (refreshToken) { 
-    authenticateUser().then((result) => {
-      if (result.status === 200) {
-        dispatch(setEntryProcess(ENTRY_PROCESS.WELCOME));
-      }
-    })
-    // }
-  }, [])
+  // TODO: cookie 가져오는 부분 해결 필요 
+  // useEffect(() => {
+  //   // 첫 렌더링 시, refresh token이 있다면 token 인증을 통해 entry 상태를 설정 
+  //   // const refreshToken = cookies.get('refreshToken');
+  //   // console.log('refresh token: ', refreshToken)
+  //   // if (refreshToken) { 
+  //   authenticateUser().then((result) => {
+  //     if (result.status === 200) {
+  //       dispatch(setEntryProcess(ENTRY_PROCESS.WELCOME));
+  //     }
+  //   })
+  //   // }
+  // }, [])
 
   let ui: JSX.Element
-  if (entered) {
-    if (computerDialogOpen) {
-      ui = <ComputerDialog />
-    } else if (typinggameDialogOpen) {
-      ui = <TypingGameDialog />
-    } else if (moleGameDialogOpen) {
-      ui = <MoleGameDialog />
-    } else if (showChat) {
-      ui = <ChatDialog /> // UGLY: Need to move to HelperButtonGroup 
-    } else if (showDM) {
-      ui = <DMDialog />   // UGLY: Need to move to HelperButtonGroup 
-    } else if (showUser) {
-      ui = <UserDialog /> // UGLY: Need to move to HelperButtonGroup 
-    } else if (showLogout) {
-      ui = <LogoutDialog />
-    } else if (showVersion) {
-      ui = <VersionDialog />
-    } else if (showProfile) {
-      ui = <ProfileDialog />  // UGLY: Need to move to HelperButtonGroup 
-    } else {
-      ui = (
-        <>
-          {!videoConnected && <VideoConnectionDialog />}
-          <MobileVirtualJoystick />
-        </>
-      )
-    }
-  } else if (entryProcess === ENTRY_PROCESS.ENTRY) {
-    ui = <EntryDialog />
-  } else if (entryProcess === ENTRY_PROCESS.LOGIN) {
-    ui = <LoginDialog />
-  } else if (entryProcess === ENTRY_PROCESS.JOIN) {
+  if (dialogStatus === DIALOG_STATUS.JOIN) {
     ui = <JoinDialog />
-  } else {
+  } else if (dialogStatus === DIALOG_STATUS.LOGIN) {
+    ui = <LoginDialog />
+  } else if (dialogStatus === DIALOG_STATUS.WELCOME) {
     ui = <WelcomeDialog/>
+  } else if (dialogStatus === DIALOG_STATUS.IN_MAIN) {
+    ui = (
+      <>  
+        {/* // UGLY: Need to move to HelperButtonGroup  */}
+        {showChat && <ChatDialog />}
+        {showDM && <DMDialog />}
+        {showUser && <UserDialog />}
+        {showLogout && <LogoutDialog />}
+        {showProfile && <ProfileDialog />}
+        {showVersion && <VersionDialog />}
+        {!videoConnected && <VideoConnectionDialog />}
+        <MobileVirtualJoystick />
+        <HelperButtonGroup />
+        <ProfileButton />
+      </>
+    )
+  } else if (dialogStatus === DIALOG_STATUS.GAME_LOBBY) {
+    ui = <GameLobbyDialog />
+  } else if (dialogStatus === DIALOG_STATUS.GAME_WELCOME) {
+    ui = <GameWelcomeDialog />
+  } else if (dialogStatus === DIALOG_STATUS.IN_GAME) {
+    if (brickGameOpen) ui = <BrickGameDialog />
+    if (moleGameOpen) ui = <MoleGameDialog />
+    if (typingGameOpen) ui = <TypingGameDialog />
+  } else {
+    ui = <EntryDialog />
   }
 
   return (
     <Backdrop>
+      <GlobalFont />
       {ui}
-      {/* Render HelperButtonGroup, ProfileButton if no dialogs are opened. */}
-      {!computerDialogOpen && !typinggameDialogOpen && !moleGameDialogOpen && <HelperButtonGroup />}
-      {!computerDialogOpen && !typinggameDialogOpen && !moleGameDialogOpen && <ProfileButton />}
-      {<GlobalFont />}
     </Backdrop>
   )
 }

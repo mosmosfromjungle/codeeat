@@ -3,8 +3,8 @@ import styled from 'styled-components'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 
-import { useAppSelector, useAppDispatch } from '../hooks'
-import { closeTypinggameDialog } from '../stores/TypingGameStore'
+import { useAppSelector, useAppDispatch } from '../../hooks'
+import { closeTypingGameDialog } from '../../stores/TypingGameStore'
 import TypingGame from './TypingGame'
 import * as Colyseus from "colyseus.js";
 
@@ -41,7 +41,7 @@ const Wrapper = styled.div`
   }
 `
 
-const TypinggameWrapper = styled.div`
+const TypingGameWrapper = styled.div`
   flex: 1;
   border-radius: 25px;
   overflow: hidden;
@@ -63,7 +63,7 @@ export default function TypingGameDialog() {
         {<IconButton
           aria-label="close dialog"
           className="close"
-          onClick={() => dispatch(closeTypinggameDialog())}
+          onClick={() => dispatch(closeTypingGameDialog())}
         >
           <CloseIcon />
         </IconButton>}
