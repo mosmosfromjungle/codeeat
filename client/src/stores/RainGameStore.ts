@@ -15,7 +15,7 @@ export interface KeywordRain {
 }
 
 interface RainGameState {
-    RainGameOpen: boolean,
+    rainGameOpen: boolean,
     game: KeywordRain[],
     point: number,
     heart: number,
@@ -29,7 +29,7 @@ interface RainGameState {
 
 // Define initial state
 const initialState: RainGameState = {
-    RainGameOpen: false,
+    rainGameOpen: false,
     game: [],
     point: 0,
     heart: 5,
@@ -55,19 +55,19 @@ const initialState: RainGameState = {
 };
 
 // Define Slice
-export const RainGameSlice = createSlice({
-    name: "RainGame",
+export const rainGameSlice = createSlice({
+    name: "raingame",
     initialState,
     reducers: {
         openRainGameDialog: (state) => {
-            state.RainGameOpen = true
+            state.rainGameOpen = true
             const game = phaserGame.scene.keys.game as Game
             game.disableKeys()
         },
         closeRainGameDialog: (state) => {
             const game = phaserGame.scene.keys.game as Game
             game.enableKeys()
-            state.RainGameOpen = false
+            state.rainGameOpen = false
         },
 
         addKeyword: (state, action: PayloadAction<{ keyword: string }>) => {
@@ -126,7 +126,7 @@ export const RainGameSlice = createSlice({
 });
 
 
-export const { openRainGameDialog, closeRainGameDialog, addKeyword, updateGame, removeKeyword, resetRainGame, updatePeriod, updateSpeed } = RainGameSlice.actions;
+export const { openRainGameDialog, closeRainGameDialog, addKeyword, updateGame, removeKeyword, resetRainGame, updatePeriod, updateSpeed } = rainGameSlice.actions;
 
 
-export default RainGameSlice.reducer
+export default rainGameSlice.reducer

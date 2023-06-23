@@ -111,7 +111,7 @@ export default class Bootstrap extends Phaser.Scene {
     //   frameWidth: 96,
     //   frameHeight: 64,
     // })
-    // this.load.spritesheet('RainGames', 'assets/items/whiteboard.png', {
+    // this.load.spritesheet('raingames', 'assets/items/whiteboard.png', {
     //   frameWidth: 64,
     //   frameHeight: 64,
     // })

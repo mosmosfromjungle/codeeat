@@ -47,7 +47,7 @@ export class OfficeState extends Schema implements IOfficeState {
   brickgames = new MapSchema<BrickGame>()
 
   @type({ map: RainGame })
-  RainGames = new MapSchema<RainGame>()
+  raingames = new MapSchema<RainGame>()
 
   @type([ChatMessage])
   chatMessages = new ArraySchema<ChatMessage>()

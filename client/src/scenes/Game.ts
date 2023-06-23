@@ -37,7 +37,7 @@ export default class Game extends Phaser.Scene {
   private otherPlayerMap = new Map<string, OtherPlayer>()
   private brickgameMap = new Map<String, BrickGame>()
   private molegameMap = new Map<String, MoleGame>()
-  private RainGameMap = new Map<string, RainGame>()
+  private raingameMap = new Map<string, RainGame>()
   private facechatMap = new Map<String, FaceChat>()
 
   constructor() {
@@ -228,14 +228,14 @@ export default class Game extends Phaser.Scene {
       this.brickgameMap.set(id, item)
     })
 
-    /* Typing Game */
-    const RainGames = this.physics.add.staticGroup({ classType: RainGame })
-    const RainGameLayer = this.map.getObjectLayer('bench')
-    RainGameLayer.objects.forEach((obj, i) => {
-      const item = this.addObjectFromTiled(RainGames, obj, 'bench', 'bench') as RainGame
+    /* Rain Game */
+    const raingames = this.physics.add.staticGroup({ classType: RainGame })
+    const raingameLayer = this.map.getObjectLayer('bench')
+    raingameLayer.objects.forEach((obj, i) => {
+      const item = this.addObjectFromTiled(raingames, obj, 'bench', 'bench') as RainGame
       const id = `${i}`
       item.id = id
-      this.RainGameMap.set(id, item)
+      this.raingameMap.set(id, item)
     })
 
     /* Mole Game */
@@ -277,7 +277,7 @@ export default class Game extends Phaser.Scene {
 
     this.physics.add.overlap(
       this.playerSelector,
-      [chairs, molegames, RainGames, brickgames, facechats],
+      [chairs, molegames, raingames, brickgames, facechats],
       this.handleItemSelectorOverlap,
       undefined,
       this
@@ -392,8 +392,8 @@ export default class Game extends Phaser.Scene {
       const brickgame = this.brickgameMap.get(itemId)
       brickgame?.addCurrentUser(playerId)
     } else if (itemType === ItemType.RAINGAME) {
-      const RainGame = this.RainGameMap.get(itemId)
-      RainGame?.addCurrentUser(playerId)
+      const raingame = this.raingameMap.get(itemId)
+      raingame?.addCurrentUser(playerId)
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.addCurrentUser(playerId)
@@ -408,8 +408,8 @@ export default class Game extends Phaser.Scene {
       const brickgame = this.brickgameMap.get(itemId)
       brickgame?.removeCurrentUser(playerId)
     } else if (itemType === ItemType.RAINGAME) {
-      const RainGame = this.RainGameMap.get(itemId)
-      RainGame?.removeCurrentUser(playerId)
+      const raingame = this.raingameMap.get(itemId)
+      raingame?.removeCurrentUser(playerId)
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.removeCurrentUser(playerId)

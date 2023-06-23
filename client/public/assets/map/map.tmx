@@ -12818,7 +12818,7 @@
  <tileset firstgid="4680" name="brickgame" tilewidth="96" tileheight="64" tilecount="5" columns="5">
   <image source="../items/computer.png" width="480" height="64"/>
  </tileset>
- <tileset firstgid="4685" name="RainGame" tilewidth="64" tileheight="64" tilecount="3" columns="1">
+ <tileset firstgid="4685" name="raingame" tilewidth="64" tileheight="64" tilecount="3" columns="1">
   <image source="../items/whiteboard.png" width="64" height="192"/>
  </tileset>
  <tileset firstgid="4688" name="Basement" tilewidth="32" tileheight="32" tilecount="800" columns="16">

@@ -34,7 +34,7 @@ export interface IOfficeState extends Schema {
   players: MapSchema<IPlayer>
   molegames: MapSchema<IMoleGame>
   brickgames: MapSchema<IBrickGame>
-  RainGames: MapSchema<IRainGame>
+  raingames: MapSchema<IRainGame>
   chatMessages: ArraySchema<IChatMessage>
 }
 

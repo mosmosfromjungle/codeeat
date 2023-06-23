@@ -215,13 +215,13 @@ export default class Network {
       }
     }
 
-    // new instance added to the RainGames MapSchema
-    this.room.state.RainGames.onAdd = (RainGame: IRainGame, key: string) => {
+    // new instance added to the raingames MapSchema
+    this.room.state.raingames.onAdd = (raingame: IRainGame, key: string) => {
       // track changes on every child object's connectedUser
-      RainGame.connectedUser.onAdd = (item, index) => {
+      raingame.connectedUser.onAdd = (item, index) => {
         phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.RAINGAME)
       }
-      RainGame.connectedUser.onRemove = (item, index) => {
+      raingame.connectedUser.onRemove = (item, index) => {
         phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.RAINGAME)
       }
     }
@@ -318,13 +318,13 @@ export default class Network {
       }
     }
 
-    // new instance added to the RainGames MapSchema
-    this.gameroom.state.RainGames.onAdd = (RainGame: IRainGame, key: string) => {
+    // new instance added to the raingames MapSchema
+    this.gameroom.state.raingames.onAdd = (raingame: IRainGame, key: string) => {
       // track changes on every child object's connectedUser
-      RainGame.connectedUser.onAdd = (item, index) => {
+      raingame.connectedUser.onAdd = (item, index) => {
         phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.RAINGAME)
       }
-      RainGame.connectedUser.onRemove = (item, index) => {
+      raingame.connectedUser.onRemove = (item, index) => {
         phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.RAINGAME)
       }
     }
@@ -436,11 +436,11 @@ export default class Network {
   }
 
   connectToRainGame(id: string) {
-    this.room?.send(Message.CONNECT_TO_RAINGAME, { RainGameId: id })
+    this.room?.send(Message.CONNECT_TO_RAINGAME, { raingameId: id })
   }
 
   disconnectFromRainGame(id: string) {
-    this.room?.send(Message.DISCONNECT_FROM_RAINGAME, { RainGameId: id })
+    this.room?.send(Message.DISCONNECT_FROM_RAINGAME, { raingameId: id })
   }
 
   addChatMessage(content: string) {

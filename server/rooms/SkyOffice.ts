@@ -47,9 +47,9 @@ export class SkyOffice extends Room<OfficeState> {
       this.state.brickgames.set(String(i), new BrickGame())
     }
 
-    // HARD-CODED: Add 3 RainGames in a room
+    // HARD-CODED: Add 3 raingames in a room
     for (let i = 0; i < 30; i++) {
-      this.state.RainGames.set(String(i), new RainGame())
+      this.state.raingames.set(String(i), new RainGame())
     }
 
     // HARD-CODED: Add 1 molegames in a room
@@ -57,19 +57,19 @@ export class SkyOffice extends Room<OfficeState> {
       this.state.molegames.set(String(i), new MoleGame())
     }
 
-    // when a player connect to a RainGame, add to the RainGame connectedUser array
-    this.onMessage(Message.CONNECT_TO_RAINGAME, (client, message: { RainGameId: string }) => {
+    // when a player connect to a raingame, add to the raingame connectedUser array
+    this.onMessage(Message.CONNECT_TO_RAINGAME, (client, message: { rainGameId: string }) => {
       this.dispatcher.dispatch(new RainGameAddUserCommand(), {
         client,
-        RainGameId: message.RainGameId,
+        rainGameId: message.rainGameId,
       })
     })
 
     // when a player disconnect from a RainGame, remove from the RainGame connectedUser array
-    this.onMessage(Message.DISCONNECT_FROM_RAINGAME, (client, message: { RainGameId: string }) => {
+    this.onMessage(Message.DISCONNECT_FROM_RAINGAME, (client, message: { rainGameId: string }) => {
       this.dispatcher.dispatch(new RainGameRemoveUserCommand(), {
         client,
-        RainGameId: message.RainGameId,
+        rainGameId: message.rainGameId,
       })
     }
     )
@@ -195,9 +195,9 @@ export class SkyOffice extends Room<OfficeState> {
         brickgame.connectedUser.delete(client.sessionId)
       }
     })
-    this.state.RainGames.forEach((RainGame) => {
-      if (RainGame.connectedUser.has(client.sessionId)) {
-        RainGame.connectedUser.delete(client.sessionId)
+    this.state.raingames.forEach((raingame) => {
+      if (raingame.connectedUser.has(client.sessionId)) {
+        raingame.connectedUser.delete(client.sessionId)
       }
     })
     this.state.molegames.forEach((molegame) => {

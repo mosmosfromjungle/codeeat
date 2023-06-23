@@ -4,13 +4,13 @@ import { IOfficeState } from '../../../types/IOfficeState'
 
 type Payload = {
   client: Client
-  RainGameId: string
+  rainGameId: string
 }
 
 export class RainGameAddUserCommand extends Command<IOfficeState, Payload> {
   execute(data: Payload) {
-    const { client, RainGameId } = data
-    const RainGame = this.room.state.RainGames.get(RainGameId)
+    const { client, rainGameId } = data
+    const RainGame = this.room.state.raingames.get(rainGameId)
     const clientId = client.sessionId
 
     if (!RainGame || RainGame.connectedUser.has(clientId)) return
@@ -20,11 +20,11 @@ export class RainGameAddUserCommand extends Command<IOfficeState, Payload> {
 
 export class RainGameRemoveUserCommand extends Command<IOfficeState, Payload> {
   execute(data: Payload) {
-    const { client, RainGameId } = data
-    const RainGame = this.state.RainGames.get(RainGameId)
+    const { client, rainGameId } = data
+    const raingame = this.state.raingames.get(rainGameId)
 
-    if (RainGame.connectedUser.has(client.sessionId)) {
-      RainGame.connectedUser.delete(client.sessionId)
+    if (raingame.connectedUser.has(client.sessionId)) {
+      raingame.connectedUser.delete(client.sessionId)
     }
   }
 }

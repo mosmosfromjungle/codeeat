@@ -75,20 +75,20 @@ export default function GameLobbyDialog() {
   const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
-  const RainGameOpen = useAppSelector((state) => state.RainGame.RainGameOpen)
+  const rainGameOpen = useAppSelector((state) => state.raingame.rainGameOpen)
   const dispatch = useAppDispatch()
 
   useEffect(() => {
     const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
     if (brickGameOpen) bootstrap.network.joinLobby(RoomType.BRICKLOBBY)
     if (moleGameOpen) bootstrap.network.joinLobby(RoomType.MOLELOBBY)
-    if (RainGameOpen) bootstrap.network.joinLobby(RoomType.TYPINGLOBBY)
+    if (rainGameOpen) bootstrap.network.joinLobby(RoomType.TYPINGLOBBY)
   })
 
   const handleClose = () => {
     if (brickGameOpen) dispatch(closeBrickGameDialog())
     if (moleGameOpen) dispatch(closeMoleGameDialog())
-    if (RainGameOpen) dispatch(closeRainGameDialog())
+    if (rainGameOpen) dispatch(closeRainGameDialog())
   }
 
   return (

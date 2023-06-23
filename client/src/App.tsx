@@ -55,7 +55,7 @@ function App() {
   // ↓ Game Dialog
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
-  const RainGameOpen = useAppSelector((state) => state.RainGame.RainGameOpen)
+  const rainGameOpen = useAppSelector((state) => state.raingame.rainGameOpen)
 
   // ↓ HelperButtonGroup Dialog
   const showChat = useAppSelector((state) => state.chat.showChat)
@@ -115,7 +115,7 @@ function App() {
   } else if (dialogStatus === DIALOG_STATUS.IN_GAME) {
     if (brickGameOpen) ui = <BrickGameDialog />
     if (moleGameOpen) ui = <MoleGameDialog />
-    if (RainGameOpen) ui = <RainGameDialog />
+    if (rainGameOpen) ui = <RainGameDialog />
   } else {
     ui = <EntryDialog />
   }

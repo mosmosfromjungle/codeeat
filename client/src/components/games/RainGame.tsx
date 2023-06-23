@@ -9,7 +9,7 @@ export function RainGame() {
     const canvasHeight = 1170;
     const lineHeight = canvasHeight - 500;
 
-    const state = useSelector((state: RootState) => state.RainGame);
+    const state = useSelector((state: RootState) => state.raingame);
 
     const dispatch = useDispatch();
 
