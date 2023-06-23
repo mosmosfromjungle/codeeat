@@ -49,9 +49,9 @@ export default class Network {
         ? import.meta.env.VITE_SERVER_URL
         : `${protocol}//${window.location.hostname}:2567`
     this.client = new Client(endpoint)
-    
+
     this.joinLobby(RoomType.LOBBY)
-    
+
     phaserEvents.on(Event.MY_PLAYER_NAME_CHANGE, this.updatePlayerName, this)
     phaserEvents.on(Event.MY_PLAYER_TEXTURE_CHANGE, this.updatePlayer, this)
     phaserEvents.on(Event.PLAYER_DISCONNECTED, this.playerStreamDisconnect, this)
@@ -68,7 +68,7 @@ export default class Network {
     }
   }
 
-  async joinLobby(type:RoomType) {
+  async joinLobby(type: RoomType) {
     this.joinLobbyRoom(type).then(() => {
       store.dispatch(setLobbyJoined(true))
     })
@@ -127,14 +127,14 @@ export default class Network {
       name,
       description,
       password,
-      autoDispose:false,
+      autoDispose: false,
     })
     this.initialize()
   }
 
   async createBrickRoom(roomData: IRoomData) {
     const { name, description, password, autoDispose } = roomData
-    this.gameroom = await this.client.create(RoomType.BRICK, {  
+    this.gameroom = await this.client.create(RoomType.BRICK, {
       name,
       description,
       password,
@@ -153,7 +153,7 @@ export default class Network {
     })
     this.init_game()
   }
-  
+
   async createTypingRoom(roomData: IRoomData) {
     const { name, description, password, autoDispose } = roomData
     this.gameroom = await this.client.create(RoomType.TYPING, {
@@ -172,7 +172,7 @@ export default class Network {
     this.lobby.leave()
     store.dispatch(setLobbyJoined(false))
     this.mySessionId = this.room.sessionId  // TODO: gameroom 전용 sessionId도 만들어줘야 함 
-    store.dispatch(setSessionId(this.room.sessionId)) 
+    store.dispatch(setSessionId(this.room.sessionId))
     this.webRTC = new WebRTC(this.mySessionId, this)
 
     // new instance added to the players MapSchema
@@ -264,7 +264,7 @@ export default class Network {
     this.lobby.leave()
     store.dispatch(setLobbyJoined(false))
     this.myGameSessionId = this.gameroom.sessionId
-    store.dispatch(setGameSessionId(this.gameroom.sessionId)) 
+    store.dispatch(setGameSessionId(this.gameroom.sessionId))
     this.webRTC = new WebRTC(this.myGameSessionId, this)
 
     // new instance added to the players MapSchema

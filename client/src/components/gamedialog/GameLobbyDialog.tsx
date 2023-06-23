@@ -75,7 +75,7 @@ export default function GameLobbyDialog() {
   const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
-  const typingGameOpen = useAppSelector((state) => state.typinggame.typingGameOpen)
+  const typingGameOpen = useAppSelector((state) => state.typingGame.typingGameOpen)
   const dispatch = useAppDispatch()
 
   useEffect(() => {

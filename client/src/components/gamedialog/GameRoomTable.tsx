@@ -31,7 +31,7 @@ const MessageText = styled.p`
   color: #eee;
   text-align: center;
 `
-const CustomRoomTableContainer = styled(TableContainer)<{
+const CustomRoomTableContainer = styled(TableContainer) <{
   component: React.ElementType
 }>`
   max-height: 500px;
@@ -93,14 +93,14 @@ export const CustomRoomTable = () => {
   const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
-  const typingGameOpen = useAppSelector((state) => state.typinggame.typingGameOpen)
+  const typingGameOpen = useAppSelector((state) => state.typingGame.typingGameOpen)
   const availableRooms = useAppSelector((state) => {
     if (brickGameOpen) return state.room.availableRooms.brickRooms
     if (moleGameOpen) return state.room.availableRooms.moleRooms
     if (typingGameOpen) return state.room.availableRooms.typingRooms
     return []
   })
-  
+
   const dispatch = useAppDispatch()
 
   const handleJoinClick = (roomId: string, password: string | null) => {

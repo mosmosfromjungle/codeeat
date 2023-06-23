@@ -1,13 +1,13 @@
-import { combineReducers, createSlice, configureStore, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, combineReducers } from "@reduxjs/toolkit";
 import phaserGame from '../PhaserGame'
 import Game from '../scenes/Game'
 import { Interface } from "readline";
 
 // Define Interface
-interface KeywordRain {
+export interface KeywordRain {
     y: number;
     speed: number;
-    keyword: string;
+    keyword: string
     x: number;
     a_effect: boolean;
     b_effect: boolean;
@@ -36,7 +36,7 @@ const initialState: TypingGameState = {
     level: 1,
     goal: 100,
     paused : false,
-    speed : 0.5,
+    speed : 1,
     period : 2000,
     keywordList: [
         "abs",
@@ -70,7 +70,7 @@ export const TypingGameSlice = createSlice({
             state.typingGameOpen = false
         },
         
-        addKeyword: (state, action: PayloadAction<{keyword: string; }>) => {
+        addKeyword: (state, action: PayloadAction<{keyword: string }>) => {
             const { keyword } = action.payload;
             state.game.push({
                 y: 0,

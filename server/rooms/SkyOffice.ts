@@ -67,11 +67,11 @@ export class SkyOffice extends Room<OfficeState> {
 
     // when a player disconnect from a typinggame, remove from the typinggame connectedUser array
     this.onMessage(Message.DISCONNECT_FROM_TYPINGGAME, (client, message: { typinggameId: string }) => {
-        this.dispatcher.dispatch(new TypingGameRemoveUserCommand(), {
-          client,
-          typinggameId: message.typinggameId,
-        })
-      }
+      this.dispatcher.dispatch(new TypingGameRemoveUserCommand(), {
+        client,
+        typinggameId: message.typinggameId,
+      })
+    }
     )
 
     // when a player connect to a molegame, add to the molegame connectedUser array
@@ -84,11 +84,11 @@ export class SkyOffice extends Room<OfficeState> {
 
     // when a player disconnect from a molegame, remove from the molegame connectedUser array
     this.onMessage(Message.DISCONNECT_FROM_MOLEGAME, (client, message: { moleGameId: string }) => {
-        this.dispatcher.dispatch(new MoleGameRemoveUserCommand(), {
-          client,
-          moleGameId: message.moleGameId,
-        })
-      }
+      this.dispatcher.dispatch(new MoleGameRemoveUserCommand(), {
+        client,
+        moleGameId: message.moleGameId,
+      })
+    }
     )
 
     // when a player connect to a brickgame, add to the brickgame connectedUser array
@@ -101,11 +101,11 @@ export class SkyOffice extends Room<OfficeState> {
 
     // when a player disconnect from a brickgame, remove from the brickgame connectedUser array
     this.onMessage(Message.DISCONNECT_FROM_BRICKGAME, (client, message: { brickGameId: string }) => {
-        this.dispatcher.dispatch(new BrickGameRemoveUserCommand(), {
-          client,
-          brickGameId: message.brickGameId,
-        })
-      }
+      this.dispatcher.dispatch(new BrickGameRemoveUserCommand(), {
+        client,
+        brickGameId: message.brickGameId,
+      })
+    }
     )
 
     // when receiving updatePlayer message, call the PlayerUpdateCommand

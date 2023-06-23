@@ -1,48 +1,42 @@
 import React, { useEffect, useRef } from "react";
-import styled from 'styled-components';
 import typing_Background from "../../../public/assets/game/typinggame/blackboard.png"
 import { useSelector, useDispatch } from 'react-redux';
-import { addKeyword, updateGame, removeKeyword, updatePeriod, updateSpeed } from "../../stores/TypingGameStore";
-import * as Colyseus from "colyseus.js";
+import initialState, { openTypingGameDialog, closeTypingGameDialog, KeywordRain, addKeyword, resetTypingGame,updateGame, removeKeyword, updatePeriod, updateSpeed } from "../../stores/TypingGameStore";
+import { RootState } from "../../stores";
 
 export function TypingGame() {
     const keywordInput = useRef<HTMLInputElement>(null);
     const canvasHeight = 1170;
     const lineHeight = canvasHeight - 500;
 
-    const state = useSelector((state: any) => state.typingGame)
+    const state = useSelector((state: RootState) => state.typingGame);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
-
-        // 7초마다 speed 변경, 최대 1
-        const interval3 = setInterval(() => {
-            dispatch(updateSpeed(0.005));
-        }, 7000);
-        
-        // 7초마다 period 변경, 최대 1000
-        const interval4 = setInterval(() => {
-            dispatch(updatePeriod(-50));
-        }, 7000);
-        
-        // 단어 생성 인터벌
-        const interval5 = () => {
+        const interval1 = setInterval(() => {
+            if (state.keywordList){
             const randomIndex = Math.floor(Math.random() * state.keywordList.length);
             const keyword = state.keywordList[randomIndex];
-            dispatch(addKeyword(keyword));
-        };
-
-        // period 마다 단어 생성
-        let interval1 = setInterval(interval5, state.period);
-
-        // 15ms 마다 게임 상태를 업데이트
+            console.log(keyword)
+            dispatch(addKeyword({keyword}))}
+        }, state.period);
+    
+    
+        const speedIncreaseInterval = setInterval(() => {
+            dispatch(updateSpeed(-50));
+        }, 7000);
+    
         const interval2 = setInterval(() => {
             dispatch(updateGame({ lineHeight }));
-        }, 15);
-        
-    },[]);
-
+        }, state.speed);
+    
+        const hasReachedLineHeight = state.game.some(item => item.y + item.speed > lineHeight && item.y <= lineHeight);
+        if (hasReachedLineHeight) {
+            dispatch({ type: 'DECREMENT_HEART' });
+            console.log(state.heart)
+        }
+    }, []);
     const removeNode = (keywordToRemove) => {
         dispatch(removeKeyword(keywordToRemove));
     };
@@ -56,8 +50,6 @@ export function TypingGame() {
             keywordInput.current.value = '';
         }
     };
-
-
 
     if (state.heart < 1) {
         return (
@@ -85,12 +77,12 @@ export function TypingGame() {
                     overflow: "hidden",
                     borderBottom: "10px solid white"
                 }}>
-                    {state.game.map((item, index) => (
+                    {state.game && state.game.map((item: KeywordRain, index: number) => (
                         <h5
                             key={index}
                             style={{
                                 position: "absolute",
-                                fontFamily: 'CustomFont',
+                                fontFamily: '',
                                 fontSize: 25,
                                 letterSpacing: '3px',
                                 top: item.y,
