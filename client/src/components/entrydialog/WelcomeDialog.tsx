@@ -102,10 +102,11 @@ export default function WelcomeDialog() {
   const roomJoined = useAppSelector((state) => state.room.roomJoined)
   const videoConnected = useAppSelector((state) => state.user.videoConnected)
 
-  const game = phaserGame.scene.keys.game as Game
+  // const game = phaserGame.scene.keys.game as Game
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    const game = phaserGame.scene.keys.game as Game
     game.registerKeys()
     dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
   }
@@ -116,7 +117,7 @@ export default function WelcomeDialog() {
         const { payload } = result
         if (roomJoined) {
           /* Register to Phaser */
-          // const game = phaserGame.scene.keys.game as Game
+          const game = phaserGame.scene.keys.game as Game
           game.myPlayer.setPlayerName(payload.username)
           game.myPlayer.setPlayerTexture(payload.character)
           game.network.readyToConnect()

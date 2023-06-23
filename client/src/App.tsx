@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import axios from 'axios'
 
 import { useAppSelector, useAppDispatch } from './hooks'
-import { DIALOG_STATUS, setEntryProcess } from './stores/UserStore'
+import { DIALOG_STATUS } from './stores/UserStore'
 
 import EntryDialog from './components/entrydialog/EntryDialog'
 import LoginDialog from './components/entrydialog/LoginDialog'

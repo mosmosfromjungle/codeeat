@@ -1,13 +1,12 @@
 import bcrypt from 'bcrypt'
 import { Room, Client, ServerError } from 'colyseus'
 import { Dispatcher } from '@colyseus/command'
-import { Player, GameState } from './schema/GameState'
 import { Message } from '../../types/Messages'
 import { IRoomData } from '../../types/Rooms'
 import PlayerUpdateCommand from './commands/PlayerUpdateCommand'
 import PlayerUpdateNameCommand from './commands/PlayerUpdateNameCommand'
 import ChatMessageUpdateCommand from './commands/ChatMessageUpdateCommand'
-import { OfficeState } from './schema/OfficeState'
+import { Player, OfficeState } from './schema/OfficeState'
 
 export class PreGame extends Room<OfficeState> {
   private dispatcher = new Dispatcher(this)
