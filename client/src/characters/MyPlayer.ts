@@ -67,7 +67,7 @@ export default class MyPlayer extends Player {
           const brickGame = item as BrickGame
           brickGame.openDialog(network)
           break
-        case ItemType.TYPINGGAME:
+        case ItemType.RAINGAME:
           const RainGame = item as RainGame
           RainGame.openDialog(network)
           break

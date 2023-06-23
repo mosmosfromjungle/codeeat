@@ -58,7 +58,7 @@ export class SkyOffice extends Room<OfficeState> {
     }
 
     // when a player connect to a RainGame, add to the RainGame connectedUser array
-    this.onMessage(Message.CONNECT_TO_TYPINGGAME, (client, message: { RainGameId: string }) => {
+    this.onMessage(Message.CONNECT_TO_RAINGAME, (client, message: { RainGameId: string }) => {
       this.dispatcher.dispatch(new RainGameAddUserCommand(), {
         client,
         RainGameId: message.RainGameId,
@@ -66,7 +66,7 @@ export class SkyOffice extends Room<OfficeState> {
     })
 
     // when a player disconnect from a RainGame, remove from the RainGame connectedUser array
-    this.onMessage(Message.DISCONNECT_FROM_TYPINGGAME, (client, message: { RainGameId: string }) => {
+    this.onMessage(Message.DISCONNECT_FROM_RAINGAME, (client, message: { RainGameId: string }) => {
       this.dispatcher.dispatch(new RainGameRemoveUserCommand(), {
         client,
         RainGameId: message.RainGameId,

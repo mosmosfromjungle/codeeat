@@ -219,10 +219,10 @@ export default class Network {
     this.room.state.RainGames.onAdd = (RainGame: IRainGame, key: string) => {
       // track changes on every child object's connectedUser
       RainGame.connectedUser.onAdd = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.TYPINGGAME)
+        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.RAINGAME)
       }
       RainGame.connectedUser.onRemove = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.TYPINGGAME)
+        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.RAINGAME)
       }
     }
 
@@ -322,10 +322,10 @@ export default class Network {
     this.gameroom.state.RainGames.onAdd = (RainGame: IRainGame, key: string) => {
       // track changes on every child object's connectedUser
       RainGame.connectedUser.onAdd = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.TYPINGGAME)
+        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.RAINGAME)
       }
       RainGame.connectedUser.onRemove = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.TYPINGGAME)
+        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.RAINGAME)
       }
     }
 
@@ -436,11 +436,11 @@ export default class Network {
   }
 
   connectToRainGame(id: string) {
-    this.room?.send(Message.CONNECT_TO_TYPINGGAME, { RainGameId: id })
+    this.room?.send(Message.CONNECT_TO_RAINGAME, { RainGameId: id })
   }
 
   disconnectFromRainGame(id: string) {
-    this.room?.send(Message.DISCONNECT_FROM_TYPINGGAME, { RainGameId: id })
+    this.room?.send(Message.DISCONNECT_FROM_RAINGAME, { RainGameId: id })
   }
 
   addChatMessage(content: string) {

@@ -13,7 +13,7 @@ export default class RainGame extends Item {
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
     super(scene, x, y, texture, frame)
 
-    this.itemType = ItemType.TYPINGGAME
+    this.itemType = ItemType.RAINGAME
   }
 
   private updateStatus() {

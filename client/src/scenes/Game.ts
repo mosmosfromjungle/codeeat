@@ -391,7 +391,7 @@ export default class Game extends Phaser.Scene {
     if (itemType === ItemType.BRICKGAME) {
       const brickgame = this.brickgameMap.get(itemId)
       brickgame?.addCurrentUser(playerId)
-    } else if (itemType === ItemType.TYPINGGAME) {
+    } else if (itemType === ItemType.RAINGAME) {
       const RainGame = this.RainGameMap.get(itemId)
       RainGame?.addCurrentUser(playerId)
     } else if (itemType === ItemType.MOLEGAME) {
@@ -407,7 +407,7 @@ export default class Game extends Phaser.Scene {
     if (itemType === ItemType.BRICKGAME) {
       const brickgame = this.brickgameMap.get(itemId)
       brickgame?.removeCurrentUser(playerId)
-    } else if (itemType === ItemType.TYPINGGAME) {
+    } else if (itemType === ItemType.RAINGAME) {
       const RainGame = this.RainGameMap.get(itemId)
       RainGame?.removeCurrentUser(playerId)
     } else if (itemType === ItemType.MOLEGAME) {
