@@ -151,6 +151,8 @@ export default class Bootstrap extends Phaser.Scene {
       frameWidth: 32,
       frameHeight: 48,
     })
+
+    // ***새롭게 16px 캐릭터로 변경하기 위한 코드***
     // this.load.spritesheet('logan', 'assets/character/logan.png', {
     //   frameWidth: 16,
     //   frameHeight: 32,

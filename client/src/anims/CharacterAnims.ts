@@ -485,7 +485,7 @@ export const createCharacterAnims = (anims: Phaser.Animations.AnimationManager) 
 }
 
 // ************************************************** //
-
+// ***새롭게 16px 캐릭터로 변경하기 위한 코드*** //
 // import Phaser from 'phaser';
 
 // export const createCharacterAnims = (anims: Phaser.Animations.AnimationManager) => {

@@ -175,20 +175,24 @@ export default class Game extends Phaser.Scene {
     // thirdGroundLayer.setDepth(6500);
     foreGroundLayer.setDepth(6000);
     secondGroundLayer.setCollisionByProperty({ collisions: true });
-    fenceLayer.setCollisionByProperty({ collsions: true });
+    fenceLayer.setCollisionByProperty({ collisions: true });
 
     // debugDraw(groundLayer, this)
 
-    //  this.myPlayer = this.add.myPlayer(
-    //   Phaser.Math.RND.between(400, 900),
-    //   Phaser.Math.RND.between(400, 900),
-    //   'kevin',
-    //   this.network.mySessionId,
-    //   // userId,
-    //   // userProfile
-    //   // 로건 케빈 엠마
-    // );
-    // this.myPlayer = this.add.myPlayer(400, 900, 'kevin', this.network.mySessionId)
+    /*
+      // ***새롭게 16px 캐릭터로 변경하기 위한 코드***
+      this.myPlayer = this.add.myPlayer(
+      Phaser.Math.RND.between(400, 900),
+      Phaser.Math.RND.between(400, 900),
+      'kevin',
+      this.network.mySessionId,
+      // userId,
+      // userProfile
+      // 로건 케빈 엠마
+    );
+    */
+     
+    this.myPlayer = this.add.myPlayer(400, 900, 'kevin', this.network.mySessionId)
     this.myPlayer = this.add.myPlayer(705, 500, 'adam', this.network.mySessionId)
     this.playerSelector = new PlayerSelector(this, 0, 0, 16, 16)
 
@@ -249,6 +253,7 @@ export default class Game extends Phaser.Scene {
       this.molegameMap.set(id, item)
     })
 
+    // ***아바타 화상채팅 상호작용 아이템 추가 코드*** 
     const facechats = this.physics.add.staticGroup({ classType: FaceChat })
     const facechatLayer = this.map.getObjectLayer('facechat')
     facechatLayer.objects.forEach((obj, i) => {
