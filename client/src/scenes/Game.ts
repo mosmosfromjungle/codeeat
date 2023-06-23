@@ -192,7 +192,7 @@ export default class Game extends Phaser.Scene {
     );
     */
      
-    this.myPlayer = this.add.myPlayer(400, 900, 'kevin', this.network.mySessionId)
+    // this.myPlayer = this.add.myPlayer(400, 900, 'kevin', this.network.mySessionId)
     this.myPlayer = this.add.myPlayer(705, 500, 'adam', this.network.mySessionId)
     this.playerSelector = new PlayerSelector(this, 0, 0, 16, 16)
 
