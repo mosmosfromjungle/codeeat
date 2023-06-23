@@ -26,6 +26,7 @@ import ChatDialog from './components/ChatDialog'
 import DMDialog from './components/DMDialog'
 import UserDialog from './components/UserDialog'
 import LogoutDialog from './components/LogoutDialog'
+import VersionDialog from './components/VersionDialog'
 
 // ↓ Profile Button & Dialog
 import ProfileButton from './components/ProfileButton'
@@ -50,10 +51,6 @@ const Backdrop = styled.div`
 
 function App() {
   const dialogStatus = useAppSelector((state) => state.user.dialogStatus)
-  // const entryProcess = useAppSelector((state) => state.user.entryProcess)
-  // const entered = useAppSelector((state) => state.user.entered)
-  // const gameEntered = useAppSelector((state) => state.user.gameEntered)
-  // const gameWelcome = useAppSelector((state) => state.user.gameWelcome)
   const videoConnected = useAppSelector((state) => state.user.videoConnected)
   const audioConnected = useAppSelector((state) => state.user.audioConnected)
   // const computerDialogOpen = useAppSelector((state) => state.computer.computerDialogOpen)
@@ -68,6 +65,7 @@ function App() {
   const showDM = useAppSelector((state) => state.chat.showDM)
   const showUser = useAppSelector((state) => state.chat.showUser)
   const showLogout = useAppSelector((state) => state.user.showLogout)
+  const showVersion = useAppSelector((state) => state.user.showVersion)
 
   // ↓ Profile Dialog
   const showProfile = useAppSelector((state) => state.user.showProfile)

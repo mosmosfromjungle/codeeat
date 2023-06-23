@@ -10,13 +10,6 @@ export function getInitialBackgroundMode() {
   return currentHour > 6 && currentHour <= 18 ? BackgroundMode.DAY : BackgroundMode.NIGHT
 }
 
-// export enum ENTRY_PROCESS {
-//   ENTRY = 'entry',
-//   JOIN = 'join',
-//   LOGIN = 'login',
-//   WELCOME = 'welcome',
-// }
-
 export enum DIALOG_STATUS {
   ENTRY = 'entry',
   JOIN = 'join',
@@ -45,24 +38,16 @@ export const userSlice = createSlice({
     // userTier: '',
     playerNameMap: new Map<string, string>(),
     
-    /* Status regarding user entry */
+    /* Status regarding screen dialog */
     dialogStatus: DIALOG_STATUS.ENTRY,
-    // entryProcess: ENTRY_PROCESS.ENTRY,
-    // entered: false,   // welcome 화면에서 확인을 눌러 게임 화면에서 캐릭터를 보게되는 시점
     showLogout: false,
     showQuit: false,
-
-    /* Status regarding game entry */
-    // gameEntered: false,
-    // gameWelcome: false,
+    showVersion: false,
+    showProfile: false,
 
     /* Video and Audio connection */
     videoConnected: false,
     audioConnected: false,
-    
-    /* In-game dialogs */
-    showProfile: false,
-    // showMoleGame: false, // UGLY: computer 등의 다른 사물들과의 connection status를 관리하는 다른 파일로 옮겨져야할 것으로 생각됨
   },
   reducers: {
     toggleBackgroundMode: (state) => {
@@ -117,6 +102,9 @@ export const userSlice = createSlice({
     setShowLogout: (state, action: PayloadAction<boolean>) => {
       state.showLogout = action.payload
     },
+    setShowVersion: (state, action: PayloadAction<boolean>) => {
+      state.showVersion = action.payload
+    },
 
     // setGameEntered: (state, action: PayloadAction<boolean>) => {
     //   state.gameEntered = action.payload
@@ -159,6 +147,7 @@ export const {
   // setGameEntered,
   // setGameWelcome,
   setShowLogout,
+  setShowVersion,
   setVideoConnected,
   setAudioConnected,
   setShowProfile,
