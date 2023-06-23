@@ -49,9 +49,9 @@ export class SkyOffice extends Room<OfficeState> {
       this.state.computers.set(String(i), new Computer())
     }
 
-    // HARD-CODED: Add 3 whiteboards in a room
+    // HARD-CODED: Add 3 typinggames in a room
     for (let i = 0; i < 30; i++) {
-      this.state.whiteboards.set(String(i), new Whiteboard())
+      this.state.typinggames.set(String(i), new Typinggame())
     }
 
     // HARD-CODED: Add 1 molegames in a room
@@ -87,7 +87,7 @@ export class SkyOffice extends Room<OfficeState> {
       })
     })
 
-    // when a player connect to a whiteboard, add to the whiteboard connectedUser array
+    // when a player connect to a typinggame, add to the typinggame connectedUser array
     this.onMessage(Message.CONNECT_TO_TYPINGGAME, (client, message: { typinggameId: string }) => {
       this.dispatcher.dispatch(new TypinggameAddUserCommand(), {
         client,
@@ -95,7 +95,7 @@ export class SkyOffice extends Room<OfficeState> {
       })
     })
 
-    // when a player disconnect from a whiteboard, remove from the whiteboard connectedUser array
+    // when a player disconnect from a typinggame, remove from the typinggame connectedUser array
     this.onMessage(
       Message.DISCONNECT_FROM_TYPINGGAME,
       (client, message: { typinggameId: string }) => {

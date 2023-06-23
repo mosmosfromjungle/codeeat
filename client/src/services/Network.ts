@@ -141,7 +141,7 @@ export default class Network {
       }
     }
 
-    // new instance added to the whiteboards MapSchema
+    // new instance added to the typinggames MapSchema
     // 준코 : 산성비게임으로 변경
     // this.room.state.typinggames.onAdd = (typinggame: ITypinggame, key: string) => {
     //   store.dispatch(

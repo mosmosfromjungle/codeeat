@@ -216,16 +216,16 @@ export default class Game extends Phaser.Scene {
       this.computerMap.set(id, item)
     })
 
-    // // import whiteboards objects from Tiled map to Phaser
-    const whiteboards = this.physics.add.staticGroup({ classType: Whiteboard })
-    const whiteboardLayer = this.map.getObjectLayer('bench')
-    whiteboardLayer.objects.forEach((obj, i) => {
+    // // import typinggams objects from Tiled map to Phaser
+    const typinggames = this.physics.add.staticGroup({ classType: Typinggame })
+    const typinggameLayer = this.map.getObjectLayer('bench')
+    typinggameLayer.objects.forEach((obj, i) => {
       const item = this.addObjectFromTiled(
         typinggames,
         obj,
         'bench',
         'bench'
-      ) as Whiteboard
+      ) as Typinggame
       const id = `${i}`
       item.id = id
       this.typinggameMap.set(id, item)
@@ -289,7 +289,7 @@ export default class Game extends Phaser.Scene {
     // 상호작용 추가하는 부분..?
     this.physics.add.overlap(
       this.playerSelector,
-      [chairs, molegames, whiteboards, computers, facechats],
+      [chairs, molegames, typinggames, computers, facechats],
       this.handleItemSelectorOverlap,
       undefined,
       this
