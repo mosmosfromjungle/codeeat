@@ -14,8 +14,8 @@ export interface KeywordRain {
     c_effect: boolean;
 }
 
-interface TypingGameState {
-    typingGameOpen: boolean,
+interface RainGameState {
+    RainGameOpen: boolean,
     game: KeywordRain[],
     point: number,
     heart: number,
@@ -23,21 +23,21 @@ interface TypingGameState {
     goal: number,
     keywordList: string[],
     paused: boolean,
-    speed : number,
-    period : number
+    speed: number,
+    period: number
 };
 
 // Define initial state
-const initialState: TypingGameState = {
-    typingGameOpen: false,
+const initialState: RainGameState = {
+    RainGameOpen: false,
     game: [],
     point: 0,
     heart: 5,
     level: 1,
     goal: 100,
-    paused : false,
-    speed : 1,
-    period : 2000,
+    paused: false,
+    speed: 1,
+    period: 2000,
     keywordList: [
         "abs",
         "print",
@@ -55,42 +55,42 @@ const initialState: TypingGameState = {
 };
 
 // Define Slice
-export const TypingGameSlice = createSlice({
-    name: "typingGame",
+export const RainGameSlice = createSlice({
+    name: "RainGame",
     initialState,
     reducers: {
-        openTypingGameDialog: (state) => {
-            state.typingGameOpen = true
+        openRainGameDialog: (state) => {
+            state.RainGameOpen = true
             const game = phaserGame.scene.keys.game as Game
             game.disableKeys()
         },
-        closeTypingGameDialog: (state) => {
+        closeRainGameDialog: (state) => {
             const game = phaserGame.scene.keys.game as Game
             game.enableKeys()
-            state.typingGameOpen = false
+            state.RainGameOpen = false
         },
-        
-        addKeyword: (state, action: PayloadAction<{keyword: string }>) => {
+
+        addKeyword: (state, action: PayloadAction<{ keyword: string }>) => {
             const { keyword } = action.payload;
             state.game.push({
                 y: 0,
                 speed: state.speed,
                 keyword: keyword,
-                x: Math.floor(Math.random() * (550-50+1))+50,
+                x: Math.floor(Math.random() * (550 - 50 + 1)) + 50,
                 a_effect: false,
                 b_effect: false,
                 c_effect: false,
             });
         },
-        updateSpeed: (state, action: PayloadAction<number>)=> {
+        updateSpeed: (state, action: PayloadAction<number>) => {
             state.speed = Math.max(state.speed + action.payload, 1);
         },
         updatePeriod: (state, action: PayloadAction<number>) => {
             state.period = Math.max(state.period + action.payload, 1000);
-        },  
-        
+        },
+
         updateGame: (state, action: PayloadAction<{ lineHeight: number }>) => {
-            if (state.paused){
+            if (state.paused) {
                 return;
             }
             const lineHeight = action.payload.lineHeight;
@@ -119,14 +119,14 @@ export const TypingGameSlice = createSlice({
                 state.point += 1;
             }
         },
-        resetTypingGame: (state) => {
+        resetRainGame: (state) => {
             Object.assign(state, initialState);
         },
     },
 });
 
 
-export const { openTypingGameDialog, closeTypingGameDialog, addKeyword, updateGame, removeKeyword, resetTypingGame, updatePeriod, updateSpeed } = TypingGameSlice.actions;
+export const { openRainGameDialog, closeRainGameDialog, addKeyword, updateGame, removeKeyword, resetRainGame, updatePeriod, updateSpeed } = RainGameSlice.actions;
 
 
-export default TypingGameSlice.reducer
+export default RainGameSlice.reducer

@@ -1,5 +1,5 @@
 import { Client, Room } from 'colyseus.js'
-import { IOfficeState, IPlayer, IMoleGame, IBrickGame, ITypingGame } from '../../../types/IOfficeState'
+import { IOfficeState, IPlayer, IMoleGame, IBrickGame, IRainGame } from '../../../types/IOfficeState'
 import { Message } from '../../../types/Messages'
 import { IRoomData, RoomType } from '../../../types/Rooms'
 import { ItemType } from '../../../types/Items'
@@ -215,13 +215,13 @@ export default class Network {
       }
     }
 
-    // new instance added to the typinggames MapSchema
-    this.room.state.typinggames.onAdd = (typinggame: ITypingGame, key: string) => {
+    // new instance added to the RainGames MapSchema
+    this.room.state.RainGames.onAdd = (RainGame: IRainGame, key: string) => {
       // track changes on every child object's connectedUser
-      typinggame.connectedUser.onAdd = (item, index) => {
+      RainGame.connectedUser.onAdd = (item, index) => {
         phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.TYPINGGAME)
       }
-      typinggame.connectedUser.onRemove = (item, index) => {
+      RainGame.connectedUser.onRemove = (item, index) => {
         phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.TYPINGGAME)
       }
     }
@@ -318,13 +318,13 @@ export default class Network {
       }
     }
 
-    // new instance added to the typinggames MapSchema
-    this.gameroom.state.typinggames.onAdd = (typinggame: ITypingGame, key: string) => {
+    // new instance added to the RainGames MapSchema
+    this.gameroom.state.RainGames.onAdd = (RainGame: IRainGame, key: string) => {
       // track changes on every child object's connectedUser
-      typinggame.connectedUser.onAdd = (item, index) => {
+      RainGame.connectedUser.onAdd = (item, index) => {
         phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.TYPINGGAME)
       }
-      typinggame.connectedUser.onRemove = (item, index) => {
+      RainGame.connectedUser.onRemove = (item, index) => {
         phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.TYPINGGAME)
       }
     }
@@ -435,12 +435,12 @@ export default class Network {
     this.room?.send(Message.DISCONNECT_FROM_BRICKGAME, { brickgameId: id })
   }
 
-  connectToTypingGame(id: string) {
-    this.room?.send(Message.CONNECT_TO_TYPINGGAME, { typinggameId: id })
+  connectToRainGame(id: string) {
+    this.room?.send(Message.CONNECT_TO_TYPINGGAME, { RainGameId: id })
   }
 
-  disconnectFromTypingGame(id: string) {
-    this.room?.send(Message.DISCONNECT_FROM_TYPINGGAME, { typinggameId: id })
+  disconnectFromRainGame(id: string) {
+    this.room?.send(Message.DISCONNECT_FROM_TYPINGGAME, { RainGameId: id })
   }
 
   addChatMessage(content: string) {

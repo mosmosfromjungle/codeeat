@@ -1,19 +1,19 @@
-interface TypingGameUserData {
+interface RainGameUserData {
     nickname: string;
-    totalgame : number;
-    typinggame : number;
-    character : string;
+    totalgame: number;
+    RainGame: number;
+    character: string;
 }
 /* 사용 방법
 io.on("connection", (socket) => {
     socket.data.nickname = "leader";
     socket.data.totalgame = 400;
-    socket.data.typinggame : 180;
+    socket.data.RainGame : 180;
     character : "june";
 });
 */
 
-interface TypingGameGameData {
+interface RainGameGameData {
     // 화면구현위한 전송
 }
 /* 사용 방법
@@ -23,7 +23,7 @@ io.on("connection", (socket) => {
 */
 
 //ClientToServerEvent
-interface TypingGameItemEvents {
+interface RainGameItemEvents {
     // item1: () => void;
 }
 

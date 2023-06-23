@@ -4,8 +4,8 @@ import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 
 import { useAppSelector, useAppDispatch } from '../../hooks'
-import { closeTypingGameDialog } from '../../stores/TypingGameStore'
-import TypingGame from './TypingGame'
+import { closeRainGameDialog } from '../../stores/RainGameStore'
+import RainGame from './RainGame'
 import * as Colyseus from "colyseus.js";
 
 var client = new Colyseus.Client('ws://localhost:5173');
@@ -41,7 +41,7 @@ const Wrapper = styled.div`
   }
 `
 
-const TypingGameWrapper = styled.div`
+const RainGameWrapper = styled.div`
   flex: 1;
   border-radius: 25px;
   overflow: hidden;
@@ -54,16 +54,16 @@ const TypingGameWrapper = styled.div`
   }
 `
 
-export default function TypingGameDialog() {
+export default function RainGameDialog() {
   const dispatch = useAppDispatch()
   return (
     <Backdrop>
       <Wrapper>
-        <TypingGame />
+        <RainGame />
         {<IconButton
           aria-label="close dialog"
           className="close"
-          onClick={() => dispatch(closeTypingGameDialog())}
+          onClick={() => dispatch(closeRainGameDialog())}
         >
           <CloseIcon />
         </IconButton>}

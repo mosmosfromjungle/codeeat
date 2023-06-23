@@ -1,36 +1,37 @@
 import React, { useEffect, useRef } from "react";
-import typing_Background from "../../../public/assets/game/typinggame/blackboard.png"
+import typing_Background from "../../../public/assets/game/RainGame/blackboard.png"
 import { useSelector, useDispatch } from 'react-redux';
-import initialState, { openTypingGameDialog, closeTypingGameDialog, KeywordRain, addKeyword, resetTypingGame,updateGame, removeKeyword, updatePeriod, updateSpeed } from "../../stores/TypingGameStore";
+import initialState, { openRainGameDialog, closeRainGameDialog, KeywordRain, addKeyword, resetRainGame, updateGame, removeKeyword, updatePeriod, updateSpeed } from "../../stores/RainGameStore";
 import { RootState } from "../../stores";
 
-export function TypingGame() {
+export function RainGame() {
     const keywordInput = useRef<HTMLInputElement>(null);
     const canvasHeight = 1170;
     const lineHeight = canvasHeight - 500;
 
-    const state = useSelector((state: RootState) => state.typingGame);
+    const state = useSelector((state: RootState) => state.RainGame);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
         const interval1 = setInterval(() => {
-            if (state.keywordList){
-            const randomIndex = Math.floor(Math.random() * state.keywordList.length);
-            const keyword = state.keywordList[randomIndex];
-            console.log(keyword)
-            dispatch(addKeyword({keyword}))}
+            if (state.keywordList) {
+                const randomIndex = Math.floor(Math.random() * state.keywordList.length);
+                const keyword = state.keywordList[randomIndex];
+                console.log(keyword)
+                dispatch(addKeyword({ keyword }))
+            }
         }, state.period);
-    
-    
+
+
         const speedIncreaseInterval = setInterval(() => {
             dispatch(updateSpeed(-50));
         }, 7000);
-    
+
         const interval2 = setInterval(() => {
             dispatch(updateGame({ lineHeight }));
         }, state.speed);
-    
+
         const hasReachedLineHeight = state.game.some(item => item.y + item.speed > lineHeight && item.y <= lineHeight);
         if (hasReachedLineHeight) {
             dispatch({ type: 'DECREMENT_HEART' });
@@ -58,7 +59,7 @@ export function TypingGame() {
                 {/* <button 
                     onClick={}>종료하기</button> */}
             </>
-        );    
+        );
     }
 
     if (state.point >= state.goal) {
@@ -113,4 +114,4 @@ export function TypingGame() {
     );
 }
 
-export default TypingGame;
+export default RainGame;

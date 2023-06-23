@@ -11,7 +11,7 @@ import { CreateRoomForm } from './CreateRoomForm'
 import { RoomType } from '../../../../types/Rooms'
 import { closeBrickGameDialog } from '../../stores/BrickGameStore'
 import { closeMoleGameDialog } from '../../stores/MoleGameStore'
-import { closeTypingGameDialog } from '../../stores/TypingGameStore'
+import { closeRainGameDialog } from '../../stores/RainGameStore'
 
 import phaserGame from '../../PhaserGame'
 import Bootstrap from '../../scenes/Bootstrap'
@@ -75,20 +75,20 @@ export default function GameLobbyDialog() {
   const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
-  const typingGameOpen = useAppSelector((state) => state.typingGame.typingGameOpen)
+  const RainGameOpen = useAppSelector((state) => state.RainGame.RainGameOpen)
   const dispatch = useAppDispatch()
 
   useEffect(() => {
     const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
     if (brickGameOpen) bootstrap.network.joinLobby(RoomType.BRICKLOBBY)
     if (moleGameOpen) bootstrap.network.joinLobby(RoomType.MOLELOBBY)
-    if (typingGameOpen) bootstrap.network.joinLobby(RoomType.TYPINGLOBBY)
+    if (RainGameOpen) bootstrap.network.joinLobby(RoomType.TYPINGLOBBY)
   })
 
   const handleClose = () => {
     if (brickGameOpen) dispatch(closeBrickGameDialog())
     if (moleGameOpen) dispatch(closeMoleGameDialog())
-    if (typingGameOpen) dispatch(closeTypingGameDialog())
+    if (RainGameOpen) dispatch(closeRainGameDialog())
   }
 
   return (
@@ -122,13 +122,13 @@ export default function GameLobbyDialog() {
               </Button>
             </CustomRoomWrapper>
           )}
-            <IconButton
-              aria-label="close dialog"
-              className="close"
-              onClick={handleClose}
-            >
-              <CloseIcon />
-            </IconButton>
+          <IconButton
+            aria-label="close dialog"
+            className="close"
+            onClick={handleClose}
+          >
+            <CloseIcon />
+          </IconButton>
         </Wrapper>
       </Backdrop>
     </>

@@ -7,7 +7,7 @@ import Network from '../services/Network'
 import Chair from '../items/Chair'
 
 import BrickGame from '../items/BrickGame'
-import TypingGame from '../items/TypingGame'
+import RainGame from '../items/RainGame'
 import MoleGame from '../items/MoleGame'
 
 import { phaserEvents, Event } from '../events/EventCenter'
@@ -68,8 +68,8 @@ export default class MyPlayer extends Player {
           brickGame.openDialog(network)
           break
         case ItemType.TYPINGGAME:
-          const typinggame = item as TypingGame
-          typinggame.openDialog(network)
+          const RainGame = item as RainGame
+          RainGame.openDialog(network)
           break
         case ItemType.MOLEGAME:
           const molegame = item as MoleGame

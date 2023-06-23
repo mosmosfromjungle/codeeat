@@ -16,7 +16,7 @@ import GameLobbyDialog from './components/gamedialog/GameLobbyDialog'
 import GameWelcomeDialog from './components/gamedialog/GameWelcomeDialog'
 import MoleGameDialog from './components/games/MoleGameDialog'
 import BrickGameDialog from './components/games/BrickGameDialog'
-import TypingGameDialog from './components/games/TypingGameDialog'
+import RainGameDialog from './components/games/RainGameDialog'
 
 // ↓ HelperButtonGroup Dialog
 import HelperButtonGroup from './components/helperdialog/HelperButtonGroup'
@@ -51,12 +51,12 @@ const Backdrop = styled.div`
 
 function App() {
   const dialogStatus = useAppSelector((state) => state.user.dialogStatus)
-  
+
   // ↓ Game Dialog
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
-  const typingGameOpen = useAppSelector((state) => state.typingGame.typingGameOpen)
-  
+  const RainGameOpen = useAppSelector((state) => state.RainGame.RainGameOpen)
+
   // ↓ HelperButtonGroup Dialog
   const showChat = useAppSelector((state) => state.chat.showChat)
   const showDM = useAppSelector((state) => state.chat.showDM)
@@ -91,10 +91,10 @@ function App() {
   } else if (dialogStatus === DIALOG_STATUS.LOGIN) {
     ui = <LoginDialog />
   } else if (dialogStatus === DIALOG_STATUS.WELCOME) {
-    ui = <WelcomeDialog/>
+    ui = <WelcomeDialog />
   } else if (dialogStatus === DIALOG_STATUS.IN_MAIN) {
     ui = (
-      <>  
+      <>
         {/* // UGLY: Need to move to HelperButtonGroup  */}
         {showChat && <ChatDialog />}
         {showDM && <DMDialog />}
@@ -115,7 +115,7 @@ function App() {
   } else if (dialogStatus === DIALOG_STATUS.IN_GAME) {
     if (brickGameOpen) ui = <BrickGameDialog />
     if (moleGameOpen) ui = <MoleGameDialog />
-    if (typingGameOpen) ui = <TypingGameDialog />
+    if (RainGameOpen) ui = <RainGameDialog />
   } else {
     ui = <EntryDialog />
   }

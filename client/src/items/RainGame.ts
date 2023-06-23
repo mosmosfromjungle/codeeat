@@ -2,11 +2,11 @@ import { ItemType } from '../../../types/Items'
 import store from '../stores'
 import Item from './Item'
 import Network from '../services/Network'
-import { openTypingGameDialog } from '../stores/TypingGameStore'
+import { openRainGameDialog } from '../stores/RainGameStore'
 import { DIALOG_STATUS, setDialogStatus } from '../stores/UserStore'
 
 
-export default class TypingGame extends Item {
+export default class RainGame extends Item {
   // id?: string
   currentUsers = new Set<string>()
 
@@ -49,8 +49,8 @@ export default class TypingGame extends Item {
 
   openDialog(network: Network) {
     // if (!this.id) return
-    store.dispatch(openTypingGameDialog())
+    store.dispatch(openRainGameDialog())
     store.dispatch(setDialogStatus(DIALOG_STATUS.GAME_LOBBY))
-    // network.connectToTypingGame(this.id)
+    // network.connectToRainGame(this.id)
   }
 }
