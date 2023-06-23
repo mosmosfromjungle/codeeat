@@ -8,11 +8,13 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { useAppSelector, useAppDispatch } from '../../hooks'
 import { CustomRoomTable } from './GameRoomTable'
 import { CreateRoomForm } from './CreateRoomForm'
-import { closeComputerDialog } from '../../stores/ComputerStore'
+import { RoomType } from '../../../../types/Rooms'
+import { closeBrickGameDialog } from '../../stores/BrickGameStore'
+import { closeMoleGameDialog } from '../../stores/MoleGameStore'
+import { closeTypingGameDialog } from '../../stores/TypingGameStore'
 
 import phaserGame from '../../PhaserGame'
 import Bootstrap from '../../scenes/Bootstrap'
-import { RoomType } from '../../../../types/Rooms'
 
 
 const Backdrop = styled.div`
@@ -73,19 +75,21 @@ export default function GameLobbyDialog() {
   const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
-  const rainGameOpen = useAppSelector((state) => state.raingame.rainGameOpen)
+  const typingGameOpen = useAppSelector((state) => state.typinggame.typingGameOpen)
   const dispatch = useAppDispatch()
 
   useEffect(() => {
     const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-    if (brickGameOpen) {
-      bootstrap.network.joinLobby(RoomType.BRICKLOBBY)
-    } else if (moleGameOpen) {
-      bootstrap.network.joinLobby(RoomType.MOLELOBBY)
-    } else if (rainGameOpen) {
-      bootstrap.network.joinLobby(RoomType.RAINLOBBY)
-    }
+    if (brickGameOpen) bootstrap.network.joinLobby(RoomType.BRICKLOBBY)
+    if (moleGameOpen) bootstrap.network.joinLobby(RoomType.MOLELOBBY)
+    if (typingGameOpen) bootstrap.network.joinLobby(RoomType.TYPINGLOBBY)
   })
+
+  const handleClose = () => {
+    if (brickGameOpen) dispatch(closeBrickGameDialog())
+    if (moleGameOpen) dispatch(closeMoleGameDialog())
+    if (typingGameOpen) dispatch(closeTypingGameDialog())
+  }
 
   return (
     <>
@@ -121,7 +125,7 @@ export default function GameLobbyDialog() {
             <IconButton
               aria-label="close dialog"
               className="close"
-              onClick={() => dispatch(closeComputerDialog())}
+              onClick={handleClose}
             >
               <CloseIcon />
             </IconButton>

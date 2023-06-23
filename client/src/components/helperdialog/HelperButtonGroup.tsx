@@ -12,9 +12,9 @@ import UserIcon from '@mui/icons-material/SupervisorAccount'
 import LogoutIcon from '@mui/icons-material/ExitToApp';
 import HelpIcon from '@mui/icons-material/Help';
 
-import { setFocused, setShowChat, setShowDM, setShowUser } from '../stores/ChatStore'
-import { setShowLogout, setShowProfile, setShowVersion } from '../stores/UserStore'
-import { useAppSelector, useAppDispatch } from '../hooks'
+import { setFocused, setShowChat, setShowDM, setShowUser } from '../../stores/ChatStore'
+import { setShowLogout, setShowProfile, setShowVersion } from '../../stores/UserStore'
+import { useAppSelector, useAppDispatch } from '../../hooks'
 
 const Backdrop = styled.div`
   position: fixed;

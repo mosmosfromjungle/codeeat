@@ -6,8 +6,8 @@ import Box from '@mui/material/Box'
 import CloseIcon from '@mui/icons-material/Close'
 import Divider from '@mui/material/Divider'
 
-import { setShowVersion } from '../stores/UserStore'
-import { useAppSelector, useAppDispatch } from '../hooks'
+import { setShowVersion } from '../../stores/UserStore'
+import { useAppSelector, useAppDispatch } from '../../hooks'
 
 import Button from '@mui/material/Button'
 

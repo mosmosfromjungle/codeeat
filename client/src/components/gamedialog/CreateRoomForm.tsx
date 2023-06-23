@@ -34,7 +34,7 @@ export const CreateRoomForm = () => {
   const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
-  const rainGameOpen = useAppSelector((state) => state.raingame.rainGameOpen)
+  const typingGameOpen = useAppSelector((state) => state.typinggame.typingGameOpen)
   const dispatch = useAppDispatch()
 
   const handleChange = (prop: keyof IRoomData) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,7 +56,7 @@ export const CreateRoomForm = () => {
       try {
         if (brickGameOpen) await bootstrap.network.createBrickRoom(values)
         if (moleGameOpen) await bootstrap.network.createMoleRoom(values)
-        if (rainGameOpen) await bootstrap.network.createRainRoom(values)
+        if (typingGameOpen) await bootstrap.network.createTypingRoom(values)
         dispatch(setDialogStatus(DIALOG_STATUS.GAME_WELCOME))
       } catch (error) {
         console.error(error)

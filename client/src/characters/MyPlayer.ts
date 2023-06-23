@@ -5,18 +5,17 @@ import { sittingShiftData } from './Player'
 import Player from './Player'
 import Network from '../services/Network'
 import Chair from '../items/Chair'
-// import Computer from '../items/Computer'
-// import Whiteboard from '../items/Whiteboard'
+
 import BrickGame from '../items/BrickGame'
+import TypingGame from '../items/TypingGame'
 import MoleGame from '../items/MoleGame'
-import RainGame from '../items/RainGame'
 
 import { phaserEvents, Event } from '../events/EventCenter'
 import store from '../stores'
 import { pushPlayerJoinedMessage } from '../stores/ChatStore'
 import { ItemType } from '../../../types/Items'
 import { NavKeys } from '../../../types/KeyboardState'
-import { JoystickMovement } from '../components/Joystick'
+import { JoystickMovement } from '../components/helperdialog/Joystick'
 import { openURL } from '../utils/helpers'
 
 export default class MyPlayer extends Player {
@@ -68,9 +67,9 @@ export default class MyPlayer extends Player {
           const brickGame = item as BrickGame
           brickGame.openDialog(network)
           break
-        case ItemType.RAINGAME:
-          const rainGame = item as RainGame
-          rainGame.openDialog(network)
+        case ItemType.TYPINGGAME:
+          const typinggame = item as TypingGame
+          typinggame.openDialog(network)
           break
         case ItemType.MOLEGAME:
           const molegame = item as MoleGame

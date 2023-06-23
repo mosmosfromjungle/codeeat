@@ -11,7 +11,6 @@ import friendsRouter from './routes/friends';
 
 import { SkyOffice } from './rooms/SkyOffice'
 import { connectDB } from './DB/db'
-import { PreGame } from './rooms/PreGame'
 
 // const mongoose = require('mongoose')
 // var cookieParser = require('cookie-parser')
@@ -60,11 +59,11 @@ mainServer.define(RoomType.CUSTOM, SkyOffice).enableRealtimeListing()
 
 mainServer.define(RoomType.BRICKLOBBY, LobbyRoom)
 mainServer.define(RoomType.MOLELOBBY, LobbyRoom)
-mainServer.define(RoomType.RAINLOBBY, LobbyRoom)
+mainServer.define(RoomType.TYPINGLOBBY, LobbyRoom)
 
-mainServer.define(RoomType.BRICK, PreGame).enableRealtimeListing()
-mainServer.define(RoomType.MOLE, PreGame).enableRealtimeListing()
-mainServer.define(RoomType.RAIN, PreGame).enableRealtimeListing()
+mainServer.define(RoomType.BRICK, SkyOffice).enableRealtimeListing()
+mainServer.define(RoomType.MOLE, SkyOffice).enableRealtimeListing()
+mainServer.define(RoomType.TYPING, SkyOffice).enableRealtimeListing()
 
 /**
  * Register @colyseus/social routes

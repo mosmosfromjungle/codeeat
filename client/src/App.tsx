@@ -5,28 +5,28 @@ import axios from 'axios'
 import { useAppSelector, useAppDispatch } from './hooks'
 import { DIALOG_STATUS } from './stores/UserStore'
 
+// ↓ Entry Dialog
 import EntryDialog from './components/entrydialog/EntryDialog'
 import LoginDialog from './components/entrydialog/LoginDialog'
 import JoinDialog from './components/entrydialog/JoinDialog'
 import WelcomeDialog from './components/entrydialog/WelcomeDialog'
 
+// ↓ Game Dialog
 import GameLobbyDialog from './components/gamedialog/GameLobbyDialog'
 import GameWelcomeDialog from './components/gamedialog/GameWelcomeDialog'
-
-
-import ComputerDialog from './components/ComputerDialog'
-import WhiteboardDialog from './components/WhiteboardDialog'
-import MoleGameDialog from './components/MoleGameDialog'
-import VideoConnectionDialog from './components/VideoConnectionDialog'
-import HelperButtonGroup from './components/HelperButtonGroup'
-import MobileVirtualJoystick from './components/MobileVirtualJoystick'
+import MoleGameDialog from './components/games/MoleGameDialog'
+import BrickGameDialog from './components/games/BrickGameDialog'
+import TypingGameDialog from './components/games/TypingGameDialog'
 
 // ↓ HelperButtonGroup Dialog
+import HelperButtonGroup from './components/helperdialog/HelperButtonGroup'
 import ChatDialog from './components/ChatDialog'
 import DMDialog from './components/DMDialog'
 import UserDialog from './components/UserDialog'
 import LogoutDialog from './components/LogoutDialog'
-import VersionDialog from './components/VersionDialog'
+import VersionDialog from './components/helperdialog/VersionDialog'
+import MobileVirtualJoystick from './components/helperdialog/MobileVirtualJoystick'
+import VideoConnectionDialog from './components/VideoConnectionDialog'
 
 // ↓ Profile Button & Dialog
 import ProfileButton from './components/ProfileButton'
@@ -51,21 +51,20 @@ const Backdrop = styled.div`
 
 function App() {
   const dialogStatus = useAppSelector((state) => state.user.dialogStatus)
-  const videoConnected = useAppSelector((state) => state.user.videoConnected)
-  const audioConnected = useAppSelector((state) => state.user.audioConnected)
-  // const computerDialogOpen = useAppSelector((state) => state.computer.computerDialogOpen)
-  // const whiteboardDialogOpen = useAppSelector((state) => state.whiteboard.whiteboardDialogOpen)
-  // const moleGameDialogOpen = useAppSelector((state) => state.molegame.moleGameDialogOpen)
+  
+  // ↓ Game Dialog
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
-  const rainGameOpen = useAppSelector((state) => state.raingame.rainGameOpen)
-
+  const typingGameOpen = useAppSelector((state) => state.typinggame.typingGameOpen)
+  
   // ↓ HelperButtonGroup Dialog
   const showChat = useAppSelector((state) => state.chat.showChat)
   const showDM = useAppSelector((state) => state.chat.showDM)
   const showUser = useAppSelector((state) => state.chat.showUser)
   const showLogout = useAppSelector((state) => state.user.showLogout)
   const showVersion = useAppSelector((state) => state.user.showVersion)
+  const videoConnected = useAppSelector((state) => state.user.videoConnected)
+  const audioConnected = useAppSelector((state) => state.user.audioConnected)
 
   // ↓ Profile Dialog
   const showProfile = useAppSelector((state) => state.user.showProfile)
@@ -114,9 +113,9 @@ function App() {
   } else if (dialogStatus === DIALOG_STATUS.GAME_WELCOME) {
     ui = <GameWelcomeDialog />
   } else if (dialogStatus === DIALOG_STATUS.IN_GAME) {
-    if (brickGameOpen) ui = <ComputerDialog />
+    if (brickGameOpen) ui = <BrickGameDialog />
     if (moleGameOpen) ui = <MoleGameDialog />
-    if (rainGameOpen) ui = <WhiteboardDialog />
+    if (typingGameOpen) ui = <TypingGameDialog />
   } else {
     ui = <EntryDialog />
   }

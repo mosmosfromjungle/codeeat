@@ -9,27 +9,18 @@ export interface IPlayer extends Schema {
   videoConnected: boolean
 }
 
-// export interface IComputer extends Schema {
-//   connectedUser: SetSchema<string>
-// }
-
-// export interface IWhiteboard extends Schema {
-//   roomId: string
-//   connectedUser: SetSchema<string>
-// }
-
 export interface IBrickGame extends Schema {
-  roomId: string
+  // roomId: string
   connectedUser: SetSchema<string>
 }
 
 export interface IMoleGame extends Schema {
-  roomId: string
+  // roomId: string
   connectedUser: SetSchema<string>
 }
 
-export interface IRainGame extends Schema {
-  roomId: string
+export interface ITypingGame extends Schema {
+  // roomId: string
   connectedUser: SetSchema<string>
 }
 
@@ -41,11 +32,9 @@ export interface IChatMessage extends Schema {
 
 export interface IOfficeState extends Schema {
   players: MapSchema<IPlayer>
-  // computers: MapSchema<IComputer>
-  // whiteboards: MapSchema<IWhiteboard>
-  brickgames: MapSchema<IBrickGame>
   molegames: MapSchema<IMoleGame>
-  raingames: MapSchema<IRainGame>
+  brickgames: MapSchema<IBrickGame>
+  typinggames: MapSchema<ITypingGame>
   chatMessages: ArraySchema<IChatMessage>
 }
 

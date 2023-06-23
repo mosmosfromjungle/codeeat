@@ -1,27 +1,24 @@
 import Phaser from 'phaser'
 
 // import { debugDraw } from '../utils/debug'
+import Network from '../services/Network'
 import { createCharacterAnims } from '../anims/CharacterAnims'
 
 import Item from '../items/Item'
 import Chair from '../items/Chair'
-// import Computer from '../items/Computer'
-// import Whiteboard from '../items/Whiteboard'
-// import VendingMachine from '../items/VendingMachine'
 import MoleGame from '../items/MoleGame'
 import BrickGame from '../items/BrickGame'
-import RainGame from '../items/RainGame'
+import TypingGame from '../items/TypingGame'
+import FaceChat from '../items/FaceChat'
+import { ItemType } from '../../../types/Items'
 
 import '../characters/MyPlayer'
 import '../characters/OtherPlayer'
 import MyPlayer from '../characters/MyPlayer'
 import OtherPlayer from '../characters/OtherPlayer'
 import PlayerSelector from '../characters/PlayerSelector'
-import Network from '../services/Network'
-import Network2 from '../services/Network2'
 import { IPlayer } from '../../../types/IOfficeState'
 import { PlayerBehavior } from '../../../types/PlayerBehavior'
-import { ItemType } from '../../../types/Items'
 
 import store from '../stores'
 import { setFocused, setShowChat, setShowDM } from '../stores/ChatStore'
@@ -38,11 +35,10 @@ export default class Game extends Phaser.Scene {
   private playerSelector!: Phaser.GameObjects.Zone
   private otherPlayers!: Phaser.Physics.Arcade.Group
   private otherPlayerMap = new Map<string, OtherPlayer>()
-  // computerMap = new Map<string, Computer>()
-  // private whiteboardMap = new Map<string, Whiteboard>()
   private brickgameMap = new Map<String, BrickGame>()
   private molegameMap = new Map<String, MoleGame>()
-  private raingameMap = new Map<String, RainGame>()
+  private typinggameMap = new Map<string, TypingGame>()
+  private facechatMap = new Map<String, FaceChat>()
 
   constructor() {
     super('game')
@@ -101,93 +97,187 @@ export default class Game extends Phaser.Scene {
     createCharacterAnims(this.anims)
 
     this.map = this.make.tilemap({ key: 'tilemap' })
-    const FloorAndGround = this.map.addTilesetImage('FloorAndGround', 'tiles_wall')
 
-    const groundLayer = this.map.createLayer('Ground', FloorAndGround)
-    groundLayer.setCollisionByProperty({ collides: true })
+    // ************************************** (codeEat) //
+    // const FloorAndGround = this.map.addTilesetImage('FloorAndGround', 'tiles_wall')
+
+    // const groundLayer = this.map.createLayer('Ground', FloorAndGround)
+    // groundLayer.setCollisionByProperty({ collides: true })
+    // ******************************* //
+
+    const schoolImage = this.map.addTilesetImage('School', 'School')
+
+    const genericImage = this.map.addTilesetImage('Generic', 'Generic')
+
+    const campingImage = this.map.addTilesetImage('camping', 'camping')
+
+    const floorTilesImage = this.map.addTilesetImage('floorTiles', 'floorTiles')
+
+    // const interiorsImage = this.map.addTilesetImage('Interiors', 'Interiors')
+
+    const codeEatInteriorsImage = this.map.addTilesetImage('codeEatInteriors', 'codeEatInteriors')
+
+    const ModernExteriorsFinalImage = this.map.addTilesetImage('ModernExteriorsFinal', 'ModernExteriorsFinal')
+
+    const modernExteriorsImage = this.map.addTilesetImage('ModernExteriorsComplete', 'ModernExteriorsComplete')
+
+    const tilesetsImage = this.map.addTilesetImage('Tilesets', 'Tilesets')
+
+    const treeImage = this.map.addTilesetImage('tree', 'tree')
+
+    const interiorImage = this.map.addTilesetImage('interior', 'interior')
+
+    // const benchImage = this.map.addTilesetImage('bench', 'bench')
+
+    const codeEatChairImage = this.map.addTilesetImage('codeEatChair', 'codeEatChair')
+
+    // const picnic2Image = this.map.addTilesetImage('picnic2', 'picnic2')
+
+    this.map.createLayer('ground', [
+      genericImage,
+      campingImage,
+      modernExteriorsImage,
+      ModernExteriorsFinalImage,
+      tilesetsImage,
+      schoolImage,
+      floorTilesImage,
+    ]);
+
+    this.map.createLayer('wall', [
+      codeEatInteriorsImage,
+      ModernExteriorsFinalImage,
+      modernExteriorsImage,
+      schoolImage,
+    ]);
+
+    this.map.createLayer('shadow', [
+      modernExteriorsImage,
+      campingImage,
+      floorTilesImage,
+    ]);
+
+    const buildingsLayer = this.map.createLayer('buildings', [
+      modernExteriorsImage,
+      ModernExteriorsFinalImage,
+      schoolImage,
+      codeEatInteriorsImage,
+      campingImage,
+      treeImage,
+      codeEatChairImage,
+    ]);
+
+    const secondGroundLayer = this.map.createLayer('secondground', [
+      interiorImage
+    ]);
+
+    const fenceLayer = this.map.createLayer('fence', [
+      interiorImage
+    ]);
+
+    const foreGroundLayer = this.map.createLayer('foreground', [
+      modernExteriorsImage,
+      ModernExteriorsFinalImage,
+      codeEatInteriorsImage,
+      schoolImage,
+      campingImage,
+      treeImage,
+    ]);
+
+
+    // thirdGroundLayer.setDepth(6500);
+    foreGroundLayer.setDepth(6000);
+    secondGroundLayer.setCollisionByProperty({ collisions: true });
+    fenceLayer.setCollisionByProperty({ collisions: true });
 
     // debugDraw(groundLayer, this)
 
+    /*
+      // ***새롭게 16px 캐릭터로 변경하기 위한 코드***
+      this.myPlayer = this.add.myPlayer(
+      Phaser.Math.RND.between(400, 900),
+      Phaser.Math.RND.between(400, 900),
+      'kevin',
+      this.network.mySessionId,
+      // userId,
+      // userProfile
+      // 로건 케빈 엠마
+    );
+    */
+     
+    // this.myPlayer = this.add.myPlayer(400, 900, 'kevin', this.network.mySessionId)
     this.myPlayer = this.add.myPlayer(705, 500, 'adam', this.network.mySessionId)
     this.playerSelector = new PlayerSelector(this, 0, 0, 16, 16)
 
-    // import chair objects from Tiled map to Phaser
+
     const chairs = this.physics.add.staticGroup({ classType: Chair })
-    const chairLayer = this.map.getObjectLayer('Chair')
-    chairLayer.objects.forEach((chairObj) => {
-      const item = this.addObjectFromTiled(chairs, chairObj, 'chairs', 'chair') as Chair
+    const chairLayer = this.map.getObjectLayer('chair')
+    chairLayer.objects.forEach((Obj) => {
+      const item = this.addObjectFromTiled(chairs, Obj, 'codeEatChair', 'codeEatChair') as Chair
       // custom properties[0] is the object direction specified in Tiled
-      item.itemDirection = chairObj.properties[0].value
+      item.itemDirection = Obj.properties[0].value
     })
 
-    // import computers objects from Tiled map to Phaser
-    const computers = this.physics.add.staticGroup({ classType: BrickGame })
-    const computerLayer = this.map.getObjectLayer('Computer')
-    computerLayer.objects.forEach((obj, i) => {
-      const item = this.addObjectFromTiled(computers, obj, 'computers', 'computer') as BrickGame
-      item.setDepth(item.y + item.height * 0.27)
+    /* Brick Game */
+    const brickgames = this.physics.add.staticGroup({ classType: BrickGame })
+    const brickgameLayer = this.map.getObjectLayer('playground')
+    brickgameLayer.objects.forEach((obj, i) => {
+      const item = this.addObjectFromTiled(brickgames, obj, 'picnic2', 'picnic2') as BrickGame
+      // item.setDepth(item.y + item.height * 0.27)
       const id = `${i}`
       item.id = id
       this.brickgameMap.set(id, item)
     })
 
-    // import whiteboards objects from Tiled map to Phaser
-    const whiteboards = this.physics.add.staticGroup({ classType: RainGame })
-    const whiteboardLayer = this.map.getObjectLayer('Whiteboard')
-    whiteboardLayer.objects.forEach((obj, i) => {
-      const item = this.addObjectFromTiled(
-        whiteboards,
-        obj,
-        'whiteboards',
-        'whiteboard'
-      ) as RainGame
+    /* Typing Game */
+    const typinggames = this.physics.add.staticGroup({ classType: TypingGame })
+    const typinggameLayer = this.map.getObjectLayer('bench')
+    typinggameLayer.objects.forEach((obj, i) => {
+      const item = this.addObjectFromTiled(typinggames, obj, 'bench', 'bench') as TypingGame
       const id = `${i}`
       item.id = id
-      this.raingameMap.set(id, item)
+      this.typinggameMap.set(id, item)
     })
 
-    // import vending machine objects from Tiled map to Phaser
-    // const vendingMachines = this.physics.add.staticGroup({ classType: VendingMachine })
-    // const vendingMachineLayer = this.map.getObjectLayer('VendingMachine')
-    // vendingMachineLayer.objects.forEach((obj, i) => {
-    //   this.addObjectFromTiled(vendingMachines, obj, 'vendingmachines', 'vendingmachine')
-    // })
-
-    // import code editor objects from Tiled map to Phaser
+    /* Mole Game */
     const molegames = this.physics.add.staticGroup({ classType: MoleGame })
-    const molegameLayer = this.map.getObjectLayer('MoleGame')
+    const molegameLayer = this.map.getObjectLayer('mole')
     molegameLayer.objects.forEach((obj, i) => {
-      const item = this.addObjectFromTiled(
-        molegames,
-        obj,
-        'molegames',
-        'molegame'
-      ) as MoleGame
+      const item = this.addObjectFromTiled(molegames, obj, 'mole', 'mole') as MoleGame
       const id = `${i}`
       item.id = id
       this.molegameMap.set(id, item)
     })
 
-    // import other objects from Tiled map to Phaser
-    this.addGroupFromTiled('Wall', 'tiles_wall', 'FloorAndGround', false)
-    this.addGroupFromTiled('Objects', 'office', 'Modern_Office_Black_Shadow', false)
-    this.addGroupFromTiled('ObjectsOnCollide', 'office', 'Modern_Office_Black_Shadow', true)
-    this.addGroupFromTiled('GenericObjects', 'generic', 'Generic', false)
-    this.addGroupFromTiled('GenericObjectsOnCollide', 'generic', 'Generic', true)
-    this.addGroupFromTiled('Basement', 'basement', 'Basement', true)
+    // ***아바타 화상채팅 상호작용 아이템 추가 코드*** 
+    const facechats = this.physics.add.staticGroup({ classType: FaceChat })
+    const facechatLayer = this.map.getObjectLayer('facechat')
+    facechatLayer.objects.forEach((obj, i) => {
+      const item = this.addObjectFromTiled(facechats, obj, 'bench', 'bench') as FaceChat
+      const id = `${i}`
+      item.id = id
+      this.facechatMap.set(id, item)
+    })
+
+    // ************************************** (codeEat) //
+
+    // // import other objects from Tiled map to Phaser
+    // this.addGroupFromTiled('Wall', 'tiles_wall', 'FloorAndGround', false)
+    // this.addGroupFromTiled('Objects', 'office', 'Modern_Office_Black_Shadow', false)
+    // this.addGroupFromTiled('ObjectsOnCollide', 'office', 'Modern_Office_Black_Shadow', true)
+    // this.addGroupFromTiled('GenericObjects', 'generic', 'Generic', false)
+    // this.addGroupFromTiled('GenericObjectsOnCollide', 'generic', 'Generic', true)
+    // this.addGroupFromTiled('Basement', 'basement', 'Basement', true)
 
     this.otherPlayers = this.physics.add.group({ classType: OtherPlayer })
 
     this.cameras.main.zoom = 1.5
     this.cameras.main.startFollow(this.myPlayer, true)
+    this.physics.add.collider([this.myPlayer, this.myPlayer.playerContainer], secondGroundLayer)
+    this.physics.add.collider([this.myPlayer, this.myPlayer.playerContainer], fenceLayer)
 
-    this.physics.add.collider([this.myPlayer, this.myPlayer.playerContainer], groundLayer)
-    // this.physics.add.collider([this.myPlayer, this.myPlayer.playerContainer], vendingMachines)
-
-    // 상호작용 추가하는 부분..?
     this.physics.add.overlap(
       this.playerSelector,
-      [chairs, computers, whiteboards, molegames],
+      [chairs, molegames, typinggames, brickgames, facechats],
       this.handleItemSelectorOverlap,
       undefined,
       this
@@ -239,7 +329,7 @@ export default class Game extends Phaser.Scene {
     const actualY = object.y! - object.height! * 0.5
     const obj = group
       .get(actualX, actualY, key, object.gid! - this.map.getTileset(tilesetName).firstgid)
-      .setDepth(actualY)
+      .setDepth(actualY * 0.5)
     return obj
   }
 
@@ -301,26 +391,25 @@ export default class Game extends Phaser.Scene {
     if (itemType === ItemType.BRICKGAME) {
       const brickgame = this.brickgameMap.get(itemId)
       brickgame?.addCurrentUser(playerId)
-
-    } else if (itemType === ItemType.RAINGAME) {
-      const raingame = this.raingameMap.get(itemId)
-      raingame?.addCurrentUser(playerId)
-
+    } else if (itemType === ItemType.TYPINGGAME) {
+      const typinggame = this.typinggameMap.get(itemId)
+      typinggame?.addCurrentUser(playerId)
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.addCurrentUser(playerId)
-    }
+    } else if (itemType === ItemType.FACECHAT) {
+      const facechat = this.facechatMap.get(itemId)
+      facechat?.addCurrentUser(playerId)
+    } 
   }
 
   private handleItemUserRemoved(playerId: string, itemId: string, itemType: ItemType) {
     if (itemType === ItemType.BRICKGAME) {
       const brickgame = this.brickgameMap.get(itemId)
       brickgame?.removeCurrentUser(playerId)
-
-    } else if (itemType === ItemType.RAINGAME) {
-      const raingame = this.raingameMap.get(itemId)
-      raingame?.removeCurrentUser(playerId)
-
+    } else if (itemType === ItemType.TYPINGGAME) {
+      const typinggame = this.typinggameMap.get(itemId)
+      typinggame?.removeCurrentUser(playerId)
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.removeCurrentUser(playerId)

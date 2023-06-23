@@ -1,18 +1,12 @@
-/*
-  Icon: mui 라이브러리 사용 (https://mui.com/material-ui/material-icons/)
-*/
 import React, { useRef, useState, useEffect } from 'react'
-import styled from 'styled-components'
 
+import styled from 'styled-components'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import Box from '@mui/material/Box'
 import InputBase from '@mui/material/InputBase'
-
 import CloseIcon from '@mui/icons-material/Close'
-
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon'
-
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 
@@ -49,7 +43,7 @@ const Content = styled.div`
 
 const ChatHeader = styled.div`
   position: relative;
-  height: 40px;
+  height: 48px;
   background: #000000a7;
   border-radius: 10px 10px 0px 0px;
 

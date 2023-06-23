@@ -2,18 +2,16 @@ import { ItemType } from '../../../types/Items'
 import store from '../stores'
 import Item from './Item'
 import Network from '../services/Network'
-import { openRainGameDialog } from '../stores/RainGameStore'
-import { DIALOG_STATUS, setDialogStatus } from '../stores/UserStore'
+import { openMoleGameDialog } from '../stores/MoleGameStore'
 
-
-export default class RainGame extends Item {
-  // id?: string
+export default class FaceChat extends Item {
+  id?: string
   currentUsers = new Set<string>()
 
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
     super(scene, x, y, texture, frame)
 
-    this.itemType = ItemType.RAINGAME
+    this.itemType = ItemType.FACECHAT
   }
 
   private updateStatus() {
@@ -29,7 +27,7 @@ export default class RainGame extends Item {
 
   onOverlapDialog() {
     if (this.currentUsers.size === 0) {
-      this.setDialogBox('Press R to play the Whack a Rain')
+      this.setDialogBox('Press R to play the Face Chat')
     } else {
       this.setDialogBox('Press R join')
     }
@@ -48,9 +46,8 @@ export default class RainGame extends Item {
   }
 
   openDialog(network: Network) {
-    // if (!this.id) return
-    store.dispatch(openRainGameDialog())
-    store.dispatch(setDialogStatus(DIALOG_STATUS.GAME_LOBBY))
-    // network.connectToRainGame(this.id)
+    if (!this.id) return
+    store.dispatch(openMoleGameDialog(this.id))
+    network.connectToMoleGame(this.id)
   }
 }

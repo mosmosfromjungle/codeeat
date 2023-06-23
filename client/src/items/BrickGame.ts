@@ -29,7 +29,7 @@ export default class BrickGame extends Item {
 
   onOverlapDialog() {
     if (this.currentUsers.size === 0) {
-      this.setDialogBox('Press R to play the Whack a Brick')
+      this.setDialogBox('Press R to play the Brick Game')
     } else {
       this.setDialogBox('Press R join')
     }

@@ -3,9 +3,13 @@ import styled from 'styled-components'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 
-import { useAppSelector, useAppDispatch } from '../hooks'
-import { closeWhiteboardDialog } from '../stores/WhiteboardStore'
-import { TypingGame } from './typinggame'
+import { useAppSelector, useAppDispatch } from '../../hooks'
+import { closeTypingGameDialog } from '../../stores/TypingGameStore'
+import TypingGame from './TypingGame'
+import * as Colyseus from "colyseus.js";
+
+var client = new Colyseus.Client('ws://localhost:5173');
+
 // 원래 패딩 : 16px, 180px, 16px, 10px
 const Backdrop = styled.div`
   position: fixed;
@@ -37,7 +41,7 @@ const Wrapper = styled.div`
   }
 `
 
-const WhiteboardWrapper = styled.div`
+const TypingGameWrapper = styled.div`
   flex: 1;
   border-radius: 25px;
   overflow: hidden;
@@ -50,27 +54,19 @@ const WhiteboardWrapper = styled.div`
   }
 `
 
-export default function WhiteboardDialog() {
-  const whiteboardUrl = useAppSelector((state) => state.whiteboard.whiteboardUrl)
+export default function TypingGameDialog() {
   const dispatch = useAppDispatch()
-
   return (
     <Backdrop>
       <Wrapper>
         <TypingGame />
-        { <IconButton
+        {<IconButton
           aria-label="close dialog"
           className="close"
-          onClick={() => dispatch(closeWhiteboardDialog())}
+          onClick={() => dispatch(closeTypingGameDialog())}
         >
           <CloseIcon />
-        </IconButton>
-        /*
-        {whiteboardUrl && (
-          <WhiteboardWrapper>
-            <iframe title="white board" src={whiteboardUrl} />
-          </WhiteboardWrapper>
-        )} */}
+        </IconButton>}
       </Wrapper>
     </Backdrop>
   )
