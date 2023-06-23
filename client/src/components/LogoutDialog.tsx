@@ -1,6 +1,3 @@
-/*
-  Icon: mui 라이브러리 사용 (https://mui.com/material-ui/material-icons/)
-*/
 import React, { useRef, useState, useEffect } from 'react'
 import styled from 'styled-components'
 
@@ -12,7 +9,6 @@ import CloseIcon from '@mui/icons-material/Close'
 
 import { DIALOG_STATUS, setDialogStatus, setShowLogout } from '../stores/UserStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
-import { ENTRY_PROCESS, setAccessToken, setEntryProcess } from '../stores/UserStore'
 
 const Backdrop = styled.div`
   position: fixed;

@@ -95,12 +95,14 @@ function App() {
     ui = <WelcomeDialog/>
   } else if (dialogStatus === DIALOG_STATUS.IN_MAIN) {
     ui = (
-      <>  // UGLY: Need to move to HelperButtonGroup 
+      <>  
+        {/* // UGLY: Need to move to HelperButtonGroup  */}
         {showChat && <ChatDialog />}
         {showDM && <DMDialog />}
         {showUser && <UserDialog />}
         {showLogout && <LogoutDialog />}
         {showProfile && <ProfileDialog />}
+        {showVersion && <VersionDialog />}
         {!videoConnected && <VideoConnectionDialog />}
         <MobileVirtualJoystick />
         <HelperButtonGroup />
