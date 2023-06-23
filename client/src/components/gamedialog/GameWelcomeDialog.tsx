@@ -128,7 +128,7 @@ export default function GameWelcomeDialog() {
         </Left>
         <Right>
             <h1 style={{ fontSize: '24px' }}>{name} 님</h1>
-          {!videoConnected && (
+          {/* {!videoConnected && (
             <Warning>
               <Alert variant="outlined" severity="warning">
                 <AlertTitle> 🤣아차! </AlertTitle>
@@ -139,7 +139,7 @@ export default function GameWelcomeDialog() {
                 variant="outlined"
                 color="secondary"
                 onClick={() => {
-                  game.network.webRTC?.getUserMedia()
+                  game.gameNetwork.webRTC?.getUserMedia()
                 }}>
                 비디오, 마이크 연결하기
               </Button>
@@ -149,7 +149,7 @@ export default function GameWelcomeDialog() {
             <Warning>
               <Alert variant="outlined"> 마이크도 쓸 수 있어요!</Alert>
             </Warning>
-          )}
+          )} */}
         </Right>
       </Content>
       <Bottom>

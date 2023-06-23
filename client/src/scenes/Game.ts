@@ -2,7 +2,7 @@ import Phaser from 'phaser'
 
 // import { debugDraw } from '../utils/debug'
 import Network from '../services/Network'
-import { createCharacterAnims } from '../anims/CharacterAnims'
+import GameNetwork from '../services/GameNetwork'
 
 import Item from '../items/Item'
 import Chair from '../items/Chair'
@@ -12,13 +12,14 @@ import TypingGame from '../items/TypingGame'
 import FaceChat from '../items/FaceChat'
 import { ItemType } from '../../../types/Items'
 
-import '../characters/MyPlayer'
-import '../characters/OtherPlayer'
-import MyPlayer from '../characters/MyPlayer'
-import OtherPlayer from '../characters/OtherPlayer'
-import PlayerSelector from '../characters/PlayerSelector'
+import '../players/MyPlayer'
+import '../players/OtherPlayer'
+import MyPlayer from '../players/MyPlayer'
+import OtherPlayer from '../players/OtherPlayer'
+import PlayerSelector from '../players/PlayerSelector'
 import { IPlayer } from '../../../types/IOfficeState'
 import { PlayerBehavior } from '../../../types/PlayerBehavior'
+import { createCharacterAnims } from '../anims/CharacterAnims'
 
 import store from '../stores'
 import { setFocused, setShowChat, setShowDM } from '../stores/ChatStore'
@@ -26,6 +27,7 @@ import { NavKeys, Keyboard } from '../../../types/KeyboardState'
 
 export default class Game extends Phaser.Scene {
   network!: Network
+  gameNetwork!: GameNetwork // TODO: 있어야 하나?
   // network2!: Network2
   private cursors!: NavKeys
   private keyE!: Phaser.Input.Keyboard.Key
@@ -87,7 +89,7 @@ export default class Game extends Phaser.Scene {
     this.input.keyboard.enabled = true
   }
 
-  create(data: { network: Network }) {
+  create(data: { network: Network }) {  // TODO: Bootstrap에서 gameNetwork도 넘겨줘야 하나? 
     if (!data.network) {
       throw new Error('server instance missing')
     } else {
@@ -204,6 +206,7 @@ export default class Game extends Phaser.Scene {
     );
     */
      
+    // TODO: gameNetwork에 대해서도 myPlayer, otherPlayer 등을 추가해줘야 하나 ?!!?
     // this.myPlayer = this.add.myPlayer(400, 900, 'kevin', this.network.mySessionId)
     this.myPlayer = this.add.myPlayer(705, 500, 'adam', this.network.mySessionId)
     this.playerSelector = new PlayerSelector(this, 0, 0, 16, 16)
@@ -224,7 +227,7 @@ export default class Game extends Phaser.Scene {
       const item = this.addObjectFromTiled(brickgames, obj, 'picnic2', 'picnic2') as BrickGame
       // item.setDepth(item.y + item.height * 0.27)
       const id = `${i}`
-      item.id = id
+      // item.id = id   // TODO: 나중에 아이템 별로 지정된 별도의 방에 들어가게 하기 위해 필요 
       this.brickgameMap.set(id, item)
     })
 

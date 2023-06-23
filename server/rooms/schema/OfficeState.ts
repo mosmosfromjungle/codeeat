@@ -18,10 +18,12 @@ export class Player extends Schema implements IPlayer {
 }
 
 export class BrickGame extends Schema implements IBrickGame {
+  // @type('string') roomId = getRoomId()
   @type({ set: 'string' }) connectedUser = new SetSchema<string>()
 }
 
 export class MoleGame extends Schema implements IMoleGame {
+  // @type('string') roomId = getRoomId()
   @type({ set: 'string' }) connectedUser = new SetSchema<string>()
 }
 

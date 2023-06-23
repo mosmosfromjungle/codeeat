@@ -47,10 +47,11 @@ export default class BrickGame extends Item {
     this.updateStatus()
   }
 
-  openDialog(network: Network) {
+
+  openDialog(network: Network) {  // TODO: 아이템 별로 별도의 방을 만든다면 gameNetwork가 아닌 network의 room에서 정원이 다 찼는지 여부를 관리해줘야 함 
     // if (!this.id) return
     store.dispatch(openBrickGameDialog())
     store.dispatch(setDialogStatus(DIALOG_STATUS.GAME_LOBBY))
-    // network.connectToBrickGame(this.id)
+    // network.connectToBrickGame(this.id)  // TODO: 서버에 해당 클라이언트가 몇번 아이디의 해당 아이템에 연결했는지 정보 전달 -> 나중에 아이템 별로 연결하고자 할 때 살려야 함 
   }
 }

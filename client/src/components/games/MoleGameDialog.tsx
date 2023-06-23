@@ -524,7 +524,7 @@ export default function MoleGameDialog() {
 
     try {
       const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-      bootstrap.network.leaveGameRoom()
+      bootstrap.gameNetwork.leaveGameRoom()
       dispatch(closeMoleGameDialog())
       dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
     } catch (error) {

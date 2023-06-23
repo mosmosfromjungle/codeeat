@@ -40,4 +40,7 @@ export interface IOfficeState extends Schema {
 
 // export interface IGameState extends Schema {
 //   players: MapSchema<IPlayer>
+  // molegames: MapSchema<IMoleGame>
+  // brickgames: MapSchema<IBrickGame>
+  // typinggames: MapSchema<ITypingGame>
 // }

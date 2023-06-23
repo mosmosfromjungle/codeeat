@@ -4,11 +4,16 @@ import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 
 import { useAppSelector, useAppDispatch } from '../../hooks'
-import { closeTypingGameDialog } from '../../stores/TypingGameStore'
-import TypingGame from './TypingGame'
-import * as Colyseus from "colyseus.js";
+import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore'
 
-var client = new Colyseus.Client('ws://localhost:5173');
+import TypingGame from './TypingGame'
+import { closeTypingGameDialog } from '../../stores/TypingGameStore'
+
+import phaserGame from '../../PhaserGame'
+import Bootstrap from '../../scenes/Bootstrap'
+
+// import * as Colyseus from "colyseus.js";
+// var client = new Colyseus.Client('ws://localhost:5173');
 
 // 원래 패딩 : 16px, 180px, 16px, 10px
 const Backdrop = styled.div`
@@ -40,7 +45,6 @@ const Wrapper = styled.div`
     right: 0px;
   }
 `
-
 const TypingGameWrapper = styled.div`
   flex: 1;
   border-radius: 25px;
@@ -56,6 +60,18 @@ const TypingGameWrapper = styled.div`
 
 export default function TypingGameDialog() {
   const dispatch = useAppDispatch()
+
+  const handleClose = () => {
+    try {
+      const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
+      bootstrap.gameNetwork.leaveGameRoom()
+      dispatch(closeTypingGameDialog())
+      dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
+    } catch (error) {
+      console.error('Error leaving the room:', error)
+    }
+  }
+
   return (
     <Backdrop>
       <Wrapper>
@@ -63,7 +79,7 @@ export default function TypingGameDialog() {
         {<IconButton
           aria-label="close dialog"
           className="close"
-          onClick={() => dispatch(closeTypingGameDialog())}
+          onClick={handleClose}
         >
           <CloseIcon />
         </IconButton>}

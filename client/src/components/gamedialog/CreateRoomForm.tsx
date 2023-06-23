@@ -54,9 +54,9 @@ export const CreateRoomForm = () => {
     if (isValidName && isValidDescription && lobbyJoined) {      
       const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
       try {
-        if (brickGameOpen) await bootstrap.network.createBrickRoom(values)
-        if (moleGameOpen) await bootstrap.network.createMoleRoom(values)
-        if (typingGameOpen) await bootstrap.network.createTypingRoom(values)
+        if (brickGameOpen) await bootstrap.gameNetwork.createBrickRoom(values)
+        if (moleGameOpen) await bootstrap.gameNetwork.createMoleRoom(values)
+        if (typingGameOpen) await bootstrap.gameNetwork.createTypingRoom(values)
         dispatch(setDialogStatus(DIALOG_STATUS.GAME_WELCOME))
       } catch (error) {
         console.error(error)

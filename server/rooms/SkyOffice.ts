@@ -57,56 +57,56 @@ export class SkyOffice extends Room<OfficeState> {
       this.state.molegames.set(String(i), new MoleGame())
     }
 
-    // when a player connect to a typinggame, add to the typinggame connectedUser array
-    this.onMessage(Message.CONNECT_TO_TYPINGGAME, (client, message: { typinggameId: string }) => {
-      this.dispatcher.dispatch(new TypingGameAddUserCommand(), {
-        client,
-        typinggameId: message.typinggameId,
-      })
-    })
+    // // when a player connect to a typinggame, add to the typinggame connectedUser array
+    // this.onMessage(Message.CONNECT_TO_TYPINGGAME, (client, message: { typinggameId: string }) => {
+    //   this.dispatcher.dispatch(new TypingGameAddUserCommand(), {
+    //     client,
+    //     typinggameId: message.typinggameId,
+    //   })
+    // })
 
-    // when a player disconnect from a typinggame, remove from the typinggame connectedUser array
-    this.onMessage(Message.DISCONNECT_FROM_TYPINGGAME, (client, message: { typinggameId: string }) => {
-        this.dispatcher.dispatch(new TypingGameRemoveUserCommand(), {
-          client,
-          typinggameId: message.typinggameId,
-        })
-      }
-    )
+    // // when a player disconnect from a typinggame, remove from the typinggame connectedUser array
+    // this.onMessage(Message.DISCONNECT_FROM_TYPINGGAME, (client, message: { typinggameId: string }) => {
+    //     this.dispatcher.dispatch(new TypingGameRemoveUserCommand(), {
+    //       client,
+    //       typinggameId: message.typinggameId,
+    //     })
+    //   }
+    // )
 
-    // when a player connect to a molegame, add to the molegame connectedUser array
-    this.onMessage(Message.CONNECT_TO_MOLEGAME, (client, message: { moleGameId: string }) => {
-      this.dispatcher.dispatch(new MoleGameAddUserCommand(), {
-        client,
-        moleGameId: message.moleGameId,
-      })
-    })
+    // // when a player connect to a molegame, add to the molegame connectedUser array
+    // this.onMessage(Message.CONNECT_TO_MOLEGAME, (client, message: { moleGameId: string }) => {
+    //   this.dispatcher.dispatch(new MoleGameAddUserCommand(), {
+    //     client,
+    //     moleGameId: message.moleGameId,
+    //   })
+    // })
 
-    // when a player disconnect from a molegame, remove from the molegame connectedUser array
-    this.onMessage(Message.DISCONNECT_FROM_MOLEGAME, (client, message: { moleGameId: string }) => {
-        this.dispatcher.dispatch(new MoleGameRemoveUserCommand(), {
-          client,
-          moleGameId: message.moleGameId,
-        })
-      }
-    )
+    // // when a player disconnect from a molegame, remove from the molegame connectedUser array
+    // this.onMessage(Message.DISCONNECT_FROM_MOLEGAME, (client, message: { moleGameId: string }) => {
+    //     this.dispatcher.dispatch(new MoleGameRemoveUserCommand(), {
+    //       client,
+    //       moleGameId: message.moleGameId,
+    //     })
+    //   }
+    // )
 
-    // when a player connect to a brickgame, add to the brickgame connectedUser array
-    this.onMessage(Message.CONNECT_TO_BRICKGAME, (client, message: { brickGameId: string }) => {
-      this.dispatcher.dispatch(new BrickGameAddUserCommand(), {
-        client,
-        brickGameId: message.brickGameId,
-      })
-    })
+    // // when a player connect to a brickgame, add to the brickgame connectedUser array
+    // this.onMessage(Message.CONNECT_TO_BRICKGAME, (client, message: { brickGameId: string }) => {
+    //   this.dispatcher.dispatch(new BrickGameAddUserCommand(), {
+    //     client,
+    //     brickGameId: message.brickGameId,
+    //   })
+    // })
 
-    // when a player disconnect from a brickgame, remove from the brickgame connectedUser array
-    this.onMessage(Message.DISCONNECT_FROM_BRICKGAME, (client, message: { brickGameId: string }) => {
-        this.dispatcher.dispatch(new BrickGameRemoveUserCommand(), {
-          client,
-          brickGameId: message.brickGameId,
-        })
-      }
-    )
+    // // when a player disconnect from a brickgame, remove from the brickgame connectedUser array
+    // this.onMessage(Message.DISCONNECT_FROM_BRICKGAME, (client, message: { brickGameId: string }) => {
+    //     this.dispatcher.dispatch(new BrickGameRemoveUserCommand(), {
+    //       client,
+    //       brickGameId: message.brickGameId,
+    //     })
+    //   }
+    // )
 
     // when receiving updatePlayer message, call the PlayerUpdateCommand
     this.onMessage(

@@ -15,6 +15,7 @@ import { closeTypingGameDialog } from '../../stores/TypingGameStore'
 
 import phaserGame from '../../PhaserGame'
 import Bootstrap from '../../scenes/Bootstrap'
+import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore'
 
 
 const Backdrop = styled.div`
@@ -80,15 +81,22 @@ export default function GameLobbyDialog() {
 
   useEffect(() => {
     const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-    if (brickGameOpen) bootstrap.network.joinLobby(RoomType.BRICKLOBBY)
-    if (moleGameOpen) bootstrap.network.joinLobby(RoomType.MOLELOBBY)
-    if (typingGameOpen) bootstrap.network.joinLobby(RoomType.TYPINGLOBBY)
+    if (brickGameOpen) bootstrap.gameNetwork.joinLobby(RoomType.BRICKLOBBY)
+    if (moleGameOpen) bootstrap.gameNetwork.joinLobby(RoomType.MOLELOBBY)
+    if (typingGameOpen) bootstrap.gameNetwork.joinLobby(RoomType.TYPINGLOBBY)
   })
 
   const handleClose = () => {
-    if (brickGameOpen) dispatch(closeBrickGameDialog())
-    if (moleGameOpen) dispatch(closeMoleGameDialog())
-    if (typingGameOpen) dispatch(closeTypingGameDialog())
+    try {
+      const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
+      bootstrap.gameNetwork.leaveLobbyRoom()
+      if (brickGameOpen) dispatch(closeBrickGameDialog())
+      if (moleGameOpen) dispatch(closeMoleGameDialog())
+      if (typingGameOpen) dispatch(closeTypingGameDialog())
+      dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
+    } catch (error) {
+      console.error('Error leaving the room:', error)
+    }
   }
 
   return (
