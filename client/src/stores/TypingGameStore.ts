@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { combineReducers, createSlice, configureStore, PayloadAction } from "@reduxjs/toolkit";
 import phaserGame from '../PhaserGame'
 import Game from '../scenes/Game'
 import { Interface } from "readline";
@@ -14,31 +14,30 @@ interface KeywordRain {
     c_effect: boolean;
 }
 
-interface AddKeywordPayload{
-    keyword: string,
-    speed: number;
-}
-
 interface TypingGameState {
     typingGameDialogOpen: boolean,
-    typinggameId: null | string,
     game: KeywordRain[],
     point: number,
     heart: number,
     level: number,
     goal: number,
-    keywordList: string[]
+    keywordList: string[],
+    paused: boolean,
+    speed : number,
+    period : number
 };
 
 // Define initial state
 const initialState: TypingGameState = {
     typingGameDialogOpen: false,
-    typinggameId: null,
     game: [],
     point: 0,
     heart: 5,
     level: 1,
     goal: 100,
+    paused : false,
+    speed : 0.5,
+    period : 2000,
     keywordList: [
         "abs",
         "print",
@@ -55,13 +54,18 @@ const initialState: TypingGameState = {
     ] as string[],
 };
 
-
 // Define Slice
 export const typinggameSlice = createSlice({
     name: "typingGame",
     initialState,
     reducers: {
-        openTypinggameDialog: (state, action: PayloadAction<string>) => {
+        pauseTypingGame: (state) =>{
+            state.paused = true;
+        },
+        resumeTypingGame: (state) => {
+            state.paused = false;
+        },
+        openTypinggameDialog: (state) => {
             state.typingGameDialogOpen = true
             const game = phaserGame.scene.keys.game as Game
             game.disableKeys()
@@ -69,15 +73,14 @@ export const typinggameSlice = createSlice({
         closeTypinggameDialog: (state) => {
             const game = phaserGame.scene.keys.game as Game
             game.enableKeys()
-            game.network.disconnectFromTypinggame(state.typinggameId!)
             state.typingGameDialogOpen = false
-            state.typinggameId = null
         },
-        addKeyword: (state, action: PayloadAction<{keyword: string; speed: number}>) => {
-            const { keyword, speed } = action.payload;
+        
+        addKeyword: (state, action: PayloadAction<{keyword: string; }>) => {
+            const { keyword } = action.payload;
             state.game.push({
                 y: 0,
-                speed: speed,
+                speed: state.speed,
                 keyword: keyword,
                 x: Math.floor(Math.random() * (550-50+1))+50,
                 a_effect: false,
@@ -85,7 +88,17 @@ export const typinggameSlice = createSlice({
                 c_effect: false,
             });
         },
+        updateSpeed: (state, action: PayloadAction<number>)=> {
+            state.speed = Math.max(state.speed + action.payload, 1);
+        },
+        updatePeriod: (state, action: PayloadAction<number>) => {
+            state.period = Math.max(state.period + action.payload, 1000);
+        },  
+        
         updateGame: (state, action: PayloadAction<{ lineHeight: number }>) => {
+            if (state.paused){
+                return;
+            }
             const lineHeight = action.payload.lineHeight;
             let shouldDecrementHeart = false;
 
@@ -112,10 +125,14 @@ export const typinggameSlice = createSlice({
                 state.point += 1;
             }
         },
+        resetTypingGame: (state) => {
+            Object.assign(state, initialState);
+        },
     },
 });
 
 
-export const { openTypinggameDialog, closeTypinggameDialog, addKeyword, updateGame, removeKeyword } = typinggameSlice.actions;
+export const { openTypinggameDialog, closeTypinggameDialog, addKeyword, updateGame, removeKeyword, resetTypingGame, pauseTypingGame, resumeTypingGame, updatePeriod, updateSpeed } = typinggameSlice.actions;
+
 
 export default typinggameSlice.reducer

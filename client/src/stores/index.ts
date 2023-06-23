@@ -15,7 +15,7 @@ const store = configureStore({
   reducer: {
     user: userReducer,
     computer: computerReducer,
-    typingGame: typinggameReducer,
+    typinggame : typinggameReducer,
     chat: chatReducer,
     room: roomReducer,
     molegame: moleGameReducer,

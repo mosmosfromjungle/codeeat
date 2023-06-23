@@ -2,9 +2,8 @@ import React, { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import typing_Background from "../../public/img/typinggame/blackboard.png"
 import styled from 'styled-components';
-import { addKeyword, updateGame, removeKeyword } from "../stores/TypingGameStore";
+import { addKeyword, updateGame, removeKeyword, openTypinggameDialog, closeTypinggameDialog, resetTypingGame, pauseTypingGame, resumeTypingGame, updatePeriod, updateSpeed } from "../stores/TypingGameStore";
 import * as Colyseus from "colyseus.js";
-
 
 export function TypingGame() {
     const keywordInput = useRef<HTMLInputElement>(null);
@@ -16,34 +15,32 @@ export function TypingGame() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (state.heart <= 0){
-            return;
-        }
-        // 초기 speed, period 설정
-        let speed = 0.5;
-        let period = 2000;
 
         // 7초마다 speed 변경, 최대 1
         const interval3 = setInterval(() => {
-            speed = Math.max(speed + 0.005, 1);
+            dispatch(updateSpeed(0.005));
         }, 7000);
         
         // 7초마다 period 변경, 최대 1000
         const interval4 = setInterval(() => {
-            period = Math.max(period - 50, 1000);
+            dispatch(updatePeriod(-50));
         }, 7000);
-
-        // period 마다 단어 생성
-        const interval1 = setInterval(() => {
+        
+        // 단어 생성 인터벌
+        const interval5 = () => {
             const randomIndex = Math.floor(Math.random() * state.keywordList.length);
             const keyword = state.keywordList[randomIndex];
-            dispatch(addKeyword({keyword, speed}));
-        },period);
+            dispatch(addKeyword(keyword));
+        };
+
+        // period 마다 단어 생성
+        let interval1 = setInterval(interval5, state.period);
 
         // 15ms 마다 게임 상태를 업데이트
         const interval2 = setInterval(() => {
             dispatch(updateGame({ lineHeight }));
         }, 15);
+        
     },[]);
 
     const removeNode = (keywordToRemove) => {
@@ -60,9 +57,16 @@ export function TypingGame() {
         }
     };
 
-    if (state.heart < 1) {
-        return <h1 style={{ textAlign: 'center' }}>게임 오버 :(</h1>;
 
+
+    if (state.heart < 1) {
+        return (
+            <>
+                <h1 style={{ textAlign: 'center' }}>게임 오버 :(</h1>
+                <button 
+                    onClick={}>종료하기</button>
+            </>
+        );    
     }
 
     if (state.point >= state.goal) {
