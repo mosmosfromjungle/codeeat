@@ -2,9 +2,9 @@ import { Schema, ArraySchema, SetSchema, MapSchema, type } from '@colyseus/schem
 import {
   IPlayer,
   IOfficeState,
-  IComputer,
-  ITypinggame,
   IMoleGame,
+  IBrickGame,
+  ITypingGame,
   IChatMessage,
 } from '../../../types/IOfficeState'
 
@@ -17,17 +17,16 @@ export class Player extends Schema implements IPlayer {
   @type('boolean') videoConnected = false
 }
 
-export class Computer extends Schema implements IComputer {
-  @type({ set: 'string' }) connectedUser = new SetSchema<string>()
-}
-
-export class Typinggame extends Schema implements ITypinggame {
-  @type('string') roomId = getRoomId()
+export class BrickGame extends Schema implements IBrickGame {
   @type({ set: 'string' }) connectedUser = new SetSchema<string>()
 }
 
 export class MoleGame extends Schema implements IMoleGame {
-  @type('string') roomId = getRoomId()
+  @type({ set: 'string' }) connectedUser = new SetSchema<string>()
+}
+
+export class TypingGame extends Schema implements ITypingGame {
+  // @type('string') roomId = getRoomId()
   @type({ set: 'string' }) connectedUser = new SetSchema<string>()
 }
 
@@ -40,35 +39,35 @@ export class ChatMessage extends Schema implements IChatMessage {
 export class OfficeState extends Schema implements IOfficeState {
   @type({ map: Player })
   players = new MapSchema<Player>()
-
-  @type({ map: Computer })
-  computers = new MapSchema<Computer>()
-
-  @type({ map: Typinggame })
-  typinggames = new MapSchema<Typinggame>()
-
+  
   @type({ map: MoleGame })
   molegames = new MapSchema<MoleGame>()
+  
+  @type({ map: BrickGame })
+  brickgames = new MapSchema<BrickGame>()
+
+  @type({ map: TypingGame })
+  typinggames = new MapSchema<TypingGame>()
 
   @type([ChatMessage])
   chatMessages = new ArraySchema<ChatMessage>()
 }
 
-export const typinggameRoomIds = new Set<string>()
-export const moleGameRoomIds = new Set<string>()
-const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-const charactersLength = characters.length
+// export const typinggameRoomIds = new Set<string>()
+// export const moleGameRoomIds = new Set<string>()
+// const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+// const charactersLength = characters.length
 
-function getRoomId() {
-  let result = ''
-  for (let i = 0; i < 12; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength))
-  }
-  if (!typinggameRoomIds.has(result)) {
-    typinggameRoomIds.add(result)
-    return result
-  } else {
-    console.log('roomId exists, remaking another one.')
-    getRoomId()
-  }
-}
+// function getRoomId() {
+//   let result = ''
+//   for (let i = 0; i < 12; i++) {
+//     result += characters.charAt(Math.floor(Math.random() * charactersLength))
+//   }
+//   if (!typinggameRoomIds.has(result)) {
+//     typinggameRoomIds.add(result)
+//     return result
+//   } else {
+//     console.log('roomId exists, remaking another one.')
+//     getRoomId()
+//   }
+// }

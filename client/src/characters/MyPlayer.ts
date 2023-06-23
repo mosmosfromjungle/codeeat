@@ -5,8 +5,9 @@ import { sittingShiftData } from './Player'
 import Player from './Player'
 import Network from '../services/Network'
 import Chair from '../items/Chair'
-import Computer from '../items/Computer'
-import Typinggame from '../items/Typinggame'
+
+import BrickGame from '../items/BrickGame'
+import TypingGame from '../items/TypingGame'
 import MoleGame from '../items/MoleGame'
 
 import { phaserEvents, Event } from '../events/EventCenter'
@@ -14,7 +15,7 @@ import store from '../stores'
 import { pushPlayerJoinedMessage } from '../stores/ChatStore'
 import { ItemType } from '../../../types/Items'
 import { NavKeys } from '../../../types/KeyboardState'
-import { JoystickMovement } from '../components/Joystick'
+import { JoystickMovement } from '../components/helperdialog/Joystick'
 import { openURL } from '../utils/helpers'
 
 export default class MyPlayer extends Player {
@@ -62,19 +63,14 @@ export default class MyPlayer extends Player {
 
     if (Phaser.Input.Keyboard.JustDown(keyR)) {
       switch (item?.itemType) {
-        case ItemType.COMPUTER:
-          const computer = item as Computer
-          computer.openDialog(this.playerId, network)
+        case ItemType.BRICKGAME:
+          const brickGame = item as BrickGame
+          brickGame.openDialog(network)
           break
         case ItemType.TYPINGGAME:
-          const typinggame = item as Typinggame
+          const typinggame = item as TypingGame
           typinggame.openDialog(network)
           break
-        // case ItemType.VENDINGMACHINE:
-        //   // hacky and hard-coded, but leaving it as is for now
-        //   const url = 'https://www.buymeacoffee.com/skyoffice'
-        //   openURL(url)
-        //   break
         case ItemType.MOLEGAME:
           const molegame = item as MoleGame
           molegame.openDialog(network)

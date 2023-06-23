@@ -26,6 +26,6 @@ const config: Phaser.Types.Core.GameConfig = {
 
 const phaserGame = new Phaser.Game(config);
 
-(window as any).game = phaserGame;
+(window as any).game = phaserGame
 
-export default phaserGame;
+export default phaserGame

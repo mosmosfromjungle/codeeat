@@ -1,24 +1,23 @@
 import { enableMapSet } from 'immer'
 import { configureStore } from '@reduxjs/toolkit'
 import userReducer from './UserStore'
-import computerReducer from './ComputerStore'
-import typinggameReducer from './TypingGameStore'
 import chatReducer from './ChatStore'
 import roomReducer from './RoomStore'
 import moleGameReducer from './MoleGameStore'
+import brickGameReducer from './BrickGameStore'
+import typingGameReducer from './TypingGameStore'
 
 enableMapSet()
-
-
 
 const store = configureStore({
   reducer: {
     user: userReducer,
-    computer: computerReducer,
-    typinggame : typinggameReducer,
     chat: chatReducer,
     room: roomReducer,
     molegame: moleGameReducer,
+    brickgame: brickGameReducer,
+    typinggame: typingGameReducer,
+
   },
   // Temporary disable serialize check for redux as we store MediaStream in ComputerStore.
   // https://stackoverflow.com/a/63244831

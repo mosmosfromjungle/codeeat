@@ -12815,7 +12815,7 @@
  <tileset firstgid="3432" name="Generic" tilewidth="32" tileheight="32" tilecount="1248" columns="16">
   <image source="../tileset/Generic.png" width="512" height="2496"/>
  </tileset>
- <tileset firstgid="4680" name="computer" tilewidth="96" tileheight="64" tilecount="5" columns="5">
+ <tileset firstgid="4680" name="brickgame" tilewidth="96" tileheight="64" tilecount="5" columns="5">
   <image source="../items/computer.png" width="480" height="64"/>
  </tileset>
  <tileset firstgid="4685" name="typinggame" tilewidth="64" tileheight="64" tilecount="3" columns="1">
@@ -13308,7 +13308,7 @@
   <object id="878" gid="4681" x="960" y="800" width="96" height="64"/>
   <object id="879" gid="4683" x="1152" y="800" width="96" height="64"/>
  </objectgroup>
- <objectgroup id="10" name="Typinggame">
+ <objectgroup id="10" name="TypingGame">
   <object id="880" gid="4685" x="928" y="320" width="64" height="64"/>
   <object id="881" gid="4686" x="832" y="96" width="64" height="64"/>
   <object id="1263" gid="4687" x="512" y="544" width="64" height="64"/>

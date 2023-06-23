@@ -2,10 +2,10 @@ import { useEffect, useLayoutEffect, useState } from 'react'
 import styled from 'styled-components'
 import JoystickItem from './Joystick'
 
-import phaserGame from '../PhaserGame'
-import Game from '../scenes/Game'
+import phaserGame from '../../PhaserGame'
+import Game from '../../scenes/Game'
 
-import { useAppSelector } from '../hooks'
+import { useAppSelector } from '../../hooks'
 import { JoystickMovement } from './Joystick'
 
 const Backdrop = styled.div`

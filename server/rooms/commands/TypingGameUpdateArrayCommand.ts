@@ -7,7 +7,7 @@ type Payload = {
   typinggameId: string
 }
 
-export class TypinggameAddUserCommand extends Command<IOfficeState, Payload> {
+export class TypingGameAddUserCommand extends Command<IOfficeState, Payload> {
   execute(data: Payload) {
     const { client, typinggameId } = data
     const typinggame = this.room.state.typinggames.get(typinggameId)
@@ -18,7 +18,7 @@ export class TypinggameAddUserCommand extends Command<IOfficeState, Payload> {
   }
 }
 
-export class TypinggameRemoveUserCommand extends Command<IOfficeState, Payload> {
+export class TypingGameRemoveUserCommand extends Command<IOfficeState, Payload> {
   execute(data: Payload) {
     const { client, typinggameId } = data
     const typinggame = this.state.typinggames.get(typinggameId)

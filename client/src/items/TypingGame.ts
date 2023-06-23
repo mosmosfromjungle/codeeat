@@ -2,16 +2,18 @@ import { ItemType } from '../../../types/Items'
 import store from '../stores'
 import Item from './Item'
 import Network from '../services/Network'
-import { openComputerDialog } from '../stores/ComputerStore'
+import { openTypingGameDialog } from '../stores/TypingGameStore'
+import { DIALOG_STATUS, setDialogStatus } from '../stores/UserStore'
 
-export default class Computer extends Item {
-  id?: string
+
+export default class TypingGame extends Item {
+  // id?: string
   currentUsers = new Set<string>()
 
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
     super(scene, x, y, texture, frame)
 
-    this.itemType = ItemType.COMPUTER
+    this.itemType = ItemType.TYPINGGAME
   }
 
   private updateStatus() {
@@ -27,7 +29,7 @@ export default class Computer extends Item {
 
   onOverlapDialog() {
     if (this.currentUsers.size === 0) {
-      this.setDialogBox('Press R to use computer')
+      this.setDialogBox('Press R to play the Whack a Typing')
     } else {
       this.setDialogBox('Press R join')
     }
@@ -36,26 +38,19 @@ export default class Computer extends Item {
   addCurrentUser(userId: string) {
     if (!this.currentUsers || this.currentUsers.has(userId)) return
     this.currentUsers.add(userId)
-    const computerState = store.getState().computer
-    if (computerState.computerId === this.id) {
-      computerState.shareScreenManager?.onUserJoined(userId)
-    }
     this.updateStatus()
   }
 
   removeCurrentUser(userId: string) {
     if (!this.currentUsers || !this.currentUsers.has(userId)) return
     this.currentUsers.delete(userId)
-    const computerState = store.getState().computer
-    if (computerState.computerId === this.id) {
-      computerState.shareScreenManager?.onUserLeft(userId)
-    }
     this.updateStatus()
   }
 
-  openDialog(playerId: string, network: Network) {
-    if (!this.id) return
-    store.dispatch(openComputerDialog({ computerId: this.id, myUserId: playerId }))
-    network.connectToComputer(this.id)
+  openDialog(network: Network) {
+    // if (!this.id) return
+    store.dispatch(openTypingGameDialog())
+    store.dispatch(setDialogStatus(DIALOG_STATUS.GAME_LOBBY))
+    // network.connectToTypingGame(this.id)
   }
 }

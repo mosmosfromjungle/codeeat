@@ -1,25 +1,23 @@
 import bcrypt from 'bcrypt'
 import { Room, Client, ServerError } from 'colyseus'
 import { Dispatcher } from '@colyseus/command'
-import { Player, OfficeState, Computer, Typinggame, MoleGame } from './schema/OfficeState'
 import { Message } from '../../types/Messages'
 import { IRoomData } from '../../types/Rooms'
-import { typinggameRoomIds } from './schema/OfficeState'
-// import { moleGameRoomIds } from './schema/OfficeState'
+import { Player, OfficeState, MoleGame, BrickGame, TypingGame } from './schema/OfficeState'
 import PlayerUpdateCommand from './commands/PlayerUpdateCommand'
 import PlayerUpdateNameCommand from './commands/PlayerUpdateNameCommand'
 import {
-  ComputerAddUserCommand,
-  ComputerRemoveUserCommand,
-} from './commands/ComputerUpdateArrayCommand'
-import {
-  TypinggameAddUserCommand,
-  TypinggameRemoveUserCommand,
-} from './commands/TypinggameUpdateArrayCommand'
+  BrickGameAddUserCommand,
+  BrickGameRemoveUserCommand,
+} from './commands/BrickGameUpdateArrayCommand'
 import {
   MoleGameAddUserCommand,
   MoleGameRemoveUserCommand,
 } from './commands/MoleGameUpdateArrayCommand'
+import {
+  TypingGameAddUserCommand,
+  TypingGameRemoveUserCommand,
+} from './commands/TypingGameUpdateArrayCommand'
 import ChatMessageUpdateCommand from './commands/ChatMessageUpdateCommand'
 
 export class SkyOffice extends Room<OfficeState> {
@@ -44,14 +42,14 @@ export class SkyOffice extends Room<OfficeState> {
 
     this.setState(new OfficeState())
 
-    // HARD-CODED: Add 5 computers in a room
-    for (let i = 0; i < 30; i++) {
-      this.state.computers.set(String(i), new Computer())
+    // HARD-CODED: Add 5 brickgames in a room
+    for (let i = 0; i < 5; i++) {
+      this.state.brickgames.set(String(i), new BrickGame())
     }
 
     // HARD-CODED: Add 3 typinggames in a room
     for (let i = 0; i < 30; i++) {
-      this.state.typinggames.set(String(i), new Typinggame())
+      this.state.typinggames.set(String(i), new TypingGame())
     }
 
     // HARD-CODED: Add 1 molegames in a room
@@ -59,47 +57,17 @@ export class SkyOffice extends Room<OfficeState> {
       this.state.molegames.set(String(i), new MoleGame())
     }
 
-    // when a player connect to a computer, add to the computer connectedUser array
-    this.onMessage(Message.CONNECT_TO_COMPUTER, (client, message: { computerId: string }) => {
-      this.dispatcher.dispatch(new ComputerAddUserCommand(), {
-        client,
-        computerId: message.computerId,
-      })
-    })
-
-    // when a player disconnect from a computer, remove from the computer connectedUser array
-    this.onMessage(Message.DISCONNECT_FROM_COMPUTER, (client, message: { computerId: string }) => {
-      this.dispatcher.dispatch(new ComputerRemoveUserCommand(), {
-        client,
-        computerId: message.computerId,
-      })
-    })
-
-    // when a player stop sharing screen
-    this.onMessage(Message.STOP_SCREEN_SHARE, (client, message: { computerId: string }) => {
-      const computer = this.state.computers.get(message.computerId)
-      computer.connectedUser.forEach((id) => {
-        this.clients.forEach((cli) => {
-          if (cli.sessionId === id && cli.sessionId !== client.sessionId) {
-            cli.send(Message.STOP_SCREEN_SHARE, client.sessionId)
-          }
-        })
-      })
-    })
-
     // when a player connect to a typinggame, add to the typinggame connectedUser array
     this.onMessage(Message.CONNECT_TO_TYPINGGAME, (client, message: { typinggameId: string }) => {
-      this.dispatcher.dispatch(new TypinggameAddUserCommand(), {
+      this.dispatcher.dispatch(new TypingGameAddUserCommand(), {
         client,
         typinggameId: message.typinggameId,
       })
     })
 
     // when a player disconnect from a typinggame, remove from the typinggame connectedUser array
-    this.onMessage(
-      Message.DISCONNECT_FROM_TYPINGGAME,
-      (client, message: { typinggameId: string }) => {
-        this.dispatcher.dispatch(new TypinggameRemoveUserCommand(), {
+    this.onMessage(Message.DISCONNECT_FROM_TYPINGGAME, (client, message: { typinggameId: string }) => {
+        this.dispatcher.dispatch(new TypingGameRemoveUserCommand(), {
           client,
           typinggameId: message.typinggameId,
         })
@@ -115,12 +83,27 @@ export class SkyOffice extends Room<OfficeState> {
     })
 
     // when a player disconnect from a molegame, remove from the molegame connectedUser array
-    this.onMessage(
-      Message.DISCONNECT_FROM_MOLEGAME,
-      (client, message: { moleGameId: string }) => {
+    this.onMessage(Message.DISCONNECT_FROM_MOLEGAME, (client, message: { moleGameId: string }) => {
         this.dispatcher.dispatch(new MoleGameRemoveUserCommand(), {
           client,
           moleGameId: message.moleGameId,
+        })
+      }
+    )
+
+    // when a player connect to a brickgame, add to the brickgame connectedUser array
+    this.onMessage(Message.CONNECT_TO_BRICKGAME, (client, message: { brickGameId: string }) => {
+      this.dispatcher.dispatch(new BrickGameAddUserCommand(), {
+        client,
+        brickGameId: message.brickGameId,
+      })
+    })
+
+    // when a player disconnect from a brickgame, remove from the brickgame connectedUser array
+    this.onMessage(Message.DISCONNECT_FROM_BRICKGAME, (client, message: { brickGameId: string }) => {
+        this.dispatcher.dispatch(new BrickGameRemoveUserCommand(), {
+          client,
+          brickGameId: message.brickGameId,
         })
       }
     )
@@ -207,9 +190,9 @@ export class SkyOffice extends Room<OfficeState> {
     if (this.state.players.has(client.sessionId)) {
       this.state.players.delete(client.sessionId)
     }
-    this.state.computers.forEach((computer) => {
-      if (computer.connectedUser.has(client.sessionId)) {
-        computer.connectedUser.delete(client.sessionId)
+    this.state.brickgames.forEach((brickgame) => {
+      if (brickgame.connectedUser.has(client.sessionId)) {
+        brickgame.connectedUser.delete(client.sessionId)
       }
     })
     this.state.typinggames.forEach((typinggame) => {

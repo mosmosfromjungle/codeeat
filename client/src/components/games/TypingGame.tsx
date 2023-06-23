@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from "react";
-import { useSelector, useDispatch } from 'react-redux';
-import typing_Background from "../../public/img/typinggame/blackboard.png"
 import styled from 'styled-components';
-import { addKeyword, updateGame, removeKeyword, openTypinggameDialog, closeTypinggameDialog, resetTypingGame, pauseTypingGame, resumeTypingGame, updatePeriod, updateSpeed } from "../stores/TypingGameStore";
+import typing_Background from "../../../public/assets/game/typinggame/blackboard.png"
+import { useSelector, useDispatch } from 'react-redux';
+import { addKeyword, updateGame, removeKeyword } from "../../stores/TypingGameStore";
 import * as Colyseus from "colyseus.js";
 
 export function TypingGame() {
