@@ -6,7 +6,7 @@ import { createCharacterAnims } from '../anims/CharacterAnims'
 import Item from '../items/Item'
 import Chair from '../items/Chair'
 import Computer from '../items/Computer'
-import Whiteboard from '../items/Whiteboard'
+import Typinggame from '../items/Typinggame'
 import VendingMachine from '../items/VendingMachine'
 import MoleGame from '../items/MoleGame'
 import FaceChat from '../items/FaceChat'
@@ -39,7 +39,7 @@ export default class Game extends Phaser.Scene {
   private otherPlayers!: Phaser.Physics.Arcade.Group
   private otherPlayerMap = new Map<string, OtherPlayer>()
   computerMap = new Map<string, Computer>()
-  private whiteboardMap = new Map<string, Whiteboard>()
+  private typinggameMap = new Map<string, Typinggame>()
   private molegameMap = new Map<String, MoleGame>()
   private facechatMap = new Map<String, FaceChat>()
 
@@ -216,19 +216,19 @@ export default class Game extends Phaser.Scene {
       this.computerMap.set(id, item)
     })
 
-    // // import whiteboards objects from Tiled map to Phaser
-    const whiteboards = this.physics.add.staticGroup({ classType: Whiteboard })
-    const whiteboardLayer = this.map.getObjectLayer('bench')
-    whiteboardLayer.objects.forEach((obj, i) => {
+    // // import typinggams objects from Tiled map to Phaser
+    const typinggames = this.physics.add.staticGroup({ classType: Typinggame })
+    const typinggameLayer = this.map.getObjectLayer('bench')
+    typinggameLayer.objects.forEach((obj, i) => {
       const item = this.addObjectFromTiled(
-        whiteboards,
+        typinggames,
         obj,
         'bench',
         'bench'
-      ) as Whiteboard
+      ) as Typinggame
       const id = `${i}`
       item.id = id
-      this.whiteboardMap.set(id, item)
+      this.typinggameMap.set(id, item)
     })
 
     // // import vending machine objects from Tiled map to Phaser
@@ -289,7 +289,7 @@ export default class Game extends Phaser.Scene {
     // 상호작용 추가하는 부분..?
     this.physics.add.overlap(
       this.playerSelector,
-      [chairs, molegames, whiteboards, computers, facechats],
+      [chairs, molegames, typinggames, computers, facechats],
       this.handleItemSelectorOverlap,
       undefined,
       this
@@ -404,9 +404,9 @@ export default class Game extends Phaser.Scene {
       const computer = this.computerMap.get(itemId)
       computer?.addCurrentUser(playerId)
 
-    } else if (itemType === ItemType.WHITEBOARD) {
-      const whiteboard = this.whiteboardMap.get(itemId)
-      whiteboard?.addCurrentUser(playerId)
+    } else if (itemType === ItemType.TYPINGGAME) {
+      const typinggame = this.typinggameMap.get(itemId)
+      typinggame?.addCurrentUser(playerId)
 
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
@@ -423,9 +423,9 @@ export default class Game extends Phaser.Scene {
       const computer = this.computerMap.get(itemId)
       computer?.removeCurrentUser(playerId)
 
-    } else if (itemType === ItemType.WHITEBOARD) {
-      const whiteboard = this.whiteboardMap.get(itemId)
-      whiteboard?.removeCurrentUser(playerId)
+    } else if (itemType === ItemType.TYPINGGAME) {
+      const typinggame = this.typinggameMap.get(itemId)
+      typinggame?.removeCurrentUser(playerId)
 
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)

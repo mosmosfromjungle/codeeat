@@ -1,146 +1,104 @@
-import { url } from "inspector";
-import React, { useState, useEffect, useRef } from "react";
-import styled, { createGlobalStyle } from 'styled-components';
-import Background from "../scenes/Background";
+import React, { useEffect, useRef } from "react";
+import { useSelector, useDispatch } from 'react-redux';
 import typing_Background from "../../public/img/typinggame/blackboard.png"
+import styled from 'styled-components';
+import { addKeyword, updateGame, removeKeyword } from "../stores/TypingGameStore";
+import * as Colyseus from "colyseus.js";
 
-
-const GlobalStyle = createGlobalStyle`
-  @font-face {
-    font-family: 'CustomFont';
-    src: url('/assets/fonts/neodgm_code.woff') format('woff');
-  }
-
-  body {
-    font-family: 'CustomFont', sans-serif;
-    font-size: 24px;
-    color : #000000;
-  }
-`;
-
-
-interface KeywordRain {
-    y: number;
-    speed: number;
-    keyword: string;
-    x: number;
-}
 
 export function TypingGame() {
-    const [game, setGame] = useState<KeywordRain[]>([]);
-    const [point, setPoint] = useState<number>(0);
-    const [heart, setHeart] = useState<number>(5);
-    const [level, setLevel] = useState<number>(1);
-    const [goal, setGoal] = useState<number>(10);
-    const [keywordList, setKeywordList] = useState<string[]>([
-        "abs",
-        "print",
-        "list",
-        "row",
-        "col",
-        "set",
-        "style",
-        "font",
-        "div",
-        "h1",
-        "h2",
-        "body"
-    ]);
     const keywordInput = useRef<HTMLInputElement>(null);
     const canvasHeight = 1170;
     const lineHeight = canvasHeight - 500;
 
+    const state = useSelector((state: any) => state.typingGame)
+
+    const dispatch = useDispatch();
+
     useEffect(() => {
+        if (state.heart <= 0){
+            return;
+        }
+        // 초기 speed, period 설정
+        let speed = 0.5;
+        let period = 2000;
+
+        // 7초마다 speed 변경, 최대 1
+        const interval3 = setInterval(() => {
+            speed = Math.max(speed + 0.005, 1);
+        }, 7000);
+        
+        // 7초마다 period 변경, 최대 1000
+        const interval4 = setInterval(() => {
+            period = Math.max(period - 50, 1000);
+        }, 7000);
+
+        // period 마다 단어 생성
         const interval1 = setInterval(() => {
-            const keyword =
-                keywordList[Math.floor(Math.random() * keywordList.length)];
-            setGame((game) => [
-                ...game,
-                { y: 0, speed: Math.random() * 2, keyword, x: Math.random() * 800},
-            ]);
-        }, 1000);
+            const randomIndex = Math.floor(Math.random() * state.keywordList.length);
+            const keyword = state.keywordList[randomIndex];
+            dispatch(addKeyword({keyword, speed}));
+        },period);
 
+        // 15ms 마다 게임 상태를 업데이트
         const interval2 = setInterval(() => {
-            setGame((game) =>
-                game.map((item) => {
-                    const newY = item.y + item.speed;
-                    if (newY > lineHeight && item.y <= lineHeight) {
-                        setHeart(prevHeart => prevHeart - 1);
-                    }
-                    return { ...item, y: newY }
-                })
-            );
+            dispatch(updateGame({ lineHeight }));
         }, 15);
+    },[]);
 
-        return () => {
-            clearInterval(interval1);
-            clearInterval(interval2);
-        };
-    }, [keywordList]);
-
-    const removeNode = (keywordToRemove: string) => {
-        setGame((game) => game.filter((item) => item.keyword !== keywordToRemove));
-        setKeywordList((keywords) =>
-            keywords.filter((keyword) => keyword !== keywordToRemove)
-        );
+    const removeNode = (keywordToRemove) => {
+        dispatch(removeKeyword(keywordToRemove));
     };
 
-    const keydown = (keyCode: number) => {
+    const keydown = (keyCode) => {
         if (keyCode === 13 && keywordInput.current) {
             const text = keywordInput.current.value;
-            if (keywordList.includes(text)) {
+            if (state.keywordList.includes(text)) {
                 removeNode(text);
-                setPoint(point + 1);
-
-                setKeywordList((prevKeywords) =>
-                    prevKeywords.filter(keyword => keyword !== text)
-                );
-
             }
-            keywordInput.current.value = "";
+            keywordInput.current.value = '';
         }
     };
 
-    if (heart < 1) {
-        return <h1 style={{textAlign: "center"}}>게임 오버 :(</h1>;
+    if (state.heart < 1) {
+        return <h1 style={{ textAlign: 'center' }}>게임 오버 :(</h1>;
+
     }
 
-    if (point >= goal) {
-        return <h1 style={{ textAlign: "center"}}>성공!</h1>;
+    if (state.point >= state.goal) {
+        return <h1 style={{ textAlign: 'center' }}>성공!</h1>;
     }
 
     return (
         <>
-            <GlobalStyle />
             <div>
                 <div style={{
-                    width: "1250px", height: lineHeight,
-                    backgroundImage : `url(${typing_Background})`,
-                    backgroundSize : "cover",
-                    backgroundPositionY : "-63px",
+                    width: "100%", height: lineHeight,
+                    backgroundImage: `url(${typing_Background})`,
+                    backgroundSize: "50%",
                     backgroundRepeat: "no-repeat",
                     position: "relative",
                     overflow: "hidden",
-                    borderBottom: "2px solid white"
+                    borderBottom: "10px solid white"
                 }}>
-                    {game.map((item, index) => (
-                        <h5 
-                            key={index} 
+                    {state.game.map((item, index) => (
+                        <h5
+                            key={index}
                             style={{
-                                position: "absolute", 
-                                fontFamily : 'CustomFont',
-                                fontSize : 25,
-                                letterSpacing :'3px',
-                                top: item.y, 
-                                left: item.x, 
-                                color : '#FFFFFF',
-                                backgroundImage : '',
-                                backgroundSize : '100px 100px',
-                                }}>
+                                position: "absolute",
+                                fontFamily: 'CustomFont',
+                                fontSize: 25,
+                                letterSpacing: '3px',
+                                top: item.y,
+                                left: item.x,
+                                color: '#FFFFFF',
+                                backgroundImage: '',
+                                backgroundSize: '10px 10px',
+                            }}>
                             {item.keyword}
                         </h5>
                     ))}
-        
+
                 </div>
 
 
@@ -151,10 +109,12 @@ export function TypingGame() {
                         onKeyPress={(e) => keydown(e.charCode)}
                     />
                     <button onClick={() => keydown(13)}>입력</button>
-                    <span style={{ marginRight: "10px" }}>점수: {point}</span>
-                    <span style={{ marginLeft: "10px" }}>Coin: {heart}</span>
+                    <span style={{ marginRight: "10px" }}>점수: {state.point}</span>
+                    <span style={{ marginLeft: "10px" }}>Coin: {state.heart}</span>
                 </div>
             </div>
         </>
     );
 }
+
+export default TypingGame;

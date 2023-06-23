@@ -11,7 +11,7 @@ import JoinDialog from './components/entrydialog/JoinDialog'
 import WelcomeDialog from './components/entrydialog/WelcomeDialog'
 
 import ComputerDialog from './components/ComputerDialog'
-import WhiteboardDialog from './components/WhiteboardDialog'
+import TypingGameDialog from './components/TypingGameDialog'
 import MoleGameDialog from './components/MoleGameDialog'
 import VideoConnectionDialog from './components/VideoConnectionDialog'
 import HelperButtonGroup from './components/HelperButtonGroup'
@@ -51,7 +51,7 @@ function App() {
   const videoConnected = useAppSelector((state) => state.user.videoConnected)
   const audioConnected = useAppSelector((state) => state.user.audioConnected)
   const computerDialogOpen = useAppSelector((state) => state.computer.computerDialogOpen)
-  const whiteboardDialogOpen = useAppSelector((state) => state.whiteboard.whiteboardDialogOpen)
+  const typinggameDialogOpen = useAppSelector((state) => state.typingGame.typingGameDialogOpen)
   const moleGameDialogOpen = useAppSelector((state) => state.molegame.moleGameDialogOpen)
 
   // ↓ HelperButtonGroup Dialog
@@ -83,8 +83,8 @@ function App() {
   if (entered) {
     if (computerDialogOpen) {
       ui = <ComputerDialog />
-    } else if (whiteboardDialogOpen) {
-      ui = <WhiteboardDialog />
+    } else if (typinggameDialogOpen) {
+      ui = <TypingGameDialog />
     } else if (moleGameDialogOpen) {
       ui = <MoleGameDialog />
     } else if (showChat) {
@@ -120,9 +120,9 @@ function App() {
   return (
     <Backdrop>
       {ui}
-      {/* Render HelperButtonGroup, ProfileButton, VersionButton if no dialogs are opened. */}
-      {!computerDialogOpen && !whiteboardDialogOpen && !moleGameDialogOpen && <HelperButtonGroup />}
-      {!computerDialogOpen && !whiteboardDialogOpen && !moleGameDialogOpen && <ProfileButton />}
+      {/* Render HelperButtonGroup, ProfileButton if no dialogs are opened. */}
+      {!computerDialogOpen && !typinggameDialogOpen && !moleGameDialogOpen && <HelperButtonGroup />}
+      {!computerDialogOpen && !typinggameDialogOpen && !moleGameDialogOpen && <ProfileButton />}
       {<GlobalFont />}
     </Backdrop>
   )

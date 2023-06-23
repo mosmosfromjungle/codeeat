@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 import { Client, Room } from 'colyseus.js'
-import { IComputer, IOfficeState, IPlayer, IWhiteboard, IMoleGame } from '../../../types/IOfficeState'
+import { IComputer, IOfficeState, IPlayer, ITypinggame, IMoleGame } from '../../../types/IOfficeState'
 import { Message } from '../../../types/Messages'
 import { IRoomData, RoomType } from '../../../types/Rooms'
 import { ItemType } from '../../../types/Items'
@@ -21,7 +21,8 @@ import {
   pushPlayerJoinedMessage,
   pushPlayerLeftMessage,
 } from '../stores/ChatStore'
-import { setWhiteboardUrls } from '../stores/WhiteboardStore'
+import { FacebookInstantGamesLeaderboard } from 'phaser'
+
 
 export default class Network {
   private client: Client
@@ -86,7 +87,7 @@ export default class Network {
       name,
       description,
       password,
-      autoDispose,
+      autoDispose:false,
     })
     this.initialize()
   }
@@ -140,22 +141,23 @@ export default class Network {
       }
     }
 
-    // new instance added to the whiteboards MapSchema
-    this.room.state.whiteboards.onAdd = (whiteboard: IWhiteboard, key: string) => {
-      store.dispatch(
-        setWhiteboardUrls({
-          whiteboardId: key,
-          roomId: whiteboard.roomId,
-        })
-      )
-      // track changes on every child object's connectedUser
-      whiteboard.connectedUser.onAdd = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.WHITEBOARD)
-      }
-      whiteboard.connectedUser.onRemove = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.WHITEBOARD)
-      }
-    }
+    // new instance added to the typinggames MapSchema
+    // 준코 : 산성비게임으로 변경
+    // this.room.state.typinggames.onAdd = (typinggame: ITypinggame, key: string) => {
+    //   store.dispatch(
+    //     setTypinggameUrls({
+    //       typinggameId: key,
+    //       roomId: typinggame.roomId,
+    //     })
+    //   )
+    //   // track changes on every child object's connectedUser
+    //   typinggame.connectedUser.onAdd = (item, index) => {
+    //     phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.TYPINGGAME)
+    //   }
+    //   typinggame.connectedUser.onRemove = (item, index) => {
+    //     phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.TYPINGGAME)
+    //   }
+    //}
 
     // new instance added to the molegames MapSchema
     this.room.state.molegames.onAdd = (molegame: IMoleGame, key: string) => {
@@ -280,12 +282,12 @@ export default class Network {
     this.room?.send(Message.DISCONNECT_FROM_COMPUTER, { computerId: id })
   }
 
-  connectToWhiteboard(id: string) {
-    this.room?.send(Message.CONNECT_TO_WHITEBOARD, { whiteboardId: id })
+  connectToTypinggame(id: string) {
+    this.room?.send(Message.CONNECT_TO_TYPINGGAME, { typinggameId: id })
   }
 
-  disconnectFromWhiteboard(id: string) {
-    this.room?.send(Message.DISCONNECT_FROM_WHITEBOARD, { whiteboardId: id })
+  disconnectFromTypinggame(id: string) {
+    this.room?.send(Message.DISCONNECT_FROM_TYPINGGAME, { typinggameId: id })
   }
 
   onStopScreenShare(id: string) {

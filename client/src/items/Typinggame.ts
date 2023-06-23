@@ -2,16 +2,16 @@ import { ItemType } from '../../../types/Items'
 import store from '../stores'
 import Item from './Item'
 import Network from '../services/Network'
-import { openWhiteboardDialog } from '../stores/WhiteboardStore'
+import { openTypinggameDialog } from '../stores/TypingGameStore'
 
-export default class Whiteboard extends Item {
+export default class Typinggame extends Item {
   id?: string
   currentUsers = new Set<string>()
 
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
     super(scene, x, y, texture, frame)
 
-    this.itemType = ItemType.WHITEBOARD
+    this.itemType = ItemType.TYPINGGAME
   }
 
   private updateStatus() {
@@ -27,7 +27,7 @@ export default class Whiteboard extends Item {
 
   onOverlapDialog() {
     if (this.currentUsers.size === 0) {
-      this.setDialogBox('Press R to use whiteboard')
+      this.setDialogBox('Press R to play typinggame')
     } else {
       this.setDialogBox('Press R join')
     }
@@ -47,7 +47,7 @@ export default class Whiteboard extends Item {
 
   openDialog(network: Network) {
     if (!this.id) return
-    store.dispatch(openWhiteboardDialog(this.id))
-    network.connectToWhiteboard(this.id)
+    store.dispatch(openTypinggameDialog(this.id))
+    network.connectToTypinggame(this.id)
   }
 }

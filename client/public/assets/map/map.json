@@ -3876,7 +3876,7 @@
         {
          "draworder":"topdown",
          "id":10,
-         "name":"Whiteboard",
+         "name":"Typinggame",
          "objects":[
                 {
                  "gid":4685,
@@ -27373,7 +27373,7 @@
          "imageheight":192,
          "imagewidth":64,
          "margin":0,
-         "name":"whiteboard",
+         "name":"typinggame",
          "spacing":0,
          "tilecount":3,
          "tileheight":64,

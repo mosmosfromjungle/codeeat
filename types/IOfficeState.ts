@@ -13,7 +13,7 @@ export interface IComputer extends Schema {
   connectedUser: SetSchema<string>
 }
 
-export interface IWhiteboard extends Schema {
+export interface ITypinggame extends Schema {
   roomId: string
   connectedUser: SetSchema<string>
 }
@@ -32,7 +32,7 @@ export interface IChatMessage extends Schema {
 export interface IOfficeState extends Schema {
   players: MapSchema<IPlayer>
   computers: MapSchema<IComputer>
-  whiteboards: MapSchema<IWhiteboard>
+  typinggames: MapSchema<ITypinggame>
   molegames: MapSchema<IMoleGame>
   chatMessages: ArraySchema<IChatMessage>
 }
