@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import styled from 'styled-components';
 import typing_Background from "../../../public/assets/game/typinggame/blackboard.png"
 import { useSelector, useDispatch } from 'react-redux';
-import { addKeyword, updateGame, removeKeyword } from "../../stores/TypingGameStore";
+import { addKeyword, updateGame, removeKeyword, updatePeriod, updateSpeed } from "../../stores/TypingGameStore";
 import * as Colyseus from "colyseus.js";
 
 export function TypingGame() {
@@ -63,8 +63,8 @@ export function TypingGame() {
         return (
             <>
                 <h1 style={{ textAlign: 'center' }}>게임 오버 :(</h1>
-                <button 
-                    onClick={}>종료하기</button>
+                {/* <button 
+                    onClick={}>종료하기</button> */}
             </>
         );    
     }
