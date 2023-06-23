@@ -4,4 +4,5 @@ export enum ItemType {
   WHITEBOARD,
   VENDINGMACHINE,
   MOLEGAME,
+  FACECHAT,
 }
