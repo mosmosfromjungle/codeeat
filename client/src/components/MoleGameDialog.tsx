@@ -5,6 +5,7 @@ import CloseIcon from '@mui/icons-material/Close'
 
 import { useAppSelector, useAppDispatch } from '../hooks'
 import { closeMoleGameDialog } from '../stores/MoleGameStore'
+import { DIALOG_STATUS, setDialogStatus } from '../stores/UserStore'
 
 import ButtonBGM from '/assets/audios/mole_button.mp3';
 import CorrectBGM from '/assets/audios/mole_correct.mp3';
@@ -12,6 +13,8 @@ import WrongBGM from '/assets/audios/mole_wrong.mp3';
 import FinishBGM from '/assets/audios/mole_finish.mp3';
 
 import './MoleGame.css'
+import phaserGame from '../PhaserGame'
+import Bootstrap from '../scenes/Bootstrap'
 
 const Backdrop = styled.div`
   position: fixed;
@@ -476,8 +479,15 @@ export default function MoleGameDialog() {
 
   // 6. Close
 
-  const handleClose = () => {
-    dispatch(closeMoleGameDialog());
+  const handleClose = async () => {
+    try {
+      const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
+      bootstrap.network.leaveGameRoom()
+      dispatch(closeMoleGameDialog())
+      dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
+    } catch (error) {
+      console.error('Error leaving the room:', error)
+    }
   }
   
   return (

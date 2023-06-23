@@ -8,7 +8,7 @@ import phaserGame from '../../PhaserGame'
 import Bootstrap from '../../scenes/Bootstrap'
 
 import { useAppSelector, useAppDispatch } from '../../hooks'
-import { ENTRY_PROCESS, setEntryProcess } from '../../stores/UserStore'
+import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore'
 
 
 const Backdrop = styled.div`
@@ -90,11 +90,11 @@ export default function EntryDialog() {
   }
 
   const gotoLoginPage = () => {
-    dispatch(setEntryProcess(ENTRY_PROCESS.LOGIN))
+    dispatch(setDialogStatus(DIALOG_STATUS.LOGIN))
   }
 
   const gotoJoinPage = () => {
-    dispatch(setEntryProcess(ENTRY_PROCESS.JOIN))
+    dispatch(setDialogStatus(DIALOG_STATUS.JOIN))
   }
 
   return (

@@ -14,7 +14,7 @@ import Lucy from '../../images/login/Lucy_login.png'
 import Nancy from '../../images/login/Nancy_login.png'
 
 import { useAppDispatch } from '../../hooks'
-import { ENTRY_PROCESS, setEntryProcess } from '../../stores/UserStore'
+import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore'
 import { JoinRequest, join } from '../../apicalls/auth'
 
 
@@ -162,7 +162,7 @@ export default function JoinDialog() {
       }
       join(body).then((response) => {
         if (response.status === 200) {
-          dispatch(setEntryProcess(ENTRY_PROCESS.LOGIN))
+          dispatch(setDialogStatus(DIALOG_STATUS.LOGIN))
         }
       }).catch((error) => {
         if (error.response) {

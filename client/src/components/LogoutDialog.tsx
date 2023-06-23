@@ -20,6 +20,10 @@ export default function AlertDialog() {
     dispatch(setShowLogout(false))
   };
 
+  const handleLogout = () => {
+    window.location.href = '/';
+  }
+
   return (
     <div>
       <Dialog
@@ -37,7 +41,7 @@ export default function AlertDialog() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} autoFocus>예</Button>
+          <Button onClick={handleLogout} autoFocus>예</Button>
           <Button onClick={handleClose}>아니요</Button>
         </DialogActions>
       </Dialog>

@@ -6,6 +6,8 @@ import whiteboardReducer from './WhiteboardStore'
 import chatReducer from './ChatStore'
 import roomReducer from './RoomStore'
 import moleGameReducer from './MoleGameStore'
+import brickGameReducer from './BrickGameStore'
+import rainGameReducer from './RainGameStore'
 
 enableMapSet()
 
@@ -17,6 +19,9 @@ const store = configureStore({
     chat: chatReducer,
     room: roomReducer,
     molegame: moleGameReducer,
+    brickgame: brickGameReducer,
+    raingame: rainGameReducer,
+
   },
   // Temporary disable serialize check for redux as we store MediaStream in ComputerStore.
   // https://stackoverflow.com/a/63244831

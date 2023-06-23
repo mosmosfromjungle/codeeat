@@ -132,8 +132,8 @@ function getRandomIntInclusive(min, max) {
 
 export default function ComputerDialog() {
   const dispatch = useAppDispatch()
-  const game = phaserGame.scene.keys.game as Game;
-  const socketNetwork = game.network2
+  // const game = phaserGame.scene.keys.game as Game;
+  // const socketNetwork = game.network2
 
   const userId = useAppSelector((state) => state.user.userId);
   // const playerNameMap = useAppSelector((state) => state.user.playerNameMap)
@@ -314,7 +314,10 @@ export default function ComputerDialog() {
     setImages([...originalImages])
     setSelectedOption('')
   }
+
   let players = [{name:'a', score: 10}, {name:'b', score:20}, {name:'c',score:30}]
+
+  
   return (
     
     <>
@@ -324,14 +327,14 @@ export default function ComputerDialog() {
 
         <Wrapper>
           <div id='container'>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-        {players.map((player, index) => (
-          <div key={index} style={{ marginLeft: '10px', textAlign: 'center' }}>
-          <div>{player.name} {player.score}</div>
-        </div>
-          ))}
-        </div>
-        </div>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              {players.map((player, index) => (
+                <div key={index} style={{ marginLeft: '10px', textAlign: 'center' }}>
+                  <div>{player.name} {player.score}</div>
+                </div>
+              ))}
+            </div>
+          </div>
           <div style={{ fontSize: '40px' }}>
             몬스터 줄세우기!<br></br>
             <br></br>

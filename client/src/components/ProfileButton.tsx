@@ -8,7 +8,7 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 
-import { setShowProfile } from '../stores/UserStore'
+import { setShowProfile, DIALOG_STATUS } from '../stores/UserStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
 
 const Backdrop = styled.div`
@@ -23,7 +23,7 @@ export default function ProfileButton() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const chatMessages = useAppSelector((state) => state.chat.chatMessages)
-  const entered = useAppSelector((state) => state.user.entered)
+  const dialogStatus = useAppSelector((state) => state.user.dialogStatus)
   const roomJoined = useAppSelector((state) => state.room.roomJoined)
   const focused = useAppSelector((state) => state.chat.focused)
   const showProfile = useAppSelector((state) => state.user.showProfile)
@@ -50,7 +50,7 @@ export default function ProfileButton() {
 
   return (
     <Backdrop>
-      {roomJoined && entered && (
+      {roomJoined && dialogStatus === DIALOG_STATUS.IN_MAIN && (
         <Button
           onClick={() => showProfile ? (
             dispatch(setShowProfile(false))

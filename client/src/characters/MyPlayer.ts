@@ -5,9 +5,11 @@ import { sittingShiftData } from './Player'
 import Player from './Player'
 import Network from '../services/Network'
 import Chair from '../items/Chair'
-import Computer from '../items/Computer'
-import Whiteboard from '../items/Whiteboard'
+// import Computer from '../items/Computer'
+// import Whiteboard from '../items/Whiteboard'
+import BrickGame from '../items/BrickGame'
 import MoleGame from '../items/MoleGame'
+import RainGame from '../items/RainGame'
 
 import { phaserEvents, Event } from '../events/EventCenter'
 import store from '../stores'
@@ -62,18 +64,13 @@ export default class MyPlayer extends Player {
 
     if (Phaser.Input.Keyboard.JustDown(keyR)) {
       switch (item?.itemType) {
-        case ItemType.COMPUTER:
-          const computer = item as Computer
-          computer.openDialog(this.playerId, network)
+        case ItemType.BRICKGAME:
+          const brickGame = item as BrickGame
+          brickGame.openDialog(network)
           break
-        case ItemType.WHITEBOARD:
-          const whiteboard = item as Whiteboard
-          whiteboard.openDialog(network)
-          break
-        case ItemType.VENDINGMACHINE:
-          // hacky and hard-coded, but leaving it as is for now
-          const url = 'https://www.buymeacoffee.com/skyoffice'
-          openURL(url)
+        case ItemType.RAINGAME:
+          const rainGame = item as RainGame
+          rainGame.openDialog(network)
           break
         case ItemType.MOLEGAME:
           const molegame = item as MoleGame

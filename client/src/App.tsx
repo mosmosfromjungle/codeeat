@@ -3,12 +3,16 @@ import styled from 'styled-components'
 import axios from 'axios'
 
 import { useAppSelector, useAppDispatch } from './hooks'
-import { ENTRY_PROCESS, setEntryProcess } from './stores/UserStore'
+import { DIALOG_STATUS, setEntryProcess } from './stores/UserStore'
 
 import EntryDialog from './components/entrydialog/EntryDialog'
 import LoginDialog from './components/entrydialog/LoginDialog'
 import JoinDialog from './components/entrydialog/JoinDialog'
 import WelcomeDialog from './components/entrydialog/WelcomeDialog'
+
+import GameLobbyDialog from './components/gamedialog/GameLobbyDialog'
+import GameWelcomeDialog from './components/gamedialog/GameWelcomeDialog'
+
 
 import ComputerDialog from './components/ComputerDialog'
 import WhiteboardDialog from './components/WhiteboardDialog'
@@ -45,13 +49,19 @@ const Backdrop = styled.div`
 `
 
 function App() {
-  const entryProcess = useAppSelector((state) => state.user.entryProcess)
-  const entered = useAppSelector((state) => state.user.entered)
+  const dialogStatus = useAppSelector((state) => state.user.dialogStatus)
+  // const entryProcess = useAppSelector((state) => state.user.entryProcess)
+  // const entered = useAppSelector((state) => state.user.entered)
+  // const gameEntered = useAppSelector((state) => state.user.gameEntered)
+  // const gameWelcome = useAppSelector((state) => state.user.gameWelcome)
   const videoConnected = useAppSelector((state) => state.user.videoConnected)
   const audioConnected = useAppSelector((state) => state.user.audioConnected)
-  const computerDialogOpen = useAppSelector((state) => state.computer.computerDialogOpen)
-  const whiteboardDialogOpen = useAppSelector((state) => state.whiteboard.whiteboardDialogOpen)
-  const moleGameDialogOpen = useAppSelector((state) => state.molegame.moleGameDialogOpen)
+  // const computerDialogOpen = useAppSelector((state) => state.computer.computerDialogOpen)
+  // const whiteboardDialogOpen = useAppSelector((state) => state.whiteboard.whiteboardDialogOpen)
+  // const moleGameDialogOpen = useAppSelector((state) => state.molegame.moleGameDialogOpen)
+  const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
+  const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
+  const rainGameOpen = useAppSelector((state) => state.raingame.rainGameOpen)
 
   // ↓ HelperButtonGroup Dialog
   const showChat = useAppSelector((state) => state.chat.showChat)
@@ -64,62 +74,57 @@ function App() {
 
   const dispatch = useAppDispatch()
 
-  useEffect(() => {
-    // 첫 렌더링 시, refresh token이 있다면 token 인증을 통해 entry 상태를 설정 // TODO: cookie 가져오는 부분 해결 필요 
-    // const refreshToken = cookies.get('refreshToken');
-    // console.log('refresh token: ', refreshToken)
-    // if (refreshToken) { 
-    authenticateUser().then((result) => {
-      if (result.status === 200) {
-        dispatch(setEntryProcess(ENTRY_PROCESS.WELCOME));
-      }
-    })
-    // }
-  }, [])
+  // TODO: cookie 가져오는 부분 해결 필요 
+  // useEffect(() => {
+  //   // 첫 렌더링 시, refresh token이 있다면 token 인증을 통해 entry 상태를 설정 
+  //   // const refreshToken = cookies.get('refreshToken');
+  //   // console.log('refresh token: ', refreshToken)
+  //   // if (refreshToken) { 
+  //   authenticateUser().then((result) => {
+  //     if (result.status === 200) {
+  //       dispatch(setEntryProcess(ENTRY_PROCESS.WELCOME));
+  //     }
+  //   })
+  //   // }
+  // }, [])
 
   let ui: JSX.Element
-  if (entered) {
-    if (computerDialogOpen) {
-      ui = <ComputerDialog />
-    } else if (whiteboardDialogOpen) {
-      ui = <WhiteboardDialog />
-    } else if (moleGameDialogOpen) {
-      ui = <MoleGameDialog />
-    } else if (showChat) {
-      ui = <ChatDialog /> // UGLY: Need to move to HelperButtonGroup 
-    } else if (showDM) {
-      ui = <DMDialog />   // UGLY: Need to move to HelperButtonGroup 
-    } else if (showUser) {
-      ui = <UserDialog /> // UGLY: Need to move to HelperButtonGroup 
-    } else if (showLogout) {
-      ui = <LogoutDialog />
-    } else if (showProfile) {
-      ui = <ProfileDialog />  // UGLY: Need to move to HelperButtonGroup 
-    } else {
-      ui = (
-        <>
-          {!videoConnected && <VideoConnectionDialog />}
-          <MobileVirtualJoystick />
-        </>
-      )
-    }
-  } else if (entryProcess === ENTRY_PROCESS.ENTRY) {
-    ui = <EntryDialog />
-  } else if (entryProcess === ENTRY_PROCESS.LOGIN) {
-    ui = <LoginDialog />
-  } else if (entryProcess === ENTRY_PROCESS.JOIN) {
+  if (dialogStatus === DIALOG_STATUS.JOIN) {
     ui = <JoinDialog />
-  } else {
+  } else if (dialogStatus === DIALOG_STATUS.LOGIN) {
+    ui = <LoginDialog />
+  } else if (dialogStatus === DIALOG_STATUS.WELCOME) {
     ui = <WelcomeDialog/>
+  } else if (dialogStatus === DIALOG_STATUS.IN_MAIN) {
+    ui = (
+      <>  // UGLY: Need to move to HelperButtonGroup 
+        {showChat && <ChatDialog />}
+        {showDM && <DMDialog />}
+        {showUser && <UserDialog />}
+        {showLogout && <LogoutDialog />}
+        {showProfile && <ProfileDialog />}
+        {!videoConnected && <VideoConnectionDialog />}
+        <MobileVirtualJoystick />
+        <HelperButtonGroup />
+        <ProfileButton />
+      </>
+    )
+  } else if (dialogStatus === DIALOG_STATUS.GAME_LOBBY) {
+    ui = <GameLobbyDialog />
+  } else if (dialogStatus === DIALOG_STATUS.GAME_WELCOME) {
+    ui = <GameWelcomeDialog />
+  } else if (dialogStatus === DIALOG_STATUS.IN_GAME) {
+    if (brickGameOpen) ui = <ComputerDialog />
+    if (moleGameOpen) ui = <MoleGameDialog />
+    if (rainGameOpen) ui = <WhiteboardDialog />
+  } else {
+    ui = <EntryDialog />
   }
 
   return (
     <Backdrop>
+      <GlobalFont />
       {ui}
-      {/* Render HelperButtonGroup, ProfileButton if no dialogs are opened. */}
-      {!computerDialogOpen && !whiteboardDialogOpen && !moleGameDialogOpen && <HelperButtonGroup />}
-      {!computerDialogOpen && !whiteboardDialogOpen && !moleGameDialogOpen && <ProfileButton />}
-      {<GlobalFont />}
     </Backdrop>
   )
 }

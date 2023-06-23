@@ -2,18 +2,18 @@ import { ItemType } from '../../../types/Items'
 import store from '../stores'
 import Item from './Item'
 import Network from '../services/Network'
-import { openMoleGameDialog } from '../stores/MoleGameStore'
+import { openBrickGameDialog } from '../stores/BrickGameStore'
 import { DIALOG_STATUS, setDialogStatus } from '../stores/UserStore'
 
 
-export default class MoleGame extends Item {
+export default class BrickGame extends Item {
   // id?: string
   currentUsers = new Set<string>()
 
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
     super(scene, x, y, texture, frame)
 
-    this.itemType = ItemType.MOLEGAME
+    this.itemType = ItemType.BRICKGAME
   }
 
   private updateStatus() {
@@ -29,7 +29,7 @@ export default class MoleGame extends Item {
 
   onOverlapDialog() {
     if (this.currentUsers.size === 0) {
-      this.setDialogBox('Press R to play the Whack a Mole')
+      this.setDialogBox('Press R to play the Whack a Brick')
     } else {
       this.setDialogBox('Press R join')
     }
@@ -49,8 +49,8 @@ export default class MoleGame extends Item {
 
   openDialog(network: Network) {
     // if (!this.id) return
-    store.dispatch(openMoleGameDialog())
+    store.dispatch(openBrickGameDialog())
     store.dispatch(setDialogStatus(DIALOG_STATUS.GAME_LOBBY))
-    // network.connectToMoleGame(this.id)
+    // network.connectToBrickGame(this.id)
   }
 }

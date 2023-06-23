@@ -4,4 +4,6 @@ export enum ItemType {
   WHITEBOARD,
   VENDINGMACHINE,
   MOLEGAME,
+  BRICKGAME,
+  RAINGAME
 }

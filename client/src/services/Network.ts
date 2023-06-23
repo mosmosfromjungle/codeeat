@@ -1,21 +1,29 @@
-import axios from 'axios'
-
 import { Client, Room } from 'colyseus.js'
-import { IComputer, IOfficeState, IPlayer, IWhiteboard, IMoleGame } from '../../../types/IOfficeState'
+import { IOfficeState, IPlayer, IMoleGame, IBrickGame, IRainGame } from '../../../types/IOfficeState'
 import { Message } from '../../../types/Messages'
 import { IRoomData, RoomType } from '../../../types/Rooms'
 import { ItemType } from '../../../types/Items'
 import WebRTC from '../web/WebRTC'
 import { phaserEvents, Event } from '../events/EventCenter'
 import store from '../stores'
-import { setSessionId, setPlayerNameMap, removePlayerNameMap } from '../stores/UserStore'
+import { setSessionId, setPlayerNameMap, removePlayerNameMap, setGameSessionId } from '../stores/UserStore'
 import {
   setLobbyJoined,
   setJoinedRoomData,
   setAvailableRooms,
+  setAvailableBrickRooms,
+  setAvailableMoleRooms,
+  setAvailableRainRooms,
   addAvailableRooms,
   removeAvailableRooms,
 } from '../stores/RoomStore'
+// import {
+//   setGameLobbyJoined,
+//   setJoinedGameRoomData,
+//   setAvailableBrickRooms,
+//   addAvailableBrickRooms,
+//   removeAvailableBrickRooms,
+// } from '../stores/GameRoomStore'
 import {
   pushChatMessage,
   pushPlayerJoinedMessage,
@@ -23,13 +31,22 @@ import {
 } from '../stores/ChatStore'
 import { setWhiteboardUrls } from '../stores/WhiteboardStore'
 
+export enum NetworkType {
+  MAIN = 'main',
+  GAME = 'game',
+}
+
 export default class Network {
   private client: Client
-  private room?: Room<IOfficeState>
   private lobby!: Room
+  private room?: Room<IOfficeState>
+  private gameroom?: Room<IOfficeState>
+
   webRTC?: WebRTC
+  gameWebRTC?: WebRTC
 
   mySessionId!: string
+  myGameSessionId!: string
 
   constructor() {
     const protocol = window.location.protocol.replace('http', 'ws')
@@ -38,25 +55,55 @@ export default class Network {
         ? import.meta.env.VITE_SERVER_URL
         : `${protocol}//${window.location.hostname}:2567`
     this.client = new Client(endpoint)
-    this.joinLobbyRoom().then(() => {
-      store.dispatch(setLobbyJoined(true))
-    })
-
+    
+    this.joinLobby(RoomType.LOBBY)
+    
     phaserEvents.on(Event.MY_PLAYER_NAME_CHANGE, this.updatePlayerName, this)
     phaserEvents.on(Event.MY_PLAYER_TEXTURE_CHANGE, this.updatePlayer, this)
     phaserEvents.on(Event.PLAYER_DISCONNECTED, this.playerStreamDisconnect, this)
+  }
+
+  async leaveGameRoom() {
+    if (this.gameroom) {
+      await this.gameroom.leave()
+      this.gameroom = undefined
+      this.myGameSessionId = ''
+      store.dispatch(setGameSessionId(''))
+
+      // TODO: 기존에 있던 방이 다시 연결되어야 함 
+    }
+  }
+
+  async joinLobby(type:RoomType) {
+    this.joinLobbyRoom(type).then(() => {
+      store.dispatch(setLobbyJoined(true))
+    })
   }
 
   /**
    * method to join Colyseus' built-in LobbyRoom, which automatically notifies
    * connected clients whenever rooms with "realtime listing" have updates
    */
-  async joinLobbyRoom() {
-    this.lobby = await this.client.joinOrCreate(RoomType.LOBBY)
+  async joinLobbyRoom(type: RoomType) {
+    this.lobby = await this.client.joinOrCreate(type)
 
-    this.lobby.onMessage('rooms', (rooms) => {
-      store.dispatch(setAvailableRooms(rooms))
-    })
+    if (type === RoomType.BRICKLOBBY) {
+      this.lobby.onMessage('rooms', (rooms) => {
+        store.dispatch(setAvailableBrickRooms(rooms))
+      })
+    } else if (type === RoomType.MOLELOBBY) {
+      this.lobby.onMessage('rooms', (rooms) => {
+        store.dispatch(setAvailableMoleRooms(rooms))
+      })
+    } else if (type === RoomType.RAINLOBBY) {
+      this.lobby.onMessage('rooms', (rooms) => {
+        store.dispatch(setAvailableRainRooms(rooms))
+      })
+    } else {
+      this.lobby.onMessage('rooms', (rooms) => {
+        store.dispatch(setAvailableRooms(rooms))
+      })
+    }
 
     this.lobby.onMessage('+', ([roomId, room]) => {
       store.dispatch(addAvailableRooms({ roomId, room }))
@@ -67,7 +114,7 @@ export default class Network {
     })
   }
 
-  // method to join the public lobby
+  // method to join the public room
   async joinOrCreatePublic() {
     this.room = await this.client.joinOrCreate(RoomType.PUBLIC)
     this.initialize()
@@ -75,7 +122,7 @@ export default class Network {
 
   // method to join a custom room
   async joinCustomById(roomId: string, password: string | null) {
-    this.room = await this.client.joinById(roomId, { password })
+    this.gameroom = await this.client.joinById(roomId, { password })
     this.initialize()
   }
 
@@ -86,9 +133,42 @@ export default class Network {
       name,
       description,
       password,
-      autoDispose,
+      // autoDispose,
     })
     this.initialize()
+  }
+
+  async createBrickRoom(roomData: IRoomData) {
+    const { name, description, password, autoDispose } = roomData
+    this.gameroom = await this.client.create(RoomType.BRICK, {  
+      name,
+      description,
+      password,
+      autoDispose,
+    })
+    this.init_game()
+  }
+
+  async createMoleRoom(roomData: IRoomData) {
+    const { name, description, password, autoDispose } = roomData
+    this.gameroom = await this.client.create(RoomType.MOLE, {
+      name,
+      description,
+      password,
+      autoDispose,
+    })
+    this.init_game()
+  }
+  
+  async createRainRoom(roomData: IRoomData) {
+    const { name, description, password, autoDispose } = roomData
+    this.gameroom = await this.client.create(RoomType.RAIN, {
+      name,
+      description,
+      password,
+      autoDispose,
+    })
+    this.init_game()
   }
 
   // set up all network listeners before the game starts
@@ -96,8 +176,9 @@ export default class Network {
     if (!this.room) return
 
     this.lobby.leave()
-    this.mySessionId = this.room.sessionId
-    store.dispatch(setSessionId(this.room.sessionId))
+    store.dispatch(setLobbyJoined(false))
+    this.mySessionId = this.room.sessionId  // TODO: gameroom 전용 sessionId도 만들어줘야 함 
+    store.dispatch(setSessionId(this.room.sessionId)) 
     this.webRTC = new WebRTC(this.mySessionId, this)
 
     // new instance added to the players MapSchema
@@ -129,31 +210,14 @@ export default class Network {
       store.dispatch(removePlayerNameMap(key))
     }
 
-    // new instance added to the computers MapSchema
-    this.room.state.computers.onAdd = (computer: IComputer, key: string) => {
+    // new instance added to the brickgames MapSchema
+    this.room.state.brickgames.onAdd = (brickgame: IBrickGame, key: string) => {
       // track changes on every child object's connectedUser
-      computer.connectedUser.onAdd = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.COMPUTER)
+      brickgame.connectedUser.onAdd = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.BRICKGAME)
       }
-      computer.connectedUser.onRemove = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.COMPUTER)
-      }
-    }
-
-    // new instance added to the whiteboards MapSchema
-    this.room.state.whiteboards.onAdd = (whiteboard: IWhiteboard, key: string) => {
-      store.dispatch(
-        setWhiteboardUrls({
-          whiteboardId: key,
-          roomId: whiteboard.roomId,
-        })
-      )
-      // track changes on every child object's connectedUser
-      whiteboard.connectedUser.onAdd = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.WHITEBOARD)
-      }
-      whiteboard.connectedUser.onRemove = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.WHITEBOARD)
+      brickgame.connectedUser.onRemove = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.BRICKGAME)
       }
     }
 
@@ -165,6 +229,17 @@ export default class Network {
       }
       molegame.connectedUser.onRemove = (item, index) => {
         phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.MOLEGAME)
+      }
+    }
+
+    // new instance added to the raingames MapSchema
+    this.room.state.raingames.onAdd = (raingame: IRainGame, key: string) => {
+      // track changes on every child object's connectedUser
+      raingame.connectedUser.onAdd = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.RAINGAME)
+      }
+      raingame.connectedUser.onRemove = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.RAINGAME)
       }
     }
 
@@ -190,6 +265,104 @@ export default class Network {
 
     // when a computer user stops sharing screen
     this.room.onMessage(Message.STOP_SCREEN_SHARE, (clientId: string) => {
+      const computerState = store.getState().computer
+      computerState.shareScreenManager?.onUserLeft(clientId)
+    })
+  }
+
+  init_game() {
+    if (!this.gameroom) return
+
+    this.lobby.leave()
+    store.dispatch(setLobbyJoined(false))
+    this.myGameSessionId = this.gameroom.sessionId
+    store.dispatch(setGameSessionId(this.gameroom.sessionId)) 
+    this.webRTC = new WebRTC(this.myGameSessionId, this)
+
+    // new instance added to the players MapSchema
+    this.gameroom.state.players.onAdd = (player: IPlayer, key: string) => {
+      if (key === this.mySessionId) return
+
+      // track changes on every child object inside the players MapSchema
+      player.onChange = (changes) => {
+        changes.forEach((change) => {
+          const { field, value } = change
+          phaserEvents.emit(Event.PLAYER_UPDATED, field, value, key)
+
+          // when a new player finished setting up player name
+          if (field === 'name' && value !== '') {
+            phaserEvents.emit(Event.PLAYER_JOINED, player, key)
+            store.dispatch(setPlayerNameMap({ id: key, name: value }))
+            store.dispatch(pushPlayerJoinedMessage(value))
+          }
+        })
+      }
+    }
+
+    // an instance removed from the players MapSchema
+    this.gameroom.state.players.onRemove = (player: IPlayer, key: string) => {
+      phaserEvents.emit(Event.PLAYER_LEFT, key)
+      this.webRTC?.deleteVideoStream(key)
+      this.webRTC?.deleteOnCalledVideoStream(key)
+      store.dispatch(pushPlayerLeftMessage(player.name))
+      store.dispatch(removePlayerNameMap(key))
+    }
+
+    // new instance added to the brickgames MapSchema
+    this.gameroom.state.brickgames.onAdd = (brickgame: IBrickGame, key: string) => {
+      // track changes on every child object's connectedUser
+      brickgame.connectedUser.onAdd = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.BRICKGAME)
+      }
+      brickgame.connectedUser.onRemove = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.BRICKGAME)
+      }
+    }
+
+    // new instance added to the molegames MapSchema
+    this.gameroom.state.molegames.onAdd = (molegame: IMoleGame, key: string) => {
+      // track changes on every child object's connectedUser
+      molegame.connectedUser.onAdd = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.MOLEGAME)
+      }
+      molegame.connectedUser.onRemove = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.MOLEGAME)
+      }
+    }
+
+    // new instance added to the raingames MapSchema
+    this.gameroom.state.raingames.onAdd = (raingame: IRainGame, key: string) => {
+      // track changes on every child object's connectedUser
+      raingame.connectedUser.onAdd = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.RAINGAME)
+      }
+      raingame.connectedUser.onRemove = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.RAINGAME)
+      }
+    }
+
+    // new instance added to the chatMessages ArraySchema
+    this.gameroom.state.chatMessages.onAdd = (item, index) => {
+      store.dispatch(pushChatMessage(item))
+    }
+
+    // when the server sends gameroom data
+    this.gameroom.onMessage(Message.SEND_ROOM_DATA, (content) => {
+      store.dispatch(setJoinedRoomData(content))
+    })
+
+    // when a user sends a message
+    this.gameroom.onMessage(Message.ADD_CHAT_MESSAGE, ({ clientId, content }) => {
+      phaserEvents.emit(Event.UPDATE_DIALOG_BUBBLE, clientId, content)
+    })
+
+    // when a peer disconnects with myPeer
+    this.gameroom.onMessage(Message.DISCONNECT_STREAM, (clientId: string) => {
+      this.webRTC?.deleteOnCalledVideoStream(clientId)
+    })
+
+    // when a computer user stops sharing screen
+    this.gameroom.onMessage(Message.STOP_SCREEN_SHARE, (clientId: string) => {
       const computerState = store.getState().computer
       computerState.shareScreenManager?.onUserLeft(clientId)
     })
@@ -296,11 +469,21 @@ export default class Network {
     this.room?.send(Message.ADD_CHAT_MESSAGE, { content: content })
   }
 
-  connectToMoleGame(id: string) {
-    this.room?.send(Message.CONNECT_TO_MOLEGAME, { moleGameId: id })
-  }
+  // connectToMoleGame(id: string) {
+  //   this.room?.send(Message.CONNECT_TO_MOLEGAME, { moleGameId: id })
+  // }
 
   disconnectFromMoleGame(id: string) {
     this.room?.send(Message.DISCONNECT_FROM_MOLEGAME, { moleGameId: id })
   }
+
+  // disableGamePlayer(playerSessionId: string) {
+  //   phaserEvents.off(Event.MY_PLAYER_NAME_CHANGE, this.updatePlayer, this);
+  //   this.room?.send(Message.DISABLE_GAME_PLAYER, {playerSessionId: playerSessionId})
+  // }
+
+  // reactivateGamePlayer(playerSessionId: string) {
+  //   phaserEvents.on(Event.MY_PLAYER_NAME_CHANGE, this.updatePlayer, this);
+  //   this.room?.send(Message.REACTIVATE_GAME_PLAYER, {playerSessionId: playerSessionId})
+  // }
 }

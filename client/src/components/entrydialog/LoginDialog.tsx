@@ -8,7 +8,7 @@ import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 
 import { useAppSelector, useAppDispatch } from '../../hooks'
-import { ENTRY_PROCESS, setAccessToken, setEntryProcess } from '../../stores/UserStore'
+import { DIALOG_STATUS, setAccessToken, setDialogStatus } from '../../stores/UserStore'
 
 import phaserGame from '../../PhaserGame'
 import Game from '../../scenes/Game'
@@ -120,7 +120,7 @@ export default function LoginDialog() {
               .then(() => bootstrap.launchGame())
               .catch((error) => console.error(error))
           }
-          dispatch(setEntryProcess(ENTRY_PROCESS.WELCOME))
+          dispatch(setDialogStatus(DIALOG_STATUS.WELCOME))
         }
       }).catch((error) => {
         const { status, message } = error.response.data
