@@ -89,43 +89,6 @@ export const firstdata = async (req: Request, res: Response) => {
   }
 };
 
-export const chargingCoin = async (req: Request, res: Response) => {
-  // 유효성검사 필요할 듯
-  const user = req.body;
-  const userId = user.myInfo.userId; // DB에서 이 유저의 userCoin을 찾아온다
-
-  const foundUser = await User.findOne({
-    userId: userId,
-  })
-    .then(async () => {
-      //코인충전 3개
-      User.collection.updateOne(
-        { userId: userId },
-        {
-          $inc: {
-            userCoin: 100,
-          },
-        }
-      );
-      res.status(200).json({
-        status: 200,
-        message: '코인이 충전되었습니다',
-        payload: {
-          myInfo: user.myInfo,
-          friendInfo: user.friendInfo,
-        },
-      });
-    })
-    .catch((err) => {
-      //에러
-      console.error(err);
-      res.status(500).json({
-        status: 500,
-        message: `서버 오류: ${err}`,
-      });
-    });
-};
-
 export const setfriend = async (req: Request, res: Response) => {
   const { myInfo, friendInfo } = req.body;
   if (!myInfo || !friendInfo) return res.status(404).send('not found');
@@ -212,17 +175,6 @@ export const updateRoomStatus = async (obj: {
   LastDM.collection.findOneAndUpdate(
     { $and: [{ 'myInfo.userId': friendId }, { 'friendInfo.userId': myId }] },
     { $set: { status: status } }
-  );
-};
-
-export const updateRoomImg = async (userId: string, profileImgUrl: string) => {
-  await LastDM.collection.findAndModify(
-    { 'friendInfo.userId': userId },
-    { $set: { 'friendInfo.profileImgUrl': profileImgUrl } }
-  );
-  await LastDM.collection.findAndModify(
-    { 'myInfo.userId': userId },
-    { $set: { 'myInfo.profileImgUrl': profileImgUrl } }
   );
 };
 

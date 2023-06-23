@@ -28,7 +28,7 @@ import {
   fetchRoomList,
   RoomListResponse,
 } from '../../src/apicalls/DM'
-import RequestFriendResultModal from './RequestFriendResultModal';
+import RequestFriendResultModal from './FriendRequest/RequestFriendResultModal';
 
 const Backdrop = styled.div`
   position: fixed;
@@ -215,6 +215,8 @@ export default function UserDialog() {
         setAddFriendResult(result!);
       } else if (result === 2) {
         setAddFriendResult(result!);
+      } else if (result === 3) {
+        setAddFriendResult(result!);
       }
     } catch (error) {
       console.error('error:', error);
@@ -261,7 +263,6 @@ export default function UserDialog() {
                     </Profile>
 
                     <ProfileButton>
-                      /* 친구인지 확인 */
                       <Button onClick={(event) => {
                         event.preventDefault();
                         requestFriend(
@@ -277,7 +278,6 @@ export default function UserDialog() {
                           addFriendResult={addFriendResult}
                           />
                           )}
-                        /* */
                       <Button onClick={() => dispatch(setShowDM(true)) }>
                         메세지 보내기
                       </Button>

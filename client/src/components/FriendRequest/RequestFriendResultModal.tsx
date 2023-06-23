@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import ClearIcon from '@mui/icons-material/Close';
 import logo from '../../src/images/logo.png'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { useAppSelector, useAppDispatch } from '../../src/hooks';
+import { useAppSelector, useAppDispatch } from '../../hooks';
 
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
@@ -12,8 +12,6 @@ interface Props {
 }
 
 export default function RequestFriendResultModal(props) {
-  const dispatch = useAppDispatch();
-  const userId = useAppSelector((state) => state.user.userId) || cookies.get('userId');
 
   const handleClick = () => {
     props.setAddFriendResult(0);
@@ -95,7 +93,7 @@ export default function RequestFriendResultModal(props) {
 const Wrapper = styled.div`
   position: fixed;
   left: 400px;
-  background-color: 'white';
+  background-color:white;
   gap: 10px;
   bottom: 200px;
   height: 250px;
@@ -118,7 +116,7 @@ const RequestResultHeader = styled.div`
   position: relative;
   // display: grid;
   grid-template-columns: 90% 10%;
-  background-color: 'blue';
+  background-color: blue;
   border-top-left-radius: 25px;
   border-top-right-radius: 25px;
   align-items: center;
@@ -156,23 +154,6 @@ const RequestResultBody = styled.div`
   border-bottom-right-radius: 25px;
 `;
 
-const RequestResultBodyCharging = styled.div`
-  font-weight: 600;
-  font-size: 24px;
-  font-size: 1.5rem;
-  background-color: 'white;
-  padding: 30px 15px 20px 15px;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  height: 190px;
-  border-bottom-left-radius: 25px;
-  border-bottom-right-radius: 25px;
-  overflow-y: auto;
-`;
-
 const MyButton = styled.button`
   width: 120px;
   height: 40px;
@@ -181,11 +162,11 @@ const MyButton = styled.button`
   font-family: 'Ycomputer-Regular';
   border-radius: 10px;
   border: none;
-  background-color: 'blue';
+  background-color: blue;
   margin: 15px 10px 10px 10px;
 
   &:hover {
-    background-color: 'blue';
+    background-color: blue;
   }
 `;
 

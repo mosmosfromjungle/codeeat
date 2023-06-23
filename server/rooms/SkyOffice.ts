@@ -21,6 +21,7 @@ import {
   MoleGameRemoveUserCommand,
 } from './commands/MoleGameUpdateArrayCommand'
 import ChatMessageUpdateCommand from './commands/ChatMessageUpdateCommand'
+import { getDMMessage } from '../controllers/DMControllers'
 
 export class SkyOffice extends Room<OfficeState> {
   private dispatcher = new Dispatcher(this)
@@ -184,12 +185,31 @@ export class SkyOffice extends Room<OfficeState> {
         { clientId: client.sessionId, content: message.content },
         { except: client }
       )
+      this.onMessage(Message.SEND_PRIVATE_MESSAGE, 
+        (client, message: { senderId: string; receiverId: string; content: string }) => {
+          const { senderId, receiverId, content } = message
+        }
+      )
     })
+    this.onMessage(
+      Message.CHECK_PRIVATE_MESSAGE,
+      (client, message: { requestId: string; targetId: string}) => {
+        const {requestId, targetId } = message;
+
+        getDMMessage(requestId, targetId)
+        .then((dmMessage) => {
+          client.send(Message.CHECK_PRIVATE_MESSAGE, dmMessage)
+        })
+        .catch((error) => {
+          console.error('CHECK PRIVATE MESSAGE ERR:', error)
+        })
+      }
+    )
   }
 
   async onAuth(client: Client, options: { password: string | null }) {
     if (this.password) {
-      const validPassword = await bcrypt.compare(options.password, this.password)
+      const validPassword = await bcrypt.compare(options.password!, this.password)
       if (!validPassword) {
         throw new ServerError(403, 'Password is incorrect!')
       }

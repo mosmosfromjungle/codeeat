@@ -16,7 +16,7 @@ export const addFriendReq = async (body: AddFriendRequestDto) => {
         } else if (status === 404) {
           return 2;
         } else if (status === 409) {
-          return 3;
+            return 3;
         }
       } else {
         console.log('서버에러');
@@ -26,7 +26,6 @@ export const addFriendReq = async (body: AddFriendRequestDto) => {
     console.error('friend.ts', error);
   }
 };
-
 export interface AddFriendRequestDto {
   myInfo: UserResponseDto;
   friendInfo: UserResponseDto;

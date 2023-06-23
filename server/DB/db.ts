@@ -1,8 +1,8 @@
 import User from '../models/User'
 import Friends from '../models/Friends'
 import FriendRequest from '../models/FriendRequest'
-// import Chat from '../models/Chat'
-// import LastChat from '../models/LastChat'
+import DM from '../models/DM'
+import LastDM from '../models/LastDM'
 
 const mongoose = require('mongoose')
 
@@ -16,8 +16,8 @@ export async function connectDB() {
   createCollection('user')
   createCollection('friends')
   createCollection('friendrequest')
-  // createCollection('chat')
-  // createCollection('lastchat')
+  createCollection('dm')
+  createCollection('lastdm')
 }
 
 export const createCollection = (modelName : string) => {
@@ -35,11 +35,11 @@ export const createCollection = (modelName : string) => {
     case 'friendrequest':
       new FriendRequest()
       break
-    // case 'chat':
-    //   new Chat()
-    //   break
-    // case 'lastchat':
-    //   new LastChat()
-    //   break
+    case 'chat':
+      new DM()
+      break
+    case 'lastchat':
+      new LastDM()
+      break
   }
 }
