@@ -1,7 +1,7 @@
 import react, { useState } from 'react';
 import styled from 'styled-components';
 import ClearIcon from '@mui/icons-material/Close';
-import logo from '../../src/images/logo.png'
+import logo from '../../images/logo.png'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useAppSelector, useAppDispatch } from '../../hooks';
 

@@ -12,7 +12,7 @@ import InputBase from '@mui/material/InputBase'
 import CloseIcon from '@mui/icons-material/Close'
 
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon'
-
+import { setNewMessageCnt } from '../stores/DMboxStore'
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 
@@ -20,9 +20,133 @@ import { MessageType, setFocused, setShowChat, setShowDM, setShowUser } from '..
 import { setShowLogout } from '../stores/UserStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
 import { getColorByString } from '../util'
+import { Message, ChatFeed } from 'react-chat-ui'
 
-import phaserGame from '../PhaserGame'
-import Game from '../scenes/Game'
+export default function DMDialog() {
+  const [inputValue, setInputValue] = useState('')
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const [readyToSubmit, setReadyToSubmit] = useState(false)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const chatMessages = useAppSelector((state) => state.dm.newMessage)
+  const focused = useAppSelector((state) => state.chat.focused)
+  const showDM = useAppSelector((state) => state.chat.showDM)
+
+  const dispatch = useAppDispatch()
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value)
+  }
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Escape') {
+      // move focus back to the game
+      inputRef.current?.blur()
+      dispatch(setShowChat(false))
+      dispatch(setShowDM(false))
+      dispatch(setShowUser(false))
+      dispatch(setShowLogout(false))
+    }
+  }
+const [value, setValue] = useState('')
+
+const handleSubmit = (event) => {
+  event.preventDefault()
+   
+  if (value === '') {
+    setValue('')
+    return;
+  }
+  const newMessage = new Message({
+    id: 0,
+    message: value
+  })
+    setNewMessage(newMessage)
+    setValue('')
+  }
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  useEffect(() => {
+    if (focused) {
+      inputRef.current?.focus()
+    }
+  }, [focused])
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [chatMessages, showDM])
+
+  return (
+    <Backdrop>
+      <ButtonGroup>
+        <Wrapper>
+          <Content>
+            <ChatHeader>
+              <Title>
+                개인 메세지
+              </Title>
+              <IconButton
+                aria-label="close dialog"
+                className="close"
+                onClick={() => dispatch(setShowDM(false))}
+                size="small"
+              >
+                <CloseIcon />
+              </IconButton>
+            </ChatHeader>
+            <ChatBox>
+
+              <div ref={messagesEndRef} />
+              {showEmojiPicker && (
+                <EmojiPickerWrapper>
+                  <Picker 
+                    data={data}
+                    theme="dark"
+                    showSkinTones={false}
+                    showPreview={false}
+                    onEmojiSelect={(emoji) => {
+                      setInputValue(inputValue + emoji.native)
+                      setShowEmojiPicker(!showEmojiPicker)
+                      dispatch(setFocused(true))
+                    }}
+                    exclude={['recent', 'flags']}
+                  />
+                </EmojiPickerWrapper>
+              )}
+            </ChatBox>
+            <InputWrapper onSubmit={handleSubmit}>
+              <InputTextField
+                inputRef={inputRef}
+                autoFocus={focused}
+                fullWidth
+                placeholder="친구에게 메세지를 보내보세요 !"
+                value={inputValue}
+                onKeyDown={handleKeyDown}
+                onChange={handleChange}
+                onFocus={() => {
+                  if (!focused) {
+                    dispatch(setFocused(true))
+                    setReadyToSubmit(true)
+                  }
+                }}
+                onBlur={() => {
+                  dispatch(setFocused(false))
+                  setReadyToSubmit(false)
+                }}
+              />
+              <IconButton aria-label="emoji" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
+                <InsertEmoticonIcon />
+              </IconButton>
+            </InputWrapper>
+          </Content>
+        </Wrapper>
+      </ButtonGroup>
+    </Backdrop>
+  )
+}
 
 const Backdrop = styled.div`
   position: fixed;
@@ -135,180 +259,3 @@ const dateFormatter = new Intl.DateTimeFormat('en', {
   timeStyle: 'short',
   dateStyle: 'short',
 })
-
-const Message = ({ chatMessage, messageType }) => {
-  const [tooltipOpen, setTooltipOpen] = useState(false)
-
-  return (
-    <MessageWrapper
-      onMouseEnter={() => {
-        setTooltipOpen(true)
-      }}
-      onMouseLeave={() => {
-        setTooltipOpen(false)
-      }}
-    >
-      <Tooltip
-        open={tooltipOpen}
-        title={dateFormatter.format(chatMessage.createdAt)}
-        placement="right"
-        arrow
-      >
-        {messageType === MessageType.REGULAR_MESSAGE ? (
-          <p
-            style={{
-              color: getColorByString(chatMessage.author),
-            }}
-          >
-            {chatMessage.author}: <span>{chatMessage.content}</span>
-          </p>
-        ) : (
-          <p className="notification">
-            {chatMessage.author} {chatMessage.content}
-          </p>
-        )}
-      </Tooltip>
-    </MessageWrapper>
-  )
-}
-
-export default function DMDialog() {
-  const [inputValue, setInputValue] = useState('')
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
-  const [readyToSubmit, setReadyToSubmit] = useState(false)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const chatMessages = useAppSelector((state) => state.chat.chatMessages)
-  const focused = useAppSelector((state) => state.chat.focused)
-  const showDM = useAppSelector((state) => state.chat.showDM)
-
-  const dispatch = useAppDispatch()
-  const game = phaserGame.scene.keys.game as Game
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value)
-  }
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Escape') {
-      // move focus back to the game
-      inputRef.current?.blur()
-      dispatch(setShowChat(false))
-      dispatch(setShowDM(false))
-      dispatch(setShowUser(false))
-      dispatch(setShowLogout(false))
-    }
-  }
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-
-    /*
-      this is added because without this, 2 things happen at the same
-      time when Enter is pressed, (1) the inputRef gets focus (from
-      useEffect) and (2) the form gets submitted (right after the input
-      gets focused)
-    */
-    if (!readyToSubmit) {
-      setReadyToSubmit(true)
-      return
-    }
-
-    /*
-      move focus back to the game
-    */
-    inputRef.current?.blur()
-
-    const val = inputValue.trim()
-    setInputValue('')
-
-    if (val) {
-      game.network.addChatMessage(val)
-      game.myPlayer.updateDialogBubble(val)
-    }
-  }
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
-
-  useEffect(() => {
-    if (focused) {
-      inputRef.current?.focus()
-    }
-  }, [focused])
-
-  useEffect(() => {
-    scrollToBottom()
-  }, [chatMessages, showDM])
-
-  return (
-    <Backdrop>
-      <ButtonGroup>
-        <Wrapper>
-          <Content>
-            <ChatHeader>
-              <Title>
-                개인 메세지
-              </Title>
-              <IconButton
-                aria-label="close dialog"
-                className="close"
-                onClick={() => dispatch(setShowDM(false))}
-                size="small"
-              >
-                <CloseIcon />
-              </IconButton>
-            </ChatHeader>
-            <ChatBox>
-              {chatMessages.map(({ messageType, chatMessage }, index) => (
-                <Message chatMessage={chatMessage} messageType={messageType} key={index} />
-              ))}
-              <div ref={messagesEndRef} />
-              {showEmojiPicker && (
-                <EmojiPickerWrapper>
-                  <Picker 
-                    data={data}
-                    theme="dark"
-                    showSkinTones={false}
-                    showPreview={false}
-                    onEmojiSelect={(emoji) => {
-                      setInputValue(inputValue + emoji.native)
-                      setShowEmojiPicker(!showEmojiPicker)
-                      dispatch(setFocused(true))
-                    }}
-                    exclude={['recent', 'flags']}
-                  />
-                </EmojiPickerWrapper>
-              )}
-            </ChatBox>
-            <InputWrapper onSubmit={handleSubmit}>
-              <InputTextField
-                inputRef={inputRef}
-                autoFocus={focused}
-                fullWidth
-                placeholder="친구에게 메세지를 보내보세요 !"
-                value={inputValue}
-                onKeyDown={handleKeyDown}
-                onChange={handleChange}
-                onFocus={() => {
-                  if (!focused) {
-                    dispatch(setFocused(true))
-                    setReadyToSubmit(true)
-                  }
-                }}
-                onBlur={() => {
-                  dispatch(setFocused(false))
-                  setReadyToSubmit(false)
-                }}
-              />
-              <IconButton aria-label="emoji" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
-                <InsertEmoticonIcon />
-              </IconButton>
-            </InputWrapper>
-          </Content>
-        </Wrapper>
-      </ButtonGroup>
-    </Backdrop>
-  )
-}

@@ -16,6 +16,7 @@ export const chatSlice = createSlice({
     focused: false,
     showChat: false,
     showDM: false,
+    showDMList: false,
     showUser: false,
   },
   reducers: {

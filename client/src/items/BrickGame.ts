@@ -48,17 +48,10 @@ export default class BrickGame extends Item {
     this.updateStatus()
   }
 
-<<<<<<< HEAD:client/src/items/Computer.ts
-  openDialog(playerId: string, network: Network) {
-    if (!this.id) return
-    store.dispatch(openComputerDialog(this.id))
-    network.connectToWhiteboard(this.id)
-=======
   openDialog(network: Network) {
     // if (!this.id) return
     store.dispatch(openBrickGameDialog())
     store.dispatch(setDialogStatus(DIALOG_STATUS.GAME_LOBBY))
     // network.connectToBrickGame(this.id)
->>>>>>> main:client/src/items/BrickGame.ts
   }
 }

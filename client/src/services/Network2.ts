@@ -1,6 +1,7 @@
 import React from 'react';
 import { io, Socket } from 'socket.io-client';
-import ParasolImg from 'src/assets/directmessage/parasol.png';
+import logo from '../../src/images/logo.png';
+import { fireNotification } from '../apicalls/notification';
 import store from '../stores';
 import { setNewMessageCnt, setNewMessage, setRequestFriendCnt } from '../../src/stores/DMboxStore';
 import Cookies from 'universal-cookie';
@@ -33,9 +34,17 @@ export default class DMNetwork {
 
     this.socketClient.on('request-friend-res', (data) => {
       store.dispatch(setRequestFriendCnt(1));
+      fireNotification('[PARA-SOLO] 친구 요청 도착', {
+        body: `${data}님과 친구를 맺어보아요.`,
+        icon: `${logo}`,
+      });
     });
 
     this.socketClient.on('accept-friend-res', (data) => {
+      fireNotification('[PARA-SOLO] 친구 요청 수락', {
+        body: `${data}님이 친구 요청을 수락했습니다.`,
+        icon: `${logo}`,
+      });
     });
 
     this.socketClient.on('message', (data) => {

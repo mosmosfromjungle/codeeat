@@ -7,6 +7,7 @@ export interface ILastDM {
   message: string
   status: IDMRoomStatus
   roomId?: string
+  unreadCount?: number
   updatedAt: Date | null
 }
 

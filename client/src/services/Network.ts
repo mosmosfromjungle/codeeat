@@ -202,7 +202,7 @@ export default class Network {
       phaserEvents.emit(Event.PLAYER_LEFT, key)
       this.webRTC?.deleteVideoStream(key)
       this.webRTC?.deleteOnCalledVideoStream(key)
-      store.dispatch(pushPlayerLeftMessage(player.name))
+      store.dispatch(pushPlayerLeftMessage(player.username))
       store.dispatch(removePlayerNameMap(key))
     }
 

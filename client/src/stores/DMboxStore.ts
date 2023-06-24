@@ -8,6 +8,7 @@ export const DMSlice = createSlice({
     dmProcess: 2,
     directMessages: Message,
     showDM: true,
+    showDMList: false,
     roomId: '',
     // listORroom: true, // true: list, false: room
     friendId: '',
@@ -49,6 +50,9 @@ export const DMSlice = createSlice({
     setDmProcess: (state, action: PayloadAction<IDMRoomStatus>) => {
       state.dmProcess = action.payload;
     },
+    setShowDMList: (state, action: PayloadAction<boolean>) => {
+      state.showDMList = action.payload
+    },
   },
 });
 
@@ -58,6 +62,7 @@ export const {
   setFriendId,
   setFriendName,
   setShowDM,
+  setShowDMList,
   setRoomId,
   setRequestFriendCnt,
   setNewMessageCnt,
