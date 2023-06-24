@@ -14,7 +14,7 @@ import WelcomeDialog from './components/entrydialog/WelcomeDialog'
 // ↓ Game Dialog
 import GameLobbyDialog from './components/gamedialog/GameLobbyDialog'
 import GameWelcomeDialog from './components/gamedialog/GameWelcomeDialog'
-import MoleGameDialog from './components/games/MoleGameDialog'
+import MoleGameDialog from './components/games/MoleGame/MoleGameDialog'
 import BrickGameDialog from './components/games/BrickGameDialog'
 import RainGameDialog from './components/games/RainGameDialog'
 
