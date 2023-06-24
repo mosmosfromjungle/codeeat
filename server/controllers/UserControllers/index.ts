@@ -200,7 +200,8 @@ export const login = async (req: Request, res: Response) => {
         payload: {
             userId: foundUser.userId,
             username: foundUser.username,
-            character: foundUser.character,
+            character: foundUser.userProfile.character,
+            userLevel: foundUser.userProfile.userLevel,
             accessToken: accessToken,
         }
     })

@@ -3,12 +3,18 @@ import styled from 'styled-components'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 
-import { useAppDispatch } from '../../hooks'
+import { useAppSelector, useAppDispatch } from '../../hooks'
+import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore'
 import { closeRainGameDialog } from '../../stores/RainGameStore'
 import RainGame from './RainGame'
 import * as Colyseus from "colyseus.js";
 
-var client = new Colyseus.Client('ws://localhost:5173');
+
+import phaserGame from '../../PhaserGame'
+import Bootstrap from '../../scenes/Bootstrap'
+
+// import * as Colyseus from "colyseus.js";
+// var client = new Colyseus.Client('ws://localhost:5173');
 
 // 원래 패딩 : 16px, 180px, 16px, 10px
 const Backdrop = styled.div`
@@ -44,6 +50,17 @@ const Wrapper = styled.div`
 export default function RainGameDialog() {
   const dispatch = useAppDispatch()
 
+  const handleClose = () => {
+    try {
+      const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
+      bootstrap.gameNetwork.leaveGameRoom()
+      dispatch(closeRainGameDialog())
+      dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
+    } catch (error) {
+      console.error('Error leaving the room:', error)
+    }
+  }
+
   return (
     <Backdrop>
       <Wrapper>
@@ -51,7 +68,7 @@ export default function RainGameDialog() {
         {<IconButton
           aria-label="close dialog"
           className="close"
-          onClick={() => dispatch(closeRainGameDialog())}
+          onClick={handleClose}
         >
           <CloseIcon />
         </IconButton>}

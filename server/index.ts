@@ -10,6 +10,7 @@ import friendsRouter from './routes/friends';
 // import socialRoutes from "@colyseus/social/express"
 
 import { SkyOffice } from './rooms/SkyOffice'
+import { GameRoom } from './rooms/GameRoom'
 import { connectDB } from './DB/db'
 
 // const mongoose = require('mongoose')
@@ -61,9 +62,9 @@ mainServer.define(RoomType.BRICKLOBBY, LobbyRoom)
 mainServer.define(RoomType.MOLELOBBY, LobbyRoom)
 mainServer.define(RoomType.RAINLOBBY, LobbyRoom)
 
-mainServer.define(RoomType.BRICK, SkyOffice).enableRealtimeListing()
-mainServer.define(RoomType.MOLE, SkyOffice).enableRealtimeListing()
-mainServer.define(RoomType.RAIN, SkyOffice).enableRealtimeListing()
+mainServer.define(RoomType.BRICK, GameRoom).enableRealtimeListing()
+mainServer.define(RoomType.MOLE, GameRoom).enableRealtimeListing()
+mainServer.define(RoomType.RAIN, GameRoom).enableRealtimeListing()
 
 /**
  * Register @colyseus/social routes

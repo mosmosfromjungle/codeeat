@@ -29,7 +29,7 @@ export default class RainGame extends Item {
 
   onOverlapDialog() {
     if (this.currentUsers.size === 0) {
-      this.setDialogBox('Press R to play the Whack a RainGame')
+      this.setDialogBox('Press R to play the RainGame')
     } else {
       this.setDialogBox('Press R join')
     }

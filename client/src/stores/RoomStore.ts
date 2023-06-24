@@ -6,6 +6,11 @@ interface RoomInterface extends RoomAvailable {
   name?: string
 }
 
+export interface PlayersInterface {
+  name: string
+  texture: string
+}
+
 /**
  * Colyseus' real time room list always includes the public lobby so we have to remove it manually.
  */
@@ -37,6 +42,7 @@ export const roomSlice = createSlice({
     gameRoomId: '',
     gameRoomName: '',
     gameRoomDescription: '',
+    gamePlayers: new Array<PlayersInterface>(),
     availableRooms: {
       generalRooms: new Array<RoomAvailable>(),
       brickRooms: new Array<RoomAvailable>(),
@@ -69,6 +75,9 @@ export const roomSlice = createSlice({
       state.gameRoomId = action.payload.id
       state.gameRoomName = action.payload.name
       state.gameRoomDescription = action.payload.description
+    },
+    setGamePlayers: (state, action: PayloadAction<PlayersInterface[]>) => {
+      state.gamePlayers = action.payload
     },
     setAvailableRooms: (state, action: PayloadAction<RoomAvailable[]>) => {
       state.availableRooms.generalRooms = action.payload.filter((room) => isCustomRoom(room))
@@ -137,6 +146,7 @@ export const {
   setGameJoined,
   setJoinedRoomData,
   setJoinedGameRoomData,
+  setGamePlayers,
   setAvailableRooms,
   setAvailableBrickRooms,
   setAvailableMoleRooms,
