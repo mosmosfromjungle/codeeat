@@ -59,17 +59,15 @@ export const CreateRoomForm = () => {
         if (brickGameOpen) await bootstrap.gameNetwork.createBrickRoom(values)
         if (moleGameOpen) await bootstrap.gameNetwork.createMoleRoom(values)
         if (typingGameOpen) await bootstrap.gameNetwork.createTypingRoom(values)
+        bootstrap.gameNetwork.updatePlayer(0, 0, `${character}_idle_down`)
+        bootstrap.gameNetwork.updatePlayerName(username)
+        dispatch(setDialogStatus(DIALOG_STATUS.GAME_WELCOME))
+        // setTimeout(() => {
+        // }, 100);
       } catch (error) {
         console.error(error)
       }
-      bootstrap.gameNetwork.updatePlayer(0, 0, `${character}_idle_down`)
-      bootstrap.gameNetwork.updatePlayerName(username)
-
-      setTimeout(() => {
-        dispatch(setDialogStatus(DIALOG_STATUS.GAME_WELCOME))
-      }, 100);
     }
-
   }
 
   return (
