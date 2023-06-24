@@ -1,5 +1,5 @@
 import { Client, Room } from 'colyseus.js'
-import { IOfficeState, IPlayer, IMoleGame, IBrickGame, IRainGame } from '../../../types/IOfficeState'
+import { IOfficeState, IPlayer, IMoleGame, IBrickGame, IRainGameUser, IKeywordRain } from '../../../types/IOfficeState'
 import { Message } from '../../../types/Messages'
 import { IRoomData, RoomType } from '../../../types/Rooms'
 import { ItemType } from '../../../types/Items'
@@ -23,6 +23,7 @@ import {
   pushPlayerJoinedMessage,
   pushPlayerLeftMessage,
 } from '../stores/ChatStore'
+import { addKeyword, updatePeriod, setHearts, setPoints } from '../stores/RainGameStore'
 
 export default class GameNetwork {
   private client: Client
@@ -136,6 +137,60 @@ export default class GameNetwork {
     this.mySessionId = this.room.sessionId
     store.dispatch(setGameSessionId(this.room.sessionId)) 
     // this.webRTC = new WebRTC(this.mySessionId, this)
+
+    // RainGame
+    if (this.room.name === RoomType.RAIN) {
+      // When a new player joins the room
+      this.room.state.players.onAdd = (player: IRainGameUser, key: string) => {
+        if (key === this.mySessionId) return;
+    
+        // Track changes on every child object inside the player
+        player.onChange = (changes) => {
+          changes.forEach((change) => {
+            const { field, value } = change;
+    
+            // Handle specific change events
+            // For example: if the 'anim' field of the player changes
+            if (field === 'anim') {
+             
+            }
+          });
+        };
+    
+        // When a new player has finished setting up
+        if (player.name !== '') {
+          
+        }
+      };
+    
+      // When the RainGameState changes
+      this.room.state.onChange = (changes) => {
+        changes.forEach((change) => {
+          const { field, value } = change;
+    
+          if (field === 'game') {
+            value.forEach((keywordRain: IKeywordRain) => {
+              store.dispatch(addKeyword({ keyword: keywordRain}));
+            });
+          }
+    
+          if (field === 'point') {
+            store.dispatch(setPoints(value));
+          }
+
+          if (field === 'heart') {
+            store.dispatch(setHearts(value));
+          }
+
+          if (field === 'period') {
+            store.dispatch(updatePeriod(value));
+          }
+        });
+      };
+    }
+      
+
+
 
     // new instance added to the players MapSchema
     this.room.state.players.onAdd = (player: IPlayer, key: string) => {

@@ -17,7 +17,7 @@ export interface KeywordRain {
 const initialKeywordRain: KeywordRain = {
     y: 0,
     speed: 1,
-    keyword: 'word',
+    keyword: '',
     x: Math.floor(Math.random() * (550 - 50 + 1)) + 50,
     flicker: false,
     blind: false,
@@ -30,10 +30,7 @@ interface RainGameState {
     game: KeywordRain[],
     point: number,
     heart: number,
-    level: number,
-    goal: number,
     keywordList: string[],
-    paused: boolean,
     period: number
 };
 
@@ -43,9 +40,6 @@ const initialState: RainGameState = {
     game: [initialKeywordRain],
     point: 0,
     heart: 5,
-    level: 1,
-    goal: 100,
-    paused: false,
     period: 2000,
     keywordList: [
         "abs",
@@ -94,9 +88,6 @@ export const rainGameSlice = createSlice({
         },
 
         updateGame: (state, action: PayloadAction<{ lineHeight: number }>) => {
-            if (state.paused) {
-                return;
-            }
             let shouldDecrementHeart = false;
 
             state.game.forEach((item) => {

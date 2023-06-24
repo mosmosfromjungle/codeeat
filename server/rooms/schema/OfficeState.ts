@@ -6,6 +6,9 @@ import {
   IBrickGame,
   IRainGame,
   IChatMessage,
+  IRainGameState,
+  IKeywordRain,
+  IRainGameUser,
 } from '../../../types/IOfficeState'
 
 export class Player extends Schema implements IPlayer {
@@ -54,6 +57,32 @@ export class OfficeState extends Schema implements IOfficeState {
   @type([ChatMessage])
   chatMessages = new ArraySchema<ChatMessage>()
 }
+
+export class RainGameUser extends Schema implements IRainGameUser{
+  @type("string") name = '';
+  @type('string') anim = 'adam_idle_down';
+}
+
+export class KeywordRain extends Schema implements IKeywordRain{
+  @type('number') y = 0;
+  @type('number') speed = 1 ;
+  @type('string') keyword = '';
+  @type('number') x = Math.floor(Math.random()*(550-50+1)) + 50;
+  @type('boolean') flicker = false;
+  @type('boolean') blind = false;
+  @type('boolean') accel = false;
+  @type('boolean') multifly = false;
+}
+
+export class RainGameState extends Schema implements IRainGameState {
+  @type('boolean') rainGameOpen = false;
+  @type([KeywordRain]) game: KeywordRain[] = [];
+  @type('number') point = 0;
+  @type('number') heart = 5;
+  @type('number') period = 2000;
+  @type(['string']) keywordList: string[] = [];
+}
+
 
 // export const RainGameRoomIds = new Set<string>()
 // export const moleGameRoomIds = new Set<string>()

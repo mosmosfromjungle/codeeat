@@ -38,6 +38,34 @@ export interface IOfficeState extends Schema {
   chatMessages: ArraySchema<IChatMessage>
 }
 
+export interface IRainGameUser {
+  name: string;
+  anim: string;
+}
+
+export interface IKeywordRain {
+  y: number,
+  speed: number,
+  keyword: string,
+  x: number,
+  flicker: boolean,
+  blind: boolean,
+  accel: boolean,
+  multifly: boolean,
+}
+
+export interface IRainGameState {
+  rainGameOpen: boolean,
+  game: IKeywordRain[],
+  point: number,
+  heart: number,
+  keywordList: string[],
+  period: number
+}
+
+
+
+
 // export interface IGameState extends Schema {
 //   players: MapSchema<IPlayer>
   // molegames: MapSchema<IMoleGame>

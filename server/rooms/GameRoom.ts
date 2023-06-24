@@ -3,7 +3,7 @@ import { Room, Client, ServerError } from 'colyseus'
 import { Dispatcher } from '@colyseus/command'
 import { Message } from '../../types/Messages'
 import { IRoomData } from '../../types/Rooms'
-import { Player, OfficeState, MoleGame, BrickGame, TypingGame } from './schema/OfficeState'
+import { Player, OfficeState, MoleGame, BrickGame, TypingGame, KeywordRain } from './schema/OfficeState'
 import PlayerUpdateCommand from './commands/PlayerUpdateCommand'
 import PlayerUpdateNameCommand from './commands/PlayerUpdateNameCommand'
 import GamePlayUpdateCommand from './commands/GamePlayUpdateCommand'
@@ -119,6 +119,7 @@ export class GameRoom extends Room<OfficeState> {
       room.broadcast(Message.SEND_GAME_PLAYERS, players)
     }
     
+
     // when receiving updatePlayer message, call the PlayerUpdateCommand
     this.onMessage(Message.UPDATE_PLAYER,
       (client, message: { x: number; y: number; anim: string }) => {
@@ -151,6 +152,49 @@ export class GameRoom extends Room<OfficeState> {
         })
       }
     )
+
+    // RainGameState 업데이트를 위한 메시지 처리
+this.onMessage(Message.UPDATE_GAME_PLAY,
+  (client, message: { game: IKeywordRain[], point: number, heart: number, period: number }) => {
+      // 업데이트 명령을 전송 (서버의 상태를 업데이트)
+      this.dispatcher.dispatch(new GamePlayUpdateCommand(), {
+          client,
+          game: message.game,
+          point: message.point,
+          heart: message.heart,
+          period: message.period
+      });
+
+      // 업데이트된 상태를 다른 클라이언트들에게 전송
+      const rainGameState = {
+          game: message.game,
+          point: message.point,
+          heart: message.heart,
+          period: message.period
+      };
+      this.broadcast(Message.SEND_RAIN_GAME_PLAYERS, rainGameState, { except: client });
+  }
+);
+
+// KeywordRain 객체를 처리하는 부분은 별도의 메시지 유형으로 분리할 수 있습니다.
+this.onMessage(Message.UPDATE_KEYWORD_RAIN,
+  (client, message: { y: number; speed: number; keyword: string; x: number; flicker: boolean; blind: boolean; accel: boolean; multifly: boolean }) => {
+      this.dispatcher.dispatch(new KeywordRainUpdateCommand(), {
+          client,
+          y: message.y,
+          speed: message.speed,
+          keyword: message.keyword,
+          x: message.x,
+          flicker: message.flicker,
+          blind: message.blind,
+          accel: message.accel,
+          multifly: message.multifly
+      });
+      // 여기서 필요하다면 변경 사항을 다른 클라이언트에게 브로드캐스트할 수도 있습니다.
+  }
+);
+
+
 
     // when a player is ready to connect, call the PlayerReadyToConnectCommand
     this.onMessage(Message.READY_TO_CONNECT, (client) => {

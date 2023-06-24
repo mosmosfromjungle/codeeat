@@ -14,8 +14,16 @@ export enum Message {
   // ***** GAME ROOM *****
   // Client
   UPDATE_GAME_PLAY,
+  UPDATE_RAIN_GAME_PLAY,
   // Server
   SEND_GAME_PLAYERS,
+  SEND_RAIN_GAME_PLAYERS,
+  // ***** RAIN GAME *****
+  // Client 
+  
+  // Server
+  
+
 
   // ***** NOT USED *****
   // CONNECT_TO_MOLEGAME,
