@@ -6,6 +6,11 @@ interface RoomInterface extends RoomAvailable {
   name?: string
 }
 
+export interface PlayersInterface {
+  name: string
+  texture: string
+}
+
 /**
  * Colyseus' real time room list always includes the public lobby so we have to remove it manually.
  */
@@ -21,8 +26,8 @@ const isMoleRoom = (room: RoomInterface) => {
   return room.name === RoomType.MOLE
 }
 
-const isTypingRoom = (room: RoomInterface) => {
-  return room.name === RoomType.TYPING
+const isRainRoom = (room: RoomInterface) => {
+  return room.name === RoomType.RAIN
 }
 
 export const roomSlice = createSlice({
@@ -37,11 +42,12 @@ export const roomSlice = createSlice({
     gameRoomId: '',
     gameRoomName: '',
     gameRoomDescription: '',
+    gamePlayers: new Array<PlayersInterface>(),
     availableRooms: {
       generalRooms: new Array<RoomAvailable>(),
       brickRooms: new Array<RoomAvailable>(),
       moleRooms: new Array<RoomAvailable>(),
-      typingRooms: new Array<RoomAvailable>(),
+      rainRooms: new Array<RoomAvailable>(),
     }
   },
   reducers: {
@@ -70,6 +76,9 @@ export const roomSlice = createSlice({
       state.gameRoomName = action.payload.name
       state.gameRoomDescription = action.payload.description
     },
+    setGamePlayers: (state, action: PayloadAction<PlayersInterface[]>) => {
+      state.gamePlayers = action.payload
+    },
     setAvailableRooms: (state, action: PayloadAction<RoomAvailable[]>) => {
       state.availableRooms.generalRooms = action.payload.filter((room) => isCustomRoom(room))
     },
@@ -79,8 +88,8 @@ export const roomSlice = createSlice({
     setAvailableMoleRooms: (state, action: PayloadAction<RoomAvailable[]>) => {
       state.availableRooms.moleRooms = action.payload.filter((room) => isMoleRoom(room))
     },
-    setAvailableTypingRooms: (state, action: PayloadAction<RoomAvailable[]>) => {
-      state.availableRooms.typingRooms = action.payload.filter((room) => isTypingRoom(room))
+    setAvailableRainRooms: (state, action: PayloadAction<RoomAvailable[]>) => {
+      state.availableRooms.rainRooms = action.payload.filter((room) => isRainRoom(room))
     },
     addAvailableRooms: (state, action: PayloadAction<{ roomId: string; room: RoomAvailable }>) => {
       // if (!isCustomRoom(action.payload.room)) return
@@ -111,14 +120,14 @@ export const roomSlice = createSlice({
         } else {
           state.availableRooms.moleRooms.push(action.payload.room)
         }
-      } else if (isTypingRoom(action.payload.room)) {
-        const roomIndex = state.availableRooms.typingRooms.findIndex(
+      } else if (isRainRoom(action.payload.room)) {
+        const roomIndex = state.availableRooms.rainRooms.findIndex(
           (room) => room.roomId === action.payload.roomId
         )
         if (roomIndex !== -1) {
-          state.availableRooms.typingRooms[roomIndex] = action.payload.room
+          state.availableRooms.rainRooms[roomIndex] = action.payload.room
         } else {
-          state.availableRooms.typingRooms.push(action.payload.room)
+          state.availableRooms.rainRooms.push(action.payload.room)
         }
       }
     },
@@ -126,7 +135,7 @@ export const roomSlice = createSlice({
       state.availableRooms.generalRooms = state.availableRooms.generalRooms.filter((room) => room.roomId !== action.payload)
       state.availableRooms.brickRooms = state.availableRooms.brickRooms.filter((room) => room.roomId !== action.payload)
       state.availableRooms.moleRooms = state.availableRooms.moleRooms.filter((room) => room.roomId !== action.payload)
-      state.availableRooms.typingRooms = state.availableRooms.typingRooms.filter((room) => room.roomId !== action.payload)
+      state.availableRooms.rainRooms = state.availableRooms.rainRooms.filter((room) => room.roomId !== action.payload)
     },
   },
 })
@@ -137,10 +146,11 @@ export const {
   setGameJoined,
   setJoinedRoomData,
   setJoinedGameRoomData,
+  setGamePlayers,
   setAvailableRooms,
   setAvailableBrickRooms,
   setAvailableMoleRooms,
-  setAvailableTypingRooms,
+  setAvailableRainRooms,
   addAvailableRooms,
   removeAvailableRooms,
 } = roomSlice.actions

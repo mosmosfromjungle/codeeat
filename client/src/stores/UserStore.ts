@@ -61,7 +61,6 @@ export const userSlice = createSlice({
     setShowJoystick: (state, action: PayloadAction<boolean>) => {
       state.showJoystick = action.payload
     },
-    
     setSessionId: (state, action: PayloadAction<string>) => {
       state.sessionId = action.payload
     },
@@ -89,43 +88,24 @@ export const userSlice = createSlice({
     removePlayerNameMap: (state, action: PayloadAction<string>) => {
       state.playerNameMap.delete(sanitizeId(action.payload))
     },
-
     setDialogStatus: (state, action: PayloadAction<DIALOG_STATUS>) => {
       state.dialogStatus = action.payload
     },
-    // setEntryProcess: (state, action: PayloadAction<ENTRY_PROCESS>) => {
-    //   state.entryProcess = action.payload
-    // },
-    // setEntered: (state, action: PayloadAction<boolean>) => {
-    //   state.entered = action.payload
-    // },
     setShowLogout: (state, action: PayloadAction<boolean>) => {
       state.showLogout = action.payload
     },
     setShowVersion: (state, action: PayloadAction<boolean>) => {
       state.showVersion = action.payload
     },
-
-    // setGameEntered: (state, action: PayloadAction<boolean>) => {
-    //   state.gameEntered = action.payload
-    // },
-    // setGameWelcome: (state, action: PayloadAction<boolean>) => {
-    //   state.gameWelcome = action.payload
-    // },
-
     setVideoConnected: (state, action: PayloadAction<boolean>) => {
       state.videoConnected = action.payload
     },
     setAudioConnected: (state, action: PayloadAction<boolean>) => {
       state.audioConnected = action.payload
     },
-
     setShowProfile: (state, action: PayloadAction<boolean>) => {
       state.showProfile = action.payload
     },
-    // setShowMoleGame: (state, action: PayloadAction<boolean>) => {
-    //   state.showMoleGame = action.payload
-    // },
   },
 })
 
@@ -142,16 +122,11 @@ export const {
   setPlayerNameMap,
   removePlayerNameMap,
   setDialogStatus,
-  // setEntryProcess,
-  // setEntered,
-  // setGameEntered,
-  // setGameWelcome,
   setShowLogout,
   setShowVersion,
   setVideoConnected,
   setAudioConnected,
   setShowProfile,
-  // setShowMoleGame,
 } = userSlice.actions
 
 export default userSlice.reducer

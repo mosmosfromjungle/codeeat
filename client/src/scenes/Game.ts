@@ -2,7 +2,7 @@ import Phaser from 'phaser'
 
 // import { debugDraw } from '../utils/debug'
 import Network from '../services/Network'
-import { createCharacterAnims } from '../anims/CharacterAnims'
+// import GameNetwork from '../services/GameNetwork'
 
 import Item from '../items/Item'
 import Chair from '../items/Chair'
@@ -12,13 +12,14 @@ import RainGame from '../items/RainGame'
 import FaceChat from '../items/FaceChat'
 import { ItemType } from '../../../types/Items'
 
-import '../characters/MyPlayer'
-import '../characters/OtherPlayer'
-import MyPlayer from '../characters/MyPlayer'
-import OtherPlayer from '../characters/OtherPlayer'
-import PlayerSelector from '../characters/PlayerSelector'
+import '../players/MyPlayer'
+import '../players/OtherPlayer'
+import MyPlayer from '../players/MyPlayer'
+import OtherPlayer from '../players/OtherPlayer'
+import PlayerSelector from '../players/PlayerSelector'
 import { IPlayer } from '../../../types/IOfficeState'
 import { PlayerBehavior } from '../../../types/PlayerBehavior'
+import { createCharacterAnims } from '../anims/CharacterAnims'
 
 import store from '../stores'
 import { setFocused, setShowChat, setShowDM } from '../stores/ChatStore'
@@ -26,6 +27,7 @@ import { NavKeys, Keyboard } from '../../../types/KeyboardState'
 
 export default class Game extends Phaser.Scene {
   network!: Network
+  // gameNetwork!: GameNetwork // Scene에는 포함되어있을 필요가 없어 주석처리 
   // network2!: Network2
   private cursors!: NavKeys
   private keyE!: Phaser.Input.Keyboard.Key
@@ -206,7 +208,7 @@ export default class Game extends Phaser.Scene {
 
     // this.myPlayer = this.add.myPlayer(400, 900, 'kevin', this.network.mySessionId)
     this.myPlayer = this.add.myPlayer(705, 500, 'adam', this.network.mySessionId)
-    this.playerSelector = new PlayerSelector(this, 0, 0, 16, 16)
+    this.playerSelector = new PlayerSelector(this, 0, 0, 32, 32)  // TODO: 아이템과 상호작용할 수 있는 면적 
 
 
     const chairs = this.physics.add.staticGroup({ classType: Chair })
@@ -224,7 +226,7 @@ export default class Game extends Phaser.Scene {
       const item = this.addObjectFromTiled(brickgames, obj, 'picnic2', 'picnic2') as BrickGame
       // item.setDepth(item.y + item.height * 0.27)
       const id = `${i}`
-      item.id = id
+      // item.id = id   // TODO: 나중에 아이템 별로 지정된 별도의 방에 들어가게 하기 위해 필요 
       this.brickgameMap.set(id, item)
     })
 

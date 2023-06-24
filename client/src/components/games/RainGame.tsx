@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import typing_Background from "../../../public/assets/game/RainGame/blackboard.png"
+import rain_Background from "../../../public/assets/game/RainGame/blackboard.png"
 import { useSelector, useDispatch } from 'react-redux';
 import initialState, { openRainGameDialog, closeRainGameDialog, KeywordRain, addKeyword, resetRainGame, updateGame, removeKeyword, updatePeriod, updateSpeed } from "../../stores/RainGameStore";
 import { RootState } from "../../stores";
@@ -71,7 +71,7 @@ export function RainGame() {
             <div>
                 <div style={{
                     width: "100%", height: lineHeight,
-                    backgroundImage: `url(${typing_Background})`,
+                    backgroundImage: `url(${rain_Background})`,
                     backgroundSize: "50%",
                     backgroundRepeat: "no-repeat",
                     position: "relative",

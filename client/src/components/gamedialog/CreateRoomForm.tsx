@@ -32,6 +32,8 @@ export const CreateRoomForm = () => {
   const [nameFieldEmpty, setNameFieldEmpty] = useState(false)
   const [descriptionFieldEmpty, setDescriptionFieldEmpty] = useState(false)
   const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)
+  const username = useAppSelector((state) => state.user.username)
+  const character = useAppSelector((state) => state.user.character)
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
   const rainGameOpen = useAppSelector((state) => state.raingame.rainGameOpen)
@@ -54,15 +56,18 @@ export const CreateRoomForm = () => {
     if (isValidName && isValidDescription && lobbyJoined) {
       const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
       try {
-        if (brickGameOpen) await bootstrap.network.createBrickRoom(values)
-        if (moleGameOpen) await bootstrap.network.createMoleRoom(values)
-        if (rainGameOpen) await bootstrap.network.createTypingRoom(values)
+        if (brickGameOpen) await bootstrap.gameNetwork.createBrickRoom(values)
+        if (moleGameOpen) await bootstrap.gameNetwork.createMoleRoom(values)
+        if (rainGameOpen) await bootstrap.gameNetwork.createRainRoom(values)
+        bootstrap.gameNetwork.updatePlayer(0, 0, `${character}_idle_down`)
+        bootstrap.gameNetwork.updatePlayerName(username)
         dispatch(setDialogStatus(DIALOG_STATUS.GAME_WELCOME))
+        // setTimeout(() => {
+        // }, 100);
       } catch (error) {
         console.error(error)
       }
     }
-
   }
 
   return (

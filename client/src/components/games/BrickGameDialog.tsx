@@ -1,14 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
-import { io, Socket } from 'socket.io-client';
-import phaserGame from '../../PhaserGame';
-import Game from '../../scenes/Game';
 
 import { useAppSelector, useAppDispatch } from '../../hooks'
 import { closeBrickGameDialog } from '../../stores/BrickGameStore'
+import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore'
+import { PlayersInterface } from '../../stores/RoomStore'
+
+import phaserGame from '../../PhaserGame'
+import Bootstrap from '../../scenes/Bootstrap'
+import Game from '../../scenes/Game'
+
 
 const WRONG_OPERATION = '해당 자료구조에서 사용되지 않는 연산입니다!'
 const COMMON_MESSAGE = (
@@ -22,7 +26,7 @@ const COMMON_MESSAGE = (
     <span style={{ fontSize: '30px' }}> reset</span>
     <br />
   </>
-);
+)
 
 const GlobalStyle = createGlobalStyle`
   @font-face {
@@ -124,26 +128,25 @@ const CustomList = styled.div`
 
 `
 
-function getRandomIntInclusive(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
 export default function BrickGameDialog() {
   const dispatch = useAppDispatch()
-  // const game = phaserGame.scene.keys.game as Game;
-  // const socketNetwork = game.network2
+  const username = useAppSelector((state) => state.user.username)
+  const gamePlayers = useAppSelector((state) => state.room.gamePlayers)
+  const [players, setPlayers] = useState<PlayersInterface[]>([])
 
-  const userId = useAppSelector((state) => state.user.userId);
-  // const playerNameMap = useAppSelector((state) => state.user.playerNameMap)
-  
+  /* TODO: FETCH PLAYERS IN ROOM */
+  useEffect(() => {
+    setPlayers(gamePlayers)
+    console.log(gamePlayers)
+  }, [dispatch, gamePlayers])
+
+  /* TODO: SET IMAGE AND NUMBERS */
   function getRandomIntInclusive(min: number, max: number): number {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
-  
   const n = getRandomIntInclusive(1, 100);
   const m = getRandomIntInclusive(1, n);
   const x = n - m;
@@ -154,8 +157,8 @@ export default function BrickGameDialog() {
     const num = getRandomIntInclusive(1, n);
     if (!arr.includes(num)) {
       arr.push(num);
+    }
   }
-}
 
   const [images, setImages] = useState([
     { src: '/assets/game/brickGame/52-2.png', text: arr[0].toString() },
@@ -165,22 +168,10 @@ export default function BrickGameDialog() {
     { src: '/assets/game/brickGame/50-2.png', text: arr[4].toString() },
     { src: '/assets/game/brickGame/39-2.png', text: arr[5].toString() },
   ])
-
   const [originalImages, setOriginalImages] = useState([...images]) // 원래의 이미지 배열 복사
   const [command, setCommand] = useState('')
   const [selectedOption, setSelectedOption] = useState('')
 
-  // const handleRemoveImage = () => {
-  //   const match = command.match(/remove\((\d+)\)/) || command.match(/discard\((\d+)\)/)
-  //   if (match) {
-  //     const number = match[1]
-  //     const index = images.findIndex((image) => image.text === number)
-  //     if (index !== -1) {
-  //       removeImage(index)
-  //     }
-  //   }
-  //   setCommand('')
-  // }
 
   const handleRemoveImage = () => {
     const match = command.match(/remove\((\d+)\)/) || command.match(/discard\((\d+)\)/);
@@ -194,7 +185,7 @@ export default function BrickGameDialog() {
       alert('제거할 숫자를 같이 입력해주세요.');
     }
     setCommand('');
-  };
+  }
 
   const removeImage = (index) => {
     setImages((prevImages) => {
@@ -207,23 +198,6 @@ export default function BrickGameDialog() {
   const restoreImages = () => {
     setImages([...originalImages]) // 원래의 이미지 배열로 복구
   }
-
-  // const handleCommand = () => {
-  //   const lowercaseCommand = command.toLowerCase()
-  //   if (lowercaseCommand === 'popleft' || lowercaseCommand === 'dequeue') {
-  //     removeImage(0)
-  //   } else if (lowercaseCommand === 'pop') {
-  //     removeImage(images.length - 1)
-  //   } else if (lowercaseCommand === 'sum') {
-  //     const sum = images.reduce((total, image) => total + parseInt(image.text), 0)
-  //     alert(`Sum: ${sum}`)
-  //   } else if (lowercaseCommand === 'restore') {
-  //     restoreImages() // 이미지 복구
-  //   } else if (lowercaseCommand.startsWith('remove(') || lowercaseCommand.startsWith('discard(')) {
-  //     handleRemoveImage()
-  //   }
-  //   setCommand('')
-  // }
 
   const handleCommand = () => {
     const lowercaseCommand = command.toLowerCase();
@@ -298,7 +272,7 @@ export default function BrickGameDialog() {
       }
     }
     setCommand('');
-  };
+  }
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
@@ -315,7 +289,16 @@ export default function BrickGameDialog() {
     setSelectedOption('')
   }
 
-  let players = [{name:'a', score: 10}, {name:'b', score:20}, {name:'c',score:30}]
+  const handleClose = () => {
+    try {
+      const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
+      bootstrap.gameNetwork.leaveGameRoom()
+      dispatch(closeBrickGameDialog())
+      dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
+    } catch (error) {
+      console.error('Error leaving the room:', error)
+    }
+  }
 
   
   return (
@@ -328,9 +311,10 @@ export default function BrickGameDialog() {
         <Wrapper>
           <div id='container'>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
+              Players: 
               {players.map((player, index) => (
                 <div key={index} style={{ marginLeft: '10px', textAlign: 'center' }}>
-                  <div>{player.name} {player.score}</div>
+                  <div>{player.name}</div>
                 </div>
               ))}
             </div>
@@ -354,7 +338,7 @@ export default function BrickGameDialog() {
           <IconButton
             aria-label="close dialog"
             className="close"
-            onClick={() => dispatch(closeBrickGameDialog())}
+            onClick={handleClose}
           >
             <CloseIcon />
           </IconButton>
