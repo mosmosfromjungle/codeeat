@@ -1,5 +1,5 @@
 import { Client, Room } from 'colyseus.js'
-import { IOfficeState, IPlayer, IMoleGame, IBrickGame, ITypingGame } from '../../../types/IOfficeState'
+import { IOfficeState, IPlayer, IMoleGame, IBrickGame, IRainGame } from '../../../types/IOfficeState'
 import { Message } from '../../../types/Messages'
 import { IRoomData, RoomType } from '../../../types/Rooms'
 import { ItemType } from '../../../types/Items'
@@ -14,7 +14,7 @@ import {
   setGamePlayers,
   setAvailableBrickRooms,
   setAvailableMoleRooms,
-  setAvailableTypingRooms,
+  setAvailableRainRooms,
   addAvailableRooms,
   removeAvailableRooms,
 } from '../stores/RoomStore'
@@ -74,9 +74,9 @@ export default class GameNetwork {
       this.lobby.onMessage('rooms', (rooms) => {
         store.dispatch(setAvailableMoleRooms(rooms))
       })
-    } else if (type === RoomType.TYPINGLOBBY) {
+    } else if (type === RoomType.RAINLOBBY) {
       this.lobby.onMessage('rooms', (rooms) => {
-        store.dispatch(setAvailableTypingRooms(rooms))
+        store.dispatch(setAvailableRainRooms(rooms))
       })
     }
 
@@ -116,9 +116,9 @@ export default class GameNetwork {
     this.initialize()
   }
   
-  async createTypingRoom(roomData: IRoomData) {
+  async createRainRoom(roomData: IRoomData) {
     const { name, description, password, autoDispose } = roomData
-    this.room = await this.client.create(RoomType.TYPING, {
+    this.room = await this.client.create(RoomType.RAIN, {
       name,
       description,
       password,

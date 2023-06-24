@@ -8,7 +8,7 @@ import Item from '../items/Item'
 import Chair from '../items/Chair'
 import MoleGame from '../items/MoleGame'
 import BrickGame from '../items/BrickGame'
-import TypingGame from '../items/TypingGame'
+import RainGame from '../items/RainGame'
 import FaceChat from '../items/FaceChat'
 import { ItemType } from '../../../types/Items'
 
@@ -39,7 +39,7 @@ export default class Game extends Phaser.Scene {
   private otherPlayerMap = new Map<string, OtherPlayer>()
   private brickgameMap = new Map<String, BrickGame>()
   private molegameMap = new Map<String, MoleGame>()
-  private typinggameMap = new Map<string, TypingGame>()
+  private raingameMap = new Map<string, RainGame>()
   private facechatMap = new Map<String, FaceChat>()
 
   constructor() {
@@ -205,7 +205,7 @@ export default class Game extends Phaser.Scene {
       // 로건 케빈 엠마
     );
     */
-     
+
     // this.myPlayer = this.add.myPlayer(400, 900, 'kevin', this.network.mySessionId)
     this.myPlayer = this.add.myPlayer(705, 500, 'adam', this.network.mySessionId)
     this.playerSelector = new PlayerSelector(this, 0, 0, 32, 32)  // TODO: 아이템과 상호작용할 수 있는 면적 
@@ -230,14 +230,14 @@ export default class Game extends Phaser.Scene {
       this.brickgameMap.set(id, item)
     })
 
-    /* Typing Game */
-    const typinggames = this.physics.add.staticGroup({ classType: TypingGame })
-    const typinggameLayer = this.map.getObjectLayer('bench')
-    typinggameLayer.objects.forEach((obj, i) => {
-      const item = this.addObjectFromTiled(typinggames, obj, 'bench', 'bench') as TypingGame
+    /* Rain Game */
+    const raingames = this.physics.add.staticGroup({ classType: RainGame })
+    const raingameLayer = this.map.getObjectLayer('bench')
+    raingameLayer.objects.forEach((obj, i) => {
+      const item = this.addObjectFromTiled(raingames, obj, 'bench', 'bench') as RainGame
       const id = `${i}`
       item.id = id
-      this.typinggameMap.set(id, item)
+      this.raingameMap.set(id, item)
     })
 
     /* Mole Game */
@@ -279,7 +279,7 @@ export default class Game extends Phaser.Scene {
 
     this.physics.add.overlap(
       this.playerSelector,
-      [chairs, molegames, typinggames, brickgames, facechats],
+      [chairs, molegames, raingames, brickgames, facechats],
       this.handleItemSelectorOverlap,
       undefined,
       this
@@ -393,25 +393,25 @@ export default class Game extends Phaser.Scene {
     if (itemType === ItemType.BRICKGAME) {
       const brickgame = this.brickgameMap.get(itemId)
       brickgame?.addCurrentUser(playerId)
-    } else if (itemType === ItemType.TYPINGGAME) {
-      const typinggame = this.typinggameMap.get(itemId)
-      typinggame?.addCurrentUser(playerId)
+    } else if (itemType === ItemType.RAINGAME) {
+      const raingame = this.raingameMap.get(itemId)
+      raingame?.addCurrentUser(playerId)
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.addCurrentUser(playerId)
     } else if (itemType === ItemType.FACECHAT) {
       const facechat = this.facechatMap.get(itemId)
       facechat?.addCurrentUser(playerId)
-    } 
+    }
   }
 
   private handleItemUserRemoved(playerId: string, itemId: string, itemType: ItemType) {
     if (itemType === ItemType.BRICKGAME) {
       const brickgame = this.brickgameMap.get(itemId)
       brickgame?.removeCurrentUser(playerId)
-    } else if (itemType === ItemType.TYPINGGAME) {
-      const typinggame = this.typinggameMap.get(itemId)
-      typinggame?.removeCurrentUser(playerId)
+    } else if (itemType === ItemType.RAINGAME) {
+      const raingame = this.raingameMap.get(itemId)
+      raingame?.removeCurrentUser(playerId)
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.removeCurrentUser(playerId)

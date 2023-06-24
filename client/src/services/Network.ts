@@ -1,5 +1,5 @@
 import { Client, Room } from 'colyseus.js'
-import { IOfficeState, IPlayer, IMoleGame, IBrickGame, ITypingGame } from '../../../types/IOfficeState'
+import { IOfficeState, IPlayer, IMoleGame, IBrickGame, IRainGame } from '../../../types/IOfficeState'
 import { Message } from '../../../types/Messages'
 import { IRoomData, RoomType } from '../../../types/Rooms'
 import { ItemType } from '../../../types/Items'
@@ -92,7 +92,7 @@ export default class Network {
       name,
       description,
       password,
-      autoDispose:false,
+      autoDispose: false,
     })
     this.initialize()
   }
@@ -148,14 +148,14 @@ export default class Network {
       }
     }
 
-    // new instance added to the typinggames MapSchema
-    this.room.state.typinggames.onAdd = (typinggame: ITypingGame, key: string) => {
+    // new instance added to the raingames MapSchema
+    this.room.state.raingames.onAdd = (raingame: IRainGame, key: string) => {
       // track changes on every child object's connectedUser
-      typinggame.connectedUser.onAdd = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.TYPINGGAME)
+      raingame.connectedUser.onAdd = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.RAINGAME)
       }
-      typinggame.connectedUser.onRemove = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.TYPINGGAME)
+      raingame.connectedUser.onRemove = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.RAINGAME)
       }
     }
 

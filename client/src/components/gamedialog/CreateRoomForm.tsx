@@ -36,7 +36,7 @@ export const CreateRoomForm = () => {
   const character = useAppSelector((state) => state.user.character)
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
-  const typingGameOpen = useAppSelector((state) => state.typinggame.typingGameOpen)
+  const rainGameOpen = useAppSelector((state) => state.raingame.rainGameOpen)
   const dispatch = useAppDispatch()
 
   const handleChange = (prop: keyof IRoomData) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,12 +53,12 @@ export const CreateRoomForm = () => {
       setDescriptionFieldEmpty(!descriptionFieldEmpty)
 
     // create custom room if name and description are not empty
-    if (isValidName && isValidDescription && lobbyJoined) {      
+    if (isValidName && isValidDescription && lobbyJoined) {
       const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
       try {
         if (brickGameOpen) await bootstrap.gameNetwork.createBrickRoom(values)
         if (moleGameOpen) await bootstrap.gameNetwork.createMoleRoom(values)
-        if (typingGameOpen) await bootstrap.gameNetwork.createTypingRoom(values)
+        if (rainGameOpen) await bootstrap.gameNetwork.createRainRoom(values)
         bootstrap.gameNetwork.updatePlayer(0, 0, `${character}_idle_down`)
         bootstrap.gameNetwork.updatePlayerName(username)
         dispatch(setDialogStatus(DIALOG_STATUS.GAME_WELCOME))

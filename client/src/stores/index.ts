@@ -5,20 +5,21 @@ import chatReducer from './ChatStore'
 import roomReducer from './RoomStore'
 import moleGameReducer from './MoleGameStore'
 import brickGameReducer from './BrickGameStore'
-import typingGameReducer from './TypingGameStore'
+import rainGameReducer from './RainGameStore'
 
 enableMapSet()
 
-const store = configureStore({
-  reducer: {
-    user: userReducer,
-    chat: chatReducer,
-    room: roomReducer,
-    molegame: moleGameReducer,
-    brickgame: brickGameReducer,
-    typinggame: typingGameReducer,
+const rootReducer = {
+  user: userReducer,
+  chat: chatReducer,
+  room: roomReducer,
+  molegame: moleGameReducer,
+  brickgame: brickGameReducer,
+  raingame: rainGameReducer,
+}
 
-  },
+const store = configureStore({
+  reducer: rootReducer,
   // Temporary disable serialize check for redux as we store MediaStream in ComputerStore.
   // https://stackoverflow.com/a/63244831
   middleware: (getDefaultMiddleware) =>

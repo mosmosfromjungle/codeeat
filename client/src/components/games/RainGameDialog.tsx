@@ -5,9 +5,10 @@ import CloseIcon from '@mui/icons-material/Close'
 
 import { useAppSelector, useAppDispatch } from '../../hooks'
 import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore'
+import { closeRainGameDialog } from '../../stores/RainGameStore'
+import RainGame from './RainGame'
+import * as Colyseus from "colyseus.js";
 
-import TypingGame from './TypingGame'
-import { closeTypingGameDialog } from '../../stores/TypingGameStore'
 
 import phaserGame from '../../PhaserGame'
 import Bootstrap from '../../scenes/Bootstrap'
@@ -45,7 +46,8 @@ const Wrapper = styled.div`
     right: 0px;
   }
 `
-const TypingGameWrapper = styled.div`
+
+const RainGameWrapper = styled.div`
   flex: 1;
   border-radius: 25px;
   overflow: hidden;
@@ -58,14 +60,14 @@ const TypingGameWrapper = styled.div`
   }
 `
 
-export default function TypingGameDialog() {
+export default function RainGameDialog() {
   const dispatch = useAppDispatch()
 
   const handleClose = () => {
     try {
       const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
       bootstrap.gameNetwork.leaveGameRoom()
-      dispatch(closeTypingGameDialog())
+      dispatch(closeRainGameDialog())
       dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
     } catch (error) {
       console.error('Error leaving the room:', error)
@@ -75,7 +77,7 @@ export default function TypingGameDialog() {
   return (
     <Backdrop>
       <Wrapper>
-        <TypingGame />
+        <RainGame />
         {<IconButton
           aria-label="close dialog"
           className="close"

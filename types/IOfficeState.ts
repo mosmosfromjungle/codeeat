@@ -19,7 +19,7 @@ export interface IMoleGame extends Schema {
   connectedUser: SetSchema<string>
 }
 
-export interface ITypingGame extends Schema {
+export interface IRainGame extends Schema {
   // roomId: string
   connectedUser: SetSchema<string>
 }
@@ -34,7 +34,7 @@ export interface IOfficeState extends Schema {
   players: MapSchema<IPlayer>
   molegames: MapSchema<IMoleGame>
   brickgames: MapSchema<IBrickGame>
-  typinggames: MapSchema<ITypingGame>
+  raingames: MapSchema<IRainGame>
   chatMessages: ArraySchema<IChatMessage>
 }
 
