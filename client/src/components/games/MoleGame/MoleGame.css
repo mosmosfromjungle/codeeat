@@ -18,7 +18,7 @@ h1 {
   color: #f2ecff;
   text-align: center;
   line-height: 1.5;
-  font-size: 20px;
+  font-size: 25px;
 }
 
 .main{
@@ -29,14 +29,14 @@ h1 {
 .whack-a-mole {
   margin: 0 auto;
   list-style: none;
-  width: 500px;
+  width: 480px;
   border-radius: 20px;
 }
 
 .mole{
   float: left;
-  width: 135px;
-  height: 135px;
+  width: 136px;
+  height: 136px;
   margin: 5px;
   overflow: hidden;
   cursor : url('/assets/game/molegame/cursor_1.png'), pointer;
@@ -183,6 +183,13 @@ li {
   color: #f2ecff;
 }
 
+#point-text-name {
+  font-size: 25px;
+  font-weight: bold;
+  color: #f2ecff;
+  font-family: Font_DungGeun;
+}
+
 #point-current {
   font-size: 20px;
   font-weight: bold;
@@ -200,9 +207,9 @@ li {
   font-size: 20px;
   text-align: center;
   top: 20%;
-  left: 40%;
-  width: 400px;
-  height: 270px;
+  left: 50%;
+  width: 550px;
+  height: 400px;
   margin: 0 auto;
   background: #3d3f43;
   z-index: 2;
@@ -217,6 +224,17 @@ li {
 
 #ending-box .last {
   color: #fbb666;
+}
+
+#ending-box .winner {
+  font-size: 30px;
+  color: #7644ea;
+  font-family: Font_DungGeun;
+}
+
+#ending-box-title {
+  font-size: 25px;
+  color: #f9f871;
 }
 
 .ending-bg {

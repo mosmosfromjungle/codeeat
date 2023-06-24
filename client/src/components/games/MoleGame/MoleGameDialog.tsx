@@ -3,9 +3,9 @@ import styled from 'styled-components'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 
-import { useAppSelector, useAppDispatch } from '../../hooks'
-import { closeMoleGameDialog } from '../../stores/MoleGameStore'
-import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore'
+import { useAppSelector, useAppDispatch } from '../../../hooks'
+import { closeMoleGameDialog } from '../../../stores/MoleGameStore'
+import { DIALOG_STATUS, setDialogStatus } from '../../../stores/UserStore'
 
 import ButtonBGM from '/assets/audios/mole_button.mp3';
 import CorrectBGM from '/assets/audios/mole_correct.mp3';
@@ -13,8 +13,8 @@ import WrongBGM from '/assets/audios/mole_wrong.mp3';
 import FinishBGM from '/assets/audios/mole_finish.mp3';
 
 import './MoleGame.css'
-import phaserGame from '../../PhaserGame'
-import Bootstrap from '../../scenes/Bootstrap'
+import phaserGame from '../../../PhaserGame'
+import Bootstrap from '../../../scenes/Bootstrap'
 
 const Backdrop = styled.div`
   position: fixed;
@@ -483,16 +483,27 @@ export default function MoleGameDialog() {
     setDisableStartButton(false);
   }
 
+  // 5. Check the winner
+  const username = useAppSelector((state) => state.user.username)
+  const friendname = ''
+
   const Modal = () => {
     return(
       <div id="ending" className="ending finalEnding">
         <p id="ending-box">
-          <span>
-            GAME OVER!<br/><br/>
-            YOUR SCORE IS&nbsp;
-          </span>
-          <span className='last'>{ total }</span>
-          <p></p>
+          <p id="ending-box-title">🎮🎮 Game Over ! 🎲🎲</p>
+          <p>
+            <span>Your score is &nbsp;</span>
+            <span className='last'>{ total }</span>
+          </p>
+          <p>
+            <span>Friend score is &nbsp;</span>
+            <span className='last'>{ total }</span>
+          </p>
+          <p>
+            <span>The winner is &nbsp;</span>
+            <span className='winner'>{ username }</span>
+          </p>
 
           <div className="btn-wrap">
             <button type="button" 
@@ -565,6 +576,9 @@ export default function MoleGameDialog() {
             <Content>
               <MyPoint>
                 <div className="point-wrap">
+                  <p id="point-text-name">
+                    [{username}]<br/><br/>
+                  </p>
                   <p id="point-text">
                     My Point<br/><br/>
                     <span id="point-current">{ point }</span>/10
@@ -631,8 +645,11 @@ export default function MoleGameDialog() {
 
               <YourPoint>
                 <div className="point-wrap">
+                  <p id="point-text-name">
+                    [{friendname}]<br/><br/>
+                  </p>
                   <p id="point-text">
-                    Your Point<br/><br/>
+                    Friend Point<br/><br/>
                     <span id="point-current">{ yourPoint }</span>/10
                   </p>
                 </div>
