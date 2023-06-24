@@ -143,9 +143,9 @@ export function RainGame() {
                     left: `${item.x}px`,
                     color: '#FFFFFF',
                     backgroundImage: backgroundImage,
-                    backgroundSize: '10vw 10vw',
+                    backgroundSize: '150% 150%',
                     backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center',
+                    backgroundPosition: 'top',
                     zIndex: 2,
                 }}
             >
@@ -187,9 +187,9 @@ export function RainGame() {
                     left: `${item.x}px`,
                     color: '#FFFFFF',
                     backgroundImage: backgroundImage,
-                    backgroundSize: '10vw 10vw',
+                    backgroundSize: '150% 150%',
                     backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center',
+                    backgroundPosition: 'top',
                     zIndex: 2,
                 }}
             >
