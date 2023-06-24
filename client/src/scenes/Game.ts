@@ -1,27 +1,24 @@
 import Phaser from 'phaser'
 
 // import { debugDraw } from '../utils/debug'
+import Network from '../services/Network'
 import { createCharacterAnims } from '../anims/CharacterAnims'
 
 import Item from '../items/Item'
 import Chair from '../items/Chair'
-import Computer from '../items/Computer'
-import Whiteboard from '../items/Whiteboard'
-import VendingMachine from '../items/VendingMachine'
 import MoleGame from '../items/MoleGame'
+import BrickGame from '../items/BrickGame'
+import TypingGame from '../items/TypingGame'
 import FaceChat from '../items/FaceChat'
-
+import { ItemType } from '../../../types/Items'
 
 import '../characters/MyPlayer'
 import '../characters/OtherPlayer'
 import MyPlayer from '../characters/MyPlayer'
 import OtherPlayer from '../characters/OtherPlayer'
 import PlayerSelector from '../characters/PlayerSelector'
-import Network from '../services/Network'
-import Network2 from '../services/Network2'
 import { IPlayer } from '../../../types/IOfficeState'
 import { PlayerBehavior } from '../../../types/PlayerBehavior'
-import { ItemType } from '../../../types/Items'
 
 import store from '../stores'
 import { setFocused, setShowChat, setShowDM } from '../stores/ChatStore'
@@ -29,7 +26,7 @@ import { NavKeys, Keyboard } from '../../../types/KeyboardState'
 
 export default class Game extends Phaser.Scene {
   network!: Network
-  network2!: Network2
+  // network2!: Network2
   private cursors!: NavKeys
   private keyE!: Phaser.Input.Keyboard.Key
   private keyR!: Phaser.Input.Keyboard.Key
@@ -38,9 +35,9 @@ export default class Game extends Phaser.Scene {
   private playerSelector!: Phaser.GameObjects.Zone
   private otherPlayers!: Phaser.Physics.Arcade.Group
   private otherPlayerMap = new Map<string, OtherPlayer>()
-  computerMap = new Map<string, Computer>()
-  private whiteboardMap = new Map<string, Whiteboard>()
+  private brickgameMap = new Map<String, BrickGame>()
   private molegameMap = new Map<String, MoleGame>()
+  private typinggameMap = new Map<string, TypingGame>()
   private facechatMap = new Map<String, FaceChat>()
 
   constructor() {
@@ -53,6 +50,21 @@ export default class Game extends Phaser.Scene {
       ...(this.input.keyboard.addKeys('W,S,A,D') as Keyboard),
     }
 
+    // maybe we can have a dedicated method for adding keys if more keys are needed in the future
+    this.keyE = this.input.keyboard.addKey('E')
+    this.keyR = this.input.keyboard.addKey('R')
+    this.input.keyboard.disableGlobalCapture()
+    this.input.keyboard.on('keydown-ENTER', (event) => {
+      store.dispatch(setShowChat(true))
+      store.dispatch(setFocused(true))
+    })
+    this.input.keyboard.on('keydown-ESC', (event) => {
+      store.dispatch(setShowChat(false))
+      store.dispatch(setShowDM(false))
+    })
+  }
+
+  registerGameKeys() {
     // maybe we can have a dedicated method for adding keys if more keys are needed in the future
     this.keyE = this.input.keyboard.addKey('E')
     this.keyR = this.input.keyboard.addKey('R')
@@ -205,49 +217,32 @@ export default class Game extends Phaser.Scene {
       item.itemDirection = Obj.properties[0].value
     })
 
-    // // import computers objects from Tiled map to Phaser
-    const computers = this.physics.add.staticGroup({ classType: Computer })
-    const computerLayer = this.map.getObjectLayer('playground')
-    computerLayer.objects.forEach((obj, i) => {
-      const item = this.addObjectFromTiled(computers, obj, 'picnic2', 'picnic2') as Computer
+    /* Brick Game */
+    const brickgames = this.physics.add.staticGroup({ classType: BrickGame })
+    const brickgameLayer = this.map.getObjectLayer('playground')
+    brickgameLayer.objects.forEach((obj, i) => {
+      const item = this.addObjectFromTiled(brickgames, obj, 'picnic2', 'picnic2') as BrickGame
       // item.setDepth(item.y + item.height * 0.27)
       const id = `${i}`
       item.id = id
-      this.computerMap.set(id, item)
+      this.brickgameMap.set(id, item)
     })
 
-    // // import whiteboards objects from Tiled map to Phaser
-    const whiteboards = this.physics.add.staticGroup({ classType: Whiteboard })
-    const whiteboardLayer = this.map.getObjectLayer('bench')
-    whiteboardLayer.objects.forEach((obj, i) => {
-      const item = this.addObjectFromTiled(
-        whiteboards,
-        obj,
-        'bench',
-        'bench'
-      ) as Whiteboard
+    /* Typing Game */
+    const typinggames = this.physics.add.staticGroup({ classType: TypingGame })
+    const typinggameLayer = this.map.getObjectLayer('bench')
+    typinggameLayer.objects.forEach((obj, i) => {
+      const item = this.addObjectFromTiled(typinggames, obj, 'bench', 'bench') as TypingGame
       const id = `${i}`
       item.id = id
-      this.whiteboardMap.set(id, item)
+      this.typinggameMap.set(id, item)
     })
 
-    // // import vending machine objects from Tiled map to Phaser
-    // const vendingMachines = this.physics.add.staticGroup({ classType: VendingMachine })
-    // const vendingMachineLayer = this.map.getObjectLayer('VendingMachine')
-    // vendingMachineLayer.objects.forEach((obj, i) => {
-    //   this.addObjectFromTiled(vendingMachines, obj, 'vendingmachines', 'vendingmachine')
-    // })
-
-    // // import code editor objects from Tiled map to Phaser
+    /* Mole Game */
     const molegames = this.physics.add.staticGroup({ classType: MoleGame })
     const molegameLayer = this.map.getObjectLayer('mole')
     molegameLayer.objects.forEach((obj, i) => {
-      const item = this.addObjectFromTiled(
-        molegames,
-        obj,
-        'mole',
-        'mole'
-      ) as MoleGame
+      const item = this.addObjectFromTiled(molegames, obj, 'mole', 'mole') as MoleGame
       const id = `${i}`
       item.id = id
       this.molegameMap.set(id, item)
@@ -257,12 +252,7 @@ export default class Game extends Phaser.Scene {
     const facechats = this.physics.add.staticGroup({ classType: FaceChat })
     const facechatLayer = this.map.getObjectLayer('facechat')
     facechatLayer.objects.forEach((obj, i) => {
-      const item = this.addObjectFromTiled(
-        facechats,
-        obj,
-        'bench',
-        'bench'
-      ) as FaceChat
+      const item = this.addObjectFromTiled(facechats, obj, 'bench', 'bench') as FaceChat
       const id = `${i}`
       item.id = id
       this.facechatMap.set(id, item)
@@ -282,14 +272,12 @@ export default class Game extends Phaser.Scene {
 
     this.cameras.main.zoom = 1.5
     this.cameras.main.startFollow(this.myPlayer, true)
-
     this.physics.add.collider([this.myPlayer, this.myPlayer.playerContainer], secondGroundLayer)
     this.physics.add.collider([this.myPlayer, this.myPlayer.playerContainer], fenceLayer)
 
-    // 상호작용 추가하는 부분..?
     this.physics.add.overlap(
       this.playerSelector,
-      [chairs, molegames, whiteboards, computers, facechats],
+      [chairs, molegames, typinggames, brickgames, facechats],
       this.handleItemSelectorOverlap,
       undefined,
       this
@@ -400,18 +388,15 @@ export default class Game extends Phaser.Scene {
   }
 
   private handleItemUserAdded(playerId: string, itemId: string, itemType: ItemType) {
-    if (itemType === ItemType.COMPUTER) {
-      const computer = this.computerMap.get(itemId)
-      computer?.addCurrentUser(playerId)
-
-    } else if (itemType === ItemType.WHITEBOARD) {
-      const whiteboard = this.whiteboardMap.get(itemId)
-      whiteboard?.addCurrentUser(playerId)
-
+    if (itemType === ItemType.BRICKGAME) {
+      const brickgame = this.brickgameMap.get(itemId)
+      brickgame?.addCurrentUser(playerId)
+    } else if (itemType === ItemType.TYPINGGAME) {
+      const typinggame = this.typinggameMap.get(itemId)
+      typinggame?.addCurrentUser(playerId)
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.addCurrentUser(playerId)
-
     } else if (itemType === ItemType.FACECHAT) {
       const facechat = this.facechatMap.get(itemId)
       facechat?.addCurrentUser(playerId)
@@ -419,14 +404,12 @@ export default class Game extends Phaser.Scene {
   }
 
   private handleItemUserRemoved(playerId: string, itemId: string, itemType: ItemType) {
-    if (itemType === ItemType.COMPUTER) {
-      const computer = this.computerMap.get(itemId)
-      computer?.removeCurrentUser(playerId)
-
-    } else if (itemType === ItemType.WHITEBOARD) {
-      const whiteboard = this.whiteboardMap.get(itemId)
-      whiteboard?.removeCurrentUser(playerId)
-
+    if (itemType === ItemType.BRICKGAME) {
+      const brickgame = this.brickgameMap.get(itemId)
+      brickgame?.removeCurrentUser(playerId)
+    } else if (itemType === ItemType.TYPINGGAME) {
+      const typinggame = this.typinggameMap.get(itemId)
+      typinggame?.removeCurrentUser(playerId)
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.removeCurrentUser(playerId)

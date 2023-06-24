@@ -10,11 +10,15 @@ export function getInitialBackgroundMode() {
   return currentHour > 6 && currentHour <= 18 ? BackgroundMode.DAY : BackgroundMode.NIGHT
 }
 
-export enum ENTRY_PROCESS {
+export enum DIALOG_STATUS {
   ENTRY = 'entry',
   JOIN = 'join',
   LOGIN = 'login',
   WELCOME = 'welcome',
+  IN_MAIN  = 'in_main',
+  GAME_LOBBY = 'game_lobby',
+  GAME_WELCOME = 'game_welcome',
+  IN_GAME = 'in_game',
 }
 
 export const userSlice = createSlice({
@@ -25,6 +29,7 @@ export const userSlice = createSlice({
     
     /* Initial value for user */
     sessionId: '',   // TODO: colyseus 서버에서 세션으로 관리되고 있다면 굳이 token을 안해도 되지 않을까?? 어차피 session이 끝나지 않으면 로그아웃이 되지 않을텐데..?
+    gameSessionId:'',
     accessToken: '',
     userId: '',
     username: '',
@@ -33,19 +38,16 @@ export const userSlice = createSlice({
     // userTier: '',
     playerNameMap: new Map<string, string>(),
     
-    /* Status regarding user entry */
-    entryProcess: ENTRY_PROCESS.ENTRY,
-    entered: false,   // welcome 화면에서 확인을 눌러 게임 화면에서 캐릭터를 보게되는 시점
+    /* Status regarding screen dialog */
+    dialogStatus: DIALOG_STATUS.ENTRY,
     showLogout: false,
+    showQuit: false,
     showVersion: false,
+    showProfile: false,
 
     /* Video and Audio connection */
     videoConnected: false,
     audioConnected: false,
-    
-    /* In-game dialogs */
-    showProfile: false,
-    showMoleGame: false, // UGLY: computer 등의 다른 사물들과의 connection status를 관리하는 다른 파일로 옮겨져야할 것으로 생각됨
   },
   reducers: {
     toggleBackgroundMode: (state) => {
@@ -61,6 +63,9 @@ export const userSlice = createSlice({
     },
     
     setSessionId: (state, action: PayloadAction<string>) => {
+      state.sessionId = action.payload
+    },
+    setGameSessionId: (state, action: PayloadAction<string>) => {
       state.sessionId = action.payload
     },
     setAccessToken: (state, action: PayloadAction<string>) => {
@@ -85,18 +90,28 @@ export const userSlice = createSlice({
       state.playerNameMap.delete(sanitizeId(action.payload))
     },
 
-    setEntryProcess: (state, action: PayloadAction<ENTRY_PROCESS>) => {
-      state.entryProcess = action.payload
+    setDialogStatus: (state, action: PayloadAction<DIALOG_STATUS>) => {
+      state.dialogStatus = action.payload
     },
-    setEntered: (state, action: PayloadAction<boolean>) => {
-      state.entered = action.payload
-    },
+    // setEntryProcess: (state, action: PayloadAction<ENTRY_PROCESS>) => {
+    //   state.entryProcess = action.payload
+    // },
+    // setEntered: (state, action: PayloadAction<boolean>) => {
+    //   state.entered = action.payload
+    // },
     setShowLogout: (state, action: PayloadAction<boolean>) => {
       state.showLogout = action.payload
     },
     setShowVersion: (state, action: PayloadAction<boolean>) => {
       state.showVersion = action.payload
     },
+
+    // setGameEntered: (state, action: PayloadAction<boolean>) => {
+    //   state.gameEntered = action.payload
+    // },
+    // setGameWelcome: (state, action: PayloadAction<boolean>) => {
+    //   state.gameWelcome = action.payload
+    // },
 
     setVideoConnected: (state, action: PayloadAction<boolean>) => {
       state.videoConnected = action.payload
@@ -108,9 +123,9 @@ export const userSlice = createSlice({
     setShowProfile: (state, action: PayloadAction<boolean>) => {
       state.showProfile = action.payload
     },
-    setShowMoleGame: (state, action: PayloadAction<boolean>) => {
-      state.showMoleGame = action.payload
-    },
+    // setShowMoleGame: (state, action: PayloadAction<boolean>) => {
+    //   state.showMoleGame = action.payload
+    // },
   },
 })
 
@@ -118,6 +133,7 @@ export const {
   toggleBackgroundMode,
   setShowJoystick,
   setSessionId,
+  setGameSessionId,
   setAccessToken,
   setUserId,
   setUsername,
@@ -125,14 +141,17 @@ export const {
   setUserLevel,
   setPlayerNameMap,
   removePlayerNameMap,
-  setEntryProcess,
-  setEntered,
+  setDialogStatus,
+  // setEntryProcess,
+  // setEntered,
+  // setGameEntered,
+  // setGameWelcome,
   setShowLogout,
   setShowVersion,
   setVideoConnected,
   setAudioConnected,
   setShowProfile,
-  setShowMoleGame,
+  // setShowMoleGame,
 } = userSlice.actions
 
 export default userSlice.reducer

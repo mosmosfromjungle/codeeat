@@ -5,6 +5,7 @@
   "main": ".eslintrc.js",
   "scripts": {
     "start": "cd server && ts-node-dev --project tsconfig.server.json --respawn --transpile-only index.ts",
+    "game": "cd game-server && ts-node-dev --project tsconfig.server.json --respawn --transpile-only index.ts",
     "heroku-postbuild": "yarn && cd types && yarn && cd ../server && tsc --project tsconfig.server.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -40,17 +41,18 @@
     "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
     "colyseus": "^0.14.0",
-    "colyseus.js": "^0.14.12",
+    "colyseus.js": "^0.14.13",
     "cors": "^2.8.5",
     "dotenv": "^16.1.4",
-    "express": "^4.16.4",
+    "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.2.2",
+    "nodemon": "^2.0.22",
     "peerjs": "^1.4.7",
-    "phaser": "^3.55.2",
+    "phaser": "^3.60.0",
     "react-router-dom": "^6.12.1",
     "regenerator-runtime": "^0.13.7",
-    "socket.io": "^4.6.2",
+    "socket.io": "^4.7.0",
     "typescript": "^4.8.2",
     "uuid": "^9.0.0"
   }

@@ -1,34 +1,27 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
+
+import { useAppSelector, useAppDispatch } from '../hooks'
+import { DIALOG_STATUS, setDialogStatus } from './UserStore'
 
 import phaserGame from '../PhaserGame'
 import Game from '../scenes/Game'
 
-interface MoleGameState {
-  moleGameDialogOpen: boolean
-  moleGameId: null | string
-}
-
-const initialState: MoleGameState = {
-  moleGameDialogOpen: false,
-  moleGameId: null,
-}
 
 export const moleGameSlice = createSlice({
   name: 'molegame',
-  initialState,
+  initialState: {
+    moleGameOpen: false,
+  },
   reducers: {
-    openMoleGameDialog: (state, action: PayloadAction<string>) => {
-      state.moleGameDialogOpen = true
-      state.moleGameId = action.payload
+    openMoleGameDialog: (state) => {
+      state.moleGameOpen = true
       const game = phaserGame.scene.keys.game as Game
       game.disableKeys()
     },
     closeMoleGameDialog: (state) => {
+      state.moleGameOpen = false
       const game = phaserGame.scene.keys.game as Game
       game.enableKeys()
-      game.network.disconnectFromMoleGame(state.moleGameId!)
-      state.moleGameDialogOpen = false
-      state.moleGameId = null
     }
   },
 })

@@ -2,16 +2,18 @@ import { ItemType } from '../../../types/Items'
 import store from '../stores'
 import Item from './Item'
 import Network from '../services/Network'
-import { openWhiteboardDialog } from '../stores/WhiteboardStore'
+import { openBrickGameDialog } from '../stores/BrickGameStore'
+import { DIALOG_STATUS, setDialogStatus } from '../stores/UserStore'
 
-export default class Whiteboard extends Item {
-  id?: string
+
+export default class BrickGame extends Item {
+  // id?: string
   currentUsers = new Set<string>()
 
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
     super(scene, x, y, texture, frame)
 
-    this.itemType = ItemType.WHITEBOARD
+    this.itemType = ItemType.BRICKGAME
   }
 
   private updateStatus() {
@@ -23,11 +25,12 @@ export default class Whiteboard extends Item {
     } else if (numberOfUsers > 1) {
       this.setStatusBox(`${numberOfUsers} users`)
     }
+    console.log(this.currentUsers)
   }
 
   onOverlapDialog() {
     if (this.currentUsers.size === 0) {
-      this.setDialogBox('Press R to use whiteboard')
+      this.setDialogBox('Press R to play the Brick Game')
     } else {
       this.setDialogBox('Press R join')
     }
@@ -45,9 +48,17 @@ export default class Whiteboard extends Item {
     this.updateStatus()
   }
 
-  openDialog(network: Network) {
+<<<<<<< HEAD:client/src/items/Computer.ts
+  openDialog(playerId: string, network: Network) {
     if (!this.id) return
-    store.dispatch(openWhiteboardDialog(this.id))
+    store.dispatch(openComputerDialog(this.id))
     network.connectToWhiteboard(this.id)
+=======
+  openDialog(network: Network) {
+    // if (!this.id) return
+    store.dispatch(openBrickGameDialog())
+    store.dispatch(setDialogStatus(DIALOG_STATUS.GAME_LOBBY))
+    // network.connectToBrickGame(this.id)
+>>>>>>> main:client/src/items/BrickGame.ts
   }
 }

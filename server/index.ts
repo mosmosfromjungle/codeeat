@@ -46,20 +46,27 @@ app.use(express.json())
 // app.use(express.static('dist'))
 
 const server = http.createServer(app)
-const gameServer = new Server({
+const mainServer = new Server({
   server,
 })
 
 /* register room handlers */
-gameServer.define(RoomType.LOBBY, LobbyRoom)
-gameServer.define(RoomType.PUBLIC, SkyOffice, {
-  name: 'Public Lobby',
-  description: 'For making friends and familiarizing yourself with the controls',
+mainServer.define(RoomType.LOBBY, LobbyRoom)
+mainServer.define(RoomType.PUBLIC, SkyOffice, {
+  name: 'codeEat',
+  description: '친구들과 재밌게 코딩하자!',
   password: null,
   autoDispose: false,
 })
+mainServer.define(RoomType.CUSTOM, SkyOffice).enableRealtimeListing()
 
-gameServer.define(RoomType.CUSTOM, SkyOffice).enableRealtimeListing()
+mainServer.define(RoomType.BRICKLOBBY, LobbyRoom)
+mainServer.define(RoomType.MOLELOBBY, LobbyRoom)
+mainServer.define(RoomType.TYPINGLOBBY, LobbyRoom)
+
+mainServer.define(RoomType.BRICK, SkyOffice).enableRealtimeListing()
+mainServer.define(RoomType.MOLE, SkyOffice).enableRealtimeListing()
+mainServer.define(RoomType.TYPING, SkyOffice).enableRealtimeListing()
 
 /**
  * Register @colyseus/social routes
@@ -72,14 +79,14 @@ gameServer.define(RoomType.CUSTOM, SkyOffice).enableRealtimeListing()
 // register colyseus monitor AFTER registering your room handlers
 app.use('/colyseus', monitor())
 
-/* Routes */
+/* API Routes */
 app.use('/auth', authRouter);
 app.use('/friends', friendsRouter);
 app.use('/dm', dmRouter);
 
 /* Connect DB and run game server */
 connectDB().then(db => {
-  gameServer.listen(port)  
+  mainServer.listen(port)  
   console.log(`Listening on ws://localhost:${port}`)
 }).catch(console.error);
 
