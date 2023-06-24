@@ -483,16 +483,27 @@ export default function MoleGameDialog() {
     setDisableStartButton(false);
   }
 
+  // 5. Check the winner
+  const username = useAppSelector((state) => state.user.username)
+  const friendname = ''
+
   const Modal = () => {
     return(
       <div id="ending" className="ending finalEnding">
         <p id="ending-box">
-          <span>
-            GAME OVER!<br/><br/>
-            YOUR SCORE IS&nbsp;
-          </span>
-          <span className='last'>{ total }</span>
-          <p></p>
+          <p id="ending-box-title">🎮🎮 Game Over ! 🎲🎲</p>
+          <p>
+            <span>Your score is &nbsp;</span>
+            <span className='last'>{ total }</span>
+          </p>
+          <p>
+            <span>Friend score is &nbsp;</span>
+            <span className='last'>{ total }</span>
+          </p>
+          <p>
+            <span>The winner is &nbsp;</span>
+            <span className='winner'>{ username }</span>
+          </p>
 
           <div className="btn-wrap">
             <button type="button" 
@@ -565,6 +576,9 @@ export default function MoleGameDialog() {
             <Content>
               <MyPoint>
                 <div className="point-wrap">
+                  <p id="point-text-name">
+                    [{username}]<br/><br/>
+                  </p>
                   <p id="point-text">
                     My Point<br/><br/>
                     <span id="point-current">{ point }</span>/10
@@ -631,8 +645,11 @@ export default function MoleGameDialog() {
 
               <YourPoint>
                 <div className="point-wrap">
+                  <p id="point-text-name">
+                    [{friendname}]<br/><br/>
+                  </p>
                   <p id="point-text">
-                    Your Point<br/><br/>
+                    Friend Point<br/><br/>
                     <span id="point-current">{ yourPoint }</span>/10
                   </p>
                 </div>
