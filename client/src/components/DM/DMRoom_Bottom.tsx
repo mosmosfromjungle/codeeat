@@ -45,44 +45,6 @@ export default function BottomAppBar(props) {
 
   return (
     <DMbottom>
-      {roomStatus === IDMRoomStatus.TERMINATED ? (
-        <TextField
-          onFocus={() => {
-            if (!focused) {
-              dispatch(setFocused(true));
-            }
-          }}
-          onBlur={() => {
-            dispatch(setFocused(false));
-          }}
-          value={value}
-          fullWidth
-          margin="dense"
-          id="outlined-multiline-static"
-          label="메시지를 보낼 수 없어요"
-          multiline
-          maxRows={2}
-          onChange={(event) => {
-            setValue(event.target.value);
-          }}
-          onKeyDown={handleOnKeyDown}
-          InputProps={{
-            style: {
-              fontFamily: 'Ycomputer-Regular',
-              color: 'black',
-              backgroundColor: 'blue',
-            },
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton color="primary" sx={{ p: '10px' }} onClick={handleSubmit} edge="end">
-                  <SendIcon />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-          disabled
-        />
-      ) : (
         <TextField
           onFocus={() => {
             if (!focused) {
@@ -114,33 +76,9 @@ export default function BottomAppBar(props) {
             ),
           }}
         />
-      )}
     </DMbottom>
   );
 }
-
-// const Input = styled.input.attrs(props => ({
-//   type: "text",
-//   size: props.size || "1em",
-// }))`
-//   border: 2px solid palevioletred;
-//   margin: 0.5em;
-//   padding: 0.5em 1em 0.5em 1em;
-
-//     fontFamily: 'Ycomputer-Regular',
-
-//   multiline: true;
-//   maxRows: 2;
-//   width: 100%;
-//   background: transparent;
-
-// `;
-
-const DirtyTalk = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-`;
 const DMbottom = styled.div`
   background: blue;
 

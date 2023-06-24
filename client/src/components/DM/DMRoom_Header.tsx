@@ -18,7 +18,7 @@ export default function HeadAppBar() {
 
   return (
     <DMtop>
-      <DirtyTalk>
+      <Talk>
         <IconButton
           onClick={() => {
             dispatch(setShowDMList(true));
@@ -33,24 +33,12 @@ export default function HeadAppBar() {
         </IconButton>
 
         <TitleText>{friendName}</TitleText>
-        </DirtyTalk>
-        <MyButton
-          color='white'
-          hoverColor='pink'
-          onClick={(event) => {
-            event.preventDefault();
-            game.network2.deleteFriend(userId, friendId);
-            dispatch(setShowDMList);
-          }}
-        >
-          친구삭제
-        </MyButton>
-      
+        </Talk>
     </DMtop>
   );
 }
 
-const DirtyTalk = styled.div`
+const Talk = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;

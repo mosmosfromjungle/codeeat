@@ -3,9 +3,9 @@ import styled from 'styled-components'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 
-import { useAppSelector, useAppDispatch } from '../hooks'
-import { closeWhiteboardDialog } from '../stores/WhiteboardStore'
-import { TypingGame } from '../components/TypingGame'
+import { useAppSelector, useAppDispatch } from '../../hooks'
+import { TypingGame } from './TypingGame'
+import { closeTypingGameDialog } from '../../stores/TypingGameStore'
 // 원래 패딩 : 16px, 180px, 16px, 10px
 const Backdrop = styled.div`
   position: fixed;

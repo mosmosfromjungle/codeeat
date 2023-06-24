@@ -16,10 +16,9 @@ const store = configureStore({
     chat: chatReducer,
     room: roomReducer,
     molegame: moleGameReducer,
-    dm: dmReducer,
     brickgame: brickGameReducer,
     typinggame: typingGameReducer,
-
+    dm: dmReducer,
   },
   // Temporary disable serialize check for redux as we store MediaStream in ComputerStore.
   // https://stackoverflow.com/a/63244831

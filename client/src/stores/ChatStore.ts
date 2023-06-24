@@ -54,6 +54,9 @@ export const chatSlice = createSlice({
     setShowChat: (state, action: PayloadAction<boolean>) => {
       state.showChat = action.payload
     },
+    setShowDMList: (state, action: PayloadAction<boolean>) => {
+      state.showDMList = action.payload
+    },
     setShowDM: (state, action: PayloadAction<boolean>) => {
       state.showDM = action.payload
     },
@@ -69,6 +72,7 @@ export const {
   pushPlayerLeftMessage,
   setFocused,
   setShowChat,
+  setShowDMList,
   setShowDM,
   setShowUser,
 } = chatSlice.actions

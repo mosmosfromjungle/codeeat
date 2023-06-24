@@ -12,7 +12,7 @@ import UserIcon from '@mui/icons-material/SupervisorAccount'
 import LogoutIcon from '@mui/icons-material/ExitToApp';
 import HelpIcon from '@mui/icons-material/Help';
 
-import { setFocused, setShowChat, setShowDM, setShowUser } from '../../stores/ChatStore'
+import { setFocused, setShowChat, setShowDMList, setShowDM, setShowUser } from '../../stores/ChatStore'
 import { setShowLogout, setShowProfile, setShowVersion } from '../../stores/UserStore'
 import { useAppSelector, useAppDispatch } from '../../hooks'
 
@@ -46,7 +46,8 @@ export default function HelperButtonGroup() {
   const roomJoined = useAppSelector((state) => state.room.roomJoined)
   const focused = useAppSelector((state) => state.chat.focused)
   const showChat = useAppSelector((state) => state.chat.showChat)
-  const showDM = useAppSelector((state) => state.chat.showDM)
+  const showDMList = useAppSelector((state) => state.chat.showDMList)
+  const showDM = useAppSelector((state) => state.chat.showDMList)
   const showUser = useAppSelector((state) => state.chat.showUser)
   const showLogout = useAppSelector((state) => state.user.showLogout)
   const showVersion = useAppSelector((state) => state.user.showVersion)
@@ -65,7 +66,7 @@ export default function HelperButtonGroup() {
 
   useEffect(() => {
     scrollToBottom()
-  }, [chatMessages, showChat, showDM, showUser, showLogout])
+  }, [chatMessages, showChat, showDMList, showUser, showLogout])
 
   return (
     <Backdrop>
@@ -80,6 +81,7 @@ export default function HelperButtonGroup() {
                 ) : (
                   dispatch(setShowChat(true)),
                   dispatch(setFocused(true)),
+                  dispatch(setShowDMList(false)),
                   dispatch(setShowDM(false)),
                   dispatch(setShowUser(false)),
                   dispatch(setShowLogout(false)),
@@ -97,11 +99,12 @@ export default function HelperButtonGroup() {
           {roomJoined && (
             <FabWrapper>
               <Fab
-                onClick={() => showDM ? (
+                onClick={() => showDMList ? (
                   dispatch(setShowDM(false)),
                   dispatch(setFocused(false))
                 ) : (
                   dispatch(setShowDM(true)),
+                  dispatch(setShowDMList(true)),
                   dispatch(setFocused(true)),
                   dispatch(setShowChat(false)),
                   dispatch(setShowUser(false)),
@@ -147,6 +150,7 @@ export default function HelperButtonGroup() {
                 dispatch(setShowLogout(true)),
                 dispatch(setShowChat(false)),
                 dispatch(setShowDM(false)),
+                dispatch(setShowDMList(false)),
                 dispatch(setShowUser(false)),
                 dispatch(setShowProfile(false)),
                 dispatch(setShowVersion(false))
@@ -168,6 +172,7 @@ export default function HelperButtonGroup() {
                 dispatch(setShowVersion(true)),
                 dispatch(setShowChat(false)),
                 dispatch(setShowDM(false)),
+                dispatch(setShowDMList(false)),
                 dispatch(setShowUser(false)),
                 dispatch(setShowLogout(false)),
                 dispatch(setShowProfile(false))

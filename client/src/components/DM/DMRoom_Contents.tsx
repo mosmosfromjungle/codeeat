@@ -16,8 +16,6 @@ export default function ChatBubbles(props) {
   const userId = useAppSelector((state) => state.user.userId);
   const newMessage = useAppSelector((state) => state.dm.newMessage);
 
-
-  // 기존 메세지 리스트 -> 삭제 예정
   const [messageList, setMessageList] = useState<any>([]);
   const callbackForJoinRoom = (oldMessages) => {
     setMessageList(oldMessages);

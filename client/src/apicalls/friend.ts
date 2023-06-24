@@ -16,7 +16,7 @@ export const addFriendReq = async (body: AddFriendRequestDto) => {
         } else if (status === 404) {
           return 2;
         } else if (status === 409) {
-            return 3;
+          return 3;
         }
       } else {
         console.log('서버에러');
@@ -39,7 +39,6 @@ export interface UserData {
   user_id: string;
   name: string;
   status_msg: string;
-  profile_img_url: string;
   friends_list: Array<UserResponseDto>;
   room_list: Array<RoomListResponse>;
 }

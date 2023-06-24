@@ -7,24 +7,25 @@ import {
   setNewMessageCnt,
   setDmProcess,
   setNewMessage,
-  setShowDMList
-} from '../stores/DMboxStore';
-import { useAppDispatch, useAppSelector } from '../hooks';
+  setShowDMList,
+} from '../../stores/DMboxStore';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import {
   fetchRoomList,
   RoomListResponse,
   IDMRoomStatus,
   UserResponseDto,
-} from '../apicalls/DM';
-import FriendRequest from './FriendRequest/FriendRequest';
-import { LeftToast } from './ToastNotification';
-import DefaultAvatar from '../../public/assets/brickGame/25-2.png';
+} from '../../apicalls/DM';
+import FriendRequest from '../FriendRequest/FriendRequest';
+import DefaultAvatar from '../../../src/images/logo.png';
 import Cookies from 'universal-cookie';
+import { LeftToast } from '../ToastNotification';
+import { setShowDM } from '../../stores/ChatStore';
 const cookies = new Cookies();
 
 
 /* 채팅목록을 불러온다. 클릭시, 채팅상대(state.dm.friendId)에 친구의 userId를 넣어준다  */
-export const ConversationList = () => {
+export const DMList = () => {
   const [rooms, setRooms] = useState<RoomListResponse[]>([]);
   const [friendRequestModal, setFriendRequestModal] = useState(false);
   const [FriendRequestProps, setFriendRequestProps] = useState<UserResponseDto>(
@@ -35,7 +36,6 @@ export const ConversationList = () => {
   const newMessage = useAppSelector((state) => state.dm.newMessage);
   const newMessageCnt = useAppSelector((state) => state.dm.newMessageCnt);
   const [showAlert, setShowAlert] = useState<boolean>(false);
-  
   
   useEffect(() => {
     fetchRoomList(userId).then((data) => {
@@ -51,10 +51,10 @@ export const ConversationList = () => {
       // 친구 요청 받음
       setFriendRequestModal(true);
       setFriendRequestProps(room.friendInfo);
-      
+
     } else {
       try {
-        dispatch(setShowDMList(true));
+        dispatch(setShowDM);
         // Response userId
         room.friendInfo.userId && dispatch(setFriendId(room.friendInfo.userId));
         room.friendInfo.username && dispatch(setFriendName(room.friendInfo.username));
@@ -96,7 +96,7 @@ export const ConversationList = () => {
                 }}
               >
                 <ProfileAvatarImage
-                  src={DefaultAvatar}
+                  src={room.friendInfo.profileimage || DefaultAvatar}
                   alt={room.friendInfo.username}
                   width="60"
                 />
@@ -106,10 +106,8 @@ export const ConversationList = () => {
                     <LastMessage>
                       {newMessage?.message && newMessage?.userId === room.friendInfo?.userId
                         ? newMessage?.message
-                        : room.status == IDMRoomStatus.TERMINATED
-                        ? (room.message = '친구가 채팅방을 나갔어요')
                         : room.status == IDMRoomStatus.FRIEND_REQUEST && room.unreadCount === 0
-                        ? (room.message = '친구 요청을 보냈어요')
+                        ? (room.message = '친구요청 수락 대기중')
                         : room.message}
                     </LastMessage>
                     {room.unreadCount! > 0 ? <UnreadCnt>{room.unreadCount}</UnreadCnt> : null}
@@ -169,7 +167,7 @@ const UserID = styled.div`
   font-size: 1.17em;
   margin: 0px 0px 10px 0px;
   font-weight: bold;
-  // color:'blue';
+  // color: blue;
 `;
 
 const LastMessageWithBadge = styled.div`
@@ -198,8 +196,8 @@ const UnreadCnt = styled.div`
   width: 18px;
   height: 18px;
   border-radius: 100%;
-  background-color: 'red';
-  color: 'white';
+  background-color: red;
+  color: white;
   font-size: 12px;
 `;
 

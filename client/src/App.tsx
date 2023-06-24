@@ -21,7 +21,6 @@ import TypingGameDialog from './components/games/TypingGameDialog'
 // ↓ HelperButtonGroup Dialog
 import HelperButtonGroup from './components/helperdialog/HelperButtonGroup'
 import ChatDialog from './components/ChatDialog'
-import DMDialog from './components/DMDialog'
 import UserDialog from './components/UserDialog'
 import LogoutDialog from './components/LogoutDialog'
 import VersionDialog from './components/helperdialog/VersionDialog'
@@ -35,6 +34,7 @@ import ProfileDialog from './components/ProfileDialog'
 import GlobalFont from '../public/assets/fonts/GlobalFont'
 
 import { authenticateUser } from './apicalls/auth';
+import { DMList } from './components/DMList/DMList'
 
 // import Cookies from 'universal-cookie';
 // const cookies = new Cookies();
@@ -97,7 +97,7 @@ function App() {
       <>  
         {/* // UGLY: Need to move to HelperButtonGroup  */}
         {showChat && <ChatDialog />}
-        {showDM && <DMDialog />}
+        {showDM && <DMList />}
         {showUser && <UserDialog />}
         {showLogout && <LogoutDialog />}
         {showProfile && <ProfileDialog />}

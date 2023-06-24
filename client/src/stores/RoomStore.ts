@@ -31,6 +31,8 @@ export const roomSlice = createSlice({
     lobbyJoined: false,
     roomJoined: false,
     gameJoined: false,
+    userCnt: 0,
+    players: new Array<IPlayer>(),
     roomId: '',
     roomName: '',
     roomDescription: '',

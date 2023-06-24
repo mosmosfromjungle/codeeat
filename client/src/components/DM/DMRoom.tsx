@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import HeadAppBar from './ChattingRoom_Header';
-import BottomAppBar from './ChattingRoom_Bottom';
-import ChatBubbles from './ChattingRoom_Contents';
+import HeadAppBar from './DMRoom_Header';
+import BottomAppBar from './DMRoom_Bottom';
+import ChatBubbles from './DMRoom_Contents';
 import React, { useRef, useState, useEffect } from 'react';
 import 'emoji-mart/css/emoji-mart.css';
 import { setShowDM } from '../../stores/DMboxStore';
@@ -26,7 +26,7 @@ const Wrapper = styled.div`
   -moz-box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.75);
 `;
 
-export function InsideChattingRoom() {
+export function InsideDMRoom() {
   const [newMessage, setNewMessage] = useState<any>(null);
 
   return (

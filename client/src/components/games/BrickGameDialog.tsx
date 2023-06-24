@@ -177,8 +177,6 @@ export default function BrickGameDialog() {
   }, []);
   const answer = n
 
-  const dispatch = useAppDispatch()
-
   const [images, setImages] = useState([
     { src: '/assets/game/brickGame/52-2.png', text: arr[0].toString() },
     { src: '/assets/game/brickGame/25-2.png', text: arr[1].toString() },

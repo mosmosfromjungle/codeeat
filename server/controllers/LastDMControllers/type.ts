@@ -20,5 +20,4 @@ export enum IDMRoomStatus {
   FRIEND_REQUEST,
   SOCKET_ON,
   SOCKET_OFF,
-  TERMINATED
 }
