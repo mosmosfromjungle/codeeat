@@ -59,11 +59,11 @@ mainServer.define(RoomType.CUSTOM, SkyOffice).enableRealtimeListing()
 
 mainServer.define(RoomType.BRICKLOBBY, LobbyRoom)
 mainServer.define(RoomType.MOLELOBBY, LobbyRoom)
-mainServer.define(RoomType.TYPINGLOBBY, LobbyRoom)
+mainServer.define(RoomType.RAINLOBBY, LobbyRoom)
 
 mainServer.define(RoomType.BRICK, SkyOffice).enableRealtimeListing()
 mainServer.define(RoomType.MOLE, SkyOffice).enableRealtimeListing()
-mainServer.define(RoomType.TYPING, SkyOffice).enableRealtimeListing()
+mainServer.define(RoomType.RAIN, SkyOffice).enableRealtimeListing()
 
 /**
  * Register @colyseus/social routes

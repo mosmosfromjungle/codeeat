@@ -13,7 +13,7 @@ import {
   setAvailableRooms,
   setAvailableBrickRooms,
   setAvailableMoleRooms,
-  setAvailableTypingRooms,
+  setAvailableRainRooms,
   addAvailableRooms,
   removeAvailableRooms,
 } from '../stores/RoomStore'
@@ -89,9 +89,9 @@ export default class Network {
       this.lobby.onMessage('rooms', (rooms) => {
         store.dispatch(setAvailableMoleRooms(rooms))
       })
-    } else if (type === RoomType.TYPINGLOBBY) {
+    } else if (type === RoomType.RAINLOBBY) {
       this.lobby.onMessage('rooms', (rooms) => {
-        store.dispatch(setAvailableTypingRooms(rooms))
+        store.dispatch(setAvailableRainRooms(rooms))
       })
     } else {
       this.lobby.onMessage('rooms', (rooms) => {
@@ -154,9 +154,9 @@ export default class Network {
     this.init_game()
   }
 
-  async createTypingRoom(roomData: IRoomData) {
+  async createRainRoom(roomData: IRoomData) {
     const { name, description, password, autoDispose } = roomData
-    this.gameroom = await this.client.create(RoomType.TYPING, {
+    this.gameroom = await this.client.create(RoomType.RAIN, {
       name,
       description,
       password,

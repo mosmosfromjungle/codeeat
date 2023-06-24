@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 
-import { useAppSelector, useAppDispatch } from '../../hooks'
+import { useAppDispatch } from '../../hooks'
 import { closeRainGameDialog } from '../../stores/RainGameStore'
 import RainGame from './RainGame'
 import * as Colyseus from "colyseus.js";
@@ -41,21 +41,9 @@ const Wrapper = styled.div`
   }
 `
 
-const RainGameWrapper = styled.div`
-  flex: 1;
-  border-radius: 25px;
-  overflow: hidden;
-  margin-right: 25px;
-
-  iframe {
-    width: 100%;
-    height: 100%;
-    background: #fff;
-  }
-`
-
 export default function RainGameDialog() {
   const dispatch = useAppDispatch()
+
   return (
     <Backdrop>
       <Wrapper>

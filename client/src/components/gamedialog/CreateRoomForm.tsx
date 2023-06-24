@@ -56,7 +56,7 @@ export const CreateRoomForm = () => {
       try {
         if (brickGameOpen) await bootstrap.network.createBrickRoom(values)
         if (moleGameOpen) await bootstrap.network.createMoleRoom(values)
-        if (rainGameOpen) await bootstrap.network.createTypingRoom(values)
+        if (rainGameOpen) await bootstrap.network.createRainRoom(values)
         dispatch(setDialogStatus(DIALOG_STATUS.GAME_WELCOME))
       } catch (error) {
         console.error(error)

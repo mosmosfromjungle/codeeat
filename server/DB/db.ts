@@ -2,6 +2,7 @@ import { config } from '../envconfig'
 import User from '../models/User'
 import Friends from '../models/Friends'
 import FriendRequest from '../models/FriendRequest'
+import raingameUser from '../models/RainGame'
 // import Chat from '../models/Chat'
 // import LastChat from '../models/LastChat'
 
@@ -17,6 +18,7 @@ export async function connectDB() {
   createCollection('user')
   createCollection('friends')
   createCollection('friendrequest')
+  createCollection('raingame')
   // createCollection('chat')
   // createCollection('lastchat')
 }
@@ -35,6 +37,9 @@ export const createCollection = (modelName : string) => {
       break
     case 'friendrequest':
       new FriendRequest()
+      break
+    case 'raingame':
+      new raingameUser()
       break
     // case 'chat':
     //   new Chat()

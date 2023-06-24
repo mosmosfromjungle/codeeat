@@ -82,7 +82,7 @@ export default function GameLobbyDialog() {
     const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
     if (brickGameOpen) bootstrap.network.joinLobby(RoomType.BRICKLOBBY)
     if (moleGameOpen) bootstrap.network.joinLobby(RoomType.MOLELOBBY)
-    if (rainGameOpen) bootstrap.network.joinLobby(RoomType.TYPINGLOBBY)
+    if (rainGameOpen) bootstrap.network.joinLobby(RoomType.RAINLOBBY)
   })
 
   const handleClose = () => {
