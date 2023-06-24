@@ -13,9 +13,9 @@ interface CustomRequest extends Request {
 export const sendFriendRequest = async (req: Request, res: Response) => {
     const { requester, recipient } = req.body;
 
-    const foundRequester = await User.findOne({ username: requester })
+    const foundRequester = await User.findOne({ userId: requester })
     if (!foundRequester) return res.status(409).json({ message: 'Requester not found' })
-    const foundRecipient = await User.findOne({ username: recipient })
+    const foundRecipient = await User.findOne({ userId: recipient })
     if (!foundRecipient) return res.status(410).json({ message: 'Recipient not found' })
 
     const existingFriendship = await Friends.findOne({
@@ -50,8 +50,8 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
 export const cancelFriendRequest = async (req: Request, res: Response) => {
     const { requester, recipient } = req.body;
   
-    const foundRequester = await User.findOne({ username: requester });
-    const foundRecipient = await User.findOne({ username: recipient });
+    const foundRequester = await User.findOne({ userId: requester });
+    const foundRecipient = await User.findOne({ userId: recipient });
     if (!foundRequester || !foundRecipient) {
       return res.status(409).json({ message: 'Requester or recipient not found' });
     }
@@ -77,8 +77,8 @@ export const cancelFriendRequest = async (req: Request, res: Response) => {
 export const acceptFriendRequest = async (req: Request, res: Response) => {
     const { requester, recipient } = req.body;
   
-    const foundRequester = await User.findOne({ username: requester })
-    const foundRecipient = await User.findOne({ username: recipient })
+    const foundRequester = await User.findOne({ userId: requester })
+    const foundRecipient = await User.findOne({ userId: recipient })
     if (!foundRequester || !foundRecipient) return res.status(409).json({ message: 'Recipient or recipient not found' })
 
     const existingFriendship = await Friends.findOne({
@@ -114,8 +114,8 @@ export const acceptFriendRequest = async (req: Request, res: Response) => {
 export const rejectFriendRequest = async (req: Request, res: Response) => {
     const { requester, recipient } = req.body;
 
-    const foundRequester = await User.findOne({ username: requester })
-    const foundRecipient = await User.findOne({ username: recipient })
+    const foundRequester = await User.findOne({ userId: requester })
+    const foundRecipient = await User.findOne({ userId: recipient })
     if (!foundRequester || !foundRecipient) return res.status(409).json({ message: 'Recipient or recipient not found' })
 
     const existingFriendship = await Friends.findOne({
@@ -141,26 +141,26 @@ export const rejectFriendRequest = async (req: Request, res: Response) => {
 };
 
 /* 친구 목록 조회 */
-export const getFriendsList = async (req: Request, res: Response) => {
-    const { username } = req.params;
+export const getFriendsList = async (req: CustomRequest, res: Response) => {
+  const decoded = req.decoded
 
-    const foundUser = await User.findOne({ username: username })
-    if (!foundUser) return res.status(409).json({ message: 'User not found' })
-  
-    try {
-      const friendsList = await Friends.find({ $or: [{ requesterId: foundUser.userId }, { recipientId: foundUser.userId }] });
-      res.status(200).json({ friends: friendsList });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Failed to get friends list' });
-    }
+  const foundUser = await User.collection.findOne({ userId: decoded.userId })
+  if (!foundUser) return res.status(409).json({ message: 'User not found' })
+
+  try {
+    const friendsList = await Friends.find({ $or: [{ requesterId: foundUser.userId }, { recipientId: foundUser.userId }] });
+    res.status(200).json({ friends: friendsList });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to get friends list' });
+  }
 };
 
 /* 보낸 + 받은 친구 요청 목록 조회 */
-export const getFriendRequests = async (req: Request, res: Response) => {
-    const { username } = req.params;
+export const getFriendRequests = async (req: CustomRequest, res: Response) => {
+    const decoded = req.decoded
   
-    const foundUser = await User.findOne({ username });
+    const foundUser = await User.collection.findOne({ userId: decoded.userId })
     if (!foundUser) {
       return res.status(409).json({ message: 'User not found' });
     }
@@ -181,8 +181,8 @@ export const getFriendRequests = async (req: Request, res: Response) => {
 export const removeFriend = async (req: Request, res: Response) => {
     const { requester, recipient } = req.body;
   
-    const foundRequester = await User.findOne({ username: requester });
-    const foundRecipient = await User.findOne({ username: recipient });
+    const foundRequester = await User.findOne({ userId: requester });
+    const foundRecipient = await User.findOne({ userId: recipient });
     if (!foundRequester || !foundRecipient) {
       return res.status(409).json({ message: 'Requester or recipient not found' });
     }
