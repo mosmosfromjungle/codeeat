@@ -2,6 +2,6 @@ export enum ItemType {
   CHAIR,
   MOLEGAME,
   BRICKGAME,
-  TYPINGGAME,
+  RAINGAME,
   FACECHAT,
 }

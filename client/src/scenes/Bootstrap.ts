@@ -96,7 +96,7 @@ export default class Bootstrap extends Phaser.Scene {
       frameWidth: 16,
       frameHeight: 16,
     })
-       this.load.spritesheet('tree', 'assets/tileset/tree.png', {
+    this.load.spritesheet('tree', 'assets/tileset/tree.png', {
       frameWidth: 16,
       frameHeight: 16,
     })
@@ -111,7 +111,7 @@ export default class Bootstrap extends Phaser.Scene {
     //   frameWidth: 96,
     //   frameHeight: 64,
     // })
-    // this.load.spritesheet('typinggames', 'assets/items/whiteboard.png', {
+    // this.load.spritesheet('raingames', 'assets/items/whiteboard.png', {
     //   frameWidth: 64,
     //   frameHeight: 64,
     // })
@@ -186,7 +186,7 @@ export default class Bootstrap extends Phaser.Scene {
 
   launchGame() {
     if (!this.preloadComplete) return
-    this.network.webRTC?.checkPreviousPermission()
+    this.network.webRTC.checkPreviousPermission()
     this.scene.launch('game', {
       network: this.network,
     })

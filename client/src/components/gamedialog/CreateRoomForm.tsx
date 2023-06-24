@@ -34,7 +34,7 @@ export const CreateRoomForm = () => {
   const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
-  const typingGameOpen = useAppSelector((state) => state.typinggame.typingGameOpen)
+  const rainGameOpen = useAppSelector((state) => state.raingame.rainGameOpen)
   const dispatch = useAppDispatch()
 
   const handleChange = (prop: keyof IRoomData) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,12 +51,12 @@ export const CreateRoomForm = () => {
       setDescriptionFieldEmpty(!descriptionFieldEmpty)
 
     // create custom room if name and description are not empty
-    if (isValidName && isValidDescription && lobbyJoined) {      
+    if (isValidName && isValidDescription && lobbyJoined) {
       const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
       try {
         if (brickGameOpen) await bootstrap.network.createBrickRoom(values)
         if (moleGameOpen) await bootstrap.network.createMoleRoom(values)
-        if (typingGameOpen) await bootstrap.network.createTypingRoom(values)
+        if (rainGameOpen) await bootstrap.network.createTypingRoom(values)
         dispatch(setDialogStatus(DIALOG_STATUS.GAME_WELCOME))
       } catch (error) {
         console.error(error)

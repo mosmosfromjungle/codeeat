@@ -1,5 +1,5 @@
 import { Client, Room } from 'colyseus.js'
-import { IOfficeState, IPlayer, IMoleGame, IBrickGame, ITypingGame } from '../../../types/IOfficeState'
+import { IOfficeState, IPlayer, IMoleGame, IBrickGame, IRainGame } from '../../../types/IOfficeState'
 import { Message } from '../../../types/Messages'
 import { IRoomData, RoomType } from '../../../types/Rooms'
 import { ItemType } from '../../../types/Items'
@@ -49,9 +49,9 @@ export default class Network {
         ? import.meta.env.VITE_SERVER_URL
         : `${protocol}//${window.location.hostname}:2567`
     this.client = new Client(endpoint)
-    
+
     this.joinLobby(RoomType.LOBBY)
-    
+
     phaserEvents.on(Event.MY_PLAYER_NAME_CHANGE, this.updatePlayerName, this)
     phaserEvents.on(Event.MY_PLAYER_TEXTURE_CHANGE, this.updatePlayer, this)
     phaserEvents.on(Event.PLAYER_DISCONNECTED, this.playerStreamDisconnect, this)
@@ -68,7 +68,7 @@ export default class Network {
     }
   }
 
-  async joinLobby(type:RoomType) {
+  async joinLobby(type: RoomType) {
     this.joinLobbyRoom(type).then(() => {
       store.dispatch(setLobbyJoined(true))
     })
@@ -127,14 +127,14 @@ export default class Network {
       name,
       description,
       password,
-      autoDispose:false,
+      autoDispose: false,
     })
     this.initialize()
   }
 
   async createBrickRoom(roomData: IRoomData) {
     const { name, description, password, autoDispose } = roomData
-    this.gameroom = await this.client.create(RoomType.BRICK, {  
+    this.gameroom = await this.client.create(RoomType.BRICK, {
       name,
       description,
       password,
@@ -153,7 +153,7 @@ export default class Network {
     })
     this.init_game()
   }
-  
+
   async createTypingRoom(roomData: IRoomData) {
     const { name, description, password, autoDispose } = roomData
     this.gameroom = await this.client.create(RoomType.TYPING, {
@@ -172,7 +172,7 @@ export default class Network {
     this.lobby.leave()
     store.dispatch(setLobbyJoined(false))
     this.mySessionId = this.room.sessionId  // TODO: gameroom 전용 sessionId도 만들어줘야 함 
-    store.dispatch(setSessionId(this.room.sessionId)) 
+    store.dispatch(setSessionId(this.room.sessionId))
     this.webRTC = new WebRTC(this.mySessionId, this)
 
     // new instance added to the players MapSchema
@@ -215,14 +215,14 @@ export default class Network {
       }
     }
 
-    // new instance added to the typinggames MapSchema
-    this.room.state.typinggames.onAdd = (typinggame: ITypingGame, key: string) => {
+    // new instance added to the raingames MapSchema
+    this.room.state.raingames.onAdd = (raingame: IRainGame, key: string) => {
       // track changes on every child object's connectedUser
-      typinggame.connectedUser.onAdd = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.TYPINGGAME)
+      raingame.connectedUser.onAdd = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.RAINGAME)
       }
-      typinggame.connectedUser.onRemove = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.TYPINGGAME)
+      raingame.connectedUser.onRemove = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.RAINGAME)
       }
     }
 
@@ -264,7 +264,7 @@ export default class Network {
     this.lobby.leave()
     store.dispatch(setLobbyJoined(false))
     this.myGameSessionId = this.gameroom.sessionId
-    store.dispatch(setGameSessionId(this.gameroom.sessionId)) 
+    store.dispatch(setGameSessionId(this.gameroom.sessionId))
     this.webRTC = new WebRTC(this.myGameSessionId, this)
 
     // new instance added to the players MapSchema
@@ -318,14 +318,14 @@ export default class Network {
       }
     }
 
-    // new instance added to the typinggames MapSchema
-    this.gameroom.state.typinggames.onAdd = (typinggame: ITypingGame, key: string) => {
+    // new instance added to the raingames MapSchema
+    this.gameroom.state.raingames.onAdd = (raingame: IRainGame, key: string) => {
       // track changes on every child object's connectedUser
-      typinggame.connectedUser.onAdd = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.TYPINGGAME)
+      raingame.connectedUser.onAdd = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.RAINGAME)
       }
-      typinggame.connectedUser.onRemove = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.TYPINGGAME)
+      raingame.connectedUser.onRemove = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.RAINGAME)
       }
     }
 
@@ -435,12 +435,12 @@ export default class Network {
     this.room?.send(Message.DISCONNECT_FROM_BRICKGAME, { brickgameId: id })
   }
 
-  connectToTypingGame(id: string) {
-    this.room?.send(Message.CONNECT_TO_TYPINGGAME, { typinggameId: id })
+  connectToRainGame(id: string) {
+    this.room?.send(Message.CONNECT_TO_RAINGAME, { raingameId: id })
   }
 
-  disconnectFromTypingGame(id: string) {
-    this.room?.send(Message.DISCONNECT_FROM_TYPINGGAME, { typinggameId: id })
+  disconnectFromRainGame(id: string) {
+    this.room?.send(Message.DISCONNECT_FROM_RAINGAME, { raingameId: id })
   }
 
   addChatMessage(content: string) {

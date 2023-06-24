@@ -1,51 +1,43 @@
 import React, { useEffect, useRef } from "react";
-import styled from 'styled-components';
-import typing_Background from "../../../public/assets/game/typinggame/blackboard.png"
+import typing_Background from "../../../public/assets/game/RainGame/blackboard.png"
 import { useSelector, useDispatch } from 'react-redux';
-import { addKeyword, updateGame, removeKeyword } from "../../stores/TypingGameStore";
-import * as Colyseus from "colyseus.js";
+import initialState, { openRainGameDialog, closeRainGameDialog, KeywordRain, addKeyword, resetRainGame, updateGame, removeKeyword, updatePeriod, updateSpeed } from "../../stores/RainGameStore";
+import { RootState } from "../../stores";
 
-
-export function TypingGame() {
+export function RainGame() {
     const keywordInput = useRef<HTMLInputElement>(null);
     const canvasHeight = 1170;
     const lineHeight = canvasHeight - 500;
 
-    const state = useSelector((state: any) => state.typingGame)
+    const state = useSelector((state: RootState) => state.raingame);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (state.heart <= 0){
-            return;
-        }
-        // 초기 speed, period 설정
-        let speed = 0.5;
-        let period = 2000;
-
-        // 7초마다 speed 변경, 최대 1
-        const interval3 = setInterval(() => {
-            speed = Math.max(speed + 0.005, 1);
-        }, 7000);
-        
-        // 7초마다 period 변경, 최대 1000
-        const interval4 = setInterval(() => {
-            period = Math.max(period - 50, 1000);
-        }, 7000);
-
-        // period 마다 단어 생성
         const interval1 = setInterval(() => {
-            const randomIndex = Math.floor(Math.random() * state.keywordList.length);
-            const keyword = state.keywordList[randomIndex];
-            dispatch(addKeyword({keyword, speed}));
-        },period);
+            if (state.keywordList) {
+                const randomIndex = Math.floor(Math.random() * state.keywordList.length);
+                const keyword = state.keywordList[randomIndex];
+                console.log(keyword)
+                dispatch(addKeyword({ keyword }))
+            }
+        }, state.period);
 
-        // 15ms 마다 게임 상태를 업데이트
+
+        const speedIncreaseInterval = setInterval(() => {
+            dispatch(updateSpeed(-50));
+        }, 7000);
+
         const interval2 = setInterval(() => {
             dispatch(updateGame({ lineHeight }));
-        }, 15);
-    },[]);
+        }, state.speed);
 
+        const hasReachedLineHeight = state.game.some(item => item.y + item.speed > lineHeight && item.y <= lineHeight);
+        if (hasReachedLineHeight) {
+            dispatch({ type: 'DECREMENT_HEART' });
+            console.log(state.heart)
+        }
+    }, []);
     const removeNode = (keywordToRemove) => {
         dispatch(removeKeyword(keywordToRemove));
     };
@@ -61,8 +53,13 @@ export function TypingGame() {
     };
 
     if (state.heart < 1) {
-        return <h1 style={{ textAlign: 'center' }}>게임 오버 :(</h1>;
-
+        return (
+            <>
+                <h1 style={{ textAlign: 'center' }}>게임 오버 :(</h1>
+                {/* <button 
+                    onClick={}>종료하기</button> */}
+            </>
+        );
     }
 
     if (state.point >= state.goal) {
@@ -81,12 +78,12 @@ export function TypingGame() {
                     overflow: "hidden",
                     borderBottom: "10px solid white"
                 }}>
-                    {state.game.map((item, index) => (
+                    {state.game && state.game.map((item: KeywordRain, index: number) => (
                         <h5
                             key={index}
                             style={{
                                 position: "absolute",
-                                fontFamily: 'CustomFont',
+                                fontFamily: '',
                                 fontSize: 25,
                                 letterSpacing: '3px',
                                 top: item.y,
@@ -117,4 +114,4 @@ export function TypingGame() {
     );
 }
 
-export default TypingGame;
+export default RainGame;

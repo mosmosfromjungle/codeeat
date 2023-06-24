@@ -3,7 +3,7 @@ import { Room, Client, ServerError } from 'colyseus'
 import { Dispatcher } from '@colyseus/command'
 import { Message } from '../../types/Messages'
 import { IRoomData } from '../../types/Rooms'
-import { Player, OfficeState, MoleGame, BrickGame, TypingGame } from './schema/OfficeState'
+import { Player, OfficeState, MoleGame, BrickGame, RainGame } from './schema/OfficeState'
 import PlayerUpdateCommand from './commands/PlayerUpdateCommand'
 import PlayerUpdateNameCommand from './commands/PlayerUpdateNameCommand'
 import {
@@ -15,9 +15,9 @@ import {
   MoleGameRemoveUserCommand,
 } from './commands/MoleGameUpdateArrayCommand'
 import {
-  TypingGameAddUserCommand,
-  TypingGameRemoveUserCommand,
-} from './commands/TypingGameUpdateArrayCommand'
+  RainGameAddUserCommand,
+  RainGameRemoveUserCommand,
+} from './commands/RainGameUpdateArrayCommand'
 import ChatMessageUpdateCommand from './commands/ChatMessageUpdateCommand'
 
 export class SkyOffice extends Room<OfficeState> {
@@ -47,9 +47,9 @@ export class SkyOffice extends Room<OfficeState> {
       this.state.brickgames.set(String(i), new BrickGame())
     }
 
-    // HARD-CODED: Add 3 typinggames in a room
+    // HARD-CODED: Add 3 raingames in a room
     for (let i = 0; i < 30; i++) {
-      this.state.typinggames.set(String(i), new TypingGame())
+      this.state.raingames.set(String(i), new RainGame())
     }
 
     // HARD-CODED: Add 1 molegames in a room
@@ -57,21 +57,21 @@ export class SkyOffice extends Room<OfficeState> {
       this.state.molegames.set(String(i), new MoleGame())
     }
 
-    // when a player connect to a typinggame, add to the typinggame connectedUser array
-    this.onMessage(Message.CONNECT_TO_TYPINGGAME, (client, message: { typinggameId: string }) => {
-      this.dispatcher.dispatch(new TypingGameAddUserCommand(), {
+    // when a player connect to a raingame, add to the raingame connectedUser array
+    this.onMessage(Message.CONNECT_TO_RAINGAME, (client, message: { rainGameId: string }) => {
+      this.dispatcher.dispatch(new RainGameAddUserCommand(), {
         client,
-        typinggameId: message.typinggameId,
+        rainGameId: message.rainGameId,
       })
     })
 
-    // when a player disconnect from a typinggame, remove from the typinggame connectedUser array
-    this.onMessage(Message.DISCONNECT_FROM_TYPINGGAME, (client, message: { typinggameId: string }) => {
-        this.dispatcher.dispatch(new TypingGameRemoveUserCommand(), {
-          client,
-          typinggameId: message.typinggameId,
-        })
-      }
+    // when a player disconnect from a RainGame, remove from the RainGame connectedUser array
+    this.onMessage(Message.DISCONNECT_FROM_RAINGAME, (client, message: { rainGameId: string }) => {
+      this.dispatcher.dispatch(new RainGameRemoveUserCommand(), {
+        client,
+        rainGameId: message.rainGameId,
+      })
+    }
     )
 
     // when a player connect to a molegame, add to the molegame connectedUser array
@@ -84,11 +84,11 @@ export class SkyOffice extends Room<OfficeState> {
 
     // when a player disconnect from a molegame, remove from the molegame connectedUser array
     this.onMessage(Message.DISCONNECT_FROM_MOLEGAME, (client, message: { moleGameId: string }) => {
-        this.dispatcher.dispatch(new MoleGameRemoveUserCommand(), {
-          client,
-          moleGameId: message.moleGameId,
-        })
-      }
+      this.dispatcher.dispatch(new MoleGameRemoveUserCommand(), {
+        client,
+        moleGameId: message.moleGameId,
+      })
+    }
     )
 
     // when a player connect to a brickgame, add to the brickgame connectedUser array
@@ -101,11 +101,11 @@ export class SkyOffice extends Room<OfficeState> {
 
     // when a player disconnect from a brickgame, remove from the brickgame connectedUser array
     this.onMessage(Message.DISCONNECT_FROM_BRICKGAME, (client, message: { brickGameId: string }) => {
-        this.dispatcher.dispatch(new BrickGameRemoveUserCommand(), {
-          client,
-          brickGameId: message.brickGameId,
-        })
-      }
+      this.dispatcher.dispatch(new BrickGameRemoveUserCommand(), {
+        client,
+        brickGameId: message.brickGameId,
+      })
+    }
     )
 
     // when receiving updatePlayer message, call the PlayerUpdateCommand
@@ -195,9 +195,9 @@ export class SkyOffice extends Room<OfficeState> {
         brickgame.connectedUser.delete(client.sessionId)
       }
     })
-    this.state.typinggames.forEach((typinggame) => {
-      if (typinggame.connectedUser.has(client.sessionId)) {
-        typinggame.connectedUser.delete(client.sessionId)
+    this.state.raingames.forEach((raingame) => {
+      if (raingame.connectedUser.has(client.sessionId)) {
+        raingame.connectedUser.delete(client.sessionId)
       }
     })
     this.state.molegames.forEach((molegame) => {
