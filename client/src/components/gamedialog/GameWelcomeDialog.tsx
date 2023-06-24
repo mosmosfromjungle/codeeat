@@ -90,28 +90,17 @@ const avatars = [
 ]
 
 export default function GameWelcomeDialog() {
-  const [name, setName] = useState<string>('UNKNOWN');
-  const [avatarIndex, setAvatarIndex] = useState<number>(0)
-
   const dispatch = useAppDispatch()
-
   const gameJoined = useAppSelector((state) => state.room.gameJoined)
   const videoConnected = useAppSelector((state) => state.user.videoConnected)
   const character = useAppSelector((state) => state.user.character)
   const username = useAppSelector((state) => state.user.username)
-
-  const game = phaserGame.scene.keys.gamroom as Game
+  const index = avatars.findIndex((avatar) => avatar.name === character)
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     dispatch(setDialogStatus(DIALOG_STATUS.IN_GAME))
   }
-
-  useEffect(() => {
-    const index = avatars.findIndex((avatar) => avatar.name === character);
-    setAvatarIndex(index)
-    setName(username)
-  })
 
   return (
     <>
@@ -122,12 +111,12 @@ export default function GameWelcomeDialog() {
         <Left>
           <ImgContainer>
             <img className="character-avatar" 
-                src={avatars[avatarIndex].img} 
-                alt={avatars[avatarIndex].name} /> 
+                src={avatars[index].img} 
+                alt={avatars[index].name} /> 
           </ImgContainer>
         </Left>
         <Right>
-            <h1 style={{ fontSize: '24px' }}>{name} 님</h1>
+            <h1 style={{ fontSize: '24px' }}>{username} 님</h1>
           {/* {!videoConnected && (
             <Warning>
               <Alert variant="outlined" severity="warning">

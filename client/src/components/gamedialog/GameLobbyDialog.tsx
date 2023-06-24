@@ -80,10 +80,12 @@ export default function GameLobbyDialog() {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-    if (brickGameOpen) bootstrap.gameNetwork.joinLobby(RoomType.BRICKLOBBY)
-    if (moleGameOpen) bootstrap.gameNetwork.joinLobby(RoomType.MOLELOBBY)
-    if (typingGameOpen) bootstrap.gameNetwork.joinLobby(RoomType.TYPINGLOBBY)
+    try {
+      const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
+      if (brickGameOpen) bootstrap.gameNetwork.joinLobbyRoom(RoomType.BRICKLOBBY)
+      if (moleGameOpen) bootstrap.gameNetwork.joinLobbyRoom(RoomType.MOLELOBBY)
+      if (typingGameOpen) bootstrap.gameNetwork.joinLobbyRoom(RoomType.TYPINGLOBBY)
+    } catch (error) {console.error(error)}
   })
 
   const handleClose = () => {

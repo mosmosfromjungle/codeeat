@@ -32,6 +32,8 @@ export const CreateRoomForm = () => {
   const [nameFieldEmpty, setNameFieldEmpty] = useState(false)
   const [descriptionFieldEmpty, setDescriptionFieldEmpty] = useState(false)
   const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)
+  const username = useAppSelector((state) => state.user.username)
+  const character = useAppSelector((state) => state.user.character)
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
   const typingGameOpen = useAppSelector((state) => state.typinggame.typingGameOpen)
@@ -57,10 +59,15 @@ export const CreateRoomForm = () => {
         if (brickGameOpen) await bootstrap.gameNetwork.createBrickRoom(values)
         if (moleGameOpen) await bootstrap.gameNetwork.createMoleRoom(values)
         if (typingGameOpen) await bootstrap.gameNetwork.createTypingRoom(values)
-        dispatch(setDialogStatus(DIALOG_STATUS.GAME_WELCOME))
       } catch (error) {
         console.error(error)
       }
+      bootstrap.gameNetwork.updatePlayer(0, 0, `${character}_idle_down`)
+      bootstrap.gameNetwork.updatePlayerName(username)
+
+      setTimeout(() => {
+        dispatch(setDialogStatus(DIALOG_STATUS.GAME_WELCOME))
+      }, 100);
     }
 
   }

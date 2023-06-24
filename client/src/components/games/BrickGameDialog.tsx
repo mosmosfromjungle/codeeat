@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
@@ -7,6 +7,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import { useAppSelector, useAppDispatch } from '../../hooks'
 import { closeBrickGameDialog } from '../../stores/BrickGameStore'
 import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore'
+import { PlayersInterface } from '../../stores/RoomStore'
 
 import phaserGame from '../../PhaserGame'
 import Bootstrap from '../../scenes/Bootstrap'
@@ -130,13 +131,15 @@ const CustomList = styled.div`
 
 export default function BrickGameDialog() {
   const dispatch = useAppDispatch()
-  const userId = useAppSelector((state) => state.user.userId);
-  // const playerNameMap = useAppSelector((state) => state.user.playerNameMap)
-
+  const username = useAppSelector((state) => state.user.username)
+  const gamePlayers = useAppSelector((state) => state.room.gamePlayers)
+  const [players, setPlayers] = useState<PlayersInterface[]>([])
 
   /* TODO: FETCH PLAYERS IN ROOM */
-
-
+  useEffect(() => {
+    setPlayers(gamePlayers)
+    console.log(gamePlayers)
+  }, [dispatch, gamePlayers])
 
   /* TODO: SET IMAGE AND NUMBERS */
   function getRandomIntInclusive(min: number, max: number): number {
@@ -296,9 +299,6 @@ export default function BrickGameDialog() {
       console.error('Error leaving the room:', error)
     }
   }
-  
-
-  let players = [{name:'a', score: 10}, {name:'b', score:20}, {name:'c',score:30}]
 
   
   return (
@@ -311,9 +311,10 @@ export default function BrickGameDialog() {
         <Wrapper>
           <div id='container'>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
+              Players: 
               {players.map((player, index) => (
                 <div key={index} style={{ marginLeft: '10px', textAlign: 'center' }}>
-                  <div>{player.name} {player.score}</div>
+                  <div>{player.name}</div>
                 </div>
               ))}
             </div>

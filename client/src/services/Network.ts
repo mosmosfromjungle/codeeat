@@ -11,9 +11,6 @@ import {
   setLobbyJoined,
   setJoinedRoomData,
   setAvailableRooms,
-  setAvailableBrickRooms,
-  setAvailableMoleRooms,
-  setAvailableTypingRooms,
   addAvailableRooms,
   removeAvailableRooms,
 } from '../stores/RoomStore'
@@ -120,8 +117,9 @@ export default class Network {
           const { field, value } = change
           phaserEvents.emit(Event.PLAYER_UPDATED, field, value, key)
 
+          // UGLY: 플레이어가 이름을 바꿀때마다 새로운 플레이어가 Join 했다는 메세지를 푸시하게 된다. 로직 수정 필요 
           // when a new player finished setting up player name
-          if (field === 'name' && value !== '') {
+          if (field === 'name' && value !== '') {   // 이름을 세팅하면 플레이어가 새로 join한걸로 처리된다... 
             phaserEvents.emit(Event.PLAYER_JOINED, player, key)
             store.dispatch(setPlayerNameMap({ id: key, name: value }))
             store.dispatch(pushPlayerJoinedMessage(value))
@@ -269,6 +267,18 @@ export default class Network {
     this.room?.send(Message.DISCONNECT_STREAM, { clientId: id })
     this.webRTC?.deleteVideoStream(id)
   }
+  
+  // addChatMessage(content: string) {
+  //   this.room?.send(Message.ADD_CHAT_MESSAGE, { content: content })
+  // }
+  
+  // connectToMoleGame(id: string) {
+  //   this.room?.send(Message.CONNECT_TO_MOLEGAME, { moleGameId: id })
+  // }
+
+  // disconnectFromMoleGame(id: string) {
+  //   this.room?.send(Message.DISCONNECT_FROM_MOLEGAME, { moleGameId: id })
+  // }
 
   // connectToBrickGame(id: string) {
   //   this.room?.send(Message.CONNECT_TO_BRICKGAME, { brickgameId: id })
@@ -284,18 +294,6 @@ export default class Network {
 
   // disconnectFromTypingGame(id: string) {
   //   this.room?.send(Message.DISCONNECT_FROM_TYPINGGAME, { typinggameId: id })
-  // }
-
-  // addChatMessage(content: string) {
-  //   this.room?.send(Message.ADD_CHAT_MESSAGE, { content: content })
-  // }
-
-  // connectToMoleGame(id: string) {
-  //   this.room?.send(Message.CONNECT_TO_MOLEGAME, { moleGameId: id })
-  // }
-
-  // disconnectFromMoleGame(id: string) {
-  //   this.room?.send(Message.DISCONNECT_FROM_MOLEGAME, { moleGameId: id })
   // }
 
   // TODO: Might need it, not sure 
