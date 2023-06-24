@@ -10,7 +10,8 @@ html, body {
 
 button {
   font-family: inherit;
-  cursor: pointer;
+  /* cursor: pointer; */
+  cursor : url(/assets/game/molegame/cursor_1.png) 20 30
 }
 
 h1 {
@@ -38,7 +39,7 @@ h1 {
   height: 135px;
   margin: 5px;
   overflow: hidden;
-  cursor: pointer;
+  cursor : url('/assets/game/molegame/cursor_1.png'), pointer;
   border-radius: 20px;
   background: no-repeat center/cover url('/assets/game/molegame/hole.png'), #004b21;
 }
