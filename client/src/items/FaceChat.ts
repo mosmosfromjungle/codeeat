@@ -2,16 +2,18 @@ import { ItemType } from '../../../types/Items'
 import store from '../stores'
 import Item from './Item'
 import Network from '../services/Network'
-import { openMoleGameDialog } from '../stores/MoleGameStore'
+import { openFaceChatDialog } from '../stores/FaceChatStore'
+import { DIALOG_STATUS, setDialogStatus } from '../stores/UserStore'
+
 
 export default class FaceChat extends Item {
-  id?: string
+  // id?: string
   currentUsers = new Set<string>()
 
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
     super(scene, x, y, texture, frame)
 
-    this.itemType = ItemType.FACECHAT
+    this.itemType = ItemType.MOLEGAME
   }
 
   private updateStatus() {
@@ -27,7 +29,7 @@ export default class FaceChat extends Item {
 
   onOverlapDialog() {
     if (this.currentUsers.size === 0) {
-      this.setDialogBox('Press R to play the Face Chat')
+      this.setDialogBox('Press R to play the Whack a Mole')
     } else {
       this.setDialogBox('Press R join')
     }
@@ -46,8 +48,9 @@ export default class FaceChat extends Item {
   }
 
   openDialog(network: Network) {
-    if (!this.id) return
-    store.dispatch(openMoleGameDialog(this.id))
-    network.connectToMoleGame(this.id)
+    // if (!this.id) return
+    store.dispatch(openFaceChatDialog())
+    store.dispatch(setDialogStatus(DIALOG_STATUS.GAME_LOBBY))
+    // network.connectToFaceChat(this.id)
   }
 }

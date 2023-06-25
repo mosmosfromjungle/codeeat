@@ -30,12 +30,18 @@ export interface IChatMessage extends Schema {
   content: string
 }
 
+export interface IFaceChat extends Schema {
+  // roomId: string
+  connectedUser: SetSchema<string>
+}
+
 export interface IOfficeState extends Schema {
   players: MapSchema<IPlayer>
   molegames: MapSchema<IMoleGame>
   brickgames: MapSchema<IBrickGame>
   raingames: MapSchema<IRainGame>
   chatMessages: ArraySchema<IChatMessage>
+  faceChats: MapSchema<IFaceChat>
 }
 
 // export interface IGameState extends Schema {

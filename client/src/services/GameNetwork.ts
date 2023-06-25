@@ -1,5 +1,5 @@
 import { Client, Room } from 'colyseus.js'
-import { IOfficeState, IPlayer, IMoleGame, IBrickGame, IRainGame } from '../../../types/IOfficeState'
+import { IOfficeState, IPlayer, IMoleGame, IBrickGame, IRainGame, IFaceChat } from '../../../types/IOfficeState'
 import { Message } from '../../../types/Messages'
 import { IRoomData, RoomType } from '../../../types/Rooms'
 import { ItemType } from '../../../types/Items'
@@ -15,6 +15,7 @@ import {
   setAvailableBrickRooms,
   setAvailableMoleRooms,
   setAvailableRainRooms,
+  setAvailableFaceChatRooms,
   addAvailableRooms,
   removeAvailableRooms,
 } from '../stores/RoomStore'
@@ -78,6 +79,10 @@ export default class GameNetwork {
       this.lobby.onMessage('rooms', (rooms) => {
         store.dispatch(setAvailableRainRooms(rooms))
       })
+    } else if (type === RoomType.FACECHATLOBBY) {
+      this.lobby.onMessage('rooms', (rooms) => {
+        store.dispatch(setAvailableFaceChatRooms(rooms))
+      })
     }
 
     this.lobby.onMessage('+', ([roomId, room]) => {
@@ -119,6 +124,17 @@ export default class GameNetwork {
   async createRainRoom(roomData: IRoomData) {
     const { name, description, password, autoDispose } = roomData
     this.room = await this.client.create(RoomType.RAIN, {
+      name,
+      description,
+      password,
+      autoDispose,
+    })
+    this.initialize()
+  }
+
+  async createFaceChatRoom(roomData: IRoomData) {
+    const { name, description, password, autoDispose } = roomData
+    this.room = await this.client.create(RoomType.FACECHAT, {
       name,
       description,
       password,
