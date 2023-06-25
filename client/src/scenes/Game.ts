@@ -40,7 +40,7 @@ export default class Game extends Phaser.Scene {
   private brickgameMap = new Map<String, BrickGame>()
   private molegameMap = new Map<String, MoleGame>()
   private raingameMap = new Map<string, RainGame>()
-  private facechatMap = new Map<String, FaceChat>()
+  facechatMap = new Map<String, FaceChat>()
 
   constructor() {
     super('game')
@@ -250,13 +250,13 @@ export default class Game extends Phaser.Scene {
       this.molegameMap.set(id, item)
     })
 
-    // ***아바타 화상채팅 상호작용 아이템 추가 코드*** 
+    /* Face Chat */
     const facechats = this.physics.add.staticGroup({ classType: FaceChat })
     const facechatLayer = this.map.getObjectLayer('facechat')
     facechatLayer.objects.forEach((obj, i) => {
       const item = this.addObjectFromTiled(facechats, obj, 'bench', 'bench') as FaceChat
       const id = `${i}`
-      item.id = id
+      item.faceChatId = id
       this.facechatMap.set(id, item)
     })
 
@@ -415,6 +415,9 @@ export default class Game extends Phaser.Scene {
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.removeCurrentUser(playerId)
+    } else if (itemType === ItemType.FACECHAT) {
+      const facechat = this.facechatMap.get(itemId)
+      facechat?.removeCurrentUser(playerId)
     }
   }
 

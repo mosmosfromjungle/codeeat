@@ -3,7 +3,7 @@ import { Room, Client, ServerError } from 'colyseus'
 import { Dispatcher } from '@colyseus/command'
 import { Message } from '../../types/Messages'
 import { IRoomData } from '../../types/Rooms'
-import { Player, OfficeState, MoleGame, BrickGame, RainGame } from './schema/OfficeState'
+import { Player, OfficeState, MoleGame, BrickGame, RainGame, FaceChat } from './schema/OfficeState'
 import PlayerUpdateCommand from './commands/PlayerUpdateCommand'
 import PlayerUpdateNameCommand from './commands/PlayerUpdateNameCommand'
 import {
@@ -55,6 +55,11 @@ export class SkyOffice extends Room<OfficeState> {
     // HARD-CODED: Add 1 molegames in a room
     for (let i = 0; i < 20; i++) {
       this.state.molegames.set(String(i), new MoleGame())
+    }
+
+    // HARD-CODED: Add 1 faceChats in a room
+    for (let i = 0; i < 20; i++) {
+      this.state.faceChats.set(String(i), new FaceChat())
     }
 
     // // when a player connect to a typinggame, add to the typinggame connectedUser array
@@ -203,6 +208,11 @@ export class SkyOffice extends Room<OfficeState> {
     this.state.molegames.forEach((molegame) => {
       if (molegame.connectedUser.has(client.sessionId)) {
         molegame.connectedUser.delete(client.sessionId)
+      }
+    })
+    this.state.faceChats.forEach((facechat) => {
+      if (facechat.connectedUser.has(client.sessionId)) {
+        facechat.connectedUser.delete(client.sessionId)
       }
     })
   }
