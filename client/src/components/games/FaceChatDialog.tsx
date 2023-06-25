@@ -140,6 +140,17 @@ export default function FaceChatDialog() {
             {faceChatManager?.myStream ? '나가기' : '입장하기'}
           </Button>
         </div>
+
+        <VideoGrid>
+          {myStream && <VideoContainer stream={myStream} playerName="You" muted="true" />}
+
+          {[...peerStreams.entries()].map(([id, { stream }]) => {
+            const playerName = playerNameMap.get(id);
+            return (
+              <VideoContainer key={id} playerName={playerName} stream={stream} muted="false" />
+            );
+          })}
+        </VideoGrid>
       </Wrapper>
     </Backdrop>
   )

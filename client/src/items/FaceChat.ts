@@ -8,6 +8,7 @@ import { DIALOG_STATUS, setDialogStatus } from '../stores/UserStore'
 
 export default class FaceChat extends Item {
   // id?: string
+  faceChatId?: string
   currentUsers = new Set<string>()
 
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
@@ -29,7 +30,7 @@ export default class FaceChat extends Item {
 
   onOverlapDialog() {
     if (this.currentUsers.size === 0) {
-      this.setDialogBox('Press R to play the Whack a Mole')
+      this.setDialogBox('Press R to play the Face Chat')
     } else {
       this.setDialogBox('Press R join')
     }
@@ -47,9 +48,9 @@ export default class FaceChat extends Item {
     this.updateStatus()
   }
 
-  openDialog(network: Network) {
-    // if (!this.id) return
-    store.dispatch(openFaceChatDialog())
+  openDialog(playerId: string, network: Network) {
+    if (!this.faceChatId) return
+    store.dispatch(openFaceChatDialog({ faceChatId: this.faceChatId, myUserId: playerId }))
     store.dispatch(setDialogStatus(DIALOG_STATUS.GAME_LOBBY))
     // network.connectToFaceChat(this.id)
   }

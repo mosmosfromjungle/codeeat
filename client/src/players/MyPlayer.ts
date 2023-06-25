@@ -79,7 +79,7 @@ export default class MyPlayer extends Player {
           break
         case ItemType.FACECHAT:
           const faceChat = item as FaceChat
-          faceChat.openDialog(network)
+          faceChat.openDialog(this.playerId, network)
           break
       }
     }

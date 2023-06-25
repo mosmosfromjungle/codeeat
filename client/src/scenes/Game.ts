@@ -40,7 +40,7 @@ export default class Game extends Phaser.Scene {
   private brickgameMap = new Map<String, BrickGame>()
   private molegameMap = new Map<String, MoleGame>()
   private raingameMap = new Map<string, RainGame>()
-  private facechatMap = new Map<String, FaceChat>()
+  facechatMap = new Map<String, FaceChat>()
 
   constructor() {
     super('game')
@@ -256,7 +256,7 @@ export default class Game extends Phaser.Scene {
     facechatLayer.objects.forEach((obj, i) => {
       const item = this.addObjectFromTiled(facechats, obj, 'bench', 'bench') as FaceChat
       const id = `${i}`
-      item.id = id
+      item.faceChatId = id
       this.facechatMap.set(id, item)
     })
 
