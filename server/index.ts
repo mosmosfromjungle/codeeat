@@ -6,6 +6,7 @@ import { monitor } from '@colyseus/monitor'
 import { RoomType } from '../types/Rooms'
 import authRouter from './routes/auth';
 import friendsRouter from './routes/friends';
+import molegameRouter from './routes/molegame';
 
 // import socialRoutes from "@colyseus/social/express"
 
@@ -80,6 +81,7 @@ app.use('/colyseus', monitor())
 /* API Routes */
 app.use('/auth', authRouter);
 app.use('/friends', friendsRouter);
+app.use('/molegame', molegameRouter);
 
 /* Connect DB and run game server */
 connectDB().then(db => {
