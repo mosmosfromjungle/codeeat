@@ -8,6 +8,5 @@ express().use(express.json());
 const router = express.Router();
 
 router.post('/roomList', loadData);
-router.get('/roomlist', loadData)
 
 export default router

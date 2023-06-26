@@ -39,7 +39,6 @@ export const DMRoom = () => {
   return (
     <Backdrop>
         <DMwrapper>
-
         </DMwrapper>
     </Backdrop>
   );

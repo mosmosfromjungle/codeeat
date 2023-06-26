@@ -32,8 +32,8 @@ export const getLastDM = async (myId: string) => {
   let result = new Array();
   try {
     await LastDM.collection
-    .find({$or:[{ 
-      'senderInfo.userId': myId },
+    .find({$or:[
+      { 'senderInfo.userId': myId },
       {'receiverInfo.userId': myId}]
     })
     .sort({ _id: -1 })

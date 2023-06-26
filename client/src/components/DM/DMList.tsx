@@ -7,6 +7,7 @@ import {
   setReceiverName,
   setRoomId,
   setShowDMList,
+  setShowDMRoom
 } from '../../stores/DMStore';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import {
@@ -36,8 +37,8 @@ export const ConversationList = () => {
   }, []);
 
 const handleClick = async (room: RoomListResponse) => {
-    room.receiverInfo.userId && dispatch(setReceiverId(room.receiverInfo.userId));
-    room.receiverInfo.username && dispatch(setReceiverName(room.receiverInfo.username));
+    dispatch(setReceiverId(room.receiverInfo.userId));
+    dispatch(setReceiverName(room.receiverInfo.username));
     dispatch(setRoomId(room.roomId));
 }
 
@@ -147,7 +148,7 @@ const Backdrop = styled.div`
 position: fixed;
 display: flex;
 gap: 10px;
-bottom: 80px;
+bottom: 75px;
 right: 16px;
 align-items: flex-end;
 `

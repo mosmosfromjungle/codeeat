@@ -159,9 +159,6 @@ export const roomSlice = createSlice({
     setRoomPlayers: (state, action: PayloadAction<IPlayer[]>) => {
       state.players = action.payload;
     },
-    setRoomPlayers: (state, action: PayloadAction<IPlayer[]>) => {
-      state.players = action.payload;
-    },
   },
 })
 

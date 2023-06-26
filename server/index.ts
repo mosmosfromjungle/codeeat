@@ -6,7 +6,7 @@ import { monitor } from '@colyseus/monitor'
 import { RoomType } from '../types/Rooms'
 import authRouter from './routes/auth';
 import friendsRouter from './routes/friends';
-import dmRouter from './routes/lastdm'
+import dmRouter from './routes/dm'
 import molegameRouter from './routes/molegame';
 
 import { DMController } from './controllers/DMControllers'
