@@ -21,6 +21,11 @@ import GamePlayUpdateCommand from './commands/GamePlayUpdateCommand'
 // } from './commands/TypingGameUpdateArrayCommand'
 // import ChatMessageUpdateCommand from './commands/ChatMessageUpdateCommand'
 
+import {
+  MoleGameGetUserInfo,
+  MoleGameAddPoint,
+} from './commands/MoleGameUpdateArrayCommand'
+
 export class GameRoom extends Room<OfficeState> {
   private dispatcher = new Dispatcher(this)
   private name: string
@@ -188,6 +193,27 @@ export class GameRoom extends Room<OfficeState> {
     //     { except: client }
     //   )
     // })
+
+    // ↓ Mole Game
+    this.onMessage(Message.SEND_MOLE, (client, message: { name: string, character: string }) => {
+      this.dispatcher.dispatch(new MoleGameGetUserInfo(), {
+        client,
+        name: message.name,
+        character: message.character,
+        point: ''
+      })
+      this.broadcast(Message.RECEIVE_MOLE, { name: message.name, character: message.character }, { except: client });
+    })
+
+    this.onMessage(Message.SEND_MY_POINT, (client, message: { point: string }) => {
+      this.dispatcher.dispatch(new MoleGameAddPoint(), {
+        client,
+        name: '',
+        character: '',
+        point: message.point,
+      })
+      this.broadcast(Message.RECEIVE_YOUR_POINT, { point: message.point }, { except: client });
+    })
   }
 
   async onAuth(client: Client, options: { password: string | null }) {
