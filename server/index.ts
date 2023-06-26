@@ -6,15 +6,17 @@ import { monitor } from '@colyseus/monitor'
 import { RoomType } from '../types/Rooms'
 import authRouter from './routes/auth';
 import friendsRouter from './routes/friends';
+import dmRouter from './routes/lastdm'
 
-// import socialRoutes from "@colyseus/social/express"
-
+import { DMController } from './controllers/DMControllers'
+import { Socket } from 'socket.io'
 import { SkyOffice } from './rooms/SkyOffice'
 import { connectDB } from './DB/db'
 
 // const mongoose = require('mongoose')
 // var cookieParser = require('cookie-parser')
 const port = Number(process.env.PORT || 2567)
+const socketPort = Number(process.env.SOCKET_PORT || 8888);
 const app = express()
 
 const allowedOrigins = [
@@ -79,9 +81,39 @@ app.use('/colyseus', monitor())
 /* API Routes */
 app.use('/auth', authRouter);
 app.use('/friends', friendsRouter);
+app.use('/dm', dmRouter);
 
 /* Connect DB and run game server */
 connectDB().then(db => {
   mainServer.listen(port)  
   console.log(`Listening on ws://localhost:${port}`)
 }).catch(console.error);
+
+const socketServer = http.createServer(app)
+socketServer.listen(socketPort, () => console.log(`socketServer listening on ${socketPort}`))
+export const io = require('socket.io')(socketServer, {
+  cors: {
+    origin: allowedOrigins,
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+  },
+});
+
+export const userMap = new Map<string, Socket>();
+
+io.on('connection', (socket: Socket) => {
+  console.log('접속', socket.id);
+  socket.on('whoAmI', (userId) => {
+    console.log('아이디는', userId);
+    userMap.set(userId, socket);
+  });
+  DMController(socket);
+  socket.on('disconnect', () => {
+    console.log('퇴장');
+  });
+
+  socket.on('connect_error', (err) => {
+    console.log(`connect_error due to ${err.message}`);
+  });
+});

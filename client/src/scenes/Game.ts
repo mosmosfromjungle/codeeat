@@ -2,6 +2,7 @@ import Phaser from 'phaser'
 
 // import { debugDraw } from '../utils/debug'
 import Network from '../services/Network'
+import Network2 from '../services/Network2'
 import { createCharacterAnims } from '../anims/CharacterAnims'
 
 import Item from '../items/Item'
@@ -21,12 +22,13 @@ import { IPlayer } from '../../../types/IOfficeState'
 import { PlayerBehavior } from '../../../types/PlayerBehavior'
 
 import store from '../stores'
-import { setFocused, setShowChat, setShowDM } from '../stores/ChatStore'
+import { setFocused, setShowChat } from '../stores/ChatStore'
+import { setShowDMList, setShowDM, setShowDMRoom } from '../stores/DMStore'
 import { NavKeys, Keyboard } from '../../../types/KeyboardState'
 
 export default class Game extends Phaser.Scene {
   network!: Network
-  // network2!: Network2
+  network2!: Network2
   private cursors!: NavKeys
   private keyE!: Phaser.Input.Keyboard.Key
   private keyR!: Phaser.Input.Keyboard.Key
@@ -61,6 +63,8 @@ export default class Game extends Phaser.Scene {
     this.input.keyboard.on('keydown-ESC', (event) => {
       store.dispatch(setShowChat(false))
       store.dispatch(setShowDM(false))
+      // store.dispatch(setShowDMRoom(false))
+      store.dispatch(setShowDMList(false))
     })
   }
 
@@ -76,6 +80,8 @@ export default class Game extends Phaser.Scene {
     this.input.keyboard.on('keydown-ESC', (event) => {
       store.dispatch(setShowChat(false))
       store.dispatch(setShowDM(false))
+      store.dispatch(setShowDMRoom(false))
+      store.dispatch(setShowDMList(false))
     })
   }
 

@@ -9,7 +9,8 @@ import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 
 import { setShowLogout, setShowProfile, DIALOG_STATUS } from '../stores/UserStore'
-import { setFocused, setShowChat, setShowDM, setShowUser } from '../stores/ChatStore'
+import { setFocused, setShowChat, setShowUser } from '../stores/ChatStore'
+import { setShowDMList, setShowDMRoom } from '../stores/DMStore';
 import { useAppSelector, useAppDispatch } from '../hooks'
 
 const Backdrop = styled.div`
@@ -66,7 +67,8 @@ export default function ProfileButton() {
             dispatch(setShowProfile(true)),
             dispatch(setShowLogout(false)),
             dispatch(setShowChat(false)),
-            dispatch(setShowDM(false)),
+            // dispatch(setShowDMRoom(false)),
+            dispatch(setShowDMList(false)),
             dispatch(setShowUser(false)),
             dispatch(setShowLogout(false))
           )}

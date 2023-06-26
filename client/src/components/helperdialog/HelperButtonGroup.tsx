@@ -12,7 +12,8 @@ import UserIcon from '@mui/icons-material/SupervisorAccount'
 import LogoutIcon from '@mui/icons-material/ExitToApp';
 import HelpIcon from '@mui/icons-material/Help';
 
-import { setFocused, setShowChat, setShowDM, setShowUser } from '../../stores/ChatStore'
+import { setFocused, setShowChat, setShowUser } from '../../stores/ChatStore'
+import { setShowDMList, setShowDMRoom } from '../../stores/DMStore'
 import { setShowLogout, setShowProfile, setShowVersion } from '../../stores/UserStore'
 import { useAppSelector, useAppDispatch } from '../../hooks'
 
@@ -46,7 +47,8 @@ export default function HelperButtonGroup() {
   const roomJoined = useAppSelector((state) => state.room.roomJoined)
   const focused = useAppSelector((state) => state.chat.focused)
   const showChat = useAppSelector((state) => state.chat.showChat)
-  const showDM = useAppSelector((state) => state.chat.showDM)
+  const showDMList = useAppSelector((state) => state.dm.showDMList)
+  // const showDMRoom = useAppSelector((state) => state.dm.showDMRoom)
   const showUser = useAppSelector((state) => state.chat.showUser)
   const showLogout = useAppSelector((state) => state.user.showLogout)
   const showVersion = useAppSelector((state) => state.user.showVersion)
@@ -65,7 +67,7 @@ export default function HelperButtonGroup() {
 
   useEffect(() => {
     scrollToBottom()
-  }, [chatMessages, showChat, showDM, showUser, showLogout])
+  }, [chatMessages, showChat, showDMList, showUser, showLogout])
 
   return (
     <Backdrop>
@@ -80,7 +82,8 @@ export default function HelperButtonGroup() {
                 ) : (
                   dispatch(setShowChat(true)),
                   dispatch(setFocused(true)),
-                  dispatch(setShowDM(false)),
+                  // dispatch(setShowDMRoom(false)),
+                  dispatch(setShowDMList(false)),
                   dispatch(setShowUser(false)),
                   dispatch(setShowLogout(false)),
                   dispatch(setShowProfile(false)),
@@ -97,11 +100,13 @@ export default function HelperButtonGroup() {
           {roomJoined && (
             <FabWrapper>
               <Fab
-                onClick={() => showDM ? (
-                  dispatch(setShowDM(false)),
+                onClick={() => showDMList ? (
+                  // dispatch(setShowDMRoom(false)),
+                  dispatch(setShowDMList(false)),
                   dispatch(setFocused(false))
                 ) : (
-                  dispatch(setShowDM(true)),
+                  // dispatch(setShowDMRoom(true)),
+                  dispatch(setShowDMList(true)),
                   dispatch(setFocused(true)),
                   dispatch(setShowChat(false)),
                   dispatch(setShowUser(false)),
@@ -125,7 +130,8 @@ export default function HelperButtonGroup() {
                 ) : (
                   dispatch(setShowUser(true)),
                   dispatch(setShowChat(false)),
-                  dispatch(setShowDM(false)),
+                  // dispatch(setShowDMRoom(false)),
+                  dispatch(setShowDMList(false)),
                   dispatch(setShowLogout(false)),
                   dispatch(setShowProfile(false)),
                   dispatch(setShowVersion(false))
@@ -146,7 +152,8 @@ export default function HelperButtonGroup() {
               ) : (
                 dispatch(setShowLogout(true)),
                 dispatch(setShowChat(false)),
-                dispatch(setShowDM(false)),
+                // dispatch(setShowDMRoom(false)),
+                dispatch(setShowDMList(false)),
                 dispatch(setShowUser(false)),
                 dispatch(setShowProfile(false)),
                 dispatch(setShowVersion(false))
@@ -167,7 +174,8 @@ export default function HelperButtonGroup() {
               ) : (
                 dispatch(setShowVersion(true)),
                 dispatch(setShowChat(false)),
-                dispatch(setShowDM(false)),
+                // dispatch(setShowDMRoom(false)),
+                dispatch(setShowDMList(false)),
                 dispatch(setShowUser(false)),
                 dispatch(setShowLogout(false)),
                 dispatch(setShowProfile(false))

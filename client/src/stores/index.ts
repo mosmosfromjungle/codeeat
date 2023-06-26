@@ -6,6 +6,7 @@ import roomReducer from './RoomStore'
 import moleGameReducer from './MoleGameStore'
 import brickGameReducer from './BrickGameStore'
 import rainGameReducer from './RainGameStore'
+import dmReducer from './DMStore'
 
 enableMapSet()
 
@@ -16,6 +17,7 @@ const rootReducer = {
   molegame: moleGameReducer,
   brickgame: brickGameReducer,
   raingame: rainGameReducer,
+  dm: dmReducer,
 }
 
 const store = configureStore({
