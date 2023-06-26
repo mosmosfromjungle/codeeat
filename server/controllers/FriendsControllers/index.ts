@@ -13,9 +13,9 @@ interface CustomRequest extends Request {
 export const sendFriendRequest = async (req: Request, res: Response) => {
     const { requester, recipient } = req.body;
 
-    const foundRequester = await User.findOne({ userId: requester })
+    const foundRequester = await User.findOne({ username: requester })
     if (!foundRequester) return res.status(409).json({ message: 'Requester not found' })
-    const foundRecipient = await User.findOne({ userId: recipient })
+    const foundRecipient = await User.findOne({ username: recipient })
     if (!foundRecipient) return res.status(410).json({ message: 'Recipient not found' })
 
     const existingFriendship = await Friends.findOne({
@@ -39,7 +39,20 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
       });
   
       await newRequest.save();
-      res.status(201).json({ message: 'Friend request sent successfully' });
+
+      if (newRequest) {
+        return res.status(201).json({
+        status: 201,
+        message: 'Friend request sent successfully',
+        payload: newRequest,
+      
+      });
+      }
+      // return res.status(201).json({ 
+      //   message: 'Friend request sent successfully',
+      //   payload: newRequest,
+      
+      // });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Failed to send friend request' });

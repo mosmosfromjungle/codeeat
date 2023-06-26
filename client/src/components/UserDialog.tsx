@@ -23,6 +23,7 @@ import { IPlayer } from '../../../types/IOfficeState';
 import { setShowUser } from '../stores/ChatStore'
 import { setShowDMList, setShowDMRoom } from '../stores/DMStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
+import { sendFriendReq, sendRequest } from '../apicalls/friends'
 
 const Backdrop = styled.div`
   position: fixed;
@@ -37,6 +38,7 @@ const Wrapper = styled.div`
   height: 100%;
   margin-top: auto;
 `
+const Form = styled.form``
 
 const Content = styled.div`
   margin: 70px auto;
@@ -151,8 +153,18 @@ export default function UserDialog() {
   const userLevel = useAppSelector((state) => state.user.userLevel)
   const imgpath = `../../public/assets/character/single/${character}_idle_anim_19.png`
   const players = useAppSelector((state) => state.room.players)
-  const [otherPlayers, setOtherPlayers] = useState<IPlayer[]>();
+  const [otherPlayers, setOtherPlayers] = useState<IPlayer[]>()
   const dispatch = useAppDispatch()
+
+  const [requester, setRequester] = useState<string>('')
+  const [recipient, setRecipient] = useState<string>('')
+  const [requesterId, setRequesterId] = useState<string>('')
+  const [recipientId, setRecipientId] = useState<string>('')
+  const [gradeFieldEmpty, setGradeFieldEmpty] = useState<boolean>(false)
+  const [schoolFieldWrongFormat, setSchoolFieldEmpty] = useState<boolean>(false)
+  const [messageFieldEmpty, setmessageFieldEmpty] = useState<boolean>(false)
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+  const [addFriendResult, setAddFriendResult] = useState<number>(0) //0: 친구 요청 전, 1: 친구 요청 성공,  2: 이미친구
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -172,68 +184,280 @@ export default function UserDialog() {
     scrollToBottom()
   }, [chatMessages, showUser])
 
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(true)
 
   const handleClick = () => {
-    setOpen(!open);
-  };
+    setOpen(!open)
+  }
+
+  const sendFriendRequest = (requester: string, recipient: string) => {
+    // reset the error message
+    // setGradeFieldEmpty(false)
+    // setSchoolFieldEmpty(false)
+    // setmessageFieldEmpty(false)
+
+    // event.preventDefault()
+
+    const body: sendRequest = {
+      requester: requester,
+      recipient: recipient,
+    }
+    sendFriendReq(body)
+      .then((response) => {
+        console.log(response.payload)
+        if (response.status === 201) {
+          const { requesterId, recipientId } = response.payload
+          // console.log(requesterId)
+          // console.log(recipientId)
+          setRequesterId(requesterId)
+          setRecipientId(recipientId)
+          setAddFriendResult(1)
+          console.log('성공')
+          // setIsOpen(false)
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          const { status, message } = error.response.data
+          setAddFriendResult(2)
+          console.log(message)
+        }
+      })
+  }
+
+  const openModal = () => {
+    setIsModalOpen(true)
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false)
+  }
+
+  const Modal = ({ open, handleClose }) => {
+    switch (addFriendResult) {
+      case 1:
+        return (
+          <div
+            style={{
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              backgroundColor: '#222639',
+              borderRadius: '24px',
+              boxShadow: '0px, 10px, 24px, #0000006f',
+              padding: '50px',
+              zIndex: 1000,
+              fontSize: '20px',
+              color: '#eee',
+              textAlign: 'center',
+              fontFamily: 'Font_DungGeun',
+            }}
+          >
+            <h2>친구 요청 완료</h2>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleClose}
+              style={{ color: 'black' }}
+            >
+              확인
+            </Button>
+            <button
+              onClick={handleClose}
+              style={{
+                backgroundColor: '#222639',
+                color: '#eee',
+                fontSize: '20px',
+                borderRadius: '24px',
+                boxShadow: '0px, 10px, 24px, #0000006f',
+              }}
+            >
+              확인
+            </button>
+          </div>
+        )
+      case 2:
+        return (
+          <div
+            style={{
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              backgroundColor: '#222639',
+              borderRadius: '24px',
+              boxShadow: '0px, 10px, 24px, #0000006f',
+              padding: '50px',
+              zIndex: 1000,
+              fontSize: '20px',
+              color: '#eee',
+              textAlign: 'center',
+              fontFamily: 'Font_DungGeun',
+            }}
+          >
+            <h2>이미 친구요청을 보낸 적이 있어요</h2>
+            <Button variant="contained" color="secondary" onClick={handleClose} style={{ color: 'black' }}>
+              확인
+            </Button>
+            {/* <button
+              onClick={handleClose}
+              style={{
+                backgroundColor: '#222639',
+                color: '#eee',
+                fontSize: '20px',
+                borderRadius: '24px',
+                boxShadow: '0px, 10px, 24px, #0000006f',
+              }}
+            >
+              확인
+            </button> */}
+          </div>
+        )
+    }
+    // return (
+    //   <Backdrop>
+    //     <Wrapper>
+    //       <>
+    //         <Title>CodeEAT</Title>
+    //         <button onClick={handleClose}>Close</button>
+    //       </>
+    //     </Wrapper>
+    //   </Backdrop>
+      // <div
+      //   style={{
+      //     position: 'fixed',
+      //     top: '50%',
+      //     left: '50%',
+      //     transform: 'translate(-50%, -50%)',
+      //     backgroundColor: '#fff',
+      //     padding: '50px',
+      //     zIndex: 1000,
+      //   }}
+      // >
+      //   <h2>Game Over!</h2>
+      //   {/* ...Your other modal contents... */}
+        // <button onClick={handleClose}>Close</button>
+      // </div>
+      // <div id="ending" className="ending finalEnding">
+      //   <p id="ending-box">
+      //     <p id="ending-box-title">🎮🎮 Game Over ! 🎲🎲</p>
+      //     <p>
+      //       <span>Your score is &nbsp;</span>
+      //       <span className="last">{total}</span>
+      //     </p>
+      //     <p>
+      //       <span>Friend score is &nbsp;</span>
+      //       <span className="last">{total}</span>
+      //     </p>
+      //     <p>
+      //       <span>The winner is &nbsp;</span>
+      //       <span className="winner">{username}</span>
+      //     </p>
+
+      //     <div className="btn-wrap">
+      //       <button
+      //         type="button"
+      //         className="restart-btn"
+      //         style={{ color: '#f9f871' }}
+      //         onClick={() => hideModal()}
+      //         onMouseEnter={handleMouseOver}
+      //       >
+      //         CLOSE
+      //       </button>
+      //     </div>
+      //   </p>
+      // </div>
+    // )
+  }
+
+  const Overlay = styled.div`
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    // background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+  `
 
   return (
     <Backdrop>
-        <Wrapper>
-          <Content>
-            <ChatHeader>
-              <Title>{players.length} 명 접속중</Title>
-              <IconButton
-                aria-label="close dialog"
-                className="close"
-                onClick={() => dispatch(setShowUser(false))}
-                size="small"
-              >
-                <CloseIcon />
-              </IconButton>
-            </ChatHeader>
-            <ChatBox>
-              <ButtonGroup variant="text" aria-label="text button group">
-                <Button>Bronze</Button>
-                <Button>Silver</Button>
-                <Button>Gold</Button>
-                <Button>Platinum</Button>
-                <Button>Ruby</Button>
-              </ButtonGroup>
-              {otherPlayers?.map((player, i: number) => {
-                return (
-              <UserList>
-                <User>
-                  <ListItem divider key={i}>
-                    <ListItemAvatar>
-                      <Avatar src={imgpath} />
-                    </ListItemAvatar>
+      <Wrapper>
+        <Content>
+          <ChatHeader>
+            <Title>{players.length} 명 접속중</Title>
+            <IconButton
+              aria-label="close dialog"
+              className="close"
+              onClick={() => dispatch(setShowUser(false))}
+              size="small"
+            >
+              <CloseIcon />
+            </IconButton>
+          </ChatHeader>
+          <ChatBox>
+            <ButtonGroup variant="text" aria-label="text button group">
+              <Button>Bronze</Button>
+              <Button>Silver</Button>
+              <Button>Gold</Button>
+              <Button>Platinum</Button>
+              <Button>Ruby</Button>
+            </ButtonGroup>
+            {/* <Form onSubmit={handleSubmit}> */}
+            {otherPlayers?.map((player, i: number) => {
+              return (
+                <UserList>
+                  <User>
+                    <ListItem divider key={i}>
+                      <ListItemAvatar>
+                        <Avatar src={imgpath} />
+                      </ListItemAvatar>
 
-                    <Profile>
-                      레벨 {userLevel}<br/><br/>
-                      <strong>{player.name}</strong>
-                    </Profile>
-                  
-                    <ProfileButton>
-                      <Button>
-                        친구 추가하기
-                      </Button>
-                      <Button onClick={() => {
-                        // dispatch(setShowDMRoom(true));
-                        dispatch(setShowDMList(true));
-                        dispatch(setShowUser(false))
-                        } }>
-                        메세지 보내기
-                      </Button>
-                    </ProfileButton>
-                  </ListItem>
-                </User>
-              </UserList>)
-              })}
-            </ChatBox>
-          </Content>
-        </Wrapper>
+                      <Profile>
+                        레벨 {userLevel}
+                        <br />
+                        <br />
+                        <strong>{player.name}</strong>
+                      </Profile>
+
+                      <ProfileButton>
+                        <Button
+                          onClick={() => {
+                            sendFriendRequest(username, player.name)
+                            openModal()
+                          }}
+                        >
+                          친구 추가하기
+                        </Button>
+                        <Button onClick={openModal}>안녕</Button>
+
+                        {/* Render the modal and the overlay only when isModalOpen is true */}
+                        {isModalOpen && (
+                          <>
+                            {/* <Overlay onClick={closeModal} /> */}
+                            <Modal open={isModalOpen} handleClose={closeModal} />
+                          </>
+                        )}
+                        <Button
+                          onClick={() => {
+                            // dispatch(setShowDMRoom(true));
+                            dispatch(setShowDMList(true))
+                            dispatch(setShowUser(false))
+                          }}
+                        >
+                          메세지 보내기
+                        </Button>
+                      </ProfileButton>
+                    </ListItem>
+                  </User>
+                </UserList>
+              )
+            })}
+            {/* </Form> */}
+          </ChatBox>
+        </Content>
+      </Wrapper>
     </Backdrop>
   )
 }

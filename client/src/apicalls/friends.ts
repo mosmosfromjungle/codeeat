@@ -23,3 +23,29 @@ export const getFriendList = async (): Promise<any> => {
       return data.payload
     }
 }
+
+export const sendFriendReq = async (body: sendRequest): Promise<any> => {
+    try {
+        const response = await axios.post('/friends/request', body, {
+            withCredentials: true,
+            headers: {
+                'Content-type': 'application/json',
+            },
+        })
+        if (response) {
+          
+        }
+        if (response.status === 201) {
+          // console.log(response)
+
+          return response.data
+        }
+    } catch (error) {
+        throw error
+    }
+}
+
+export interface sendRequest {
+  requester: string,
+  recipient: string,
+}
