@@ -149,7 +149,13 @@ export const getFriendsList = async (req: CustomRequest, res: Response) => {
 
   try {
     const friendsList = await Friends.find({ $or: [{ requesterId: foundUser.userId }, { recipientId: foundUser.userId }] });
-    res.status(200).json({ friends: friendsList });
+    // res.status(200).json({ friends: friendsList });
+    return res.status(200).json({
+      status: 200,
+      payload: {
+        friends: friendsList
+      }
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Failed to get friends list' });

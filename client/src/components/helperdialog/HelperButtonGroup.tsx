@@ -12,7 +12,7 @@ import UserIcon from '@mui/icons-material/SupervisorAccount'
 import LogoutIcon from '@mui/icons-material/ExitToApp';
 import HelpIcon from '@mui/icons-material/Help';
 
-import { setFocused, setShowChat, setShowDM, setShowUser } from '../../stores/ChatStore'
+import { setFocused, setShowChat, setShowDM, setShowFriend, setShowUser} from '../../stores/ChatStore'
 import { setShowLogout, setShowProfile, setShowVersion } from '../../stores/UserStore'
 import { useAppSelector, useAppDispatch } from '../../hooks'
 
@@ -48,6 +48,7 @@ export default function HelperButtonGroup() {
   const showChat = useAppSelector((state) => state.chat.showChat)
   const showDM = useAppSelector((state) => state.chat.showDM)
   const showUser = useAppSelector((state) => state.chat.showUser)
+  const showFriend = useAppSelector((state) => state.chat.showFriend)
   const showLogout = useAppSelector((state) => state.user.showLogout)
   const showVersion = useAppSelector((state) => state.user.showVersion)
 
@@ -65,7 +66,7 @@ export default function HelperButtonGroup() {
 
   useEffect(() => {
     scrollToBottom()
-  }, [chatMessages, showChat, showDM, showUser, showLogout])
+  }, [chatMessages, showChat, showDM, showUser, showFriend.showLogout])
 
   return (
     <Backdrop>
@@ -74,18 +75,18 @@ export default function HelperButtonGroup() {
           {roomJoined && (
             <FabWrapper>
               <Fab
-                onClick={() => showChat ? (
-                  dispatch(setShowChat(false)),
-                  dispatch(setFocused(false))
-                ) : (
-                  dispatch(setShowChat(true)),
-                  dispatch(setFocused(true)),
-                  dispatch(setShowDM(false)),
-                  dispatch(setShowUser(false)),
-                  dispatch(setShowLogout(false)),
-                  dispatch(setShowProfile(false)),
-                  dispatch(setShowVersion(false))
-                )}
+                onClick={() =>
+                  showChat
+                    ? (dispatch(setShowChat(false)), dispatch(setFocused(false)))
+                    : (dispatch(setShowChat(true)),
+                      dispatch(setFocused(true)),
+                      dispatch(setShowDM(false)),
+                      dispatch(setShowUser(false)),
+                      dispatch(setShowFriend(false)),
+                      dispatch(setShowLogout(false)),
+                      dispatch(setShowProfile(false)),
+                      dispatch(setShowVersion(false)))
+                }
               >
                 <ChatIcon />
               </Fab>
@@ -97,18 +98,18 @@ export default function HelperButtonGroup() {
           {roomJoined && (
             <FabWrapper>
               <Fab
-                onClick={() => showDM ? (
-                  dispatch(setShowDM(false)),
-                  dispatch(setFocused(false))
-                ) : (
-                  dispatch(setShowDM(true)),
-                  dispatch(setFocused(true)),
-                  dispatch(setShowChat(false)),
-                  dispatch(setShowUser(false)),
-                  dispatch(setShowLogout(false)),
-                  dispatch(setShowProfile(false)),
-                  dispatch(setShowVersion(false))
-                )}
+                onClick={() =>
+                  showDM
+                    ? (dispatch(setShowDM(false)), dispatch(setFocused(false)))
+                    : (dispatch(setShowDM(true)),
+                      dispatch(setFocused(true)),
+                      dispatch(setShowChat(false)),
+                      dispatch(setShowUser(false)),
+                      dispatch(setShowFriend(false)),
+                      dispatch(setShowLogout(false)),
+                      dispatch(setShowProfile(false)),
+                      dispatch(setShowVersion(false)))
+                }
               >
                 <DMIcon />
               </Fab>
@@ -120,16 +121,17 @@ export default function HelperButtonGroup() {
           {roomJoined && (
             <FabWrapper>
               <Fab
-                onClick={() => showUser ? (
-                  dispatch(setShowUser(false))
-                ) : (
-                  dispatch(setShowUser(true)),
-                  dispatch(setShowChat(false)),
-                  dispatch(setShowDM(false)),
-                  dispatch(setShowLogout(false)),
-                  dispatch(setShowProfile(false)),
-                  dispatch(setShowVersion(false))
-                )}
+                onClick={() =>
+                  showUser
+                    ? dispatch(setShowUser(false))
+                    : (dispatch(setShowUser(true)),
+                      dispatch(setShowFriend(false)),
+                      dispatch(setShowChat(false)),
+                      dispatch(setShowDM(false)),
+                      dispatch(setShowLogout(false)),
+                      dispatch(setShowProfile(false)),
+                      dispatch(setShowVersion(false)))
+                }
               >
                 <UserIcon />
               </Fab>
@@ -140,20 +142,21 @@ export default function HelperButtonGroup() {
         <Wrapper>
           {roomJoined && (
             <FabWrapper>
-            <Fab
-              onClick={() => showLogout ? (
-                dispatch(setShowLogout(false))
-              ) : (
-                dispatch(setShowLogout(true)),
-                dispatch(setShowChat(false)),
-                dispatch(setShowDM(false)),
-                dispatch(setShowUser(false)),
-                dispatch(setShowProfile(false)),
-                dispatch(setShowVersion(false))
-              )}
-            >
-              <LogoutIcon />
-            </Fab>
+              <Fab
+                onClick={() =>
+                  showFriend
+                    ? dispatch(setShowFriend(false))
+                    : (dispatch(setShowFriend(true)),
+                      dispatch(setShowUser(false)),
+                      dispatch(setShowChat(false)),
+                      dispatch(setShowDM(false)),
+                      dispatch(setShowLogout(false)),
+                      dispatch(setShowProfile(false)),
+                      dispatch(setShowVersion(false)))
+                }
+              >
+                <UserIcon />
+              </Fab>
             </FabWrapper>
           )}
         </Wrapper>
@@ -161,20 +164,43 @@ export default function HelperButtonGroup() {
         <Wrapper>
           {roomJoined && (
             <FabWrapper>
-            <Fab
-              onClick={() => showVersion ? (
-                dispatch(setShowVersion(false))
-              ) : (
-                dispatch(setShowVersion(true)),
-                dispatch(setShowChat(false)),
-                dispatch(setShowDM(false)),
-                dispatch(setShowUser(false)),
-                dispatch(setShowLogout(false)),
-                dispatch(setShowProfile(false))
-              )}
-            >
-              <HelpIcon />
-            </Fab>
+              <Fab
+                onClick={() =>
+                  showLogout
+                    ? dispatch(setShowLogout(false))
+                    : (dispatch(setShowLogout(true)),
+                      dispatch(setShowChat(false)),
+                      dispatch(setShowDM(false)),
+                      dispatch(setShowUser(false)),
+                      dispatch(setShowFriend(false)),
+                      dispatch(setShowProfile(false)),
+                      dispatch(setShowVersion(false)))
+                }
+              >
+                <LogoutIcon />
+              </Fab>
+            </FabWrapper>
+          )}
+        </Wrapper>
+
+        <Wrapper>
+          {roomJoined && (
+            <FabWrapper>
+              <Fab
+                onClick={() =>
+                  showVersion
+                    ? dispatch(setShowVersion(false))
+                    : (dispatch(setShowVersion(true)),
+                      dispatch(setShowChat(false)),
+                      dispatch(setShowDM(false)),
+                      dispatch(setShowUser(false)),
+                      dispatch(setShowFriend(false)),
+                      dispatch(setShowLogout(false)),
+                      dispatch(setShowProfile(false)))
+                }
+              >
+                <HelpIcon />
+              </Fab>
             </FabWrapper>
           )}
         </Wrapper>
