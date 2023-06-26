@@ -1,8 +1,11 @@
-interface RainGameUserData {
+export interface IRainGameUser {
     nickname: string;
     totalgame: number;
     RainGame: number;
     character: string;
+    gamedata: IRainGameData;
+    ItemEvent: IRainGameItem;
+
 }
 /* 사용 방법
 io.on("connection", (socket) => {
@@ -13,7 +16,7 @@ io.on("connection", (socket) => {
 });
 */
 
-interface RainGameGameData {
+export interface IRainGameData {
     // 화면구현위한 전송
 }
 /* 사용 방법
@@ -23,7 +26,7 @@ io.on("connection", (socket) => {
 */
 
 //ClientToServerEvent
-interface RainGameItemEvents {
+export interface IRainGameItem {
     // item1: () => void;
 }
 

@@ -91,13 +91,18 @@ export const CustomRoomTable = () => {
   const [showPasswordError, setShowPasswordError] = useState(false)
   const [passwordFieldEmpty, setPasswordFieldEmpty] = useState(false)
   const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)
+  const username = useAppSelector((state) => state.user.username)
+  const character = useAppSelector((state) => state.user.character)
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
   const rainGameOpen = useAppSelector((state) => state.raingame.rainGameOpen)
+  const faceChatOpen = useAppSelector((state) => state.facechat.faceChatOpen)
+
   const availableRooms = useAppSelector((state) => {
     if (brickGameOpen) return state.room.availableRooms.brickRooms
     if (moleGameOpen) return state.room.availableRooms.moleRooms
-    if (rainGameOpen) return state.room.availableRooms.typingRooms
+    if (rainGameOpen) return state.room.availableRooms.rainRooms
+    if (faceChatOpen) return state.room.availableRooms.faceChatRooms
     return []
   })
 
@@ -106,13 +111,16 @@ export const CustomRoomTable = () => {
   const handleJoinClick = (roomId: string, password: string | null) => {
     if (!lobbyJoined) return
     const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-    bootstrap.network.joinCustomById(roomId, password)
-      .catch((error) => {
+    bootstrap.gameNetwork.joinCustomById(roomId, password).then(() => {
+      bootstrap.gameNetwork.updatePlayer(0, 0, `${character}_idle_down`)
+      bootstrap.gameNetwork.updatePlayerName(username)
+      dispatch(setDialogStatus(DIALOG_STATUS.GAME_WELCOME))
+      // setTimeout(() => {
+      // }, 100);
+    }).catch((error) => {
         console.error(error)
         if (password) setShowPasswordError(true)
-      })
-
-    dispatch(setDialogStatus(DIALOG_STATUS.GAME_WELCOME))
+    })
   }
 
   const handlePasswordSubmit = (event: React.FormEvent<HTMLFormElement>) => {

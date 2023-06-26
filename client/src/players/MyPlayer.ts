@@ -9,6 +9,7 @@ import Chair from '../items/Chair'
 import BrickGame from '../items/BrickGame'
 import RainGame from '../items/RainGame'
 import MoleGame from '../items/MoleGame'
+import FaceChat from '../items/FaceChat'
 
 import { phaserEvents, Event } from '../events/EventCenter'
 import store from '../stores'
@@ -32,12 +33,13 @@ export default class MyPlayer extends Player {
   ) {
     super(scene, x, y, texture, id, frame)
     this.playContainerBody = this.playerContainer.body as Phaser.Physics.Arcade.Body
+    // this.playerTexture = texture // 플레이어 인스턴스를 생성할 떄 바로 캐릭터 이미지를 지정해줄 수 있다.
   }
 
   setPlayerName(name: string) {
     this.playerName.setText(name)
     phaserEvents.emit(Event.MY_PLAYER_NAME_CHANGE, name)
-    store.dispatch(pushPlayerJoinedMessage(name))
+    store.dispatch(pushPlayerJoinedMessage(name))  // TODO: 플레이어 이름이 바뀔떄마다 새로 join 한다는 메세지와 관련된 부분인듯
   }
 
   setPlayerTexture(texture: string) {
@@ -74,6 +76,10 @@ export default class MyPlayer extends Player {
         case ItemType.MOLEGAME:
           const molegame = item as MoleGame
           molegame.openDialog(network)
+          break
+        case ItemType.FACECHAT:
+          const faceChat = item as FaceChat
+          faceChat.openDialog(this.playerId, network)
           break
       }
     }

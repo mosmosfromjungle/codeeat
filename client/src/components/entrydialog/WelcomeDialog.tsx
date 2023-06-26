@@ -5,7 +5,7 @@ import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 
 import { useAppSelector, useAppDispatch } from '../../hooks'
-import { setDialogStatus, setUserId, setUsername, setCharacter, setUserLevel, DIALOG_STATUS } from '../../stores/UserStore'
+import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore'
 
 import Adam from '../../images/login/Adam_login.png'
 import Ash from '../../images/login/Ash_login.png'
@@ -21,7 +21,6 @@ import Nancy from '../../images/login/Nancy_login.png'
 
 import phaserGame from '../../PhaserGame'
 import Game from '../../scenes/Game'
-import Bootstrap from '../../scenes/Bootstrap'
 
 import { authenticateUser } from '../../apicalls/auth'
 
@@ -115,49 +114,31 @@ const avatars = [
 ]
 
 export default function WelcomeDialog() {
-  const [name, setName] = useState<string>('UNKNOWN');
-  const [avatarIndex, setAvatarIndex] = useState<number>(0)
+  // const [name, setName] = useState<string>('UNKNOWN');
+  // const [avatarIndex, setAvatarIndex] = useState<number>(0)
 
   const dispatch = useAppDispatch()
-
-  // const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)
   const roomJoined = useAppSelector((state) => state.room.roomJoined)
+  const username = useAppSelector((state) => state.user.username)
+  const character = useAppSelector((state) => state.user.character)
   const videoConnected = useAppSelector((state) => state.user.videoConnected)
 
+  const index = avatars.findIndex((avatar) => avatar.name === character)
+  
   const game = phaserGame.scene.keys.game as Game
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    const game = phaserGame.scene.keys.game as Game
     game.registerKeys()
     dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
   }
 
   useEffect(() => {
-    authenticateUser().then((result) => {
-      if (result.status === 200) {
-        const { payload } = result
-        if (roomJoined) {
-          /* Register to Phaser */
-          const game = phaserGame.scene.keys.game as Game
-          game.myPlayer.setPlayerName(payload.username)
-          game.myPlayer.setPlayerTexture(payload.character)
-          game.network.readyToConnect()
-          /* Redux Store */
-          dispatch(setUserId(payload.userId))
-          dispatch(setUsername(payload.username))
-          dispatch(setCharacter(payload.character))
-          dispatch(setUserLevel(payload.userLevel))
-          /* Set on screen */
-          const index = avatars.findIndex((avatar) => avatar.name === payload.character);
-          setAvatarIndex(index)
-          setName(payload.username)
-        }
-      }
-    }).catch((error) => {
-      // TODO: 실패하는 경우 Entry 화면으로 다시 가기 + Toast 메세지를 띄울 수 있으면 최고 
-      console.log(error)
-    })
+    if (roomJoined) {
+      game.myPlayer.setPlayerName(username)
+      game.myPlayer.setPlayerTexture(character)
+      game.network.readyToConnect()          
+    }
   })
 
   return (
@@ -169,12 +150,12 @@ export default function WelcomeDialog() {
         <Left>
           <ImgContainer>
             <img className="character-avatar" 
-                src={avatars[avatarIndex].img} 
-                alt={avatars[avatarIndex].name} /> 
+                src={avatars[index].img} 
+                alt={avatars[index].name} /> 
           </ImgContainer>
         </Left>
         <Right>
-            <h1 style={{ fontSize: '24px' }}>{name} 님</h1>
+            <h1 style={{ fontSize: '24px' }}>{username} 님</h1>
           {!videoConnected && (
             <Warning>
               <Alert variant="outlined" severity="warning">

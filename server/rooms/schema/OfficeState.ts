@@ -5,6 +5,7 @@ import {
   IMoleGame,
   IBrickGame,
   IRainGame,
+  IFaceChat,
   IChatMessage,
 } from '../../../types/IOfficeState'
 
@@ -18,10 +19,12 @@ export class Player extends Schema implements IPlayer {
 }
 
 export class BrickGame extends Schema implements IBrickGame {
+  // @type('string') roomId = getRoomId()
   @type({ set: 'string' }) connectedUser = new SetSchema<string>()
 }
 
 export class MoleGame extends Schema implements IMoleGame {
+  // @type('string') roomId = getRoomId()
   @type({ set: 'string' }) connectedUser = new SetSchema<string>()
 }
 
@@ -34,6 +37,11 @@ export class ChatMessage extends Schema implements IChatMessage {
   @type('string') author = ''
   @type('number') createdAt = new Date().getTime()
   @type('string') content = ''
+}
+
+export class FaceChat extends Schema implements IFaceChat {
+  // @type('string') roomId = getRoomId()
+  @type({ set: 'string' }) connectedUser = new SetSchema<string>()
 }
 
 export class OfficeState extends Schema implements IOfficeState {
@@ -51,6 +59,9 @@ export class OfficeState extends Schema implements IOfficeState {
 
   @type([ChatMessage])
   chatMessages = new ArraySchema<ChatMessage>()
+
+  @type({ map: FaceChat })
+  faceChats = new MapSchema<FaceChat>()
 }
 
 // export const RainGameRoomIds = new Set<string>()

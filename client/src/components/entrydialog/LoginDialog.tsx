@@ -17,7 +17,7 @@ import FormHelperText from '@mui/material/FormHelperText'
 import ArrowBack from '@mui/icons-material/ArrowBack'
 
 import { useAppSelector, useAppDispatch } from '../../hooks'
-import { DIALOG_STATUS, setAccessToken, setDialogStatus } from '../../stores/UserStore'
+import { DIALOG_STATUS, setDialogStatus, setUserId, setUsername, setCharacter, setUserLevel, setAccessToken } from '../../stores/UserStore'
 
 import phaserGame from '../../PhaserGame'
 import Game from '../../scenes/Game'
@@ -138,6 +138,14 @@ export default function LoginDialog() {
               .catch((error) => console.error(error))
             bootstrap.network2.whoAmI(payload.userId)
             dispatch(setDialogStatus(DIALOG_STATUS.WELCOME))
+            dispatch(setUserId(payload.userId))
+            dispatch(setUsername(payload.username))
+            dispatch(setCharacter(payload.character))
+            dispatch(setUserLevel(payload.userLevel))
+            
+            setTimeout(() => {
+              dispatch(setDialogStatus(DIALOG_STATUS.WELCOME));
+            }, 100);
           }
         }
       }).catch((error) => {

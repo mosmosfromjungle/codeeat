@@ -5,13 +5,24 @@ import { Interface } from "readline";
 
 // Define Interface
 export interface KeywordRain {
-    y: number;
-    speed: number;
-    keyword: string
-    x: number;
-    a_effect: boolean;
-    b_effect: boolean;
-    c_effect: boolean;
+    y: number,
+    speed: number,
+    keyword: string,
+    x: number,
+    flicker: boolean,
+    blind: boolean,
+    accel: boolean,
+    multifly: boolean,
+}
+const initialKeywordRain: KeywordRain = {
+    y: 0,
+    speed: 1,
+    keyword: 'word',
+    x: Math.floor(Math.random() * (550 - 50 + 1)) + 50,
+    flicker: false,
+    blind: false,
+    accel: false,
+    multifly: false,
 }
 
 interface RainGameState {
@@ -23,20 +34,18 @@ interface RainGameState {
     goal: number,
     keywordList: string[],
     paused: boolean,
-    speed: number,
     period: number
 };
 
 // Define initial state
 const initialState: RainGameState = {
     rainGameOpen: false,
-    game: [],
+    game: [initialKeywordRain],
     point: 0,
     heart: 5,
     level: 1,
     goal: 100,
     paused: false,
-    speed: 1,
     period: 2000,
     keywordList: [
         "abs",
@@ -60,6 +69,7 @@ export const rainGameSlice = createSlice({
     initialState,
     reducers: {
         openRainGameDialog: (state) => {
+            if (state.heart < 1) { return }
             state.rainGameOpen = true
             const game = phaserGame.scene.keys.game as Game
             game.disableKeys()
@@ -70,20 +80,14 @@ export const rainGameSlice = createSlice({
             state.rainGameOpen = false
         },
 
-        addKeyword: (state, action: PayloadAction<{ keyword: string }>) => {
-            const { keyword } = action.payload;
-            state.game.push({
-                y: 0,
-                speed: state.speed,
-                keyword: keyword,
-                x: Math.floor(Math.random() * (550 - 50 + 1)) + 50,
-                a_effect: false,
-                b_effect: false,
-                c_effect: false,
-            });
+        addKeyword: (state, action: PayloadAction<{ keyword: KeywordRain }>) => {
+            if (state.heart < 1) { return }
+            state.game.push(action.payload.keyword);
         },
         updateSpeed: (state, action: PayloadAction<number>) => {
-            state.speed = Math.max(state.speed + action.payload, 1);
+            state.game.forEach((item) => {
+                item.speed = Math.max(item.speed + action.payload, 1);
+            });
         },
         updatePeriod: (state, action: PayloadAction<number>) => {
             state.period = Math.max(state.period + action.payload, 1000);
@@ -93,12 +97,11 @@ export const rainGameSlice = createSlice({
             if (state.paused) {
                 return;
             }
-            const lineHeight = action.payload.lineHeight;
             let shouldDecrementHeart = false;
 
             state.game.forEach((item) => {
                 const newY = item.y + item.speed;
-                if (newY > lineHeight && item.y <= lineHeight) {
+                if (newY > action.payload.lineHeight && item.y <= action.payload.lineHeight) {
                     shouldDecrementHeart = true;
                 }
                 item.y = newY;
@@ -121,6 +124,42 @@ export const rainGameSlice = createSlice({
         },
         resetRainGame: (state) => {
             Object.assign(state, initialState);
+        },
+        Flicker: (state, action: PayloadAction<string>) => {
+            const keyword = action.payload;
+            const item = state.game.find((item) => item.keyword === keyword);
+  
+
+            if (item && item.accel) {
+                item.accel = false;
+            }
+        },
+        Blind: (state, action: PayloadAction<string>) => {
+            const keyword = action.payload;
+            const item = state.game.find((item) => item.keyword === keyword);
+  
+
+            if (item && item.accel) {
+                item.accel = false;
+            }
+        },
+        Accel: (state, action: PayloadAction<string>) => {
+            const keyword = action.payload;
+            const item = state.game.find((item) => item.keyword === keyword);
+  
+
+            if (item && item.accel) {
+                item.accel = false;
+            }
+        },
+        Multifly: (state, action: PayloadAction<string>) => {
+            const keyword = action.payload;
+            const item = state.game.find((item) => item.keyword === keyword);
+  
+
+            if (item && item.accel) {
+                item.accel = false;
+            }
         },
     },
 });

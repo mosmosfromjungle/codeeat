@@ -16,6 +16,8 @@ import './MoleGame.css'
 import phaserGame from '../../../PhaserGame'
 import Bootstrap from '../../../scenes/Bootstrap'
 
+import axios from 'axios'
+
 const Backdrop = styled.div`
   position: fixed;
   top: 0;
@@ -80,6 +82,8 @@ const YourPoint = styled.div`
 export default function MoleGameDialog() {
   const dispatch = useAppDispatch()
 
+  const [problems, setProblems] = useState(String);
+
   const [flag, setFlag] = useState(0);
   const [titleColor, setTitleColor] = useState('#f2ecff');
 
@@ -122,7 +126,34 @@ export default function MoleGameDialog() {
   let moleNumber2 = 0;
   let moleNumber3 = 0;
 
-  // 0. Bling the Text
+  const [executed, setExecuted] = useState(false);
+
+  // 1. Load problems
+
+  useEffect(() => {
+    if (!executed) {
+      loadProblems();
+      setExecuted(true);
+    }
+  }, [executed]);
+
+  const loadProblems = async () => {
+    try {
+      const datas = await axios.get('/molegame/problems');
+      if (datas.status === 200) {
+        setProblems(datas.data.problems);
+  
+      } else {
+        console.log("Failed to get problems data. Try again.")
+        return;
+      }
+    } catch (error: any) {
+      console.log("Failed to get problems data. Try again.")
+      return;
+    }
+  }
+
+  // 2. Bling the Text
 
   const bling = () => {
     setFlag((prevFlag) => (prevFlag + 1) % 4);
@@ -141,7 +172,7 @@ export default function MoleGameDialog() {
     setTitleColor(colors[flag]);
   }, [flag]);
 
-  // 1. Start Button Event
+  // 3. Start Button Event
 
   const startMole = () => {
     console.log("Function [startMole]");
@@ -152,20 +183,7 @@ export default function MoleGameDialog() {
     setTimeout(showingMole, 1000);
   }
 
-  // 2. Show Event
-
-  var after = [
-    [['네모칸에 알맞은 기호를 넣어줘!', '4 + 19 □ 27'], ['<', '>', '=']],
-    [['신호등 색이 아닌 것을 골라줘!', '힌트: 🚥'], ['보라', '빨강', '노랑']],
-    [['기차가 목적지로 이동할 수 있도록 기찻길을 완성해줘!', '🚩 □ 🚈'], ['⬅', '➡', '⬆']],
-    [['단어가 완성될 수 있도록 네모칸에 알맞은 알파벳을 넣어줘!', 'A P □ L E'], ['P', 'L', 'A']],
-    [['소녀가 학교에 도착할 수 있도록 방향을 선택해줘!', '🗻 □ 👧 □ 🏫'], ['➡', '⬅', '⬇']],
-    [['규칙에 맞게 네모칸에 알맞은 숫자를 넣어줘!', '2 4 8 □ 32'], ['16', '10', '26']],
-    [['네모칸에 들어갈 알맞은 색을 골라줘!', '🔴 + 🟢 = □'], ['🟡', '🔵', '🟣']],
-    [['규칙에 맞게 네모칸에 알맞은 색의 공을 골라줘!', '🔴 ⬛ □ ⬛ 🔴 ⬛'], ['🔴', '⬛', '🟥']],
-    [['소년이 학교에 도착할 수 있도록 올바른 방향을 선택해줘!', '🗻 □ 🧑 □ ⛲ □ 🏫'], ['➡➡', '⬇⬅', '➡']],
-    [['규칙에 맞게 네모칸에 들어갈 알맞은 기호를 골라줘!', '▙ □ ▜ ▟'], ['▛', '▞', '▜']]
-  ];
+  // 4. Show Event
 
   const randomHole = () => {
     console.log("Function [randomHole]");
@@ -248,122 +266,122 @@ export default function MoleGameDialog() {
 
       switch(randomNumber1) {
         case 1:
-          setAnswerText1(after[turn][1][0]);
+          setAnswerText1(problems[turn].answer1);
           break;
 
         case 2:
-          setAnswerText2(after[turn][1][0]);
+          setAnswerText2(problems[turn].answer1);
           break;
 
         case 3:
-          setAnswerText3(after[turn][1][0]);
+          setAnswerText3(problems[turn].answer1);
           break;
 
         case 4:
-          setAnswerText4(after[turn][1][0]);
+          setAnswerText4(problems[turn].answer1);
           break;
 
         case 5:
-          setAnswerText5(after[turn][1][0]);
+          setAnswerText5(problems[turn].answer1);
           break;
 
         case 6:
-          setAnswerText6(after[turn][1][0]);
+          setAnswerText6(problems[turn].answer1);
           break;
 
         case 7:
-          setAnswerText7(after[turn][1][0]);
+          setAnswerText7(problems[turn].answer1);
           break;
 
         case 8:
-          setAnswerText8(after[turn][1][0]);
+          setAnswerText8(problems[turn].answer1);
           break;
 
         case 9:
-          setAnswerText9(after[turn][1][0]);
+          setAnswerText9(problems[turn].answer1);
           break;
       }
 
       switch(randomNumber2) {
         case 1:
-          setAnswerText1(after[turn][1][1]);
+          setAnswerText1(problems[turn].answer2);
           break;
 
         case 2:
-          setAnswerText2(after[turn][1][1]);
+          setAnswerText2(problems[turn].answer2);
           break;
 
         case 3:
-          setAnswerText3(after[turn][1][1]);
+          setAnswerText3(problems[turn].answer2);
           break;
 
         case 4:
-          setAnswerText4(after[turn][1][1]);
+          setAnswerText4(problems[turn].answer2);
           break;
 
         case 5:
-          setAnswerText5(after[turn][1][1]);
+          setAnswerText5(problems[turn].answer2);
           break;
 
         case 6:
-          setAnswerText6(after[turn][1][1]);
+          setAnswerText6(problems[turn].answer2);
           break;
 
         case 7:
-          setAnswerText7(after[turn][1][1]);
+          setAnswerText7(problems[turn].answer2);
           break;
 
         case 8:
-          setAnswerText8(after[turn][1][1]);
+          setAnswerText8(problems[turn].answer2);
           break;
 
         case 9:
-          setAnswerText9(after[turn][1][1]);
+          setAnswerText9(problems[turn].answer2);
           break;
       }
 
       switch(randomNumber3) {
         case 1:
-          setAnswerText1(after[turn][1][2]);
+          setAnswerText1(problems[turn].answer3);
           break;
 
         case 2:
-          setAnswerText2(after[turn][1][2]);
+          setAnswerText2(problems[turn].answer3);
           break;
 
         case 3:
-          setAnswerText3(after[turn][1][2]);
+          setAnswerText3(problems[turn].answer3);
           break;
 
         case 4:
-          setAnswerText4(after[turn][1][2]);
+          setAnswerText4(problems[turn].answer3);
           break;
 
         case 5:
-          setAnswerText5(after[turn][1][2]);
+          setAnswerText5(problems[turn].answer3);
           break;
 
         case 6:
-          setAnswerText6(after[turn][1][2]);
+          setAnswerText6(problems[turn].answer3);
           break;
 
         case 7:
-          setAnswerText7(after[turn][1][2]);
+          setAnswerText7(problems[turn].answer3);
           break;
 
         case 8:
-          setAnswerText8(after[turn][1][2]);
+          setAnswerText8(problems[turn].answer3);
           break;
 
         case 9:
-          setAnswerText9(after[turn][1][2]);
+          setAnswerText9(problems[turn].answer3);
           break;
       }
 
       setCanClick(true);
 
-      setProblemText1(after[turn][0][0]);
-      setProblemText2(after[turn][0][1]);
+      setProblemText1(problems[turn].question);
+      setProblemText2(problems[turn].description);
 
       moleActive(moleNumber1);
       moleActive(moleNumber2);
@@ -396,7 +414,7 @@ export default function MoleGameDialog() {
     }
   }
 
-  // 3. Catch Mole Event
+  // 5. Catch Mole Event
 
   const seeMole = () => {
     console.log("Function [seeMole]");
@@ -469,7 +487,7 @@ export default function MoleGameDialog() {
     }
   };
 
-  // 4. Score Modal
+  // 6. Score Modal
 
   let total = (point / 10) * 100;
 
@@ -483,7 +501,7 @@ export default function MoleGameDialog() {
     setDisableStartButton(false);
   }
 
-  // 5. Check the winner
+  // 7. Check the winner
   const username = useAppSelector((state) => state.user.username)
   const friendname = ''
 
@@ -524,7 +542,7 @@ export default function MoleGameDialog() {
     ButtonAudio.play();
   }
 
-  // 6. Close
+  // 8. Close
 
   const handleClose = () => {
     // Clear the game
@@ -535,9 +553,10 @@ export default function MoleGameDialog() {
 
     try {
       const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-      bootstrap.network.leaveGameRoom()
+      bootstrap.gameNetwork.leaveGameRoom()
       dispatch(closeMoleGameDialog())
       dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
+
     } catch (error) {
       console.error('Error leaving the room:', error)
     }

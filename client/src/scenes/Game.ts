@@ -3,7 +3,7 @@ import Phaser from 'phaser'
 // import { debugDraw } from '../utils/debug'
 import Network from '../services/Network'
 import Network2 from '../services/Network2'
-import { createCharacterAnims } from '../anims/CharacterAnims'
+// import GameNetwork from '../services/GameNetwork'
 
 import Item from '../items/Item'
 import Chair from '../items/Chair'
@@ -13,13 +13,14 @@ import RainGame from '../items/RainGame'
 import FaceChat from '../items/FaceChat'
 import { ItemType } from '../../../types/Items'
 
-import '../characters/MyPlayer'
-import '../characters/OtherPlayer'
-import MyPlayer from '../characters/MyPlayer'
-import OtherPlayer from '../characters/OtherPlayer'
-import PlayerSelector from '../characters/PlayerSelector'
+import '../players/MyPlayer'
+import '../players/OtherPlayer'
+import MyPlayer from '../players/MyPlayer'
+import OtherPlayer from '../players/OtherPlayer'
+import PlayerSelector from '../players/PlayerSelector'
 import { IPlayer } from '../../../types/IOfficeState'
 import { PlayerBehavior } from '../../../types/PlayerBehavior'
+import { createCharacterAnims } from '../anims/CharacterAnims'
 
 import store from '../stores'
 import { setFocused, setShowChat } from '../stores/ChatStore'
@@ -40,7 +41,7 @@ export default class Game extends Phaser.Scene {
   private brickgameMap = new Map<String, BrickGame>()
   private molegameMap = new Map<String, MoleGame>()
   private raingameMap = new Map<string, RainGame>()
-  private facechatMap = new Map<String, FaceChat>()
+  facechatMap = new Map<String, FaceChat>()
 
   constructor() {
     super('game')
@@ -212,7 +213,7 @@ export default class Game extends Phaser.Scene {
 
     // this.myPlayer = this.add.myPlayer(400, 900, 'kevin', this.network.mySessionId)
     this.myPlayer = this.add.myPlayer(705, 500, 'adam', this.network.mySessionId)
-    this.playerSelector = new PlayerSelector(this, 0, 0, 16, 16)
+    this.playerSelector = new PlayerSelector(this, 0, 0, 32, 32)  // TODO: 아이템과 상호작용할 수 있는 면적 
 
 
     const chairs = this.physics.add.staticGroup({ classType: Chair })
@@ -230,7 +231,7 @@ export default class Game extends Phaser.Scene {
       const item = this.addObjectFromTiled(brickgames, obj, 'picnic2', 'picnic2') as BrickGame
       // item.setDepth(item.y + item.height * 0.27)
       const id = `${i}`
-      item.id = id
+      // item.id = id   // TODO: 나중에 아이템 별로 지정된 별도의 방에 들어가게 하기 위해 필요 
       this.brickgameMap.set(id, item)
     })
 
@@ -254,13 +255,13 @@ export default class Game extends Phaser.Scene {
       this.molegameMap.set(id, item)
     })
 
-    // ***아바타 화상채팅 상호작용 아이템 추가 코드*** 
+    /* Face Chat */
     const facechats = this.physics.add.staticGroup({ classType: FaceChat })
     const facechatLayer = this.map.getObjectLayer('facechat')
     facechatLayer.objects.forEach((obj, i) => {
       const item = this.addObjectFromTiled(facechats, obj, 'bench', 'bench') as FaceChat
       const id = `${i}`
-      item.id = id
+      item.faceChatId = id
       this.facechatMap.set(id, item)
     })
 
@@ -419,6 +420,9 @@ export default class Game extends Phaser.Scene {
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.removeCurrentUser(playerId)
+    } else if (itemType === ItemType.FACECHAT) {
+      const facechat = this.facechatMap.get(itemId)
+      facechat?.removeCurrentUser(playerId)
     }
   }
 

@@ -4,6 +4,12 @@ import Friends from '../models/Friends'
 import FriendRequest from '../models/FriendRequest'
 import LastDM from '../models/LastDM'
 import DM from '../models/DM'
+import raingameUser from '../models/RainGame'
+import MoleGame from '../models/MoleGame'
+// import Chat from '../models/Chat'
+// import LastChat from '../models/LastChat'
+
+import { defaultProblems } from '../controllers/MoleGameControllers/index'
 
 const mongoose = require('mongoose')
 
@@ -19,6 +25,13 @@ export async function connectDB() {
   createCollection('friendrequest')
   createCollection('lastdm')
   createCollection('dm')
+  createCollection('raingame')
+  createCollection('molegame')
+  // createCollection('chat')
+  // createCollection('lastchat')
+
+  // Insert default mole game problems at first
+  defaultProblems()
 }
 
 export const createCollection = (modelName : string) => {
@@ -42,5 +55,11 @@ export const createCollection = (modelName : string) => {
     case 'dm':
       new DM();
       break;
+    case 'raingame':
+      new raingameUser()
+      break
+    case 'molegame':
+      new MoleGame()
+      break
   }
 }

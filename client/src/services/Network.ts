@@ -1,5 +1,5 @@
 import { Client, Room } from 'colyseus.js'
-import { IOfficeState, IPlayer, IMoleGame, IBrickGame, IRainGame } from '../../../types/IOfficeState'
+import { IOfficeState, IPlayer, IMoleGame, IBrickGame, IRainGame, IFaceChat } from '../../../types/IOfficeState'
 import { Message } from '../../../types/Messages'
 import { IRoomData, RoomType } from '../../../types/Rooms'
 import { ItemType } from '../../../types/Items'
@@ -11,9 +11,6 @@ import {
   setLobbyJoined,
   setJoinedRoomData,
   setAvailableRooms,
-  setAvailableBrickRooms,
-  setAvailableMoleRooms,
-  setAvailableTypingRooms,
   addAvailableRooms,
   removeAvailableRooms,
   setRoomPlayers,
@@ -23,25 +20,13 @@ import {
   pushPlayerJoinedMessage,
   pushPlayerLeftMessage,
 } from '../stores/ChatStore'
-import { FacebookInstantGamesLeaderboard } from 'phaser'
-
-
-export enum NetworkType {
-  MAIN = 'main',
-  GAME = 'game',
-}
 
 export default class Network {
   private client: Client
   private lobby!: Room
   private room?: Room<IOfficeState>
-  private gameroom?: Room<IOfficeState>
-
   webRTC?: WebRTC
-  gameWebRTC?: WebRTC
-
   mySessionId!: string
-  myGameSessionId!: string
 
   constructor() {
     const protocol = window.location.protocol.replace('http', 'ws')
@@ -50,29 +35,23 @@ export default class Network {
         ? import.meta.env.VITE_SERVER_URL
         : `${protocol}//${window.location.hostname}:2567`
     this.client = new Client(endpoint)
-
-    this.joinLobby(RoomType.LOBBY)
-
+    
+    this.joinLobbyRoom(RoomType.LOBBY).then(() => {
+      store.dispatch(setLobbyJoined(true))
+    })
+    
     phaserEvents.on(Event.MY_PLAYER_NAME_CHANGE, this.updatePlayerName, this)
     phaserEvents.on(Event.MY_PLAYER_TEXTURE_CHANGE, this.updatePlayer, this)
     phaserEvents.on(Event.PLAYER_DISCONNECTED, this.playerStreamDisconnect, this)
   }
 
-  async leaveGameRoom() {
-    if (this.gameroom) {
-      await this.gameroom.leave()
-      this.gameroom = undefined
-      this.myGameSessionId = ''
-      store.dispatch(setGameSessionId(''))
-
-      // TODO: 기존에 있던 방이 다시 연결되어야 함 
+  async leaveRoom() {
+    if (this.room) {
+      await this.room.leave()
+      this.room = undefined
+      this.mySessionId = ''
+      store.dispatch(setSessionId(''))
     }
-  }
-
-  async joinLobby(type: RoomType) {
-    this.joinLobbyRoom(type).then(() => {
-      store.dispatch(setLobbyJoined(true))
-    })
   }
 
   /**
@@ -82,23 +61,9 @@ export default class Network {
   async joinLobbyRoom(type: RoomType) {
     this.lobby = await this.client.joinOrCreate(type)
 
-    if (type === RoomType.BRICKLOBBY) {
-      this.lobby.onMessage('rooms', (rooms) => {
-        store.dispatch(setAvailableBrickRooms(rooms))
-      })
-    } else if (type === RoomType.MOLELOBBY) {
-      this.lobby.onMessage('rooms', (rooms) => {
-        store.dispatch(setAvailableMoleRooms(rooms))
-      })
-    } else if (type === RoomType.TYPINGLOBBY) {
-      this.lobby.onMessage('rooms', (rooms) => {
-        store.dispatch(setAvailableTypingRooms(rooms))
-      })
-    } else {
-      this.lobby.onMessage('rooms', (rooms) => {
-        store.dispatch(setAvailableRooms(rooms))
-      })
-    }
+    this.lobby.onMessage('rooms', (rooms) => {
+      store.dispatch(setAvailableRooms(rooms))
+    })
 
     this.lobby.onMessage('+', ([roomId, room]) => {
       store.dispatch(addAvailableRooms({ roomId, room }))
@@ -116,10 +81,10 @@ export default class Network {
   }
 
   // method to join a custom room
-  async joinCustomById(roomId: string, password: string | null) {
-    this.gameroom = await this.client.joinById(roomId, { password })
-    this.initialize()
-  }
+  // async joinCustomById(roomId: string, password: string | null) {
+  //   this.gameroom = await this.client.joinById(roomId, { password })
+  //   this.initialize()
+  // }
 
   // method to create a custom room
   async createCustom(roomData: IRoomData) {
@@ -133,47 +98,14 @@ export default class Network {
     this.initialize()
   }
 
-  async createBrickRoom(roomData: IRoomData) {
-    const { name, description, password, autoDispose } = roomData
-    this.gameroom = await this.client.create(RoomType.BRICK, {
-      name,
-      description,
-      password,
-      autoDispose,
-    })
-    this.init_game()
-  }
-
-  async createMoleRoom(roomData: IRoomData) {
-    const { name, description, password, autoDispose } = roomData
-    this.gameroom = await this.client.create(RoomType.MOLE, {
-      name,
-      description,
-      password,
-      autoDispose,
-    })
-    this.init_game()
-  }
-
-  async createTypingRoom(roomData: IRoomData) {
-    const { name, description, password, autoDispose } = roomData
-    this.gameroom = await this.client.create(RoomType.TYPING, {
-      name,
-      description,
-      password,
-      autoDispose,
-    })
-    this.init_game()
-  }
-
   // set up all network listeners before the game starts
   initialize() {
     if (!this.room) return
 
     this.lobby.leave()
     store.dispatch(setLobbyJoined(false))
-    this.mySessionId = this.room.sessionId  // TODO: gameroom 전용 sessionId도 만들어줘야 함 
-    store.dispatch(setSessionId(this.room.sessionId))
+    this.mySessionId = this.room.sessionId
+    store.dispatch(setSessionId(this.room.sessionId)) 
     this.webRTC = new WebRTC(this.mySessionId, this)
 
     // new instance added to the players MapSchema
@@ -186,8 +118,9 @@ export default class Network {
           const { field, value } = change
           phaserEvents.emit(Event.PLAYER_UPDATED, field, value, key)
 
+          // UGLY: 플레이어가 이름을 바꿀때마다 새로운 플레이어가 Join 했다는 메세지를 푸시하게 된다. 로직 수정 필요 
           // when a new player finished setting up player name
-          if (field === 'name' && value !== '') {
+          if (field === 'name' && value !== '') {   // 이름을 세팅하면 플레이어가 새로 join한걸로 처리된다... 
             phaserEvents.emit(Event.PLAYER_JOINED, player, key)
             store.dispatch(setPlayerNameMap({ id: key, name: value }))
             store.dispatch(pushPlayerJoinedMessage(value))
@@ -238,6 +171,17 @@ export default class Network {
       }
     }
 
+    // new instance added to the facechats MapSchema
+    this.room.state.faceChats.onAdd = (facechat: IFaceChat, key: string) => {
+      // track changes on every child object's connectedUser
+      facechat.connectedUser.onAdd = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.FACECHAT)
+      }
+      facechat.connectedUser.onRemove = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.FACECHAT)
+      }
+    }
+
     // new instance added to the chatMessages ArraySchema
     this.room.state.chatMessages.onAdd = (item, index) => {
       store.dispatch(pushChatMessage(item))
@@ -264,98 +208,6 @@ export default class Network {
       });
       store.dispatch(setRoomPlayers(players));
     });
-  }
-
-  init_game() {
-    if (!this.gameroom) return
-
-    this.lobby.leave()
-    store.dispatch(setLobbyJoined(false))
-    this.myGameSessionId = this.gameroom.sessionId
-    store.dispatch(setGameSessionId(this.gameroom.sessionId))
-    this.webRTC = new WebRTC(this.myGameSessionId, this)
-
-    // new instance added to the players MapSchema
-    this.gameroom.state.players.onAdd = (player: IPlayer, key: string) => {
-      if (key === this.mySessionId) return
-
-      // track changes on every child object inside the players MapSchema
-      player.onChange = (changes) => {
-        changes.forEach((change) => {
-          const { field, value } = change
-          phaserEvents.emit(Event.PLAYER_UPDATED, field, value, key)
-
-          // when a new player finished setting up player name
-          if (field === 'name' && value !== '') {
-            phaserEvents.emit(Event.PLAYER_JOINED, player, key)
-            store.dispatch(setPlayerNameMap({ id: key, name: value }))
-            store.dispatch(pushPlayerJoinedMessage(value))
-          }
-        })
-      }
-    }
-
-    // an instance removed from the players MapSchema
-    this.gameroom.state.players.onRemove = (player: IPlayer, key: string) => {
-      phaserEvents.emit(Event.PLAYER_LEFT, key)
-      this.webRTC?.deleteVideoStream(key)
-      this.webRTC?.deleteOnCalledVideoStream(key)
-      store.dispatch(pushPlayerLeftMessage(player.name))
-      store.dispatch(removePlayerNameMap(key))
-    }
-
-    // new instance added to the brickgames MapSchema
-    this.gameroom.state.brickgames.onAdd = (brickgame: IBrickGame, key: string) => {
-      // track changes on every child object's connectedUser
-      brickgame.connectedUser.onAdd = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.BRICKGAME)
-      }
-      brickgame.connectedUser.onRemove = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.BRICKGAME)
-      }
-    }
-
-    // new instance added to the molegames MapSchema
-    this.gameroom.state.molegames.onAdd = (molegame: IMoleGame, key: string) => {
-      // track changes on every child object's connectedUser
-      molegame.connectedUser.onAdd = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.MOLEGAME)
-      }
-      molegame.connectedUser.onRemove = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.MOLEGAME)
-      }
-    }
-
-    // new instance added to the raingames MapSchema
-    this.gameroom.state.raingames.onAdd = (raingame: IRainGame, key: string) => {
-      // track changes on every child object's connectedUser
-      raingame.connectedUser.onAdd = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.RAINGAME)
-      }
-      raingame.connectedUser.onRemove = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.RAINGAME)
-      }
-    }
-
-    // new instance added to the chatMessages ArraySchema
-    this.gameroom.state.chatMessages.onAdd = (item, index) => {
-      store.dispatch(pushChatMessage(item))
-    }
-
-    // when the server sends gameroom data
-    this.gameroom.onMessage(Message.SEND_ROOM_DATA, (content) => {
-      store.dispatch(setJoinedRoomData(content))
-    })
-
-    // when a user sends a message
-    this.gameroom.onMessage(Message.ADD_CHAT_MESSAGE, ({ clientId, content }) => {
-      phaserEvents.emit(Event.UPDATE_DIALOG_BUBBLE, clientId, content)
-    })
-
-    // when a peer disconnects with myPeer
-    this.gameroom.onMessage(Message.DISCONNECT_STREAM, (clientId: string) => {
-      this.webRTC?.deleteOnCalledVideoStream(clientId)
-    })
   }
 
   // method to register event listener and call back function when a item user added
@@ -434,34 +286,34 @@ export default class Network {
     this.room?.send(Message.DISCONNECT_STREAM, { clientId: id })
     this.webRTC?.deleteVideoStream(id)
   }
+  
+  // addChatMessage(content: string) {
+  //   this.room?.send(Message.ADD_CHAT_MESSAGE, { content: content })
+  // }
+  
+  // connectToMoleGame(id: string) {
+  //   this.room?.send(Message.CONNECT_TO_MOLEGAME, { moleGameId: id })
+  // }
 
-  connectToBrickGame(id: string) {
-    this.room?.send(Message.CONNECT_TO_BRICKGAME, { brickgameId: id })
-  }
+  // disconnectFromMoleGame(id: string) {
+  //   this.room?.send(Message.DISCONNECT_FROM_MOLEGAME, { moleGameId: id })
+  // }
 
-  disconnectFromBrickGame(id: string) {
-    this.room?.send(Message.DISCONNECT_FROM_BRICKGAME, { brickgameId: id })
-  }
+  // connectToBrickGame(id: string) {
+  //   this.room?.send(Message.CONNECT_TO_BRICKGAME, { brickgameId: id })
+  // }
 
-  connectToRainGame(id: string) {
-    this.room?.send(Message.CONNECT_TO_RAINGAME, { raingameId: id })
-  }
+  // disconnectFromBrickGame(id: string) {
+  //   this.room?.send(Message.DISCONNECT_FROM_BRICKGAME, { brickgameId: id })
+  // }
 
-  disconnectFromRainGame(id: string) {
-    this.room?.send(Message.DISCONNECT_FROM_RAINGAME, { raingameId: id })
-  }
+  // connectToTypingGame(id: string) {
+  //   this.room?.send(Message.CONNECT_TO_TYPINGGAME, { typinggameId: id })
+  // }
 
-  addChatMessage(content: string) {
-    this.room?.send(Message.ADD_CHAT_MESSAGE, { content: content })
-  }
-
-  connectToMoleGame(id: string) {
-    this.room?.send(Message.CONNECT_TO_MOLEGAME, { moleGameId: id })
-  }
-
-  disconnectFromMoleGame(id: string) {
-    this.room?.send(Message.DISCONNECT_FROM_MOLEGAME, { moleGameId: id })
-  }
+  // disconnectFromTypingGame(id: string) {
+  //   this.room?.send(Message.DISCONNECT_FROM_TYPINGGAME, { typinggameId: id })
+  // }
 
   // TODO: Might need it, not sure 
   // disableGamePlayer(playerSessionId: string) {

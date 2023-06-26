@@ -90,28 +90,17 @@ const avatars = [
 ]
 
 export default function GameWelcomeDialog() {
-  const [name, setName] = useState<string>('UNKNOWN');
-  const [avatarIndex, setAvatarIndex] = useState<number>(0)
-
   const dispatch = useAppDispatch()
-
   const gameJoined = useAppSelector((state) => state.room.gameJoined)
   const videoConnected = useAppSelector((state) => state.user.videoConnected)
   const character = useAppSelector((state) => state.user.character)
   const username = useAppSelector((state) => state.user.username)
-
-  const game = phaserGame.scene.keys.gamroom as Game
+  const index = avatars.findIndex((avatar) => avatar.name === character)
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     dispatch(setDialogStatus(DIALOG_STATUS.IN_GAME))
   }
-
-  useEffect(() => {
-    const index = avatars.findIndex((avatar) => avatar.name === character);
-    setAvatarIndex(index)
-    setName(username)
-  })
 
   return (
     <>
@@ -122,13 +111,13 @@ export default function GameWelcomeDialog() {
         <Left>
           <ImgContainer>
             <img className="character-avatar" 
-                src={avatars[avatarIndex].img} 
-                alt={avatars[avatarIndex].name} /> 
+                src={avatars[index].img} 
+                alt={avatars[index].name} /> 
           </ImgContainer>
         </Left>
         <Right>
-            <h1 style={{ fontSize: '24px' }}>{name} 님</h1>
-          {!videoConnected && (
+            <h1 style={{ fontSize: '24px' }}>{username} 님</h1>
+          {/* {!videoConnected && (
             <Warning>
               <Alert variant="outlined" severity="warning">
                 <AlertTitle> 🤣아차! </AlertTitle>
@@ -139,7 +128,7 @@ export default function GameWelcomeDialog() {
                 variant="outlined"
                 color="secondary"
                 onClick={() => {
-                  game.network.webRTC?.getUserMedia()
+                  game.gameNetwork.webRTC?.getUserMedia()
                 }}>
                 비디오, 마이크 연결하기
               </Button>
@@ -149,7 +138,7 @@ export default function GameWelcomeDialog() {
             <Warning>
               <Alert variant="outlined"> 마이크도 쓸 수 있어요!</Alert>
             </Warning>
-          )}
+          )} */}
         </Right>
       </Content>
       <Bottom>

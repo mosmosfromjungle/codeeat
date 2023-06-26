@@ -7,10 +7,12 @@ import { RoomType } from '../types/Rooms'
 import authRouter from './routes/auth';
 import friendsRouter from './routes/friends';
 import dmRouter from './routes/lastdm'
+import molegameRouter from './routes/molegame';
 
 import { DMController } from './controllers/DMControllers'
 import { Socket } from 'socket.io'
 import { SkyOffice } from './rooms/SkyOffice'
+import { GameRoom } from './rooms/GameRoom'
 import { connectDB } from './DB/db'
 
 // const mongoose = require('mongoose')
@@ -61,11 +63,13 @@ mainServer.define(RoomType.CUSTOM, SkyOffice).enableRealtimeListing()
 
 mainServer.define(RoomType.BRICKLOBBY, LobbyRoom)
 mainServer.define(RoomType.MOLELOBBY, LobbyRoom)
-mainServer.define(RoomType.TYPINGLOBBY, LobbyRoom)
+mainServer.define(RoomType.RAINLOBBY, LobbyRoom)
+mainServer.define(RoomType.FACECHATLOBBY, LobbyRoom)
 
-mainServer.define(RoomType.BRICK, SkyOffice).enableRealtimeListing()
-mainServer.define(RoomType.MOLE, SkyOffice).enableRealtimeListing()
-mainServer.define(RoomType.TYPING, SkyOffice).enableRealtimeListing()
+mainServer.define(RoomType.BRICK, GameRoom).enableRealtimeListing()
+mainServer.define(RoomType.MOLE, GameRoom).enableRealtimeListing()
+mainServer.define(RoomType.RAIN, GameRoom).enableRealtimeListing()
+mainServer.define(RoomType.FACECHAT, GameRoom).enableRealtimeListing()
 
 /**
  * Register @colyseus/social routes
@@ -82,6 +86,7 @@ app.use('/colyseus', monitor())
 app.use('/auth', authRouter);
 app.use('/friends', friendsRouter);
 app.use('/dm', dmRouter);
+app.use('/molegame', molegameRouter);
 
 /* Connect DB and run game server */
 connectDB().then(db => {

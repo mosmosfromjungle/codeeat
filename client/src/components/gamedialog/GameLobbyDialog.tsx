@@ -12,9 +12,11 @@ import { RoomType } from '../../../../types/Rooms'
 import { closeBrickGameDialog } from '../../stores/BrickGameStore'
 import { closeMoleGameDialog } from '../../stores/MoleGameStore'
 import { closeRainGameDialog } from '../../stores/RainGameStore'
+import { closeFaceChatDialog } from '../../stores/FaceChatStore'
 
 import phaserGame from '../../PhaserGame'
 import Bootstrap from '../../scenes/Bootstrap'
+import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore'
 
 
 const Backdrop = styled.div`
@@ -76,19 +78,34 @@ export default function GameLobbyDialog() {
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
   const rainGameOpen = useAppSelector((state) => state.raingame.rainGameOpen)
+  const faceChatOpen = useAppSelector((state) => state.facechat.faceChatOpen)
+
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-    if (brickGameOpen) bootstrap.network.joinLobby(RoomType.BRICKLOBBY)
-    if (moleGameOpen) bootstrap.network.joinLobby(RoomType.MOLELOBBY)
-    if (rainGameOpen) bootstrap.network.joinLobby(RoomType.TYPINGLOBBY)
+    try {
+      const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
+      if (brickGameOpen) bootstrap.gameNetwork.joinLobbyRoom(RoomType.BRICKLOBBY)
+      if (moleGameOpen) bootstrap.gameNetwork.joinLobbyRoom(RoomType.MOLELOBBY)
+      if (rainGameOpen) bootstrap.gameNetwork.joinLobbyRoom(RoomType.RAINLOBBY)
+      if (faceChatOpen) bootstrap.gameNetwork.joinLobbyRoom(RoomType.FACECHATLOBBY)
+
+    } catch (error) {console.error(error)}
   })
 
   const handleClose = () => {
-    if (brickGameOpen) dispatch(closeBrickGameDialog())
-    if (moleGameOpen) dispatch(closeMoleGameDialog())
-    if (rainGameOpen) dispatch(closeRainGameDialog())
+    try {
+      const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
+      bootstrap.gameNetwork.leaveLobbyRoom()
+      if (brickGameOpen) dispatch(closeBrickGameDialog())
+      if (moleGameOpen) dispatch(closeMoleGameDialog())
+      if (rainGameOpen) dispatch(closeRainGameDialog())
+      if (faceChatOpen) dispatch(closeFaceChatDialog())
+
+      dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
+    } catch (error) {
+      console.error('Error leaving the room:', error)
+    }
   }
 
   return (
