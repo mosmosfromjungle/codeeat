@@ -14,15 +14,16 @@ export enum Message {
   // ***** GAME ROOM *****
   // Client
   UPDATE_GAME_PLAY,
-  UPDATE_RAIN_GAME_PLAY,
   // Server
   SEND_GAME_PLAYERS,
-  SEND_RAIN_GAME_PLAYERS,
+
   // ***** RAIN GAME *****
-  // Client 
-  
+  // Client  
+  UPDATE_RAIN_GAME_PLAY,
+  RAIN_GAME_START,
   // Server
-  
+  SEND_RAIN_GAME_PLAYERS,  
+ 
 
 
   // ***** NOT USED *****

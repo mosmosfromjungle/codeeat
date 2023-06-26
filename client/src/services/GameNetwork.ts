@@ -1,10 +1,11 @@
 import { Client, Room } from 'colyseus.js'
-import { IOfficeState, IPlayer, IMoleGame, IBrickGame, IRainGameUser, IKeywordRain } from '../../../types/IOfficeState'
+import { IOfficeState, IPlayer, IMoleGame, IBrickGame, IRainGame} from '../../../types/IOfficeState'
 import { Message } from '../../../types/Messages'
 import { IRoomData, RoomType } from '../../../types/Rooms'
 import { ItemType } from '../../../types/Items'
 import { phaserEvents, Event } from '../events/EventCenter'
 import WebRTC from '../web/WebRTC'
+
 import store from '../stores'
 import { setPlayerNameMap, removePlayerNameMap, setGameSessionId } from '../stores/UserStore'
 import {
@@ -23,7 +24,9 @@ import {
   pushPlayerJoinedMessage,
   pushPlayerLeftMessage,
 } from '../stores/ChatStore'
-import { addKeyword, updatePeriod, setHearts, setPoints } from '../stores/RainGameStore'
+import {
+  initialState,rainGameSlice,RainGameState, setRainGameState
+} from '../stores/RainGameStore'
 
 export default class GameNetwork {
   private client: Client
@@ -138,60 +141,6 @@ export default class GameNetwork {
     store.dispatch(setGameSessionId(this.room.sessionId)) 
     // this.webRTC = new WebRTC(this.mySessionId, this)
 
-    // RainGame
-    if (this.room.name === RoomType.RAIN) {
-      // When a new player joins the room
-      this.room.state.players.onAdd = (player: IRainGameUser, key: string) => {
-        if (key === this.mySessionId) return;
-    
-        // Track changes on every child object inside the player
-        player.onChange = (changes) => {
-          changes.forEach((change) => {
-            const { field, value } = change;
-    
-            // Handle specific change events
-            // For example: if the 'anim' field of the player changes
-            if (field === 'anim') {
-             
-            }
-          });
-        };
-    
-        // When a new player has finished setting up
-        if (player.name !== '') {
-          
-        }
-      };
-    
-      // When the RainGameState changes
-      this.room.state.onChange = (changes) => {
-        changes.forEach((change) => {
-          const { field, value } = change;
-    
-          if (field === 'game') {
-            value.forEach((keywordRain: IKeywordRain) => {
-              store.dispatch(addKeyword({ keyword: keywordRain}));
-            });
-          }
-    
-          if (field === 'point') {
-            store.dispatch(setPoints(value));
-          }
-
-          if (field === 'heart') {
-            store.dispatch(setHearts(value));
-          }
-
-          if (field === 'period') {
-            store.dispatch(updatePeriod(value));
-          }
-        });
-      };
-    }
-      
-
-
-
     // new instance added to the players MapSchema
     this.room.state.players.onAdd = (player: IPlayer, key: string) => {
       if (key === this.mySessionId) return
@@ -230,8 +179,13 @@ export default class GameNetwork {
     this.room.onMessage(Message.SEND_GAME_PLAYERS, (content) => {
       store.dispatch(setGamePlayers(content))
     })
-  }
 
+    this.room.onMessage(Message.SEND_RAIN_GAME_PLAYERS, (content) => {
+      console.log("서버가 보낸 메시지 받았음!")
+      store.dispatch(setRainGameState(content))
+    })
+    
+  } 
   // method to send player updates to Colyseus server
   updatePlayer(currentX: number, currentY: number, currentAnim: string) {
     this.room?.send(Message.UPDATE_PLAYER, { x: currentX, y: currentY, anim: currentAnim })
@@ -246,6 +200,13 @@ export default class GameNetwork {
   readyToConnect() {
     this.room?.send(Message.READY_TO_CONNECT)
     phaserEvents.emit(Event.MY_PLAYER_READY)
-  }
 
+  this.room?.onMessage("message", (message) => {
+    console.log("서버로부터 메시지 수신", message);
+  });
+  }
+  startRainGame() {
+    console.log("타이핑 게임 시작!")
+    this.room?.send(Message.RAIN_GAME_START);
+  }
 }

@@ -2,7 +2,8 @@ import { config } from '../envconfig'
 import User from '../models/User'
 import Friends from '../models/Friends'
 import FriendRequest from '../models/FriendRequest'
-import raingameUser from '../models/RainGame'
+import { KeywordRainModel } from '../models/RainGame'
+
 // import Chat from '../models/Chat'
 // import LastChat from '../models/LastChat'
 
@@ -30,17 +31,18 @@ export const createCollection = (modelName : string) => {
 
   switch (modelName) {
     case 'user':
-      new User()
+      new User();
       break
     case 'friends':
-      new Friends()
+      new Friends();
       break
     case 'friendrequest':
-      new FriendRequest()
+      new FriendRequest();
       break
     case 'raingame':
-      new raingameUser()
+      new KeywordRainModel();
       break
+      
     // case 'chat':
     //   new Chat()
     //   break

@@ -8,6 +8,7 @@ import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore'
 import { closeRainGameDialog } from '../../stores/RainGameStore'
 import RainGame from './RainGame'
 import * as Colyseus from "colyseus.js";
+import GameNetwork from '../../services/GameNetwork'
 
 
 import phaserGame from '../../PhaserGame'

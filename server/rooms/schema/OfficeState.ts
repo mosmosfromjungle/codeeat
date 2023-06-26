@@ -41,6 +41,38 @@ export class ChatMessage extends Schema implements IChatMessage {
   @type('string') content = ''
 }
 
+export class RainGameUser extends Schema implements IRainGameUser{
+  @type("string") name = '';
+  @type('string') anim = 'adam_idle_down';
+}
+
+export class KeywordRain extends Schema implements IKeywordRain{
+  @type('string') owner = '';
+  @type('number') y = 0;
+  @type('number') speed = 1 ;
+  @type('string') keyword = '';
+  @type('number') x = Math.floor(Math.random()*(550-50+1)) + 50;
+  @type('boolean') flicker = false;
+  @type('boolean') blind = false;
+  @type('boolean') accel = false;
+  @type('boolean') multifly = false;
+
+  constructor(keyword: string) {
+    super();
+    this.keyword = keyword;
+  }
+}
+
+export class RainGameState extends Schema implements IRainGameState {
+  @type('string') owner = '';
+  @type('boolean') rainGameOpen = false;
+  @type([ "string" ]) item: string[] = [];
+  @type('number') point = 0;
+  @type('number') heart = 5;
+  @type('number') period = 2000;
+  @type([KeywordRain]) words = new ArraySchema<KeywordRain>();
+}
+
 export class OfficeState extends Schema implements IOfficeState {
   @type({ map: Player })
   players = new MapSchema<Player>()
@@ -56,32 +88,13 @@ export class OfficeState extends Schema implements IOfficeState {
 
   @type([ChatMessage])
   chatMessages = new ArraySchema<ChatMessage>()
+
+  @type({ map: RainGameState })
+  rainGameStates = new MapSchema<RainGameState>()
 }
 
-export class RainGameUser extends Schema implements IRainGameUser{
-  @type("string") name = '';
-  @type('string') anim = 'adam_idle_down';
-}
 
-export class KeywordRain extends Schema implements IKeywordRain{
-  @type('number') y = 0;
-  @type('number') speed = 1 ;
-  @type('string') keyword = '';
-  @type('number') x = Math.floor(Math.random()*(550-50+1)) + 50;
-  @type('boolean') flicker = false;
-  @type('boolean') blind = false;
-  @type('boolean') accel = false;
-  @type('boolean') multifly = false;
-}
 
-export class RainGameState extends Schema implements IRainGameState {
-  @type('boolean') rainGameOpen = false;
-  @type([KeywordRain]) game: KeywordRain[] = [];
-  @type('number') point = 0;
-  @type('number') heart = 5;
-  @type('number') period = 2000;
-  @type(['string']) keywordList: string[] = [];
-}
 
 
 // export const RainGameRoomIds = new Set<string>()

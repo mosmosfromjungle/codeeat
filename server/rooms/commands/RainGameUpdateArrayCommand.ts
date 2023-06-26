@@ -1,6 +1,9 @@
 import { Command } from '@colyseus/command'
 import { Client } from 'colyseus'
-import { IOfficeState } from '../../../types/IOfficeState'
+import { IKeywordRain, IOfficeState, IPlayer } from '../../../types/IOfficeState'
+import { type } from "@colyseus/schema";
+import { Schema } from "@colyseus/schema";
+import { ArraySchema } from "@colyseus/schema";
 
 type Payload = {
   client: Client
@@ -13,8 +16,17 @@ export class RainGameAddUserCommand extends Command<IOfficeState, Payload> {
     const RainGame = this.room.state.raingames.get(rainGameId)
     const clientId = client.sessionId
 
-    if (!RainGame || RainGame.connectedUser.has(clientId)) return
-    RainGame.connectedUser.add(clientId)
+  if (!RainGame || RainGame.connectedUser.has(clientId)) return;
+
+  const player: IPlayer | undefined = this.room.state.players.get(clientId);
+
+  if(player){
+    const playerName = player.name;
+    const playerAnim = player.anim;
+    console.log(`Player Name: ${playerName}, Player Animation: ${playerAnim}`)
+  }
+
+  RainGame.connectedUser.add(clientId);
   }
 }
 

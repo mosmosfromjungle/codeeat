@@ -36,14 +36,16 @@ export interface IOfficeState extends Schema {
   brickgames: MapSchema<IBrickGame>
   raingames: MapSchema<IRainGame>
   chatMessages: ArraySchema<IChatMessage>
+  rainGameStates : MapSchema<IRainGameState>
 }
 
-export interface IRainGameUser {
+export interface IRainGameUser extends Schema {
   name: string;
   anim: string;
 }
 
-export interface IKeywordRain {
+export interface IKeywordRain extends Schema {
+  owner: string,
   y: number,
   speed: number,
   keyword: string,
@@ -54,13 +56,14 @@ export interface IKeywordRain {
   multifly: boolean,
 }
 
-export interface IRainGameState {
+export interface IRainGameState extends Schema {
+  owner: string,
   rainGameOpen: boolean,
-  game: IKeywordRain[],
+  item: string[],
   point: number,
   heart: number,
-  keywordList: string[],
-  period: number
+  period: number,
+  words: ArraySchema<IKeywordRain>
 }
 
 
