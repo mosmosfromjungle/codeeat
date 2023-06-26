@@ -107,83 +107,41 @@ export default class Game extends Phaser.Scene {
     // groundLayer.setCollisionByProperty({ collides: true })
     // ******************************* //
 
-    const schoolImage = this.map.addTilesetImage('School', 'School')
-
-    const genericImage = this.map.addTilesetImage('Generic', 'Generic')
-
-    const campingImage = this.map.addTilesetImage('camping', 'camping')
-
-    const floorTilesImage = this.map.addTilesetImage('floorTiles', 'floorTiles')
-
-    // const interiorsImage = this.map.addTilesetImage('Interiors', 'Interiors')
-
-    const codeEatInteriorsImage = this.map.addTilesetImage('codeEatInteriors', 'codeEatInteriors')
-
-    const ModernExteriorsFinalImage = this.map.addTilesetImage('ModernExteriorsFinal', 'ModernExteriorsFinal')
-
-    const modernExteriorsImage = this.map.addTilesetImage('ModernExteriorsComplete', 'ModernExteriorsComplete')
-
-    const tilesetsImage = this.map.addTilesetImage('Tilesets', 'Tilesets')
-
-    const treeImage = this.map.addTilesetImage('tree', 'tree')
-
-    const interiorImage = this.map.addTilesetImage('interior', 'interior')
-
-    // const benchImage = this.map.addTilesetImage('bench', 'bench')
-
-    const codeEatChairImage = this.map.addTilesetImage('codeEatChair', 'codeEatChair')
-
-    // const picnic2Image = this.map.addTilesetImage('picnic2', 'picnic2')
+    const buildingsImage = this.map.addTilesetImage('buildings', 'buildings')
+    const foregroundImage = this.map.addTilesetImage('foreground', 'foreground')
+    const groundImage = this.map.addTilesetImage('ground', 'ground')
+    const secondlayerImage = this.map.addTilesetImage('secondlayer', 'secondlayer')
+    const shadowImage = this.map.addTilesetImage('shadow', 'shadow')
+    const wallImage = this.map.addTilesetImage('wall', 'wall')
 
     this.map.createLayer('ground', [
-      genericImage,
-      campingImage,
-      modernExteriorsImage,
-      ModernExteriorsFinalImage,
-      tilesetsImage,
-      schoolImage,
-      floorTilesImage,
+      groundImage,
     ]);
 
     this.map.createLayer('wall', [
-      codeEatInteriorsImage,
-      ModernExteriorsFinalImage,
-      modernExteriorsImage,
-      schoolImage,
+      wallImage,
     ]);
 
     this.map.createLayer('shadow', [
-      modernExteriorsImage,
-      campingImage,
-      floorTilesImage,
+      shadowImage,
     ]);
 
     const buildingsLayer = this.map.createLayer('buildings', [
-      modernExteriorsImage,
-      ModernExteriorsFinalImage,
-      schoolImage,
-      codeEatInteriorsImage,
-      campingImage,
-      treeImage,
-      codeEatChairImage,
+      buildingsImage,
     ]);
 
     const secondGroundLayer = this.map.createLayer('secondground', [
-      interiorImage
+      secondlayerImage,
     ]);
 
     const fenceLayer = this.map.createLayer('fence', [
-      interiorImage
+      secondlayerImage,
     ]);
 
     const foreGroundLayer = this.map.createLayer('foreground', [
-      modernExteriorsImage,
-      ModernExteriorsFinalImage,
-      codeEatInteriorsImage,
-      schoolImage,
-      campingImage,
-      treeImage,
+      foregroundImage,
     ]);
+
 
 
     // thirdGroundLayer.setDepth(6500);
