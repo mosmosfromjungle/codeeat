@@ -10,7 +10,9 @@ import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon'
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 
-import { MessageType, setFocused, setShowChat, setShowDM, setShowUser } from '../stores/ChatStore'
+import { MessageType, setFocused, setShowChat, setShowUser } from '../stores/ChatStore'
+import { setShowDMList } from '../stores/DMStore'
+// import { setShowDMRoom } from '../stores/DMStore'
 import { setShowLogout } from '../stores/UserStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
 import { getColorByString } from '../util'
@@ -188,7 +190,8 @@ export default function ChatDialog() {
       // move focus back to the game
       inputRef.current?.blur()
       dispatch(setShowChat(false))
-      dispatch(setShowDM(false))
+      // dispatch(setShowDMRoom(false))
+      dispatch(setShowDMList(false))
       dispatch(setShowUser(false))
       dispatch(setShowLogout(false))
     }

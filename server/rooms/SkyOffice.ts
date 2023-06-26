@@ -6,6 +6,8 @@ import { IRoomData } from '../../types/Rooms'
 import { Player, OfficeState, MoleGame, BrickGame, RainGame, FaceChat } from './schema/OfficeState'
 import PlayerUpdateCommand from './commands/PlayerUpdateCommand'
 import PlayerUpdateNameCommand from './commands/PlayerUpdateNameCommand'
+import { addDM, getDMMessage } from '../controllers/DMControllers';
+import { userMap } from '..'
 import {
   BrickGameAddUserCommand,
   BrickGameRemoveUserCommand,
@@ -70,6 +72,35 @@ export class SkyOffice extends Room<OfficeState> {
     //   })
     // })
 
+    // when a player disconnect from a molegame, remove from the molegame connectedUser array
+    this.onMessage(Message.DISCONNECT_FROM_MOLEGAME, (client, message: { moleGameId: string }) => {
+      this.dispatcher.dispatch(new MoleGameRemoveUserCommand(), {
+        client,
+        moleGameId: message.moleGameId,
+      })
+    }
+    )
+    this.onMessage(
+      Message.SEND_DM,
+      (client, payload: { senderId: string; receiverId: string; message: string }) => {
+        const { senderId, receiverId, message } = payload;
+        const receiverSocket = userMap.get(receiverId)
+      }
+    );
+    this.onMessage(
+      Message.CHECK_DM,
+      (client, message: { senderId: string; receiverId: string }) => {
+        const { senderId, receiverId } = message;
+
+        getDMMessage(senderId, receiverId)
+        .then((DMMessage) => {
+          client.send(Message.CHECK_DM, DMMessage);
+        })
+        .catch((error) => {
+          console.error('CHECK_DM', error);
+        });
+      }
+    );
     // // when a player disconnect from a typinggame, remove from the typinggame connectedUser array
     // this.onMessage(Message.DISCONNECT_FROM_TYPINGGAME, (client, message: { typinggameId: string }) => {
     //     this.dispatcher.dispatch(new TypingGameRemoveUserCommand(), {
@@ -218,7 +249,6 @@ export class SkyOffice extends Room<OfficeState> {
   }
 
   onDispose() {
-    console.log('room', this.roomId, 'disposing...')
     this.dispatcher.stop()
   }
 }

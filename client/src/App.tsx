@@ -22,7 +22,8 @@ import FaceChatDialog from './components/games/FaceChatDialog'
 // ↓ HelperButtonGroup Dialog
 import HelperButtonGroup from './components/helperdialog/HelperButtonGroup'
 import ChatDialog from './components/ChatDialog'
-import DMDialog from './components/DMDialog'
+import { ConversationList } from './components/DM/DMList'
+import { DMRoom } from './components/DM/DMRoom'
 import UserDialog from './components/UserDialog'
 import LogoutDialog from './components/LogoutDialog'
 import VersionDialog from './components/helperdialog/VersionDialog'
@@ -61,7 +62,8 @@ function App() {
 
   // ↓ HelperButtonGroup Dialog
   const showChat = useAppSelector((state) => state.chat.showChat)
-  const showDM = useAppSelector((state) => state.chat.showDM)
+  const showDMList = useAppSelector((state) => state.dm.showDMList)
+  const showDMRoom = useAppSelector((state) => state.dm.showDMRoom)
   const showUser = useAppSelector((state) => state.chat.showUser)
   const showLogout = useAppSelector((state) => state.user.showLogout)
   const showVersion = useAppSelector((state) => state.user.showVersion)
@@ -99,7 +101,8 @@ function App() {
       <>
         {/* // UGLY: Need to move to HelperButtonGroup  */}
         {showChat && <ChatDialog />}
-        {showDM && <DMDialog />}
+        {showDMList && <ConversationList />}
+        {showDMRoom && <DMRoom />}
         {showUser && <UserDialog />}
         {showLogout && <LogoutDialog />}
         {showProfile && <ProfileDialog />}
