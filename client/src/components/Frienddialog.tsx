@@ -19,8 +19,9 @@ import Avatar from '@mui/material/Avatar'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 
-import { setShowDM, setShowUser, setShowFriend } from '../stores/ChatStore'
+import { setShowUser, setShowFriend } from '../stores/ChatStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
+import { getFriendList } from '../apicalls/friends'
 import axios from 'axios'
 
 const Backdrop = styled.div`
@@ -170,29 +171,6 @@ export default function FriendDialog() {
   const [open, setOpen] = React.useState(true)
   const [friendList, setFriendList] = useState([])
 
-  const getFriendList = async (): Promise<any> => {
-    const response = await axios.get('/friends/list')
-    const { data } = response
-    console.log(data)
-    if (response.status == 200) {
-      console.log('성공')
-      return data.payload
-    }
-
-    // const apiUrl: string = 'http://freinds/list'
-    // await fetch(apiUrl, {
-    //   method: 'GET',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    // }).then((res) => {
-    //   if (res.ok) {
-    //     console.log('Get user list is success.')
-    //   }
-    //   // Todo: need to hanle return codes - 200, 400, 409 ...
-    // })
-  }
-
   // useEffect(() => {
   //   console.log(friendList)
   // }, [friendList])
@@ -200,13 +178,14 @@ export default function FriendDialog() {
   useEffect(() => {
     ;(async () => {
       getFriendList()
+      // fetchFriends()
         .then((response) => {
           if (!response) return
           const { friends } = response
 
-          for (let i = 0; i < friends.length; i++) {
-            console.log(friends[i].recipientId)
-          }
+          // for (let i = 0; i < friends.length; i++) {
+          //   console.log(friends[i].recipientId)
+          // }
 
           setFriendList(friends)
 
@@ -261,7 +240,7 @@ export default function FriendDialog() {
 
                     <ProfileButton>
                       <Button>친구 추가하기</Button>
-                      <Button onClick={() => dispatch(setShowDM(true))}>메세지 보내기</Button>
+                      <Button>메세지 보내기</Button>
                     </ProfileButton>
                   </ListItem>
                 ))}

@@ -18,8 +18,10 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
+import { IPlayer } from '../../../types/IOfficeState';
 
-import { setShowDM, setShowUser } from '../stores/ChatStore'
+import { setShowUser } from '../stores/ChatStore'
+import { setShowDMList, setShowDMRoom } from '../stores/DMStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
 
 const Backdrop = styled.div`
@@ -148,7 +150,8 @@ export default function UserDialog() {
   const character = useAppSelector((state) => state.user.character)
   const userLevel = useAppSelector((state) => state.user.userLevel)
   const imgpath = `../../public/assets/character/single/${character}_idle_anim_19.png`
-
+  const players = useAppSelector((state) => state.room.players)
+  const [otherPlayers, setOtherPlayers] = useState<IPlayer[]>();
   const dispatch = useAppDispatch()
 
   const scrollToBottom = () => {
@@ -160,6 +163,10 @@ export default function UserDialog() {
       inputRef.current?.focus()
     }
   }, [focused])
+
+  useEffect(() => {
+    setOtherPlayers(players)
+  }, [players.length])
 
   useEffect(() => {
     scrollToBottom()
@@ -176,9 +183,7 @@ export default function UserDialog() {
         <Wrapper>
           <Content>
             <ChatHeader>
-              <Title>
-                친구들
-              </Title>
+              <Title>{players.length} 명 접속중</Title>
               <IconButton
                 aria-label="close dialog"
                 className="close"
@@ -196,30 +201,36 @@ export default function UserDialog() {
                 <Button>Platinum</Button>
                 <Button>Ruby</Button>
               </ButtonGroup>
-
+              {otherPlayers?.map((player, i: number) => {
+                return (
               <UserList>
                 <User>
-                  <ListItem divider>
+                  <ListItem divider key={i}>
                     <ListItemAvatar>
                       <Avatar src={imgpath} />
                     </ListItemAvatar>
 
                     <Profile>
                       레벨 {userLevel}<br/><br/>
-                      <strong>{username}</strong>님
+                      <strong>{player.name}</strong>
                     </Profile>
-
+                  
                     <ProfileButton>
                       <Button>
                         친구 추가하기
                       </Button>
-                      <Button onClick={() => dispatch(setShowDM(true)) }>
+                      <Button onClick={() => {
+                        // dispatch(setShowDMRoom(true));
+                        dispatch(setShowDMList(true));
+                        dispatch(setShowUser(false))
+                        } }>
                         메세지 보내기
                       </Button>
                     </ProfileButton>
                   </ListItem>
                 </User>
-              </UserList>
+              </UserList>)
+              })}
             </ChatBox>
           </Content>
         </Wrapper>

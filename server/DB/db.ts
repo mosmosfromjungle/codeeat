@@ -2,6 +2,8 @@ import { config } from '../envconfig'
 import User from '../models/User'
 import Friends from '../models/Friends'
 import FriendRequest from '../models/FriendRequest'
+import LastDM from '../models/LastDM'
+import DM from '../models/DM'
 import raingameUser from '../models/RainGame'
 import MoleGame from '../models/MoleGame'
 // import Chat from '../models/Chat'
@@ -21,6 +23,8 @@ export async function connectDB() {
   createCollection('user')
   createCollection('friends')
   createCollection('friendrequest')
+  createCollection('lastdm')
+  createCollection('dm')
   createCollection('raingame')
   createCollection('molegame')
   // createCollection('chat')
@@ -45,17 +49,17 @@ export const createCollection = (modelName : string) => {
     case 'friendrequest':
       new FriendRequest()
       break
+    case 'lastdm':
+      new LastDM();
+      break;
+    case 'dm':
+      new DM();
+      break;
     case 'raingame':
       new raingameUser()
       break
     case 'molegame':
       new MoleGame()
       break
-    // case 'chat':
-    //   new Chat()
-    //   break
-    // case 'lastchat':
-    //   new LastChat()
-    //   break
   }
 }
