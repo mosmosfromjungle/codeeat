@@ -1,8 +1,8 @@
 import { Command } from '@colyseus/command';
-import {IOfficeState } from '../../../types/IOfficeState';
+import { IGameState } from '../../../types/IGameState';
 import mongoose from 'mongoose';
 import { Client } from 'colyseus';
-import { RainGameState } from '../schema/OfficeState';
+import { GameState ,RainGameState } from '../schema/GameState';
 
 
 type Payload = {
@@ -79,7 +79,7 @@ type Payload = {
 
 // }
   
-export class RainGameStartCommand extends Command<IOfficeState, Payload> {
+export class RainGameStartCommand extends Command<GameState, Payload> {
 
   async execute(data: Payload) {
       try {

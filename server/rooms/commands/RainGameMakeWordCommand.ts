@@ -1,13 +1,13 @@
 import { Command } from '@colyseus/command';
 import { GameRoom } from '../GameRoom';
-import { OfficeState, KeywordRain, RainGameState } from '../schema/OfficeState';
+import { GameState, KeywordRain, RainGameState } from '../schema/GameState';
 import mongoose from 'mongoose';
 
 type Payload = {
   room: GameRoom;
 };
 
-export class MakeWordCommand extends Command<OfficeState, Payload> {
+export class MakeWordCommand extends Command<GameState, Payload> {
   async execute({ room }: Payload) {
     try {
       

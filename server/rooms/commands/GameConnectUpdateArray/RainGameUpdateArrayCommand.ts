@@ -1,13 +1,13 @@
 import { Command } from '@colyseus/command'
 import { Client } from 'colyseus'
-import { IOfficeState } from '../../../../types/IOfficeState'
+import { IGameState, IGamePlayer } from '../../../../types/IGameState'
 
 type Payload = {
   client: Client
   rainGameId: string
 }
 
-export class RainGameAddUserCommand extends Command<IOfficeState, Payload> {
+export class RainGameAddUserCommand extends Command<IGameState, Payload> {
   execute(data: Payload) {
     const { client, rainGameId } = data
     const RainGame = this.room.state.raingames.get(rainGameId)
@@ -15,7 +15,7 @@ export class RainGameAddUserCommand extends Command<IOfficeState, Payload> {
 
   if (!RainGame || RainGame.connectedUser.has(clientId)) return;
 
-  const player: IPlayer | undefined = this.room.state.players.get(clientId);
+  const player: IGamePlayer | undefined = this.room.state.players.get(clientId);
 
   if(player){
     const playerName = player.name;
@@ -27,7 +27,7 @@ export class RainGameAddUserCommand extends Command<IOfficeState, Payload> {
   }
 }
 
-export class RainGameRemoveUserCommand extends Command<IOfficeState, Payload> {
+export class RainGameRemoveUserCommand extends Command<IGameState, Payload> {
   execute(data: Payload) {
     const { client, rainGameId } = data
     const raingame = this.state.raingames.get(rainGameId)

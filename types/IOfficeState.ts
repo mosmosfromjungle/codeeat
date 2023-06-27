@@ -37,43 +37,12 @@ export interface IChatMessage extends Schema {
 
 export interface IOfficeState extends Schema {
   players: MapSchema<IPlayer>
-  molegames: MapSchema<IMoleGame>
-  brickgames: MapSchema<IBrickGame>
-  raingames: MapSchema<IRainGame>
+  // molegames: MapSchema<IMoleGame>
+  // brickgames: MapSchema<IBrickGame>
+  // raingames: MapSchema<IRainGame>
   chatMessages: ArraySchema<IChatMessage>
-  rainGameStates : MapSchema<IRainGameState>
+  // rainGameStates : MapSchema<IRainGameState>
 }
-
-export interface IRainGameUser extends Schema {
-  name: string;
-  anim: string;
-}
-
-export interface IKeywordRain extends Schema {
-  owner: string,
-  y: number,
-  speed: number,
-  keyword: string,
-  x: number,
-  flicker: boolean,
-  blind: boolean,
-  accel: boolean,
-  multifly: boolean,
-  rendered: boolean,
-}
-
-export interface IRainGameState extends Schema {
-  owner: string,
-  item: string[],
-  point: number,
-  heart: number,
-  period: number,
-  words: ArraySchema<IKeywordRain>,
-  used: string[],
-}
-
-
-
 
 // export interface IGameState extends Schema {
 //   players: MapSchema<IPlayer>
@@ -81,5 +50,5 @@ export interface IRainGameState extends Schema {
   // brickgames: MapSchema<IBrickGame>
   // raingames: MapSchema<IRainGame>
   // faceChats: MapSchema<IFaceChat>
-  chatMessages: ArraySchema<IChatMessage>
-}
+  //chatMessages: ArraySchema<IChatMessage>
+//}

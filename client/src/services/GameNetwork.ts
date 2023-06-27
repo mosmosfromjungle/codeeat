@@ -1,11 +1,12 @@
 import { Client, Room } from 'colyseus.js'
-import { IOfficeState, IPlayer, IMoleGame, IBrickGame, IRainGame } from '../../../types/IOfficeState'
+// import { IOfficeState, IPlayer } from '../../../types/IOfficeState'
+import { IGameState, IGamePlayer, IBrickPlayer, IBrickGameState } from '../../../types/IGameState'
 import { Message } from '../../../types/Messages'
 import { IGameRoomData, IRoomData, RoomType } from '../../../types/Rooms'
 import { ItemType } from '../../../types/Items'
 import { phaserEvents, Event } from '../events/EventCenter'
 import WebRTC from '../web/WebRTC'
-
+import { setBrickGameState, setMyPlayerScore, setMyPlayerStatus, setOppPlayerScore, setOppPlayerStatus } from '../stores/BrickGameStore'
 import store from '../stores'
 import { setPlayerNameMap, removePlayerNameMap, setGameSessionId } from '../stores/UserStore'
 import {
@@ -121,7 +122,18 @@ export default class GameNetwork {
       name,
       description,
       password,
-      autoDispose,
+      username,
+    })
+    this.initialize()
+  }
+
+  async createFaceChatRoom(roomData: IGameRoomData) {
+    const { name, description, password, username } = roomData
+    this.room = await this.client.create(RoomType.FACECHAT, {
+      name,
+      description,
+      password,
+      username,
     })
     this.initialize()
   }
@@ -192,6 +204,101 @@ export default class GameNetwork {
     phaserEvents.emit(Event.MY_PLAYER_READY)
 
   }
+
+  brick_game_init() {
+    if (!this.room) return
+
+    this.lobby.leave()
+    store.dispatch(setLobbyJoined(false))
+    this.mySessionId = this.room.sessionId
+    store.dispatch(setGameSessionId(this.room.sessionId)) 
+
+    this.room.onMessage(Message.SEND_ROOM_DATA, (content) => {
+      store.dispatch(setJoinedGameRoomData(content))
+      console.log('saved metadata')
+    })
+
+    this.room.onMessage(Message.SEND_GAME_PLAYERS, (content) => {
+      store.dispatch(setGamePlayers(content))
+    })
+
+    this.room.onMessage(Message.BRICK_GAME_STATE, (content) => {
+      store.dispatch(setBrickGameState(content))
+    })
+
+    this.room.onMessage(Message.BRICK_GAME_STATE, (content) => {
+      store.dispatch(setBrickGameState(content))
+    })
+
+    this.room.onMessage(Message.BRICK_PLAYER_UPDATE, (content) => {
+      const { client, payload } = content
+      if (client.sessionId === this.mySessionId) {
+        console.log('update my player info')
+        store.dispatch(setMyPlayerScore(payload.playerScore))
+        store.dispatch(setMyPlayerStatus(payload.playerStatus))
+      } else {
+        console.log('update opponent player info')
+        store.dispatch(setOppPlayerScore(payload.playerScore))
+        store.dispatch(setOppPlayerStatus(payload.playerStatus))
+      }
+    })
+
+    // // TODO: 이거 왜 안될까 ㅜㅜ 
+    // this.room.state.brickgames.brickPlayers?.forEach((value: IBrickPlayer, key: string, map: Map<string, IBrickPlayer>) => {
+    //   this.brickPlayerListen(value, key)
+    // })
+
+    // this.room.state.brickgames.brickPlayers.onAdd = (player: IBrickPlayer, key: string) => {
+    //   this.brickPlayerListen(player, key)
+    // }
+  }
+
+  /* BRICK GAMES */
+  // brickPlayerListen(player: IBrickPlayer, key: string) {
+  //   if (key === this.mySessionId) {
+  //     player.onChange = (changes) => {
+  //       changes.forEach((change) => {
+  //         const { field, value } = change
+  //         if (field === 'playerScore') {
+  //           store.dispatch(setMyPlayerScore(value))
+  //         }
+  //         if (field === 'playerStatus') {
+  //           console.log('status change: ', value)
+  //           store.dispatch(setMyPlayerStatus(value))
+  //         }
+  //       })
+  //     }
+  //   } else {
+  //     player.onChange = (changes) => {
+  //       changes.forEach((change) => {
+  //         const { field, value } = change
+  //         if (field === 'playerScore') {
+  //           store.dispatch(setOppPlayerScore(value))
+  //         }
+  //         if (field === 'playerStatus') {
+  //           store.dispatch(setOppPlayerStatus(value))
+  //         }
+  //       })
+  //     }
+  //   }
+  // }
+
+  brickGameCommand(command: string) {
+    console.log('command: ', command)
+    this.room?.send(Message.BRICK_GAME_COMMAND, { command: command })
+  }
+  
+  // ↓ Mole Game
+  // method to send my info to friend in mole game
+  sendMyInfo(myName: string, myCharacter: string) {
+    this.room?.send(Message.SEND_MOLE, { name: myName, character: myCharacter })
+  }
+
+  // method to send my point to friend in mole game
+  sendMyPoint(myPoint: string) {
+    this.room?.send(Message.SEND_MY_POINT, { point: myPoint })
+  }
+  // Rain Game
   startRainGame() {
     console.log("1. 게임 초기화 과정이 진행된다!")
     this.room?.send(Message.RAIN_GAME_START);
@@ -201,3 +308,5 @@ export default class GameNetwork {
     this.room?.send(Message.SEND_RAIN_GAME_PLAYERS);
   }
 }
+
+

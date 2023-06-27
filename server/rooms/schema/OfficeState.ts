@@ -7,9 +7,9 @@ import {
   // IRainGame,
   // IFaceChat,
   IChatMessage,
-  IRainGameState,
-  IKeywordRain,
-  IRainGameUser,
+  // IRainGameState,
+  // IKeywordRain,
+  // IRainGameUser,
 } from '../../../types/IOfficeState'
 
 export class Player extends Schema implements IPlayer {
@@ -42,38 +42,8 @@ export class ChatMessage extends Schema implements IChatMessage {
   @type('string') content = ''
 }
 
-export class RainGameUser extends Schema implements IRainGameUser{
-  @type("string") name = '';
-  @type('string') anim = 'adam_idle_down';
-}
 
-export class KeywordRain extends Schema implements IKeywordRain{
-  @type('string') owner = '';
-  @type('number') y = 0;
-  @type('number') speed = 1 ;
-  @type('string') keyword = '';
-  @type('number') x = Math.floor(Math.random()*(550-50+1)) + 50;
-  @type('boolean') flicker = false;
-  @type('boolean') blind = false;
-  @type('boolean') accel = false;
-  @type('boolean') multifly = false;
-  @type('boolean') rendered = false;
 
-  constructor(keyword: string) {
-    super();
-    this.keyword = keyword;
-  }
-}
-
-export class RainGameState extends Schema implements IRainGameState {
-  @type('string') owner = '';
-  @type([ "string" ]) item: string[] = [];
-  @type('number') point = 0;
-  @type('number') heart = 5;
-  @type('number') period = 2000;
-  @type([KeywordRain]) words = new ArraySchema<KeywordRain>();
-  @type([ "string" ]) used: string[] = [];
-}
 // export class FaceChat extends Schema implements IFaceChat {
 //   // @type('string') roomId = getRoomId()
 //   @type({ set: 'string' }) connectedUser = new SetSchema<string>()
@@ -95,8 +65,8 @@ export class OfficeState extends Schema implements IOfficeState {
   @type([ChatMessage])
   chatMessages = new ArraySchema<ChatMessage>()
 
-  @type({ map: RainGameState })
-  rainGameStates = new MapSchema<RainGameState>()
+  // @type({ map: RainGameState })
+  // rainGameStates = new MapSchema<RainGameState>()
   // @type({ map: FaceChat })
   // faceChats = new MapSchema<FaceChat>()
 }

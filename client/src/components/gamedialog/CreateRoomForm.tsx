@@ -42,7 +42,6 @@ export const CreateRoomForm = () => {
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
   const rainGameOpen = useAppSelector((state) => state.rainGameDialog.rainGameOpen)
-  const rainGameOpen = useAppSelector((state) => state.raingame.rainGameOpen)
   const faceChatOpen = useAppSelector((state) => state.facechat.faceChatOpen)
 
   const dispatch = useAppDispatch()

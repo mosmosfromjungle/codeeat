@@ -214,11 +214,19 @@ export function RainGame() {
                         style={{ marginRight: "1vw", fontSize: "1vw" }}
                     />
                     <button onClick={() => keydown(13)} style={{ marginRight: "1vw", fontSize: "1vw" }}>입력</button>
-                    <ScoreInfo score={rainGameState.states[0].point} coin={rainGameState.states[0].heart} />
+                    {rainGameState.states && rainGameState.states.length > 0 ? (
+            <ScoreInfo score={rainGameState.states[0].point} coin={rainGameState.states[0].heart} />
+        ) : (
+            <ScoreInfo score={0} coin={0} />
+        )}
                 </div>
                 {/* Score Section - Right Side */}
                 <div style={{ flex: 1, textAlign: "center" }}>
-                <ScoreInfo score={rainGameState.states[0].point} coin={rainGameState.states[0].heart} />
+        {rainGameState.states && rainGameState.states.length > 0 ? (
+            <ScoreInfo score={rainGameState.states[0].point} coin={rainGameState.states[0].heart} />
+        ) : (
+            <ScoreInfo score={0} coin={0} />
+        )}
                 </div>
             </div>
         </>
