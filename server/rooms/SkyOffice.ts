@@ -18,6 +18,8 @@ import PlayerUpdateNameCommand from './commands/PlayerUpdateNameCommand'
 //   RainGameAddUserCommand,
 //   RainGameRemoveUserCommand,
 // } from './commands/RainGameUpdateArrayCommand'
+import { addDM, getDMMessage } from '../controllers/DMControllers';
+import { userMap } from '..'
 import ChatMessageUpdateCommand from './commands/ChatMessageUpdateCommand'
 
 export class SkyOffice extends Room<OfficeState> {
@@ -57,6 +59,11 @@ export class SkyOffice extends Room<OfficeState> {
     //   this.state.molegames.set(String(i), new MoleGame())
     // }
 
+    // HARD-CODED: Add 1 faceChats in a room
+    // for (let i = 0; i < 20; i++) {
+    //   this.state.faceChats.set(String(i), new FaceChat())
+    // }
+
     // // when a player connect to a typinggame, add to the typinggame connectedUser array
     // this.onMessage(Message.CONNECT_TO_TYPINGGAME, (client, message: { typinggameId: string }) => {
     //   this.dispatcher.dispatch(new TypingGameAddUserCommand(), {
@@ -65,6 +72,27 @@ export class SkyOffice extends Room<OfficeState> {
     //   })
     // })
 
+    this.onMessage(
+      Message.SEND_DM,
+      (client, payload: { senderId: string; receiverId: string; message: string }) => {
+        const { senderId, receiverId, message } = payload;
+        const receiverSocket = userMap.get(receiverId)
+      }
+    );
+    this.onMessage(
+      Message.CHECK_DM,
+      (client, message: { senderId: string; receiverId: string }) => {
+        const { senderId, receiverId } = message;
+
+        getDMMessage(senderId, receiverId)
+        .then((DMMessage) => {
+          client.send(Message.CHECK_DM, DMMessage);
+        })
+        .catch((error) => {
+          console.error('CHECK_DM', error);
+        });
+      }
+    );
     // // when a player disconnect from a typinggame, remove from the typinggame connectedUser array
     // this.onMessage(Message.DISCONNECT_FROM_TYPINGGAME, (client, message: { typinggameId: string }) => {
     //     this.dispatcher.dispatch(new TypingGameRemoveUserCommand(), {
@@ -203,6 +231,11 @@ export class SkyOffice extends Room<OfficeState> {
     // this.state.molegames.forEach((molegame) => {
     //   if (molegame.connectedUser.has(client.sessionId)) {
     //     molegame.connectedUser.delete(client.sessionId)
+    //   }
+    // })
+    // this.state.faceChats.forEach((facechat) => {
+    //   if (facechat.connectedUser.has(client.sessionId)) {
+    //     facechat.connectedUser.delete(client.sessionId)
     //   }
     // })
   }

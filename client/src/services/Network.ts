@@ -1,5 +1,5 @@
 import { Client, Room } from 'colyseus.js'
-import { IOfficeState, IPlayer, IMoleGame, IBrickGame, IRainGame } from '../../../types/IOfficeState'
+import { IOfficeState, IPlayer, IMoleGame, IBrickGame, IRainGame, IFaceChat } from '../../../types/IOfficeState'
 import { Message } from '../../../types/Messages'
 import { IRoomData, RoomType } from '../../../types/Rooms'
 import { ItemType } from '../../../types/Items'
@@ -13,6 +13,7 @@ import {
   setAvailableRooms,
   addAvailableRooms,
   removeAvailableRooms,
+  setRoomPlayers,
 } from '../stores/RoomStore'
 import {
   pushChatMessage,
@@ -170,6 +171,17 @@ export default class Network {
     //   }
     // }
 
+    // new instance added to the facechats MapSchema
+    // this.room.state.faceChats.onAdd = (facechat: IFaceChat, key: string) => {
+    //   // track changes on every child object's connectedUser
+    //   facechat.connectedUser.onAdd = (item, index) => {
+    //     phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.FACECHAT)
+    //   }
+    //   facechat.connectedUser.onRemove = (item, index) => {
+    //     phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.FACECHAT)
+    //   }
+    // }
+
     // new instance added to the chatMessages ArraySchema
     this.room.state.chatMessages.onAdd = (item, index) => {
       store.dispatch(pushChatMessage(item))
@@ -189,6 +201,13 @@ export default class Network {
     this.room.onMessage(Message.DISCONNECT_STREAM, (clientId: string) => {
       this.webRTC?.deleteOnCalledVideoStream(clientId)
     })
+    this.room.onStateChange((state) => {
+      const players: any = [];
+      this.room?.state.players.forEach((value) => {
+        players.push(value);
+      });
+      store.dispatch(setRoomPlayers(players));
+    });
   }
 
   // method to register event listener and call back function when a item user added

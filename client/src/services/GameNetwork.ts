@@ -1,5 +1,5 @@
 import { Client, Room } from 'colyseus.js'
-// import { IOfficeState, IPlayer, IMoleGame, IBrickGame, IRainGame } from '../../../types/IOfficeState'
+// import { IOfficeState, IPlayer, IMoleGame, IBrickGame, IRainGame, IFaceChat } from '../../../types/IOfficeState'
 import { IGameState, IGamePlayer, IBrickPlayer, IBrickGameState } from '../../../types/IGameState'
 import { Message } from '../../../types/Messages'
 import { IGameRoomData, IRoomData, RoomType } from '../../../types/Rooms'
@@ -8,6 +8,10 @@ import { phaserEvents, Event } from '../events/EventCenter'
 import WebRTC from '../web/WebRTC'
 import store from '../stores'
 import { setPlayerNameMap, removePlayerNameMap, setGameSessionId } from '../stores/UserStore'
+import { 
+  setMoleGameFriendInfo,
+  setMoleGameFriendData
+ } from '../stores/MoleGameStore'
 import {
   setLobbyJoined,
   setJoinedGameRoomData,
@@ -15,6 +19,7 @@ import {
   setAvailableBrickRooms,
   setAvailableMoleRooms,
   setAvailableRainRooms,
+  setAvailableFaceChatRooms,
   addAvailableRooms,
   removeAvailableRooms,
 } from '../stores/RoomStore'
@@ -73,6 +78,10 @@ export default class GameNetwork {
       this.lobby.onMessage('rooms', (rooms) => {
         store.dispatch(setAvailableRainRooms(rooms))
       })
+    } else if (type === RoomType.FACECHATLOBBY) {
+      this.lobby.onMessage('rooms', (rooms) => {
+        store.dispatch(setAvailableFaceChatRooms(rooms))
+      })
     }
 
     this.lobby.onMessage('+', ([roomId, room]) => {
@@ -114,6 +123,17 @@ export default class GameNetwork {
   async createRainRoom(roomData: IGameRoomData) {
     const { name, description, password, username } = roomData
     this.room = await this.client.create(RoomType.RAIN, {
+      name,
+      description,
+      password,
+      username,
+    })
+    this.initialize()
+  }
+
+  async createFaceChatRoom(roomData: IGameRoomData) {
+    const { name, description, password, username } = roomData
+    this.room = await this.client.create(RoomType.FACECHAT, {
       name,
       description,
       password,
@@ -170,6 +190,17 @@ export default class GameNetwork {
     this.room.onMessage(Message.SEND_GAME_PLAYERS, (content) => {
       store.dispatch(setGamePlayers(content))
     })
+
+    // ↓ Mole Game
+    // method to receive friend info to me in mole game
+    this.room.onMessage(Message.RECEIVE_MOLE, (content) => {
+      store.dispatch(setMoleGameFriendInfo(content));
+    });
+
+    // method to receive friend point to me in mole game
+    this.room.onMessage(Message.RECEIVE_YOUR_POINT, (content) => {
+      store.dispatch(setMoleGameFriendData(content));
+    });
   }
 
   // method to send player updates to Colyseus server
@@ -195,36 +226,6 @@ export default class GameNetwork {
     store.dispatch(setLobbyJoined(false))
     this.mySessionId = this.room.sessionId
     store.dispatch(setGameSessionId(this.room.sessionId)) 
-
-    // this.room.state.brickgames.brickPlayers.forEach = (player: IBrickPlayer, key: string, map: Map<string, IBrickPlayer>) => {
-    //   console.log('listen to player ', key)
-    //   if (key === this.mySessionId) {
-    //     player.onChange = (changes) => {
-    //       changes.forEach((change) => {
-    //         const { field, value } = change
-    //         if (field === 'playerScore') {
-    //           store.dispatch(setMyPlayerScore(value))
-    //         }
-    //         if (field === 'playerStatus') {
-    //           console.log('status change: ', value)
-    //           store.dispatch(setMyPlayerStatus(value))
-    //         }
-    //       })
-    //     }
-    //   } else {
-    //     player.onChange = (changes) => {
-    //       changes.forEach((change) => {
-    //         const { field, value } = change
-    //         if (field === 'playerScore') {
-    //           store.dispatch(setOppPlayerScore(value))
-    //         }
-    //         if (field === 'playerStatus') {
-    //           store.dispatch(setOppPlayerStatus(value))
-    //         }
-    //       })
-    //     }
-    //   }
-    // }
 
     this.room.onMessage(Message.SEND_ROOM_DATA, (content) => {
       store.dispatch(setJoinedGameRoomData(content))
@@ -266,6 +267,7 @@ export default class GameNetwork {
     // }
   }
 
+  /* BRICK GAMES */
   // brickPlayerListen(player: IBrickPlayer, key: string) {
   //   if (key === this.mySessionId) {
   //     player.onChange = (changes) => {
@@ -298,5 +300,17 @@ export default class GameNetwork {
   brickGameCommand(command: string) {
     console.log('command: ', command)
     this.room?.send(Message.BRICK_GAME_COMMAND, { command: command })
+  }
+
+
+  // ↓ Mole Game
+  // method to send my info to friend in mole game
+  sendMyInfo(myName: string, myCharacter: string) {
+    this.room?.send(Message.SEND_MOLE, { name: myName, character: myCharacter })
+  }
+
+  // method to send my point to friend in mole game
+  sendMyPoint(myPoint: string) {
+    this.room?.send(Message.SEND_MY_POINT, { point: myPoint })
   }
 }

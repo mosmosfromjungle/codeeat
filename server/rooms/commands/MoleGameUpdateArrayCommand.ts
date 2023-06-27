@@ -1,0 +1,22 @@
+import { Command } from '@colyseus/command'
+import { Client } from 'colyseus'
+import { IOfficeState } from '../../../types/IOfficeState'
+
+type Payload = {
+  client: Client
+  point: string
+  name: string
+  character: string
+}
+
+export class MoleGameGetUserInfo extends Command<IOfficeState, Payload> {
+  execute(data: Payload) {
+    const { client, name, character } = data
+  }
+}
+
+export class MoleGameAddPoint extends Command<IOfficeState, Payload> {
+  execute(data: Payload) {
+    const { client, point } = data
+  }
+}

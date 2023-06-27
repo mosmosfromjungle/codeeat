@@ -47,19 +47,6 @@ const Wrapper = styled.div`
   }
 `
 
-const RainGameWrapper = styled.div`
-  flex: 1;
-  border-radius: 25px;
-  overflow: hidden;
-  margin-right: 25px;
-
-  iframe {
-    width: 100%;
-    height: 100%;
-    background: #fff;
-  }
-`
-
 export default function RainGameDialog() {
   const dispatch = useAppDispatch()
 

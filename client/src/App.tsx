@@ -17,11 +17,13 @@ import GameWelcomeDialog from './components/gamedialog/GameWelcomeDialog'
 import MoleGameDialog from './components/games/MoleGame/MoleGameDialog'
 import BrickGameDialog from './components/games/BrickGameDialog'
 import RainGameDialog from './components/games/RainGameDialog'
+import FaceChatDialog from './components/games/FaceChatDialog'
 
 // ↓ HelperButtonGroup Dialog
 import HelperButtonGroup from './components/helperdialog/HelperButtonGroup'
 import ChatDialog from './components/ChatDialog'
-import DMDialog from './components/DMDialog'
+import { ConversationList } from './components/DM/DMList'
+import { DMRoom } from './components/DM/DMRoom'
 import UserDialog from './components/UserDialog'
 import LogoutDialog from './components/LogoutDialog'
 import VersionDialog from './components/helperdialog/VersionDialog'
@@ -56,10 +58,12 @@ function App() {
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
   const rainGameOpen = useAppSelector((state) => state.raingame.rainGameOpen)
+  const faceChatOpen = useAppSelector((state) => state.facechat.faceChatOpen)
 
   // ↓ HelperButtonGroup Dialog
   const showChat = useAppSelector((state) => state.chat.showChat)
-  const showDM = useAppSelector((state) => state.chat.showDM)
+  const showDMList = useAppSelector((state) => state.dm.showDMList)
+  const showDMRoom = useAppSelector((state) => state.dm.showDMRoom)
   const showUser = useAppSelector((state) => state.chat.showUser)
   const showLogout = useAppSelector((state) => state.user.showLogout)
   const showVersion = useAppSelector((state) => state.user.showVersion)
@@ -97,7 +101,8 @@ function App() {
       <>
         {/* // UGLY: Need to move to HelperButtonGroup  */}
         {showChat && <ChatDialog />}
-        {showDM && <DMDialog />}
+        {showDMList && <ConversationList />}
+        {showDMRoom && <DMRoom />}
         {showUser && <UserDialog />}
         {showLogout && <LogoutDialog />}
         {showProfile && <ProfileDialog />}
@@ -116,6 +121,7 @@ function App() {
     if (brickGameOpen) ui = <BrickGameDialog />
     if (moleGameOpen) ui = <MoleGameDialog />
     if (rainGameOpen) ui = <RainGameDialog />
+    if (faceChatOpen) ui = <FaceChatDialog />
   } else {
     ui = <EntryDialog />
   }

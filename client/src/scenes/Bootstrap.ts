@@ -3,11 +3,13 @@ import store from '../stores'
 import { setRoomJoined } from '../stores/RoomStore'
 import { BackgroundMode } from '../../../types/BackgroundMode'
 import Network from '../services/Network'
+import Network2 from '../services/Network2'
 import GameNetwork from '../services/GameNetwork'
 
 export default class Bootstrap extends Phaser.Scene {
   private preloadComplete = false
   network!: Network
+  network2!: Network2
   gameNetwork!: GameNetwork
 
   constructor() {
@@ -30,13 +32,13 @@ export default class Bootstrap extends Phaser.Scene {
     this.load.image('sun_moon', 'assets/background/sun_moon.png')
 
     // this.load.tilemapTiledJSON('tilemap', 'assets/map/map.json')
-    this.load.tilemapTiledJSON('tilemap', 'assets/map/codeEatMap.json')
+    this.load.tilemapTiledJSON('tilemap', 'assets/map/codeEatMapFix.json')
     // this.load.spritesheet('tiles_wall', 'assets/map/FloorAndGround.png', {
     //   frameWidth: 32,
     //   frameHeight: 32,
     // })
 
-    // codeEatMap //////
+    // codeEatMapFix //////
     this.load.spritesheet('bench', 'assets/items/bench.png', {
       frameWidth: 16,
       frameHeight: 16,
@@ -57,86 +59,36 @@ export default class Bootstrap extends Phaser.Scene {
       frameHeight: 16,
     })
 
-    this.load.spritesheet('codeEatInteriors', 'assets/tileset/codeEatInteriors.png', {
+    this.load.spritesheet('buildings', 'assets/tileset/buildings.png', {
       frameWidth: 16,
       frameHeight: 16,
     })
 
-    this.load.spritesheet('School', 'assets/tileset/School.png', {
-      frameWidth: 16,
-      frameHeight: 16,
-    })
-    this.load.spritesheet('Generic', 'assets/tileset/Generic.png', {
-      frameWidth: 16,
-      frameHeight: 16,
-    })
-    this.load.spritesheet('camping', 'assets/tileset/camping.png', {
-      frameWidth: 16,
-      frameHeight: 16,
-    })
-    this.load.spritesheet('floorTiles', 'assets/tileset/floorTiles.png', {
-      frameWidth: 16,
-      frameHeight: 16,
-    })
-    this.load.spritesheet('Interiors', 'assets/tileset/Interiors.png', {
-      frameWidth: 16,
-      frameHeight: 16,
-    })
-    this.load.spritesheet('interior', 'assets/tileset/interior.png', {
-      frameWidth: 16,
-      frameHeight: 16,
-    })
-    this.load.spritesheet('ModernExteriorsFinal', 'assets/tileset/ModernExteriorsFinal.png', {
-      frameWidth: 16,
-      frameHeight: 16,
-    })
-    this.load.spritesheet('ModernExteriorsComplete', 'assets/tileset/ModernExteriorsComplete.png', {
-      frameWidth: 16,
-      frameHeight: 16,
-    })
-    this.load.spritesheet('Tilesets', 'assets/tileset/Tilesets.png', {
-      frameWidth: 16,
-      frameHeight: 16,
-    })
-    this.load.spritesheet('tree', 'assets/tileset/tree.png', {
+    this.load.spritesheet('foreground', 'assets/tileset/foreground.png', {
       frameWidth: 16,
       frameHeight: 16,
     })
 
+    this.load.spritesheet('ground', 'assets/tileset/ground.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
 
-    // 기존 스카이오피스 코드
-    // this.load.spritesheet('chairs', 'assets/items/chair.png', {
-    //   frameWidth: 32,
-    //   frameHeight: 64,
-    // })
-    // this.load.spritesheet('computers', 'assets/items/computer.png', {
-    //   frameWidth: 96,
-    //   frameHeight: 64,
-    // })
-    // this.load.spritesheet('raingames', 'assets/items/whiteboard.png', {
-    //   frameWidth: 64,
-    //   frameHeight: 64,
-    // })
-    // this.load.spritesheet('vendingmachines', 'assets/items/vendingmachine.png', {
-    //   frameWidth: 48,
-    //   frameHeight: 72,
-    // })
-    // this.load.spritesheet('molegames', 'assets/items/gamemachine.png', {
-    //   frameWidth: 30,
-    //   frameHeight: 50,
-    // })
-    // this.load.spritesheet('office', 'assets/tileset/Modern_Office_Black_Shadow.png', {
-    //   frameWidth: 32,
-    //   frameHeight: 32,
-    // })
-    // this.load.spritesheet('basement', 'assets/tileset/Basement.png', {
-    //   frameWidth: 32,
-    //   frameHeight: 32,
-    // })
-    // this.load.spritesheet('generic', 'assets/tileset/Generic.png', {
-    //   frameWidth: 32,
-    //   frameHeight: 32,
-    // })
+    this.load.spritesheet('secondlayer', 'assets/tileset/secondlayer.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+
+    this.load.spritesheet('shadow', 'assets/tileset/shadow.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+
+    this.load.spritesheet('wall', 'assets/tileset/wall.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+
     this.load.spritesheet('adam', 'assets/character/adam.png', {
       frameWidth: 32,
       frameHeight: 48,
@@ -180,6 +132,7 @@ export default class Bootstrap extends Phaser.Scene {
 
   init() {
     this.network = new Network()
+    this.network2 = new Network2()
     this.gameNetwork = new GameNetwork()
   }
 
@@ -189,9 +142,10 @@ export default class Bootstrap extends Phaser.Scene {
 
   launchGame() {
     if (!this.preloadComplete) return
-    this.network.webRTC.checkPreviousPermission()
+    this.network.webRTC?.checkPreviousPermission()
     this.scene.launch('game', {
       network: this.network,
+      network2: this.network2,
     })
 
     // update Redux state

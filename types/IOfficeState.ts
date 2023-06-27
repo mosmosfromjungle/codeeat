@@ -24,6 +24,11 @@ export interface IPlayer extends Schema {
 //   connectedUser: SetSchema<string>
 // }
 
+// export interface IFaceChat extends Schema {
+//   // roomId: string
+//   connectedUser: SetSchema<string>
+// }
+
 export interface IChatMessage extends Schema {
   author: string
   createdAt: number
@@ -35,5 +40,6 @@ export interface IOfficeState extends Schema {
   // molegames: MapSchema<IMoleGame>
   // brickgames: MapSchema<IBrickGame>
   // raingames: MapSchema<IRainGame>
+  // faceChats: MapSchema<IFaceChat>
   chatMessages: ArraySchema<IChatMessage>
 }
