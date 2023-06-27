@@ -89,19 +89,19 @@ const UserList = styled.div`
 `
 
 const User = styled.div`
-  margin: 10px 10px 10px 10px; 
+  margin: 10px 10px 10px 10px;
 `
 
 const Profile = styled.div`
   color: white;
-  width: 120px;
+  width: 170px;
   font-size: 20px;
   font-family: Font_DungGeun;
 `
 
 const ProfileButton = styled.div`
   Button {
-    width: 150px;
+    width: 120px;
     color: white;
     margin-left: 20px;
     font-size: 15px;
@@ -155,14 +155,11 @@ export default function UserDialog() {
   const players = useAppSelector((state) => state.room.players)
   const [otherPlayers, setOtherPlayers] = useState<IPlayer[]>()
   const dispatch = useAppDispatch()
-
+  const [open, setOpen] = React.useState(true)
   const [requester, setRequester] = useState<string>('')
   const [recipient, setRecipient] = useState<string>('')
   const [requesterId, setRequesterId] = useState<string>('')
   const [recipientId, setRecipientId] = useState<string>('')
-  const [gradeFieldEmpty, setGradeFieldEmpty] = useState<boolean>(false)
-  const [schoolFieldWrongFormat, setSchoolFieldEmpty] = useState<boolean>(false)
-  const [messageFieldEmpty, setmessageFieldEmpty] = useState<boolean>(false)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [addFriendResult, setAddFriendResult] = useState<number>(0) //0: 친구 요청 전, 1: 친구 요청 성공,  2: 이미친구
 
@@ -184,19 +181,13 @@ export default function UserDialog() {
     scrollToBottom()
   }, [chatMessages, showUser])
 
-  const [open, setOpen] = React.useState(true)
+ 
 
-  const handleClick = () => {
-    setOpen(!open)
-  }
+  // const handleClick = () => {
+  //   setOpen(!open)
+  // }
 
   const sendFriendRequest = (requester: string, recipient: string) => {
-    // reset the error message
-    // setGradeFieldEmpty(false)
-    // setSchoolFieldEmpty(false)
-    // setmessageFieldEmpty(false)
-
-    // event.preventDefault()
 
     const body: sendRequest = {
       requester: requester,
@@ -259,7 +250,7 @@ export default function UserDialog() {
             <Button
               variant="contained"
               onClick={handleClose}
-              style={{ fontWeight: 'bold', margin: 'auto',}}
+              style={{ fontWeight: 'bold', margin: 'auto' }}
             >
               확인
             </Button>
@@ -300,7 +291,7 @@ export default function UserDialog() {
             <Button
               variant="contained"
               onClick={handleClose}
-              style={{ fontWeight: 'bold', margin: 'auto', }}
+              style={{ fontWeight: 'bold', margin: 'auto' }}
             >
               확인
             </Button>
@@ -318,8 +309,11 @@ export default function UserDialog() {
             </button> */}
           </div>
         )
+      default:
+        return null
     }
   }
+  
 
   return (
     <Backdrop>
@@ -352,6 +346,9 @@ export default function UserDialog() {
                     <ListItem divider key={i}>
                       <ListItemAvatar>
                         <Avatar src={imgpath} />
+                        {/* <Avatar
+                          src={`../../public/assets/character/single/${player.character}_idle_anim_19.png`}
+                        /> */}
                       </ListItemAvatar>
 
                       <Profile>
@@ -370,9 +367,7 @@ export default function UserDialog() {
                         >
                           친구 추가하기
                         </Button>
-                        {isModalOpen && (
-                          <Modal open={isModalOpen} handleClose={closeModal} />
-                        )}
+                        {isModalOpen && <Modal open={isModalOpen} handleClose={closeModal} />}
                         <Button
                           onClick={() => {
                             // dispatch(setShowDMRoom(true));

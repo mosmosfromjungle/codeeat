@@ -19,10 +19,22 @@ import Avatar from '@mui/material/Avatar'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 
+import { setShowDMList, setShowDMRoom } from '../stores/DMStore'
 import { setShowUser, setShowFriend } from '../stores/ChatStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
-import { getFriendList } from '../apicalls/friends'
+import {
+  getFriendList,
+  getFriendRequestList,
+  handleAccept,
+  handleReject,
+  handleRemove,
+  AcceptRequest,
+  RejectRequest,
+  RemoveRequest,
+  FriendRequest,
+} from '../apicalls/friends'
 import { IFriends } from '../../../server/controllers/FriendsControllers/types'
+import FriendRequestModal from './FriendRequestModal'
 import axios from 'axios'
 
 const Backdrop = styled.div`
@@ -102,7 +114,7 @@ const ProfileButton = styled.div`
   Button {
     width: 150px;
     color: white;
-    margin-left: 20px;
+    // margin-left: 20px;
     font-size: 15px;
     font-family: Font_DungGeun;
   }
@@ -171,6 +183,13 @@ export default function FriendDialog() {
 
   const [open, setOpen] = React.useState(true)
   const [friendList, setFriendList] = useState<IFriends[]>([])
+  const [friendRequestList, setFriendRequestList] = useState<IFriends[]>([])
+  // const [requesterId, setRequesterId] = useState<string>('')
+  // const [recipientId, setRecipientId] = useState<string>('')
+
+  const [request, setRequest] = useState<FriendRequest | null>(null)
+  const [isOpen, isSetOpen] = useState(false)
+
 
   // useEffect(() => {
   //   console.log(friendList)
@@ -179,19 +198,16 @@ export default function FriendDialog() {
   useEffect(() => {
     ;(async () => {
       getFriendList()
-      // fetchFriends()
         .then((response) => {
           if (!response) return
           const { friends } = response
-          console.log(friends)
+          // console.log(friends)
 
           // for (let i = 0; i < friends.length; i++) {
           //   console.log(friends[i].recipientId)
           // }
 
           setFriendList(friends)
-          console.log(friendList)
-
         })
         .catch((error) => {
           console.error(error)
@@ -199,26 +215,114 @@ export default function FriendDialog() {
     })()
   }, [])
 
-  // useEffect(() => {
-  //   ;(async () => {
-  //     const response = await getFriendList()
-  //     const friends = response.friends
+  useEffect(() => {
+    ;(async () => {
+      getFriendRequestList()
+        .then((response) => {
+          if (!response) return
+          // console.log('dhkTsi???')
+          const { receivedRequests, sentRequests } = response
+          // console.log(sentRequests)
+          // console.log(receivedRequests)
 
+          setFriendRequestList(receivedRequests)
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    })()
+  }, [])
 
-  //     const friendDetailsPromises = friends.map(async (friend) => {
-  //       const details = await axios.get(`/auth/myprofile/${friend.recipientId}`)
-  //       return { ...friend, character: details.data.character }
-  //     })
-  //     console.log(friendDetailsPromises)
-  //     const friendsWithCharacters = await Promise.all(friendDetailsPromises)
-  //     console.log(friendsWithCharacters)
+  const handleClose = () => {
+    isSetOpen(false)
+  }
 
-  //     setFriendList(friendsWithCharacters)
-  //   })()
-  // }, [])
+  // 요청 목록 리스트에 쌓인 requesterId, recipientId를 handleAccept에 body로 넘겨주면 알아서 api uri 호출 후 처리해 주지 않을까? 처리해서 받아온 거를 setRequesterId로 넣어주면 될듯? 그럼 일단 get으로 요청 목록 리스트를 가져와야겠네.
+  // recipientId: string, requesterId: string
+  const receiveAccept = (value) => {
+    const body: AcceptRequest = {
+      requester: value.requesterId,
+      recipient: value.recipientId,
+    }
+    handleAccept(body)
+      // .then((response) => {
+      //   if (response.status === 200) {
+      //     const { requesterId, recipientId } = response.payload
+      //     setRequesterId(requesterId)
+      //     setRecipientId(recipientId)
+      //     console.log('handleAccept 성공')
+      //     dispatch(setShowFriend(false))
+      //   }
+      // })
+      .then((response) => {
+        if (!response) return
+        console.log(response)
+        dispatch(setShowFriend(false))
+      })
+      .catch((error) => {
+        if (error.response) {
+          const { status, message } = error.response.data
+          // setAddFriendResult(2)
+          console.log('message: ' + message)
+        }
+      })
+  }
 
-  const handleClick = () => {
-    setOpen(!open)
+  const receiveReject = (value) => {
+    const body: RejectRequest = {
+      requester: value.requesterId,
+      recipient: value.recipientId,
+    }
+    handleReject(body)
+      // .then((response) => {
+      //   console.log(response)
+      //   if (response.status === 200) {
+      //     const { requesterId, recipientId } = response.payload
+      //     setRequesterId(requesterId)
+      //     setRecipientId(recipientId)
+      //     console.log('handleReject 성공')
+      //     dispatch(setShowFriend(false))
+      //   }
+      // })
+      .then((response) => {
+        if (!response) return
+        // console.log(response)
+        dispatch(setShowFriend(false))
+      })
+      .catch((error) => {
+        if (error.response) {
+          const { status, message } = error.response.data
+          console.log('message: ' + message)
+        }
+      })
+  }
+
+  const removeFriendList = (value) => {
+    const body: RejectRequest = {
+      requester: value.requesterId,
+      recipient: value.recipientId,
+    }
+    handleRemove(body)
+      // .then((response) => {
+      //   if (response.status === 200) {
+      //     const { requesterId, recipientId } = response.payload
+      //     setRequesterId(requesterId)
+      //     setRecipientId(recipientId)
+      //     dispatch(setShowFriend(false))
+      //   }
+      // })
+      .then((response) => {
+        if (!response) return
+        // console.log(response)
+        dispatch(setShowFriend(false))
+      })
+      .catch((error) => {
+        if (error.response) {
+          const { status, message } = error.response.data
+          // setAddFriendResult(2)
+          console.log('message: ' + message)
+        }
+      })
   }
 
   return (
@@ -250,54 +354,68 @@ export default function FriendDialog() {
                 {friendList.map((value, index) => (
                   <ListItem divider>
                     <ListItemAvatar>
-                      <Avatar src={imgpath} />
-                      {/* <Avatar
-                        src={`../../public/assets/character/single/${value.recipientId}_idle_anim_19.png`}
-                      /> */}
+                      {/* <Avatar src={imgpath} /> */}
+                      <Avatar
+                        src={`../../public/assets/character/single/${value.character}_idle_anim_19.png`}
+                      />
                     </ListItemAvatar>
 
                     <Profile>
                       <div>
-                        <p key={index}>{value.recipientId}</p>
+                        <p key={index}>{value.requesterId}</p>
                       </div>
                     </Profile>
 
                     <ProfileButton>
-                      <Button>메세지 보내기</Button>
+                      <Button
+                        onClick={() => {
+                          // dispatch(setShowDMRoom(true));
+                          dispatch(setShowDMList(true))
+                          dispatch(setShowUser(false))
+                        }}
+                      >
+                        메세지 보내기
+                      </Button>
+                      <Button onClick={() => removeFriendList(value)}>우리 그만하자</Button>
                     </ProfileButton>
                   </ListItem>
                 ))}
               </User>
             </UserList>
-            {/* <UserList>
-              {friendList.map((friend) => (
-                <User key={friend.userid}>
+            <hr></hr>
+            <UserList>
+              <User>
+                {friendRequestList.map((value, index) => (
                   <ListItem divider>
                     <ListItemAvatar>
+                      {/* <Avatar src={imgpath} /> */}
                       <Avatar
-                        src={`../../public/assets/character/single/${friend.character}_idle_anim_19.png`}
+                        src={`../../public/assets/character/single/${value.character}_idle_anim_19.png`}
                       />
                     </ListItemAvatar>
 
                     <Profile>
-                      레벨 {friend.userLevel}
-                      <br />
-                      <br />
-                      <strong>{friend.username}</strong>님
+                      <div>
+                        <p key={index}>{value.requesterId}</p>
+                      </div>
                     </Profile>
 
                     <ProfileButton>
-                      <Button>친구 추가하기</Button>
-                      <Button onClick={() => dispatch(setShowDM(true))}>메세지 보내기</Button>
+                      {/* <Button>메세지 보내기</Button> */}
+                      <Button onClick={() => receiveReject(value)} color="primary">
+                        친구 싫어
+                      </Button>
+                      <Button onClick={() => receiveAccept(value)} color="primary">
+                        친구 좋아
+                      </Button>
                     </ProfileButton>
                   </ListItem>
-                </User>
-              ))}
-            </UserList> */}
+                ))}
+              </User>
+            </UserList>
           </ChatBox>
         </Content>
       </Wrapper>
     </Backdrop>
   )
 }
-

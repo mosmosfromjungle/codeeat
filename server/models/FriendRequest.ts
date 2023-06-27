@@ -4,6 +4,7 @@ import { IFriendRequest } from '../controllers/FriendsControllers/types';
 const friendRequest = new Schema<IFriendRequest>({
     requesterId: { type: String, required: true },
     recipientId: { type: String, required: true },
+    character: { type: String, required: true },
     createdAt: { type: Date, default: Date.now, required: true },
 })
 

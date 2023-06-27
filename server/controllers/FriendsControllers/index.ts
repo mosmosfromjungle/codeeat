@@ -35,7 +35,7 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
       const newRequest: IFriendRequestDocument = new FriendRequest({
         requesterId: foundRequester.userId,
         recipientId: foundRecipient.userId,
-        // character: foundRecipient.userProfile?.character,
+        character: foundRequester.userProfile?.character,
         createdAt: new Date(),
       });
   
@@ -112,12 +112,21 @@ export const acceptFriendRequest = async (req: Request, res: Response) => {
       const newFriendship: IFriendsDocument = new Friends({
         requesterId: foundRequester.userId,
         recipientId: foundRecipient.userId,
-        character: foundRecipient.userProfile?.character,
+        character: foundRequester.userProfile?.character,
         createdAt: new Date(),
       });
   
       await newFriendship.save();
       await FriendRequest.deleteOne({ requesterId: foundRequester.userId, recipientId: foundRecipient.userId });
+
+      // if (newFriendship) {
+      //   return res.status(200).json({
+      //   status: 200,
+      //   message: 'Friend request accepted',
+      //   payload: newFriendship,
+      
+      // });
+      // }
       res.status(200).json({ message: 'Friend request accepted' });
     } catch (error) {
       console.error(error);
@@ -148,6 +157,15 @@ export const rejectFriendRequest = async (req: Request, res: Response) => {
       }
   
       await FriendRequest.deleteOne({ requesterId: foundRequester.userId, recipientId: foundRecipient.userId });
+
+      // if (request) {
+      //   return res.status(200).json({
+      //   status: 200,
+      //   message: 'Friend request rejected',
+      //   payload: request,
+      
+      // });
+      // }
       res.status(200).json({ message: 'Friend request rejected' });
     } catch (error) {
       console.error(error);
@@ -169,7 +187,7 @@ export const getFriendsList = async (req: CustomRequest, res: Response) => {
       status: 200,
       payload: {
         friends: friendsList,
-        character: foundUser.userProfile.character,
+        // character: foundUser.userProfile.character,
       }
     });
   } catch (error) {
@@ -190,7 +208,12 @@ export const getFriendRequests = async (req: CustomRequest, res: Response) => {
     try {
       const sentRequests = await FriendRequest.find({ requesterId: foundUser.userId });
       const receivedRequests = await FriendRequest.find({ recipientId: foundUser.userId });
+      // const sentRea
   
+      // return res.status(200).json({
+      //   status: 200,
+      //   payload: { sentRequests, receivedRequests }
+      // });
       res.status(200).json({ sentRequests, receivedRequests });
     } catch (error) {
       console.error(error);
