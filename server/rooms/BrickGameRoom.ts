@@ -19,7 +19,7 @@ export class BrickGameRoom extends Room<IGameState> {
   private password: string | null = null
 
   async onCreate(options: IGameRoomData) {
-    const { name, description, password } = options
+    const { name, description, password, username } = options
     this.name = name
     this.description = description
     this.autoDispose = true
@@ -34,6 +34,7 @@ export class BrickGameRoom extends Room<IGameState> {
 
     this.setMetadata({ name, description, hasPassword })
     this.setState(new GameState())
+    this.state.host = username
 
     this.onMessage(Message.BRICK_GAME_COMMAND, (client, message: { command: string })=> {
       this.handleCommand(client, message.command)
@@ -69,7 +70,6 @@ export class BrickGameRoom extends Room<IGameState> {
     // if (this.state.players.size === this.maxClients) {
     //   this.startGame()
     // }
-
 
     // UGLY: 임시 
     this.state.brickgames.originalImages = new ArraySchema<ImageContainer>(
@@ -201,7 +201,9 @@ export class BrickGameRoom extends Room<IGameState> {
   }
 
   broadcastPlayersData(room: BrickGameRoom) {
-    const players = Array.from(room.state.players.values())
+    const players = Array.from(room.state.players.values()).map(player => ({
+      name: player.name
+    }))
     room.broadcast(Message.SEND_GAME_PLAYERS, players);
   }
 

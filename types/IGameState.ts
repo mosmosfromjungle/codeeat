@@ -44,11 +44,12 @@ export interface IBrickGameState extends Schema {
 
 export interface IGamePlayer extends Schema {
   name: string
-  // anim: string
+  anim: string
 }
 
 export interface IGameState extends Schema {
   players: MapSchema<IGamePlayer>
+  host: string  // username of the player that created the room
   // molegames: 
   // raingames:
   brickgames: IBrickGameState

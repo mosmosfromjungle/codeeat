@@ -61,7 +61,7 @@ export class BrickGameState extends Schema implements IBrickGameState {
 
 export class GamePlayer extends Schema implements IGamePlayer {
   @type('string') name = ''
-  // @type('string') anim = 'adam_idle_down'
+  @type('string') anim = 'adam_idle_down'
 
   constructor(name: string) {
     super()
@@ -71,6 +71,7 @@ export class GamePlayer extends Schema implements IGamePlayer {
 
 export class GameState extends Schema implements IGameState {
   @type({ map: GamePlayer }) players = new MapSchema<GamePlayer>()
+  @type('string') host = ''
   // molegames
   // raingames
   @type(BrickGameState) brickgames = new BrickGameState()

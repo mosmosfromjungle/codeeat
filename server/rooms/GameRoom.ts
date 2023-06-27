@@ -2,8 +2,9 @@ import bcrypt from 'bcrypt'
 import { Room, Client, ServerError } from 'colyseus'
 import { Dispatcher } from '@colyseus/command'
 import { Message } from '../../types/Messages'
-import { IRoomData } from '../../types/Rooms'
-import { Player, OfficeState, MoleGame, BrickGame, TypingGame } from './schema/OfficeState'
+import { IGameRoomData, IRoomData } from '../../types/Rooms'
+// import { Player, OfficeState, MoleGame, BrickGame, TypingGame } from './schema/OfficeState'
+import { GameState, GamePlayer } from './schema/GameState'
 import PlayerUpdateCommand from './commands/PlayerUpdateCommand'
 import PlayerUpdateNameCommand from './commands/PlayerUpdateNameCommand'
 import GamePlayUpdateCommand from './commands/GamePlayUpdateCommand'
@@ -21,17 +22,17 @@ import GamePlayUpdateCommand from './commands/GamePlayUpdateCommand'
 // } from './commands/TypingGameUpdateArrayCommand'
 // import ChatMessageUpdateCommand from './commands/ChatMessageUpdateCommand'
 
-export class GameRoom extends Room<OfficeState> {
+export class GameRoom extends Room<GameState> {
   private dispatcher = new Dispatcher(this)
   private name: string
   private description: string
   private password: string | null = null
 
-  async onCreate(options: IRoomData) {
-    const { name, description, password, autoDispose } = options
+  async onCreate(options: IGameRoomData) {
+    const { name, description, password, username } = options
     this.name = name
     this.description = description
-    this.autoDispose = autoDispose
+    this.autoDispose = true
     this.maxClients = 2
 
     let hasPassword = false
@@ -42,7 +43,8 @@ export class GameRoom extends Room<OfficeState> {
     }
     this.setMetadata({ name, description, hasPassword })
 
-    this.setState(new OfficeState())
+    this.setState(new GameState())
+    this.state.host = username
 
     // // HARD-CODED: Add 5 brickgames in a room
     // for (let i = 0; i < 5; i++) {
@@ -112,7 +114,7 @@ export class GameRoom extends Room<OfficeState> {
 
     function broadcastPlayersData(room: GameRoom) {
       const players = Array.from(room.state.players.values())
-        .map((player: Player) => ({
+        .map((player: GamePlayer) => ({
           name: player.name,
           anim: player.anim,
         }))
@@ -153,10 +155,10 @@ export class GameRoom extends Room<OfficeState> {
     )
 
     // when a player is ready to connect, call the PlayerReadyToConnectCommand
-    this.onMessage(Message.READY_TO_CONNECT, (client) => {
-      const player = this.state.players.get(client.sessionId)
-      if (player) player.readyToConnect = true
-    })
+    // this.onMessage(Message.READY_TO_CONNECT, (client) => {
+    //   const player = this.state.players.get(client.sessionId)
+    //   if (player) player.readyToConnect = true
+    // })
 
     // // when a player is ready to connect, call the PlayerReadyToConnectCommand
     // this.onMessage(Message.VIDEO_CONNECTED, (client) => {
@@ -201,7 +203,8 @@ export class GameRoom extends Room<OfficeState> {
   }
 
   onJoin(client: Client, options: any) {
-    this.state.players.set(client.sessionId, new Player())
+    const { username } = options
+    this.state.players.set(client.sessionId, new GamePlayer(username))
     client.send(Message.SEND_ROOM_DATA, {
       id: this.roomId,
       name: this.name,
@@ -210,7 +213,7 @@ export class GameRoom extends Room<OfficeState> {
 
     function broadcastPlayersData(room: GameRoom) {
       const players = Array.from(room.state.players.values())
-        .map((player: Player) => ({
+        .map((player: GamePlayer) => ({
           name: player.name,
           anim: player.anim,
         }))
@@ -242,7 +245,7 @@ export class GameRoom extends Room<OfficeState> {
 
     function broadcastPlayersData(room: GameRoom) {
       const players = Array.from(room.state.players.values())
-        .map((player: Player) => ({
+        .map((player: GamePlayer) => ({
           name: player.name,
           anim: player.anim,
         }))
