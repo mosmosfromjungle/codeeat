@@ -35,6 +35,7 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
       const newRequest: IFriendRequestDocument = new FriendRequest({
         requesterId: foundRequester.userId,
         recipientId: foundRecipient.userId,
+        // character: foundRecipient.userProfile?.character,
         createdAt: new Date(),
       });
   
@@ -111,6 +112,7 @@ export const acceptFriendRequest = async (req: Request, res: Response) => {
       const newFriendship: IFriendsDocument = new Friends({
         requesterId: foundRequester.userId,
         recipientId: foundRecipient.userId,
+        character: foundRecipient.userProfile?.character,
         createdAt: new Date(),
       });
   
@@ -161,12 +163,13 @@ export const getFriendsList = async (req: CustomRequest, res: Response) => {
   if (!foundUser) return res.status(409).json({ message: 'User not found' })
 
   try {
-    const friendsList = await Friends.find({ $or: [{ requesterId: foundUser.userId }, { recipientId: foundUser.userId }] });
+    const friendsList = await Friends.find({ $or: [{ requesterId: foundUser.userId }, { recipientId: foundUser.userId }, { character: foundUser.userProfile.character, }] });
     // res.status(200).json({ friends: friendsList });
     return res.status(200).json({
       status: 200,
       payload: {
-        friends: friendsList
+        friends: friendsList,
+        character: foundUser.userProfile.character,
       }
     });
   } catch (error) {

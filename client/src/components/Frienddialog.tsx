@@ -22,6 +22,7 @@ import Divider from '@mui/material/Divider'
 import { setShowUser, setShowFriend } from '../stores/ChatStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
 import { getFriendList } from '../apicalls/friends'
+import { IFriends } from '../../../server/controllers/FriendsControllers/types'
 import axios from 'axios'
 
 const Backdrop = styled.div`
@@ -169,7 +170,7 @@ export default function FriendDialog() {
   }, [chatMessages, showFriend])
 
   const [open, setOpen] = React.useState(true)
-  const [friendList, setFriendList] = useState([])
+  const [friendList, setFriendList] = useState<IFriends[]>([])
 
   // useEffect(() => {
   //   console.log(friendList)
@@ -182,12 +183,14 @@ export default function FriendDialog() {
         .then((response) => {
           if (!response) return
           const { friends } = response
+          console.log(friends)
 
           // for (let i = 0; i < friends.length; i++) {
           //   console.log(friends[i].recipientId)
           // }
 
           setFriendList(friends)
+          console.log(friendList)
 
         })
         .catch((error) => {
@@ -195,6 +198,24 @@ export default function FriendDialog() {
         })
     })()
   }, [])
+
+  // useEffect(() => {
+  //   ;(async () => {
+  //     const response = await getFriendList()
+  //     const friends = response.friends
+
+
+  //     const friendDetailsPromises = friends.map(async (friend) => {
+  //       const details = await axios.get(`/auth/myprofile/${friend.recipientId}`)
+  //       return { ...friend, character: details.data.character }
+  //     })
+  //     console.log(friendDetailsPromises)
+  //     const friendsWithCharacters = await Promise.all(friendDetailsPromises)
+  //     console.log(friendsWithCharacters)
+
+  //     setFriendList(friendsWithCharacters)
+  //   })()
+  // }, [])
 
   const handleClick = () => {
     setOpen(!open)
@@ -230,6 +251,9 @@ export default function FriendDialog() {
                   <ListItem divider>
                     <ListItemAvatar>
                       <Avatar src={imgpath} />
+                      {/* <Avatar
+                        src={`../../public/assets/character/single/${value.recipientId}_idle_anim_19.png`}
+                      /> */}
                     </ListItemAvatar>
 
                     <Profile>
@@ -239,7 +263,6 @@ export default function FriendDialog() {
                     </Profile>
 
                     <ProfileButton>
-                      <Button>친구 추가하기</Button>
                       <Button>메세지 보내기</Button>
                     </ProfileButton>
                   </ListItem>
@@ -278,11 +301,3 @@ export default function FriendDialog() {
   )
 }
 
-interface Friend {
-  username: string
-  character: string
-  userLevel: string
-  //   contactGit: string
-  //   contactEmail: string
-  //   profileMessage: string
-}

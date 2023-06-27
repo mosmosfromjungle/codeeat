@@ -201,6 +201,7 @@ export default function UserDialog() {
     const body: sendRequest = {
       requester: requester,
       recipient: recipient,
+      // character: 
     }
     sendFriendReq(body)
       .then((response) => {
@@ -233,7 +234,7 @@ export default function UserDialog() {
     setIsModalOpen(false)
   }
 
-  const Modal = ({ open, handleClose }) => {
+  const Modal = ({ open, handleClose }: { open: any; handleClose: any; }) => {
     switch (addFriendResult) {
       case 1:
         return (
@@ -248,7 +249,7 @@ export default function UserDialog() {
               boxShadow: '0px, 10px, 24px, #0000006f',
               padding: '50px',
               zIndex: 1000,
-              fontSize: '20px',
+              fontSize: '15px',
               color: '#eee',
               textAlign: 'center',
               fontFamily: 'Font_DungGeun',
@@ -257,13 +258,12 @@ export default function UserDialog() {
             <h2>친구 요청 완료</h2>
             <Button
               variant="contained"
-              color="secondary"
               onClick={handleClose}
-              style={{ color: 'black' }}
+              style={{ fontWeight: 'bold', margin: 'auto',}}
             >
               확인
             </Button>
-            <button
+            {/* <button
               onClick={handleClose}
               style={{
                 backgroundColor: '#222639',
@@ -274,7 +274,7 @@ export default function UserDialog() {
               }}
             >
               확인
-            </button>
+            </button> */}
           </div>
         )
       case 2:
@@ -296,8 +296,12 @@ export default function UserDialog() {
               fontFamily: 'Font_DungGeun',
             }}
           >
-            <h2>이미 친구요청을 보낸 적이 있어요</h2>
-            <Button variant="contained" color="secondary" onClick={handleClose} style={{ color: 'black' }}>
+            <h4>이미 친구요청을 보냈어요</h4>
+            <Button
+              variant="contained"
+              onClick={handleClose}
+              style={{ fontWeight: 'bold', margin: 'auto', }}
+            >
               확인
             </Button>
             {/* <button
@@ -315,71 +319,7 @@ export default function UserDialog() {
           </div>
         )
     }
-    // return (
-    //   <Backdrop>
-    //     <Wrapper>
-    //       <>
-    //         <Title>CodeEAT</Title>
-    //         <button onClick={handleClose}>Close</button>
-    //       </>
-    //     </Wrapper>
-    //   </Backdrop>
-      // <div
-      //   style={{
-      //     position: 'fixed',
-      //     top: '50%',
-      //     left: '50%',
-      //     transform: 'translate(-50%, -50%)',
-      //     backgroundColor: '#fff',
-      //     padding: '50px',
-      //     zIndex: 1000,
-      //   }}
-      // >
-      //   <h2>Game Over!</h2>
-      //   {/* ...Your other modal contents... */}
-        // <button onClick={handleClose}>Close</button>
-      // </div>
-      // <div id="ending" className="ending finalEnding">
-      //   <p id="ending-box">
-      //     <p id="ending-box-title">🎮🎮 Game Over ! 🎲🎲</p>
-      //     <p>
-      //       <span>Your score is &nbsp;</span>
-      //       <span className="last">{total}</span>
-      //     </p>
-      //     <p>
-      //       <span>Friend score is &nbsp;</span>
-      //       <span className="last">{total}</span>
-      //     </p>
-      //     <p>
-      //       <span>The winner is &nbsp;</span>
-      //       <span className="winner">{username}</span>
-      //     </p>
-
-      //     <div className="btn-wrap">
-      //       <button
-      //         type="button"
-      //         className="restart-btn"
-      //         style={{ color: '#f9f871' }}
-      //         onClick={() => hideModal()}
-      //         onMouseEnter={handleMouseOver}
-      //       >
-      //         CLOSE
-      //       </button>
-      //     </div>
-      //   </p>
-      // </div>
-    // )
   }
-
-  const Overlay = styled.div`
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    // background-color: rgba(0, 0, 0, 0.7);
-    z-index: 1000;
-  `
 
   return (
     <Backdrop>
@@ -430,14 +370,8 @@ export default function UserDialog() {
                         >
                           친구 추가하기
                         </Button>
-                        <Button onClick={openModal}>안녕</Button>
-
-                        {/* Render the modal and the overlay only when isModalOpen is true */}
                         {isModalOpen && (
-                          <>
-                            {/* <Overlay onClick={closeModal} /> */}
-                            <Modal open={isModalOpen} handleClose={closeModal} />
-                          </>
+                          <Modal open={isModalOpen} handleClose={closeModal} />
                         )}
                         <Button
                           onClick={() => {

@@ -4,6 +4,7 @@ import { IFriends } from '../controllers/FriendsControllers/types';
 const friends = new Schema<IFriends>({
     requesterId: { type: String, required: true },
     recipientId: { type: String, required: true },
+    character: { type: String, required: true },
     createdAt: { type: Date, default: Date.now, required: true },
 })
 
