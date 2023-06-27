@@ -27,6 +27,7 @@ const GlobalStyle = createGlobalStyle`
     letter-spacing: 2px;
   }
 `
+
 const Wrapper = styled.form`
   position: fixed;
   top: 50%;
@@ -37,19 +38,23 @@ const Wrapper = styled.form`
   padding: 36px 60px;
   box-shadow: 0px 0px 5px #0000006f;
 `
+
 const Title = styled.h3`
   margin: 5px;
   font-size: 25px;
   color: #c2c2c2;
   text-align: center;
 `
+
 const Content = styled.div`
   display: flex;
   margin: 36px 0;
 `
+
 const Left = styled.div`
   margin-right: 48px;
 `
+
 const ImgContainer = styled.div`
     width: 160px;
     height: 220px;
@@ -66,14 +71,22 @@ const ImgContainer = styled.div`
         object-fit: contain;
     }
 `
+
 const Right = styled.div`
   width: 300px;
 `
+
 const Bottom = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  Button {
+    font-size: 20px;
+    font-family: Font_DungGeun;
+  }
 `
+
 const Warning = styled.div`
   margin-top: 30px;
   position: relative;
@@ -106,7 +119,7 @@ export default function GameWelcomeDialog() {
     <>
     <GlobalStyle />
     <Wrapper onSubmit={handleSubmit}>
-      <Title>게임에 환영합니다!</Title>
+      <Title>게임을 시작해볼까요 !</Title>
       <Content>
         <Left>
           <ImgContainer>
@@ -142,7 +155,7 @@ export default function GameWelcomeDialog() {
         </Right>
       </Content>
       <Bottom>
-        <Button variant="contained" color="secondary" size="large" type="submit">
+        <Button variant="contained" size="large" type="submit">
           입장하기
         </Button>
       </Bottom>
