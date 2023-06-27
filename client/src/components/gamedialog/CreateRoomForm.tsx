@@ -7,7 +7,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 
-import { IRoomData, RoomType } from '../../../../types/Rooms'
+import { IGameRoomData, RoomType } from '../../../../types/Rooms'
 import { useAppSelector, useAppDispatch } from '../../hooks'
 import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore'
 
@@ -33,12 +33,6 @@ const RoomButton = styled.div`
 `
 
 export const CreateRoomForm = () => {
-  const [values, setValues] = useState<IRoomData>({
-    name: '',
-    description: '',
-    password: null,
-    autoDispose: true,
-  })
   const [showPassword, setShowPassword] = useState(false)
   const [nameFieldEmpty, setNameFieldEmpty] = useState(false)
   const [descriptionFieldEmpty, setDescriptionFieldEmpty] = useState(false)
@@ -52,7 +46,14 @@ export const CreateRoomForm = () => {
 
   const dispatch = useAppDispatch()
 
-  const handleChange = (prop: keyof IRoomData) => (event: React.ChangeEvent<HTMLInputElement>) => {
+  const [values, setValues] = useState<IGameRoomData>({
+    name: '',
+    description: '',
+    password: null,
+    username: username,
+  })
+
+  const handleChange = (prop: keyof IGameRoomData) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setValues({ ...values, [prop]: event.target.value })
   }
 
@@ -73,12 +74,7 @@ export const CreateRoomForm = () => {
         if (moleGameOpen) await bootstrap.gameNetwork.createMoleRoom(values)
         if (rainGameOpen) await bootstrap.gameNetwork.createRainRoom(values)
         if (faceChatOpen) await bootstrap.gameNetwork.createFaceChatRoom(values)
-        
-        bootstrap.gameNetwork.updatePlayer(0, 0, `${character}_idle_down`)
-        bootstrap.gameNetwork.updatePlayerName(username)
         dispatch(setDialogStatus(DIALOG_STATUS.GAME_WELCOME))
-        // setTimeout(() => {
-        // }, 100);
       } catch (error) {
         console.error(error)
       }

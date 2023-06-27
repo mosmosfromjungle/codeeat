@@ -6,8 +6,6 @@ import LastDM from '../models/LastDM'
 import DM from '../models/DM'
 import raingameUser from '../models/RainGame'
 import MoleGame from '../models/MoleGame'
-// import Chat from '../models/Chat'
-// import LastChat from '../models/LastChat'
 
 import { defaultProblems } from '../controllers/MoleGameControllers/index'
 
@@ -27,8 +25,6 @@ export async function connectDB() {
   createCollection('dm')
   createCollection('raingame')
   createCollection('molegame')
-  // createCollection('chat')
-  // createCollection('lastchat')
 
   // Insert default mole game problems at first
   // defaultProblems()

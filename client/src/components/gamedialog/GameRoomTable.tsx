@@ -112,12 +112,8 @@ export const CustomRoomTable = () => {
   const handleJoinClick = (roomId: string, password: string | null) => {
     if (!lobbyJoined) return
     const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-    bootstrap.gameNetwork.joinCustomById(roomId, password).then(() => {
-      bootstrap.gameNetwork.updatePlayer(0, 0, `${character}_idle_down`)
-      bootstrap.gameNetwork.updatePlayerName(username)
+    bootstrap.gameNetwork.joinCustomById(roomId, password, username).then(() => {
       dispatch(setDialogStatus(DIALOG_STATUS.GAME_WELCOME))
-      // setTimeout(() => {
-      // }, 100);
     }).catch((error) => {
         console.error(error)
         if (password) setShowPasswordError(true)

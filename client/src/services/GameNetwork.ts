@@ -1,7 +1,8 @@
 import { Client, Room } from 'colyseus.js'
-import { IOfficeState, IPlayer, IMoleGame, IBrickGame, IRainGame, IFaceChat } from '../../../types/IOfficeState'
+// import { IOfficeState, IPlayer, IMoleGame, IBrickGame, IRainGame, IFaceChat } from '../../../types/IOfficeState'
+import { IGameState, IGamePlayer, IBrickPlayer, IBrickGameState } from '../../../types/IGameState'
 import { Message } from '../../../types/Messages'
-import { IRoomData, RoomType } from '../../../types/Rooms'
+import { IGameRoomData, IRoomData, RoomType } from '../../../types/Rooms'
 import { ItemType } from '../../../types/Items'
 import { phaserEvents, Event } from '../events/EventCenter'
 import WebRTC from '../web/WebRTC'
@@ -13,7 +14,6 @@ import {
  } from '../stores/MoleGameStore'
 import {
   setLobbyJoined,
-  // setJoinedRoomData,
   setJoinedGameRoomData,
   setGamePlayers,
   setAvailableBrickRooms,
@@ -23,17 +23,12 @@ import {
   addAvailableRooms,
   removeAvailableRooms,
 } from '../stores/RoomStore'
-import {
-  pushChatMessage,
-  pushPlayerJoinedMessage,
-  pushPlayerLeftMessage,
-} from '../stores/ChatStore'
+import { setBrickGameState, setMyPlayerScore, setMyPlayerStatus, setOppPlayerScore, setOppPlayerStatus } from '../stores/BrickGameStore'
 
 export default class GameNetwork {
   private client: Client
-  private lobby!: Room | undefined
-  private room?: Room<IOfficeState>
-  // webRTC?: WebRTC
+  private lobby?: Room | undefined
+  private room?: Room<IGameState>
   mySessionId!: string
 
   constructor() {
@@ -98,51 +93,51 @@ export default class GameNetwork {
     })
   }
 
-  async joinCustomById(roomId: string, password: string | null) {
-    this.room = await this.client.joinById(roomId, { password })
-    this.initialize()
+  async joinCustomById(roomId: string, password: string | null, username: string) {
+    this.room = await this.client.joinById(roomId, { password, username })
+    this.brick_game_init()
   }
 
-  async createBrickRoom(roomData: IRoomData) {
-    const { name, description, password, autoDispose } = roomData
+  async createBrickRoom(roomData: IGameRoomData) {
+    const { name, description, password, username } = roomData
     this.room = await this.client.create(RoomType.BRICK, {  
       name,
       description,
       password,
-      autoDispose,
+      username,
     })
-    this.initialize()
+    this.brick_game_init()
   }
 
-  async createMoleRoom(roomData: IRoomData) {
-    const { name, description, password, autoDispose } = roomData
+  async createMoleRoom(roomData: IGameRoomData) {
+    const { name, description, password, username } = roomData
     this.room = await this.client.create(RoomType.MOLE, {
       name,
       description,
       password,
-      autoDispose,
+      username,
     })
     this.initialize()
   }
   
-  async createRainRoom(roomData: IRoomData) {
-    const { name, description, password, autoDispose } = roomData
+  async createRainRoom(roomData: IGameRoomData) {
+    const { name, description, password, username } = roomData
     this.room = await this.client.create(RoomType.RAIN, {
       name,
       description,
       password,
-      autoDispose,
+      username,
     })
     this.initialize()
   }
 
-  async createFaceChatRoom(roomData: IRoomData) {
-    const { name, description, password, autoDispose } = roomData
+  async createFaceChatRoom(roomData: IGameRoomData) {
+    const { name, description, password, username } = roomData
     this.room = await this.client.create(RoomType.FACECHAT, {
       name,
       description,
       password,
-      autoDispose,
+      username,
     })
     this.initialize()
   }
@@ -155,37 +150,37 @@ export default class GameNetwork {
     store.dispatch(setLobbyJoined(false))
     this.mySessionId = this.room.sessionId
     store.dispatch(setGameSessionId(this.room.sessionId)) 
-    // this.webRTC = new WebRTC(this.mySessionId, this)
+    // // this.webRTC = new WebRTC(this.mySessionId, this)
 
-    // new instance added to the players MapSchema
-    this.room.state.players.onAdd = (player: IPlayer, key: string) => {
-      if (key === this.mySessionId) return
+    // // new instance added to the players MapSchema
+    // this.room.state.players.onAdd = (player: IPlayer, key: string) => {
+    //   if (key === this.mySessionId) return
 
-      // track changes on every child object inside the players MapSchema
-      player.onChange = (changes) => {
-        changes.forEach((change) => {
-          const { field, value } = change
-          // phaserEvents.emit(Event.PLAYER_UPDATED, field, value, key)
+    //   // track changes on every child object inside the players MapSchema
+    //   player.onChange = (changes) => {
+    //     changes.forEach((change) => {
+    //       const { field, value } = change
+    //       // phaserEvents.emit(Event.PLAYER_UPDATED, field, value, key)
 
-          // when a new player finished setting up player name
-          if (field === 'name' && value !== '') {
-            // phaserEvents.emit(Event.PLAYER_JOINED, player, key)
-            store.dispatch(setPlayerNameMap({ id: key, name: value }))
-            store.dispatch(pushPlayerJoinedMessage(value))
-          }
-        })
-      }
-    }
+    //       // when a new player finished setting up player name
+    //       if (field === 'name' && value !== '') {
+    //         // phaserEvents.emit(Event.PLAYER_JOINED, player, key)
+    //         store.dispatch(setPlayerNameMap({ id: key, name: value }))
+    //         store.dispatch(pushPlayerJoinedMessage(value))
+    //       }
+    //     })
+    //   }
+    // }
 
-    // an instance removed from the players MapSchema
-    this.room.state.players.onRemove = (player: IPlayer, key: string) => {
-      // phaserEvents.emit(Event.PLAYER_LEFT, key)
-      // this.webRTC?.deleteVideoStream(key)
-      // this.webRTC?.deleteOnCalledVideoStream(key)
-      store.dispatch(pushPlayerLeftMessage(player.name))
-      store.dispatch(removePlayerNameMap(key))
-    }
-    
+    // // an instance removed from the players MapSchema
+    // this.room.state.players.onRemove = (player: IPlayer, key: string) => {
+    //   // phaserEvents.emit(Event.PLAYER_LEFT, key)
+    //   // this.webRTC?.deleteVideoStream(key)
+    //   // this.webRTC?.deleteOnCalledVideoStream(key)
+    //   store.dispatch(pushPlayerLeftMessage(player.name))
+    //   store.dispatch(removePlayerNameMap(key))
+    // }
+
     // when the server sends room data
     this.room.onMessage(Message.SEND_ROOM_DATA, (content) => {
       store.dispatch(setJoinedGameRoomData(content))
@@ -223,6 +218,90 @@ export default class GameNetwork {
     this.room?.send(Message.READY_TO_CONNECT)
     phaserEvents.emit(Event.MY_PLAYER_READY)
   }
+
+  brick_game_init() {
+    if (!this.room) return
+
+    this.lobby.leave()
+    store.dispatch(setLobbyJoined(false))
+    this.mySessionId = this.room.sessionId
+    store.dispatch(setGameSessionId(this.room.sessionId)) 
+
+    this.room.onMessage(Message.SEND_ROOM_DATA, (content) => {
+      store.dispatch(setJoinedGameRoomData(content))
+      console.log('saved metadata')
+    })
+
+    this.room.onMessage(Message.SEND_GAME_PLAYERS, (content) => {
+      store.dispatch(setGamePlayers(content))
+    })
+
+    this.room.onMessage(Message.BRICK_GAME_STATE, (content) => {
+      store.dispatch(setBrickGameState(content))
+    })
+
+    this.room.onMessage(Message.BRICK_GAME_STATE, (content) => {
+      store.dispatch(setBrickGameState(content))
+    })
+
+    this.room.onMessage(Message.BRICK_PLAYER_UPDATE, (content) => {
+      const { client, payload } = content
+      if (client.sessionId === this.mySessionId) {
+        console.log('update my player info')
+        store.dispatch(setMyPlayerScore(payload.playerScore))
+        store.dispatch(setMyPlayerStatus(payload.playerStatus))
+      } else {
+        console.log('update opponent player info')
+        store.dispatch(setOppPlayerScore(payload.playerScore))
+        store.dispatch(setOppPlayerStatus(payload.playerStatus))
+      }
+    })
+
+    // // TODO: 이거 왜 안될까 ㅜㅜ 
+    // this.room.state.brickgames.brickPlayers?.forEach((value: IBrickPlayer, key: string, map: Map<string, IBrickPlayer>) => {
+    //   this.brickPlayerListen(value, key)
+    // })
+
+    // this.room.state.brickgames.brickPlayers.onAdd = (player: IBrickPlayer, key: string) => {
+    //   this.brickPlayerListen(player, key)
+    // }
+  }
+
+  /* BRICK GAMES */
+  // brickPlayerListen(player: IBrickPlayer, key: string) {
+  //   if (key === this.mySessionId) {
+  //     player.onChange = (changes) => {
+  //       changes.forEach((change) => {
+  //         const { field, value } = change
+  //         if (field === 'playerScore') {
+  //           store.dispatch(setMyPlayerScore(value))
+  //         }
+  //         if (field === 'playerStatus') {
+  //           console.log('status change: ', value)
+  //           store.dispatch(setMyPlayerStatus(value))
+  //         }
+  //       })
+  //     }
+  //   } else {
+  //     player.onChange = (changes) => {
+  //       changes.forEach((change) => {
+  //         const { field, value } = change
+  //         if (field === 'playerScore') {
+  //           store.dispatch(setOppPlayerScore(value))
+  //         }
+  //         if (field === 'playerStatus') {
+  //           store.dispatch(setOppPlayerStatus(value))
+  //         }
+  //       })
+  //     }
+  //   }
+  // }
+
+  brickGameCommand(command: string) {
+    console.log('command: ', command)
+    this.room?.send(Message.BRICK_GAME_COMMAND, { command: command })
+  }
+
 
   // ↓ Mole Game
   // method to send my info to friend in mole game

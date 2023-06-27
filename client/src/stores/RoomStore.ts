@@ -8,7 +8,7 @@ interface RoomInterface extends RoomAvailable {
 
 export interface PlayersInterface {
   name: string
-  texture: string
+  // texture: string
 }
 
 /**
@@ -155,9 +155,6 @@ export const roomSlice = createSlice({
       state.availableRooms.moleRooms = state.availableRooms.moleRooms.filter((room) => room.roomId !== action.payload)
       state.availableRooms.rainRooms = state.availableRooms.rainRooms.filter((room) => room.roomId !== action.payload)
       state.availableRooms.faceChatRooms = state.availableRooms.faceChatRooms.filter((room) => room.roomId !== action.payload)
-    },
-    setRoomPlayers: (state, action: PayloadAction<IPlayer[]>) => {
-      state.players = action.payload;
     },
     setRoomPlayers: (state, action: PayloadAction<IPlayer[]>) => {
       state.players = action.payload;
