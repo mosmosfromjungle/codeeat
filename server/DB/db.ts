@@ -15,7 +15,7 @@ const mongoose = require('mongoose')
 
 export async function connectDB() {
   mongoose.set('strictQuery', false)
-  mongoose.connect(config.db.host, {
+  mongoose.connect('mongodb://127.0.0.1:27017/mosmos', {
     dbName: 'mosmos',
     useNewUrlParser: true,
   })
@@ -31,7 +31,7 @@ export async function connectDB() {
   // createCollection('lastchat')
 
   // Insert default mole game problems at first
-  defaultProblems()
+  // defaultProblems()
 }
 
 export const createCollection = (modelName : string) => {
