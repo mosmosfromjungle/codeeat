@@ -6,10 +6,12 @@ export enum RoomType {
   BRICKLOBBY = 'brick_lobby',
   MOLELOBBY = 'mole_lobby',
   RAINLOBBY = 'rain_lobby',
+  FACECHATLOBBY = 'facechat_lobby',
   
   MOLE = 'whackamole',
   BRICK = 'bricks',
   RAIN = 'acidrain',
+  FACECHAT = 'facechat',
 }
 
 export interface IRoomData {
@@ -17,4 +19,12 @@ export interface IRoomData {
   description: string
   password: string | null
   autoDispose: boolean
+}
+
+export interface IGameRoomData {
+  name: string
+  description: string
+  password: string | null
+  // autoDispose: boolean
+  username: string
 }

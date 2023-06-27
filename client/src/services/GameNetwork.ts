@@ -1,7 +1,7 @@
 import { Client, Room } from 'colyseus.js'
-import { IOfficeState, IPlayer, IMoleGame, IBrickGame, IRainGame} from '../../../types/IOfficeState'
+import { IOfficeState, IPlayer, IMoleGame, IBrickGame, IRainGame } from '../../../types/IOfficeState'
 import { Message } from '../../../types/Messages'
-import { IRoomData, RoomType } from '../../../types/Rooms'
+import { IGameRoomData, IRoomData, RoomType } from '../../../types/Rooms'
 import { ItemType } from '../../../types/Items'
 import { phaserEvents, Event } from '../events/EventCenter'
 import WebRTC from '../web/WebRTC'
@@ -10,7 +10,6 @@ import store from '../stores'
 import { setPlayerNameMap, removePlayerNameMap, setGameSessionId } from '../stores/UserStore'
 import {
   setLobbyJoined,
-  // setJoinedRoomData,
   setJoinedGameRoomData,
   setGamePlayers,
   setAvailableBrickRooms,
@@ -24,15 +23,11 @@ import {
   pushPlayerJoinedMessage,
   pushPlayerLeftMessage,
 } from '../stores/ChatStore'
-import {
-  rainGameSlice, setRainGameState, validateInitialization
-} from '../stores/RainGameStore'
 
 export default class GameNetwork {
   private client: Client
-  private lobby!: Room | undefined
-  private room?: Room<IOfficeState>
-  // webRTC?: WebRTC
+  private lobby?: Room | undefined
+  private room?: Room<IGameState>
   mySessionId!: string
 
   constructor() {
@@ -93,35 +88,35 @@ export default class GameNetwork {
     })
   }
 
-  async joinCustomById(roomId: string, password: string | null) {
-    this.room = await this.client.joinById(roomId, { password })
-    this.initialize()
+  async joinCustomById(roomId: string, password: string | null, username: string) {
+    this.room = await this.client.joinById(roomId, { password, username })
+    this.brick_game_init()
   }
 
-  async createBrickRoom(roomData: IRoomData) {
-    const { name, description, password, autoDispose } = roomData
+  async createBrickRoom(roomData: IGameRoomData) {
+    const { name, description, password, username } = roomData
     this.room = await this.client.create(RoomType.BRICK, {  
       name,
       description,
       password,
-      autoDispose,
+      username,
     })
-    this.initialize()
+    this.brick_game_init()
   }
 
-  async createMoleRoom(roomData: IRoomData) {
-    const { name, description, password, autoDispose } = roomData
+  async createMoleRoom(roomData: IGameRoomData) {
+    const { name, description, password, username } = roomData
     this.room = await this.client.create(RoomType.MOLE, {
       name,
       description,
       password,
-      autoDispose,
+      username,
     })
     this.initialize()
   }
   
-  async createRainRoom(roomData: IRoomData) {
-    const { name, description, password, autoDispose } = roomData
+  async createRainRoom(roomData: IGameRoomData) {
+    const { name, description, password, username } = roomData
     this.room = await this.client.create(RoomType.RAIN, {
       name,
       description,
@@ -139,37 +134,37 @@ export default class GameNetwork {
     store.dispatch(setLobbyJoined(false))
     this.mySessionId = this.room.sessionId
     store.dispatch(setGameSessionId(this.room.sessionId)) 
-    // this.webRTC = new WebRTC(this.mySessionId, this)
+    // // this.webRTC = new WebRTC(this.mySessionId, this)
 
-    // new instance added to the players MapSchema
-    this.room.state.players.onAdd = (player: IPlayer, key: string) => {
-      if (key === this.mySessionId) return
+    // // new instance added to the players MapSchema
+    // this.room.state.players.onAdd = (player: IPlayer, key: string) => {
+    //   if (key === this.mySessionId) return
 
-      // track changes on every child object inside the players MapSchema
-      player.onChange = (changes) => {
-        changes.forEach((change) => {
-          const { field, value } = change
-          // phaserEvents.emit(Event.PLAYER_UPDATED, field, value, key)
+    //   // track changes on every child object inside the players MapSchema
+    //   player.onChange = (changes) => {
+    //     changes.forEach((change) => {
+    //       const { field, value } = change
+    //       // phaserEvents.emit(Event.PLAYER_UPDATED, field, value, key)
 
-          // when a new player finished setting up player name
-          if (field === 'name' && value !== '') {
-            // phaserEvents.emit(Event.PLAYER_JOINED, player, key)
-            store.dispatch(setPlayerNameMap({ id: key, name: value }))
-            store.dispatch(pushPlayerJoinedMessage(value))
-          }
-        })
-      }
-    }
+    //       // when a new player finished setting up player name
+    //       if (field === 'name' && value !== '') {
+    //         // phaserEvents.emit(Event.PLAYER_JOINED, player, key)
+    //         store.dispatch(setPlayerNameMap({ id: key, name: value }))
+    //         store.dispatch(pushPlayerJoinedMessage(value))
+    //       }
+    //     })
+    //   }
+    // }
 
-    // an instance removed from the players MapSchema
-    this.room.state.players.onRemove = (player: IPlayer, key: string) => {
-      // phaserEvents.emit(Event.PLAYER_LEFT, key)
-      // this.webRTC?.deleteVideoStream(key)
-      // this.webRTC?.deleteOnCalledVideoStream(key)
-      store.dispatch(pushPlayerLeftMessage(player.name))
-      store.dispatch(removePlayerNameMap(key))
-    }
-    
+    // // an instance removed from the players MapSchema
+    // this.room.state.players.onRemove = (player: IPlayer, key: string) => {
+    //   // phaserEvents.emit(Event.PLAYER_LEFT, key)
+    //   // this.webRTC?.deleteVideoStream(key)
+    //   // this.webRTC?.deleteOnCalledVideoStream(key)
+    //   store.dispatch(pushPlayerLeftMessage(player.name))
+    //   store.dispatch(removePlayerNameMap(key))
+    // }
+
     // when the server sends room data
     this.room.onMessage(Message.SEND_ROOM_DATA, (content) => {
       store.dispatch(setJoinedGameRoomData(content))
@@ -179,15 +174,8 @@ export default class GameNetwork {
     this.room.onMessage(Message.SEND_GAME_PLAYERS, (content) => {
       store.dispatch(setGamePlayers(content))
     })
+  }
 
-    this.room.onMessage(Message.RAIN_GAME_START, (content) => {
-      store.dispatch(setRainGameState(content))
-    })
-    this.room.onMessage(Message.SEND_RAIN_GAME_PLAYERS, (content) => {
-      console.log("이게 제대로받는거다")
-      store.dispatch(setRainGameState(content));
-    });   
-  } 
   // method to send player updates to Colyseus server
   updatePlayer(currentX: number, currentY: number, currentAnim: string) {
     this.room?.send(Message.UPDATE_PLAYER, { x: currentX, y: currentY, anim: currentAnim })

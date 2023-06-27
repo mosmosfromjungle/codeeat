@@ -12,6 +12,7 @@ import { RoomType } from '../../../../types/Rooms'
 import { closeBrickGameDialog } from '../../stores/BrickGameStore'
 import { closeMoleGameDialog } from '../../stores/MoleGameStore'
 import { closeRainGameDialog } from '../../stores/RainGameDialogStore'
+import { closeFaceChatDialog } from '../../stores/FaceChatStore'
 
 import phaserGame from '../../PhaserGame'
 import Bootstrap from '../../scenes/Bootstrap'
@@ -28,12 +29,30 @@ const Backdrop = styled.div`
   gap: 60px;
   align-items: center;
 `
+
 const Wrapper = styled.div`
   background: #222639;
   border-radius: 16px;
-  padding: 36px 60px;
+  padding: 40px 60px;
   box-shadow: 0px 0px 5px #0000006f;
+
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
 `
+
+const NewCustomRoomWrapper = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+  width: 450px;
+`
+
 const CustomRoomWrapper = styled.div`
   position: relative;
   display: flex;
@@ -41,11 +60,8 @@ const CustomRoomWrapper = styled.div`
   gap: 20px;
   align-items: center;
   justify-content: center;
-
-  .tip {
-    font-size: 18px;
-  }
 `
+
 const TitleWrapper = styled.div`
   display: grid;
   width: 100%;
@@ -64,12 +80,21 @@ const TitleWrapper = styled.div`
     align-self: center;
   }
 `
+
 const Title = styled.h1`
-  font-size: 24px;
   color: #eee;
   text-align: center;
+  font-size: 30px;
+  font-family: Font_DungGeun;
 `
 
+const RoomButton = styled.div`
+  Button {
+    margin-bottom: 30px;
+    font-size: 20px;
+    font-family: Font_DungGeun;
+  }
+`
 
 export default function GameLobbyDialog() {
   const [showCreateRoomForm, setShowCreateRoomForm] = useState(false)
@@ -77,6 +102,8 @@ export default function GameLobbyDialog() {
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
   const rainGameOpen = useAppSelector((state) => state.rainGameDialog.rainGameOpen)
+  const faceChatOpen = useAppSelector((state) => state.facechat.faceChatOpen)
+
   const dispatch = useAppDispatch()
 
   useEffect(() => {
@@ -85,6 +112,8 @@ export default function GameLobbyDialog() {
       if (brickGameOpen) bootstrap.gameNetwork.joinLobbyRoom(RoomType.BRICKLOBBY)
       if (moleGameOpen) bootstrap.gameNetwork.joinLobbyRoom(RoomType.MOLELOBBY)
       if (rainGameOpen) bootstrap.gameNetwork.joinLobbyRoom(RoomType.RAINLOBBY)
+      if (faceChatOpen) bootstrap.gameNetwork.joinLobbyRoom(RoomType.FACECHATLOBBY)
+
     } catch (error) {console.error(error)}
   })
 
@@ -95,6 +124,8 @@ export default function GameLobbyDialog() {
       if (brickGameOpen) dispatch(closeBrickGameDialog())
       if (moleGameOpen) dispatch(closeMoleGameDialog())
       if (rainGameOpen) dispatch(closeRainGameDialog())
+      if (faceChatOpen) dispatch(closeFaceChatDialog())
+
       dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
     } catch (error) {
       console.error('Error leaving the room:', error)
@@ -105,40 +136,43 @@ export default function GameLobbyDialog() {
     <>
       <Backdrop>
         <Wrapper>
+          <IconButton
+            aria-label="close dialog"
+            className="close"
+            onClick={ handleClose }
+          >
+            <CloseIcon />
+          </IconButton>
+
           {lobbyJoined && showCreateRoomForm ? (
-            <CustomRoomWrapper>
+            <NewCustomRoomWrapper>
               <TitleWrapper>
-                <IconButton className="back-button" onClick={() => setShowCreateRoomForm(false)}>
-                  <ArrowBackIcon />
-                </IconButton>
-                <Title>Create Custom Room</Title>
+                  <IconButton className="back-button" onClick={() => setShowCreateRoomForm(false)}>
+                    <ArrowBackIcon />
+                  </IconButton>
+                <Title>새로운 게임방 만들기</Title>
               </TitleWrapper>
               <CreateRoomForm />
-            </CustomRoomWrapper>
+            </NewCustomRoomWrapper>
           ) : (
             <CustomRoomWrapper>
               <TitleWrapper>
                 <Title>
-                  Game Selection
+                  방 선택
                 </Title>
               </TitleWrapper>
               <CustomRoomTable />
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={() => setShowCreateRoomForm(true)}
-              >
-                Create new room
-              </Button>
+              <RoomButton>
+                <Button
+                  variant="contained"
+                  size="large" 
+                  onClick={() => setShowCreateRoomForm(true)}
+                >
+                  게임방 만들기
+                </Button>
+              </RoomButton>
             </CustomRoomWrapper>
           )}
-          <IconButton
-            aria-label="close dialog"
-            className="close"
-            onClick={handleClose}
-          >
-            <CloseIcon />
-          </IconButton>
         </Wrapper>
       </Backdrop>
     </>

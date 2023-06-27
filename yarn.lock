@@ -73,6 +73,11 @@
   resolved "https://registry.npmjs.org/@colyseus/schema/-/schema-1.0.34.tgz"
   integrity sha512-2PfCqu9dJlfbkQsxGi9oM+fAmWpPeMLol6tazRdBxb5mj8QykUzRFMY4pipBlUB2tkQ4qidoRMQqjVHj2HznNg==
 
+"@colyseus/schema@^2.0.10":
+  version "2.0.10"
+  resolved "https://registry.yarnpkg.com/@colyseus/schema/-/schema-2.0.10.tgz#c96c6a45a979dfe616eb0be84cefb26926a7b04b"
+  integrity sha512-bNBXZgkbk83jBYEV3dzkj9LA/Wokf7BqxOZ07N8MFI3/j9DBfMtptSldmj5zOFrVBcAQeeQU2kd0PiEID96uJg==
+
 "@colyseus/ws-transport@^0.14.21":
   version "0.14.21"
   resolved "https://registry.npmjs.org/@colyseus/ws-transport/-/ws-transport-0.14.21.tgz"

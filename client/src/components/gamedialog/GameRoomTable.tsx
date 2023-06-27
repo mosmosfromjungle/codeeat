@@ -27,9 +27,10 @@ import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore'
 
 const MessageText = styled.p`
   margin: 10px;
-  font-size: 18px;
   color: #eee;
   text-align: center;
+  font-size: 20px;
+  font-family: Font_DungGeun;
 `
 const CustomRoomTableContainer = styled(TableContainer) <{
   component: React.ElementType
@@ -95,11 +96,13 @@ export const CustomRoomTable = () => {
   const character = useAppSelector((state) => state.user.character)
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
+  const faceChatOpen = useAppSelector((state) => state.facechat.faceChatOpen)
   const rainGameOpen = useAppSelector((state) => state.rainGameDialog.rainGameOpen)
   const availableRooms = useAppSelector((state) => {
     if (brickGameOpen) return state.room.availableRooms.brickRooms
     if (moleGameOpen) return state.room.availableRooms.moleRooms
     if (rainGameOpen) return state.room.availableRooms.rainRooms
+    if (faceChatOpen) return state.room.availableRooms.faceChatRooms
     return []
   })
 
@@ -108,12 +111,8 @@ export const CustomRoomTable = () => {
   const handleJoinClick = (roomId: string, password: string | null) => {
     if (!lobbyJoined) return
     const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-    bootstrap.gameNetwork.joinCustomById(roomId, password).then(() => {
-      bootstrap.gameNetwork.updatePlayer(0, 0, `${character}_idle_down`)
-      bootstrap.gameNetwork.updatePlayerName(username)
+    bootstrap.gameNetwork.joinCustomById(roomId, password, username).then(() => {
       dispatch(setDialogStatus(DIALOG_STATUS.GAME_WELCOME))
-      // setTimeout(() => {
-      // }, 100);
     }).catch((error) => {
         console.error(error)
         if (password) setShowPasswordError(true)
@@ -136,8 +135,10 @@ export const CustomRoomTable = () => {
   }
 
   return availableRooms.length === 0 ? (
-    <MessageText>There are no custom rooms now, create one or join the public lobby.</MessageText>
-  ) : (
+    <MessageText>
+      아직 만들어진 방이 없어요. 방을 만들어 친구들과 게임을 시작하세요 !
+    </MessageText>
+    ) : (
     <>
       <CustomRoomTableContainer component={Paper}>
         <Table>

@@ -2,6 +2,7 @@ import Phaser from 'phaser'
 
 // import { debugDraw } from '../utils/debug'
 import Network from '../services/Network'
+import Network2 from '../services/Network2'
 // import GameNetwork from '../services/GameNetwork'
 
 import Item from '../items/Item'
@@ -22,13 +23,13 @@ import { PlayerBehavior } from '../../../types/PlayerBehavior'
 import { createCharacterAnims } from '../anims/CharacterAnims'
 
 import store from '../stores'
-import { setFocused, setShowChat, setShowDM } from '../stores/ChatStore'
+import { setFocused, setShowChat } from '../stores/ChatStore'
+import { setShowDMList, setShowDM, setShowDMRoom } from '../stores/DMStore'
 import { NavKeys, Keyboard } from '../../../types/KeyboardState'
 
 export default class Game extends Phaser.Scene {
   network!: Network
-  // gameNetwork!: GameNetwork // Scene에는 포함되어있을 필요가 없어 주석처리 
-  // network2!: Network2
+  network2!: Network2
   private cursors!: NavKeys
   private keyE!: Phaser.Input.Keyboard.Key
   private keyR!: Phaser.Input.Keyboard.Key
@@ -40,7 +41,7 @@ export default class Game extends Phaser.Scene {
   private brickgameMap = new Map<String, BrickGame>()
   private molegameMap = new Map<String, MoleGame>()
   private raingameMap = new Map<string, RainGame>()
-  private facechatMap = new Map<String, FaceChat>()
+  facechatMap = new Map<String, FaceChat>()
 
   constructor() {
     super('game')
@@ -63,6 +64,8 @@ export default class Game extends Phaser.Scene {
     this.input.keyboard.on('keydown-ESC', (event) => {
       store.dispatch(setShowChat(false))
       store.dispatch(setShowDM(false))
+      // store.dispatch(setShowDMRoom(false))
+      store.dispatch(setShowDMList(false))
     })
   }
 
@@ -78,6 +81,8 @@ export default class Game extends Phaser.Scene {
     this.input.keyboard.on('keydown-ESC', (event) => {
       store.dispatch(setShowChat(false))
       store.dispatch(setShowDM(false))
+      store.dispatch(setShowDMRoom(false))
+      store.dispatch(setShowDMList(false))
     })
   }
 
@@ -107,83 +112,41 @@ export default class Game extends Phaser.Scene {
     // groundLayer.setCollisionByProperty({ collides: true })
     // ******************************* //
 
-    const schoolImage = this.map.addTilesetImage('School', 'School')
-
-    const genericImage = this.map.addTilesetImage('Generic', 'Generic')
-
-    const campingImage = this.map.addTilesetImage('camping', 'camping')
-
-    const floorTilesImage = this.map.addTilesetImage('floorTiles', 'floorTiles')
-
-    // const interiorsImage = this.map.addTilesetImage('Interiors', 'Interiors')
-
-    const codeEatInteriorsImage = this.map.addTilesetImage('codeEatInteriors', 'codeEatInteriors')
-
-    const ModernExteriorsFinalImage = this.map.addTilesetImage('ModernExteriorsFinal', 'ModernExteriorsFinal')
-
-    const modernExteriorsImage = this.map.addTilesetImage('ModernExteriorsComplete', 'ModernExteriorsComplete')
-
-    const tilesetsImage = this.map.addTilesetImage('Tilesets', 'Tilesets')
-
-    const treeImage = this.map.addTilesetImage('tree', 'tree')
-
-    const interiorImage = this.map.addTilesetImage('interior', 'interior')
-
-    // const benchImage = this.map.addTilesetImage('bench', 'bench')
-
-    const codeEatChairImage = this.map.addTilesetImage('codeEatChair', 'codeEatChair')
-
-    // const picnic2Image = this.map.addTilesetImage('picnic2', 'picnic2')
+    const buildingsImage = this.map.addTilesetImage('buildings', 'buildings')
+    const foregroundImage = this.map.addTilesetImage('foreground', 'foreground')
+    const groundImage = this.map.addTilesetImage('ground', 'ground')
+    const secondlayerImage = this.map.addTilesetImage('secondlayer', 'secondlayer')
+    const shadowImage = this.map.addTilesetImage('shadow', 'shadow')
+    const wallImage = this.map.addTilesetImage('wall', 'wall')
 
     this.map.createLayer('ground', [
-      genericImage,
-      campingImage,
-      modernExteriorsImage,
-      ModernExteriorsFinalImage,
-      tilesetsImage,
-      schoolImage,
-      floorTilesImage,
+      groundImage,
     ]);
 
     this.map.createLayer('wall', [
-      codeEatInteriorsImage,
-      ModernExteriorsFinalImage,
-      modernExteriorsImage,
-      schoolImage,
+      wallImage,
     ]);
 
     this.map.createLayer('shadow', [
-      modernExteriorsImage,
-      campingImage,
-      floorTilesImage,
+      shadowImage,
     ]);
 
     const buildingsLayer = this.map.createLayer('buildings', [
-      modernExteriorsImage,
-      ModernExteriorsFinalImage,
-      schoolImage,
-      codeEatInteriorsImage,
-      campingImage,
-      treeImage,
-      codeEatChairImage,
+      buildingsImage,
     ]);
 
     const secondGroundLayer = this.map.createLayer('secondground', [
-      interiorImage
+      secondlayerImage,
     ]);
 
     const fenceLayer = this.map.createLayer('fence', [
-      interiorImage
+      secondlayerImage,
     ]);
 
     const foreGroundLayer = this.map.createLayer('foreground', [
-      modernExteriorsImage,
-      ModernExteriorsFinalImage,
-      codeEatInteriorsImage,
-      schoolImage,
-      campingImage,
-      treeImage,
+      foregroundImage,
     ]);
+
 
 
     // thirdGroundLayer.setDepth(6500);
@@ -250,13 +213,13 @@ export default class Game extends Phaser.Scene {
       this.molegameMap.set(id, item)
     })
 
-    // ***아바타 화상채팅 상호작용 아이템 추가 코드*** 
+    /* Face Chat */
     const facechats = this.physics.add.staticGroup({ classType: FaceChat })
     const facechatLayer = this.map.getObjectLayer('facechat')
     facechatLayer.objects.forEach((obj, i) => {
       const item = this.addObjectFromTiled(facechats, obj, 'bench', 'bench') as FaceChat
       const id = `${i}`
-      item.id = id
+      item.faceChatId = id
       this.facechatMap.set(id, item)
     })
 
@@ -415,6 +378,9 @@ export default class Game extends Phaser.Scene {
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.removeCurrentUser(playerId)
+    } else if (itemType === ItemType.FACECHAT) {
+      const facechat = this.facechatMap.get(itemId)
+      facechat?.removeCurrentUser(playerId)
     }
   }
 

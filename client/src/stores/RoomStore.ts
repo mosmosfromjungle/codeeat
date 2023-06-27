@@ -1,14 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Room, RoomAvailable } from 'colyseus.js'
 import { RoomType } from '../../../types/Rooms'
-
+import { IPlayer } from '../../../types/IOfficeState'
 interface RoomInterface extends RoomAvailable {
   name?: string
 }
 
 export interface PlayersInterface {
   name: string
-  texture: string
+  // texture: string
 }
 
 /**
@@ -30,6 +30,10 @@ const isRainRoom = (room: RoomInterface) => {
   return room.name === RoomType.RAIN
 }
 
+const isFaceChatRoom = (room: RoomInterface) => {
+  return room.name === RoomType.FACECHAT
+}
+
 export const roomSlice = createSlice({
   name: 'room',
   initialState: {
@@ -42,12 +46,14 @@ export const roomSlice = createSlice({
     gameRoomId: '',
     gameRoomName: '',
     gameRoomDescription: '',
+    players: new Array<IPlayer>(),
     gamePlayers: new Array<PlayersInterface>(),
     availableRooms: {
       generalRooms: new Array<RoomAvailable>(),
       brickRooms: new Array<RoomAvailable>(),
       moleRooms: new Array<RoomAvailable>(),
       rainRooms: new Array<RoomAvailable>(),
+      faceChatRooms: new Array<RoomAvailable>(),
     }
   },
   reducers: {
@@ -91,6 +97,9 @@ export const roomSlice = createSlice({
     setAvailableRainRooms: (state, action: PayloadAction<RoomAvailable[]>) => {
       state.availableRooms.rainRooms = action.payload.filter((room) => isRainRoom(room))
     },
+    setAvailableFaceChatRooms: (state, action: PayloadAction<RoomAvailable[]>) => {
+      state.availableRooms.faceChatRooms = action.payload.filter((room) => isFaceChatRoom(room))
+    },
     addAvailableRooms: (state, action: PayloadAction<{ roomId: string; room: RoomAvailable }>) => {
       // if (!isCustomRoom(action.payload.room)) return
       if (isCustomRoom(action.payload.room)) {
@@ -129,6 +138,15 @@ export const roomSlice = createSlice({
         } else {
           state.availableRooms.rainRooms.push(action.payload.room)
         }
+      } else if (isFaceChatRoom(action.payload.room)) {
+        const roomIndex = state.availableRooms.faceChatRooms.findIndex(
+          (room) => room.roomId === action.payload.roomId
+        )
+        if (roomIndex !== -1) {
+          state.availableRooms.faceChatRooms[roomIndex] = action.payload.room
+        } else {
+          state.availableRooms.faceChatRooms.push(action.payload.room)
+        }
       }
     },
     removeAvailableRooms: (state, action: PayloadAction<string>) => {
@@ -136,6 +154,10 @@ export const roomSlice = createSlice({
       state.availableRooms.brickRooms = state.availableRooms.brickRooms.filter((room) => room.roomId !== action.payload)
       state.availableRooms.moleRooms = state.availableRooms.moleRooms.filter((room) => room.roomId !== action.payload)
       state.availableRooms.rainRooms = state.availableRooms.rainRooms.filter((room) => room.roomId !== action.payload)
+      state.availableRooms.faceChatRooms = state.availableRooms.faceChatRooms.filter((room) => room.roomId !== action.payload)
+    },
+    setRoomPlayers: (state, action: PayloadAction<IPlayer[]>) => {
+      state.players = action.payload;
     },
   },
 })
@@ -151,8 +173,10 @@ export const {
   setAvailableBrickRooms,
   setAvailableMoleRooms,
   setAvailableRainRooms,
+  setAvailableFaceChatRooms,
   addAvailableRooms,
   removeAvailableRooms,
+  setRoomPlayers,
 } = roomSlice.actions
 
 export default roomSlice.reducer
