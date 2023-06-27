@@ -24,6 +24,9 @@ import {
   pushPlayerJoinedMessage,
   pushPlayerLeftMessage,
 } from '../stores/ChatStore'
+import {
+  setRainGameState
+} from '../stores/RainGameStore'
 
 export default class GameNetwork {
   private client: Client
@@ -186,6 +189,11 @@ export default class GameNetwork {
     this.room.onMessage(Message.SEND_GAME_PLAYERS, (content) => {
       store.dispatch(setGamePlayers(content))
     })
+
+    this.room.onMessage(Message.SEND_RAIN_GAME_PLAYERS, (content)=>{
+      console.log("만든단어 잘받았다 서버야!")
+      store.dispatch(setRainGameState(content))
+    })
   }
 
   // method to send player updates to Colyseus server
@@ -300,7 +308,6 @@ export default class GameNetwork {
   }
   // Rain Game
   startRainGame() {
-    console.log("1. 게임 초기화 과정이 진행된다!")
     this.room?.send(Message.RAIN_GAME_START);
   }
   MakingWord(){

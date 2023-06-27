@@ -97,6 +97,7 @@ const RoomButton = styled.div`
 `
 
 export default function GameLobbyDialog() {
+  console.log("내가원인임 ㅋ")
   const [showCreateRoomForm, setShowCreateRoomForm] = useState(false)
   const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)

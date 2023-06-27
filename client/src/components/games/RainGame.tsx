@@ -31,6 +31,7 @@ const ScoreInfo = ({ score, coin }) => (
 );
 
 export function RainGame() {
+    console.log("게임컴포넌트 몇번실행되는지 세보자")
     const dispatch = useDispatch();
     const keywordInput = useRef<HTMLInputElement>(null);
     const rainGameState = useSelector((state: RootState) => state.raingame);
@@ -44,14 +45,11 @@ export function RainGame() {
     const [items, setItems] = useState([]);
 
     useEffect(() => {
-        console.log("RainGame component mounted");
         bootstrap.gameNetwork.MakingWord();
         
         const timeInterval = setInterval(() => {
             setTime(prevTime => Math.max(prevTime -1, 0));
             }, 1000);
-
-        
 
         const updateKeywordsInterval = setInterval(() => {
             dispatch(updateKeywords({ owner : 'A' }));
@@ -73,8 +71,6 @@ export function RainGame() {
             keywordInput.current.value = '';
         }
     };
-    console.log("RainGame component rendering");
-
     console.log("Words array:", rainGameStateA?.words);
     console.log("Words array:", rainGameStateB?.words);
     return (

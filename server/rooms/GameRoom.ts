@@ -91,7 +91,7 @@ export class GameRoom extends Room<GameState> {
     });
 
     this.onMessage(Message.SEND_RAIN_GAME_PLAYERS, (content) => {
-      console.log("만들라는 명령 서버가 받았습니다.")
+
       this.startGeneratingKeywords();
       
     })
@@ -201,7 +201,6 @@ export class GameRoom extends Room<GameState> {
   
         this.state.rainGameStates.forEach((RainGameState, owner) => {
           this.broadcast(Message.SEND_RAIN_GAME_PLAYERS, RainGameState);
-          console.log("만든 단어 서버가 보냈습니다.")
         });
         
         // Schedule the next execution

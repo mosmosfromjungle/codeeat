@@ -122,15 +122,10 @@ export const rainGameSlice = createSlice({
             for (let i = gameState.words.length - 1; i >= 0; i--) {
                 const keywordRain = gameState.words[i];
                 keywordRain.y += keywordRain.speed;
-                console.log(`KeywordRain[${i}]: y=${keywordRain.y}`);
         
                 if(!keywordRain.rendered){
-                    keywordRain.rendered=true;
-                    console.log(`Removing rendered KeywordRain[${i}]`);
-                } else{
-                    console.log(`KeywordRain[$({1}]: y=${keywordRain.y}`);
-                }
-
+                    keywordRain.rendered=true;  
+                } 
                 if (keywordRain.y > lineHeight) {
                     gameState.words.splice(i,1);
                     shouldDecrementHeart = true;
