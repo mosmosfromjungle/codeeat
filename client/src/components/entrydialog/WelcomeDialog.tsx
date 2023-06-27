@@ -48,7 +48,7 @@ const Wrapper = styled.form`
 `
 const Title = styled.h3`
   margin: 5px;
-  font-size: 25px;
+  font-size: 30px;
   color: #c2c2c2;
   text-align: center;
 `

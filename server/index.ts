@@ -8,12 +8,14 @@ import authRouter from './routes/auth';
 import friendsRouter from './routes/friends';
 import dmRouter from './routes/lastdm'
 import molegameRouter from './routes/molegame';
+// import socialRoutes from "@colyseus/social/express"
 
-import { DMController } from './controllers/DMControllers'
-import { Socket } from 'socket.io'
+import { connectDB } from './DB/db'
 import { SkyOffice } from './rooms/SkyOffice'
 import { GameRoom } from './rooms/GameRoom'
-import { connectDB } from './DB/db'
+import { BrickGameRoom } from './rooms/BrickGameRoom'
+import { DMController } from './controllers/DMControllers'
+import { Socket } from 'socket.io'
 
 // const mongoose = require('mongoose')
 // var cookieParser = require('cookie-parser')
@@ -66,7 +68,7 @@ mainServer.define(RoomType.MOLELOBBY, LobbyRoom)
 mainServer.define(RoomType.RAINLOBBY, LobbyRoom)
 mainServer.define(RoomType.FACECHATLOBBY, LobbyRoom)
 
-mainServer.define(RoomType.BRICK, GameRoom).enableRealtimeListing()
+mainServer.define(RoomType.BRICK, BrickGameRoom).enableRealtimeListing()
 mainServer.define(RoomType.MOLE, GameRoom).enableRealtimeListing()
 mainServer.define(RoomType.RAIN, GameRoom).enableRealtimeListing()
 mainServer.define(RoomType.FACECHAT, GameRoom).enableRealtimeListing()

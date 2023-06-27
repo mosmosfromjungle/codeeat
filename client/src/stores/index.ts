@@ -5,6 +5,7 @@ import chatReducer from './ChatStore'
 import roomReducer from './RoomStore'
 import moleGameReducer from './MoleGameStore'
 import brickGameReducer from './BrickGameStore'
+import rainGameDialogReducer from './RainGameDialogStore'
 import rainGameReducer from './RainGameStore'
 import dmReducer from './DMStore'
 import faceChatReducer from './FaceChatStore'
@@ -17,6 +18,7 @@ const rootReducer = {
   room: roomReducer,
   molegame: moleGameReducer,
   brickgame: brickGameReducer,
+  rainGameDialog: rainGameDialogReducer,
   raingame: rainGameReducer,
   dm: dmReducer,
   facechat: faceChatReducer,

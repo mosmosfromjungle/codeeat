@@ -2,11 +2,14 @@ import { Schema, ArraySchema, SetSchema, MapSchema, type } from '@colyseus/schem
 import {
   IPlayer,
   IOfficeState,
-  IMoleGame,
-  IBrickGame,
-  IRainGame,
-  IFaceChat,
+  // IMoleGame,
+  // IBrickGame,
+  // IRainGame,
+  // IFaceChat,
   IChatMessage,
+  // IRainGameState,
+  // IKeywordRain,
+  // IRainGameUser,
 } from '../../../types/IOfficeState'
 
 export class Player extends Schema implements IPlayer {
@@ -18,20 +21,20 @@ export class Player extends Schema implements IPlayer {
   @type('boolean') videoConnected = false
 }
 
-export class BrickGame extends Schema implements IBrickGame {
-  // @type('string') roomId = getRoomId()
-  @type({ set: 'string' }) connectedUser = new SetSchema<string>()
-}
+// export class BrickGame extends Schema implements IBrickGame {
+//   // @type('string') roomId = getRoomId()
+//   @type({ set: 'string' }) connectedUser = new SetSchema<string>()
+// }
 
-export class MoleGame extends Schema implements IMoleGame {
-  // @type('string') roomId = getRoomId()
-  @type({ set: 'string' }) connectedUser = new SetSchema<string>()
-}
+// export class MoleGame extends Schema implements IMoleGame {
+//   // @type('string') roomId = getRoomId()
+//   @type({ set: 'string' }) connectedUser = new SetSchema<string>()
+// }
 
-export class RainGame extends Schema implements IRainGame {
-  // @type('string') roomId = getRoomId()
-  @type({ set: 'string' }) connectedUser = new SetSchema<string>()
-}
+// export class RainGame extends Schema implements IRainGame {
+//   // @type('string') roomId = getRoomId()
+//   @type({ set: 'string' }) connectedUser = new SetSchema<string>()
+// }
 
 export class ChatMessage extends Schema implements IChatMessage {
   @type('string') author = ''
@@ -39,30 +42,38 @@ export class ChatMessage extends Schema implements IChatMessage {
   @type('string') content = ''
 }
 
-export class FaceChat extends Schema implements IFaceChat {
-  // @type('string') roomId = getRoomId()
-  @type({ set: 'string' }) connectedUser = new SetSchema<string>()
-}
+
+
+// export class FaceChat extends Schema implements IFaceChat {
+//   // @type('string') roomId = getRoomId()
+//   @type({ set: 'string' }) connectedUser = new SetSchema<string>()
+// }
 
 export class OfficeState extends Schema implements IOfficeState {
   @type({ map: Player })
   players = new MapSchema<Player>()
 
-  @type({ map: MoleGame })
-  molegames = new MapSchema<MoleGame>()
+  // @type({ map: MoleGame })
+  // molegames = new MapSchema<MoleGame>()
 
-  @type({ map: BrickGame })
-  brickgames = new MapSchema<BrickGame>()
+  // @type({ map: BrickGame })
+  // brickgames = new MapSchema<BrickGame>()
 
-  @type({ map: RainGame })
-  raingames = new MapSchema<RainGame>()
+  // @type({ map: RainGame })
+  // raingames = new MapSchema<RainGame>()
 
   @type([ChatMessage])
   chatMessages = new ArraySchema<ChatMessage>()
 
-  @type({ map: FaceChat })
-  faceChats = new MapSchema<FaceChat>()
+  // @type({ map: RainGameState })
+  // rainGameStates = new MapSchema<RainGameState>()
+  // @type({ map: FaceChat })
+  // faceChats = new MapSchema<FaceChat>()
 }
+
+
+
+
 
 // export const RainGameRoomIds = new Set<string>()
 // export const moleGameRoomIds = new Set<string>()

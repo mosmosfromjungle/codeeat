@@ -20,6 +20,29 @@ export enum Message {
   // Server
   SEND_GAME_PLAYERS,
 
+  // ***** RAIN GAME *****
+  // Client  
+  UPDATE_RAIN_GAME_PLAY,
+  RAIN_GAME_START,
+  // Server
+  SEND_RAIN_GAME_PLAYERS,  
+ 
+
+  // ***** Brick Game *****
+  // Client
+  // BRICK_GAME_READY,  // 플레이어 준비 상태 한번 더 확인?
+  BRICK_GAME_COMMAND,
+  // Server
+  BRICK_GAME_ERROR,
+  BRICK_GAME_STATE,
+  BRICK_PLAYER_UPDATE,
+  
+  // ***** MOLE GAME *****
+  SEND_MOLE,
+  RECEIVE_MOLE,
+  SEND_MY_POINT,
+  RECEIVE_YOUR_POINT,
+
   // ***** NOT USED *****
   // CONNECT_TO_MOLEGAME,
   // DISCONNECT_FROM_MOLEGAME,
@@ -29,10 +52,4 @@ export enum Message {
   // DISCONNECT_FROM_TYPINGGAME,  
   // DISABLE_GAME_PLAYER,
   // REACTIVATE_GAME_PLAYER,
-
-  // ***** MOLE GAME *****
-  SEND_MOLE,
-  RECEIVE_MOLE,
-  SEND_MY_POINT,
-  RECEIVE_YOUR_POINT,
 }

@@ -58,7 +58,7 @@ function App() {
   // ↓ Game Dialog
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
-  const rainGameOpen = useAppSelector((state) => state.raingame.rainGameOpen)
+  const rainGameOpen = useAppSelector((state) => state.rainGameDialog.rainGameOpen)
   const faceChatOpen = useAppSelector((state) => state.facechat.faceChatOpen)
 
   // ↓ HelperButtonGroup Dialog
