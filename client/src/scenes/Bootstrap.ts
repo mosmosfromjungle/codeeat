@@ -1,16 +1,16 @@
 import Phaser from 'phaser'
-import Network from '../services/Network'
-import Network2 from '../services/Network2'
-import { BackgroundMode } from '../../../types/BackgroundMode'
 import store from '../stores'
 import { setRoomJoined } from '../stores/RoomStore'
 import { BackgroundMode } from '../../../types/BackgroundMode'
 import Network from '../services/Network'
+import Network2 from '../services/Network2'
 import GameNetwork from '../services/GameNetwork'
 
 export default class Bootstrap extends Phaser.Scene {
   private preloadComplete = false
   network!: Network
+  network2!: Network2
+  gameNetwork!: GameNetwork
 
   constructor() {
     super('bootstrap')
