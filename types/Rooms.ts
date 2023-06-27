@@ -18,3 +18,11 @@ export interface IRoomData {
   password: string | null
   autoDispose: boolean
 }
+
+export interface IGameRoomData {
+  name: string
+  description: string
+  password: string | null
+  // autoDispose: boolean
+  username: string
+}

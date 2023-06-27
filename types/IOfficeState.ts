@@ -9,20 +9,20 @@ export interface IPlayer extends Schema {
   videoConnected: boolean
 }
 
-export interface IBrickGame extends Schema {
-  // roomId: string
-  connectedUser: SetSchema<string>
-}
+// export interface IBrickGame extends Schema {
+//   // roomId: string
+//   connectedUser: SetSchema<string>
+// }
 
-export interface IMoleGame extends Schema {
-  // roomId: string
-  connectedUser: SetSchema<string>
-}
+// export interface IMoleGame extends Schema {
+//   // roomId: string
+//   connectedUser: SetSchema<string>
+// }
 
-export interface IRainGame extends Schema {
-  // roomId: string
-  connectedUser: SetSchema<string>
-}
+// export interface IRainGame extends Schema {
+//   // roomId: string
+//   connectedUser: SetSchema<string>
+// }
 
 export interface IChatMessage extends Schema {
   author: string
@@ -32,15 +32,8 @@ export interface IChatMessage extends Schema {
 
 export interface IOfficeState extends Schema {
   players: MapSchema<IPlayer>
-  molegames: MapSchema<IMoleGame>
-  brickgames: MapSchema<IBrickGame>
-  raingames: MapSchema<IRainGame>
-  chatMessages: ArraySchema<IChatMessage>
-}
-
-// export interface IGameState extends Schema {
-//   players: MapSchema<IPlayer>
   // molegames: MapSchema<IMoleGame>
   // brickgames: MapSchema<IBrickGame>
-  // typinggames: MapSchema<ITypingGame>
-// }
+  // raingames: MapSchema<IRainGame>
+  chatMessages: ArraySchema<IChatMessage>
+}

@@ -7,7 +7,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 
-import { IRoomData, RoomType } from '../../../../types/Rooms'
+import { IGameRoomData, RoomType } from '../../../../types/Rooms'
 import { useAppSelector, useAppDispatch } from '../../hooks'
 import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore'
 
@@ -22,12 +22,6 @@ const CreateRoomFormWrapper = styled.form`
 `
 
 export const CreateRoomForm = () => {
-  const [values, setValues] = useState<IRoomData>({
-    name: '',
-    description: '',
-    password: null,
-    autoDispose: true,
-  })
   const [showPassword, setShowPassword] = useState(false)
   const [nameFieldEmpty, setNameFieldEmpty] = useState(false)
   const [descriptionFieldEmpty, setDescriptionFieldEmpty] = useState(false)
@@ -39,7 +33,14 @@ export const CreateRoomForm = () => {
   const rainGameOpen = useAppSelector((state) => state.raingame.rainGameOpen)
   const dispatch = useAppDispatch()
 
-  const handleChange = (prop: keyof IRoomData) => (event: React.ChangeEvent<HTMLInputElement>) => {
+  const [values, setValues] = useState<IGameRoomData>({
+    name: '',
+    description: '',
+    password: null,
+    username: username,
+  })
+
+  const handleChange = (prop: keyof IGameRoomData) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setValues({ ...values, [prop]: event.target.value })
   }
 
@@ -59,11 +60,7 @@ export const CreateRoomForm = () => {
         if (brickGameOpen) await bootstrap.gameNetwork.createBrickRoom(values)
         if (moleGameOpen) await bootstrap.gameNetwork.createMoleRoom(values)
         if (rainGameOpen) await bootstrap.gameNetwork.createRainRoom(values)
-        bootstrap.gameNetwork.updatePlayer(0, 0, `${character}_idle_down`)
-        bootstrap.gameNetwork.updatePlayerName(username)
         dispatch(setDialogStatus(DIALOG_STATUS.GAME_WELCOME))
-        // setTimeout(() => {
-        // }, 100);
       } catch (error) {
         console.error(error)
       }

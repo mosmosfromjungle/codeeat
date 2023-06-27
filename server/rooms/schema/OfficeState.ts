@@ -2,9 +2,9 @@ import { Schema, ArraySchema, SetSchema, MapSchema, type } from '@colyseus/schem
 import {
   IPlayer,
   IOfficeState,
-  IMoleGame,
-  IBrickGame,
-  IRainGame,
+  // IMoleGame,
+  // IBrickGame,
+  // IRainGame,
   IChatMessage,
 } from '../../../types/IOfficeState'
 
@@ -17,20 +17,20 @@ export class Player extends Schema implements IPlayer {
   @type('boolean') videoConnected = false
 }
 
-export class BrickGame extends Schema implements IBrickGame {
-  // @type('string') roomId = getRoomId()
-  @type({ set: 'string' }) connectedUser = new SetSchema<string>()
-}
+// export class BrickGame extends Schema implements IBrickGame {
+//   // @type('string') roomId = getRoomId()
+//   @type({ set: 'string' }) connectedUser = new SetSchema<string>()
+// }
 
-export class MoleGame extends Schema implements IMoleGame {
-  // @type('string') roomId = getRoomId()
-  @type({ set: 'string' }) connectedUser = new SetSchema<string>()
-}
+// export class MoleGame extends Schema implements IMoleGame {
+//   // @type('string') roomId = getRoomId()
+//   @type({ set: 'string' }) connectedUser = new SetSchema<string>()
+// }
 
-export class RainGame extends Schema implements IRainGame {
-  // @type('string') roomId = getRoomId()
-  @type({ set: 'string' }) connectedUser = new SetSchema<string>()
-}
+// export class RainGame extends Schema implements IRainGame {
+//   // @type('string') roomId = getRoomId()
+//   @type({ set: 'string' }) connectedUser = new SetSchema<string>()
+// }
 
 export class ChatMessage extends Schema implements IChatMessage {
   @type('string') author = ''
@@ -42,14 +42,14 @@ export class OfficeState extends Schema implements IOfficeState {
   @type({ map: Player })
   players = new MapSchema<Player>()
 
-  @type({ map: MoleGame })
-  molegames = new MapSchema<MoleGame>()
+  // @type({ map: MoleGame })
+  // molegames = new MapSchema<MoleGame>()
 
-  @type({ map: BrickGame })
-  brickgames = new MapSchema<BrickGame>()
+  // @type({ map: BrickGame })
+  // brickgames = new MapSchema<BrickGame>()
 
-  @type({ map: RainGame })
-  raingames = new MapSchema<RainGame>()
+  // @type({ map: RainGame })
+  // raingames = new MapSchema<RainGame>()
 
   @type([ChatMessage])
   chatMessages = new ArraySchema<ChatMessage>()
