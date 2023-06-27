@@ -1,22 +1,10 @@
-import { Schema, model, Document, Model } from 'mongoose';
-import { IRainGameUser } from '../controllers/RainGameControllers/types';
+import mongoose, { Schema, Document, Model } from 'mongoose';
+import { IKeywordRain } from '../../types/IOfficeState';
 
-const raingameuser = new Schema<IRainGameUser>({
-    nickname: { type: String, required: true, unique: true},
-    totalgame: {type: Number}, 
-    RainGame: {type: Number},
-    character: {type: String},
-    gamedata: {
-        //게임 화면 정보
-    },
-    ItemEvent: {
-        // 아이템 정보
-    }
-})
+const keywordRainSchema = new Schema<IKeywordRain>({
+    keyword: { type: String, required: true },
+});
 
-const raingameUser = model<IRainGameDocument>('raingameuser', raingameuser);
+const KeywordRainModel = mongoose.model<IKeywordRain>('KeywordRain', keywordRainSchema);
 
-export interface IRainGameDocument extends IRainGameUser, Document {}
-export interface IRainGameModel extends Model<IRainGameDocument> {}
-export default raingameUser;
-
+export {KeywordRainModel}

@@ -40,6 +40,15 @@ export interface IOfficeState extends Schema {
   // molegames: MapSchema<IMoleGame>
   // brickgames: MapSchema<IBrickGame>
   // raingames: MapSchema<IRainGame>
-  // faceChats: MapSchema<IFaceChat>
   chatMessages: ArraySchema<IChatMessage>
+  // rainGameStates : MapSchema<IRainGameState>
 }
+
+// export interface IGameState extends Schema {
+//   players: MapSchema<IPlayer>
+  // molegames: MapSchema<IMoleGame>
+  // brickgames: MapSchema<IBrickGame>
+  // raingames: MapSchema<IRainGame>
+  // faceChats: MapSchema<IFaceChat>
+  //chatMessages: ArraySchema<IChatMessage>
+//}

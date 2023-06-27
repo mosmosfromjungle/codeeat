@@ -2,6 +2,21 @@ import bcrypt from 'bcrypt'
 import { Room, Client, ServerError } from 'colyseus'
 import { Dispatcher } from '@colyseus/command'
 import { Message } from '../../types/Messages'
+import { RainGameStartCommand } from './commands/RainGameStartCommand'
+import { MakeWordCommand } from './commands/RainGameMakeWordCommand'
+// import {
+//   BrickGameAddUserCommand,
+//   BrickGameRemoveUserCommand,
+// } from './commands/BrickGameUpdateArrayCommand'
+// import {
+//   MoleGameAddUserCommand,
+//   MoleGameRemoveUserCommand,
+// } from './commands/MoleGameUpdateArrayCommand'
+// import {
+//   TypingGameAddUserCommand,
+//   TypingGameRemoveUserCommand,
+// } from './commands/TypingGameUpdateArrayCommand'
+// import ChatMessageUpdateCommand from './commands/ChatMessageUpdateCommand'
 import { IGameRoomData } from '../../types/Rooms'
 import { GameState, GamePlayer } from './schema/GameState'
 import PlayerUpdateCommand from './commands/PlayerUpdateCommand'
@@ -57,8 +72,36 @@ export class GameRoom extends Room<GameState> {
       })
       this.broadcastPlayersData(this)
     })
-    
 
+
+    // TODO: 각각의 게임에 필요한 정보에 맞춰 수정 필요 
+    this.onMessage(Message.UPDATE_GAME_PLAY,
+      (client, message: { x: number; y: number; anim: string }) => {
+        this.dispatcher.dispatch(new GamePlayUpdateCommand(), {
+          client,
+          anim: message.anim,
+        })
+      }
+    )
+
+    this.onMessage(Message.RAIN_GAME_START, (client) => {
+      this.dispatcher.dispatch(new RainGameStartCommand(), { client });
+      this.dispatcher.dispatch(new MakeWordCommand(), { room: this });
+      this.broadcast(Message.RAIN_GAME_START, Array.from(this.state.rainGameStates).reduce((obj, [key, value]) => (obj[key]= value, obj), {}));
+    });
+
+    this.onMessage(Message.SEND_RAIN_GAME_PLAYERS, (content) => {
+      console.log("만들라는 명령 서버가 받았습니다.")
+      this.startGeneratingKeywords();
+      
+    })
+
+  
+    // when a player is ready to connect, call the PlayerReadyToConnectCommand
+    this.onMessage(Message.READY_TO_CONNECT, (client) => {
+      const player = this.state.players.get(client.sessionId)
+      if (player) player.readyToConnect = true
+    })
     // // TODO: 각각의 게임에 필요한 정보에 맞춰 수정 필요 
     // this.onMessage(Message.UPDATE_GAME_PLAY,
     //   (client, message: { x: number; y: number; anim: string }) => {
@@ -123,8 +166,53 @@ export class GameRoom extends Room<GameState> {
     if (this.state.players.has(client.sessionId)) {
       this.state.players.delete(client.sessionId)
     }
+    // this.state.brickgames.forEach((brickgame) => {
+    //   if (brickgame.connectedUser.has(client.sessionId)) {
+    //     brickgame.connectedUser.delete(client.sessionId)
+    //   }
+    // })
+    // this.state.typinggames.forEach((typinggame) => {
+    //   if (typinggame.connectedUser.has(client.sessionId)) {
+    //     typinggame.connectedUser.delete(client.sessionId)
+    //   }
+    // })
+    // this.state.molegames.forEach((molegame) => {
+    //   if (molegame.connectedUser.has(client.sessionId)) {
+    //     molegame.connectedUser.delete(client.sessionId)
+    //   }
+    // })
+
+    function broadcastPlayersData(room: GameRoom) {
+      const players = Array.from(room.state.players.values())
+        .map((player: Player) => ({
+          name: player.name,
+          anim: player.anim,
+        }))
+      room.broadcast(Message.SEND_GAME_PLAYERS, players);
+    }
     
     this.broadcastPlayersData(this)
+  }
+
+  private startGeneratingKeywords() {
+    const generateKeywords = async () => {
+      try {
+        await this.dispatcher.dispatch(new MakeWordCommand(), { room: this });
+  
+        this.state.rainGameStates.forEach((RainGameState, owner) => {
+          this.broadcast(Message.SEND_RAIN_GAME_PLAYERS, RainGameState);
+          console.log("만든 단어 서버가 보냈습니다.")
+        });
+        
+        // Schedule the next execution
+        setTimeout(generateKeywords, 10000);
+      } catch (error) {
+        console.error('Failed to generate keywords:', error);
+      }
+    };
+
+    // Start the first execution
+    generateKeywords();
   }
 
   onDispose() {
