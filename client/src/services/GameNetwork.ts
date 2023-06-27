@@ -10,7 +10,7 @@ import store from '../stores'
 import { setPlayerNameMap, removePlayerNameMap, setGameSessionId } from '../stores/UserStore'
 import { 
   setMoleGameFriendInfo,
-  setMoleGameFriendData
+  setMoleGameFriendData,
  } from '../stores/MoleGameStore'
 import {
   setLobbyJoined,
@@ -316,5 +316,10 @@ export default class GameNetwork {
   // method to send my point to friend in mole game
   sendMyPoint(myPoint: string) {
     this.room?.send(Message.SEND_MY_POINT, { point: myPoint })
+  }
+
+  // method to send my point to friend in mole game
+  startGame() {
+    this.room?.send(Message.START_MOLE_GAME)
   }
 }

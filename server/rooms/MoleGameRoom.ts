@@ -110,7 +110,7 @@ export class MoleGameRoom extends Room<GameState> {
   }
 
   onDispose() {
-    console.log('Mole game room ', this.roomId, ' disposing ...')
+    console.log('Mole game room', this.roomId, 'disposing ...')
     this.dispatcher.stop()
   }
 
