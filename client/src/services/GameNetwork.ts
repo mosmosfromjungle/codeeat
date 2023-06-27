@@ -95,7 +95,11 @@ export default class GameNetwork {
 
   async joinCustomById(roomId: string, password: string | null, username: string) {
     this.room = await this.client.joinById(roomId, { password, username })
-    this.brick_game_init()
+    if (this.room.name === RoomType.BRICK) {
+      this.brick_game_init()
+    } else {
+      this.initialize()
+    }
   }
 
   async createBrickRoom(roomData: IGameRoomData) {
