@@ -160,30 +160,18 @@ export class GameRoom extends Room<OfficeState> {
     )
 
     this.onMessage(Message.RAIN_GAME_START, (client) => {
-      console.log("게임 시작하라는 메시지 받음")
       this.dispatcher.dispatch(new RainGameStartCommand(), { client });
       this.dispatcher.dispatch(new MakeWordCommand(), { room: this });
-      console.log("게임시작 설정함함")
-      this.broadcast(Message.SEND_RAIN_GAME_PLAYERS, this.state.rainGameStates);
+      this.broadcast(Message.RAIN_GAME_START, Array.from(this.state.rainGameStates).reduce((obj, [key, value]) => (obj[key]= value, obj), {}));
+    });
+
+    this.onMessage(Message.SEND_RAIN_GAME_PLAYERS, (content) => {
+      console.log("만들라는 명령 서버가 받았습니다.")
       this.startGeneratingKeywords();
-    });
-
-    this.onMessage(Message.SEND_RAIN_GAME_PLAYERS, (client, message: { owner: string; newState: RainGameState }) => {
-        // owner가 동일한지 확인
-        if (message.owner === message.newState.owner) {
-          // 서버 상태 업데이트
-          const updatedState = new RainGameState();
-          Object.assign(updatedState, message.newState); // newState 객체를 RainGameState 인스턴스로 복사
-          this.state.rainGameStates.set(message.owner, updatedState);
-
-          // 모든 클라이언트들에게 상태 변경을 브로드캐스팅
-          this.broadcast(Message.SEND_RAIN_GAME_PLAYERS, this.state.rainGameStates);
-        }
       
-    });
+    })
 
-
-
+  
     // when a player is ready to connect, call the PlayerReadyToConnectCommand
     this.onMessage(Message.READY_TO_CONNECT, (client) => {
       const player = this.state.players.get(client.sessionId)
@@ -284,18 +272,26 @@ export class GameRoom extends Room<OfficeState> {
     broadcastPlayersData(this)
   }
 
-  private async startGeneratingKeywords() {
-    setInterval(async () => {
-      
-      await this.dispatcher.dispatch(new MakeWordCommand(), {room: this,
-      });
-   
-      this.state.rainGameStates.forEach((RainGameState, owner)=> {
-        this.broadcast(Message.SEND_RAIN_GAME_PLAYERS, RainGameState);
-        console.log(`키워드 만들고 ${owner}에게 메시지 보냈음`)
-      });
-  }, 3000);
-}
+  private startGeneratingKeywords() {
+    const generateKeywords = async () => {
+      try {
+        await this.dispatcher.dispatch(new MakeWordCommand(), { room: this });
+  
+        this.state.rainGameStates.forEach((RainGameState, owner) => {
+          this.broadcast(Message.SEND_RAIN_GAME_PLAYERS, RainGameState);
+          console.log("만든 단어 서버가 보냈습니다.")
+        });
+        
+        // Schedule the next execution
+        setTimeout(generateKeywords, 10000);
+      } catch (error) {
+        console.error('Failed to generate keywords:', error);
+      }
+    };
+
+    // Start the first execution
+    generateKeywords();
+  }
 
   onDispose() {
     console.log('room', this.roomId, 'disposing...')

@@ -56,6 +56,7 @@ export class KeywordRain extends Schema implements IKeywordRain{
   @type('boolean') blind = false;
   @type('boolean') accel = false;
   @type('boolean') multifly = false;
+  @type('boolean') rendered = false;
 
   constructor(keyword: string) {
     super();
@@ -65,12 +66,12 @@ export class KeywordRain extends Schema implements IKeywordRain{
 
 export class RainGameState extends Schema implements IRainGameState {
   @type('string') owner = '';
-  @type('boolean') rainGameOpen = false;
   @type([ "string" ]) item: string[] = [];
   @type('number') point = 0;
   @type('number') heart = 5;
   @type('number') period = 2000;
   @type([KeywordRain]) words = new ArraySchema<KeywordRain>();
+  @type([ "string" ]) used: string[] = [];
 }
 
 export class OfficeState extends Schema implements IOfficeState {

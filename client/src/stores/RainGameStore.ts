@@ -12,61 +12,101 @@ export interface RainGameUser {
 
 export interface KeywordRain {
     owner: String,
-    y: Number,
-    speed: Number,
+    y: number,
+    speed: number,
     keyword: String,
     x: number,
     flicker: Boolean,
     blind: Boolean,
     accel: Boolean,
     multifly: Boolean,
+    rendered: Boolean,
 }
 const initialKeywordRain: KeywordRain = {
     owner: '',
     y: 0,
-    speed: 1,
+    speed: 0.2,
     keyword: '',
     x: Math.floor(Math.random() * (550 - 50 + 1)) + 50,
     flicker: false,
     blind: false,
     accel: false,
     multifly: false,
+    rendered: false,
 }
 
 export interface RainGameState {
     owner : String,
-    rainGameOpen: Boolean,
     item: String[],
-    point: Number,
-    heart: Number,
+    point: number,
+    heart: number,
     period: Number,
     words: KeywordRain[],
+    used : string[],
 };
-
-export interface RainGameStates {
-    states: RainGameState[],
-};
-
-// Define initial state
+export interface RainGameStates{
+    states:RainGameState[],
+}
 export const initialState: RainGameStates = {
     states: [],
 };
 
 // Define Slice
 export const rainGameSlice = createSlice({
+    
     name: "raingame",
     initialState,
     reducers: {
-        openRainGameDialog: (state) => {
-            if (state.heart < 1) { return }
-            state.rainGameOpen = true
-            const game = phaserGame.scene.keys.game as Game
-            game.disableKeys()
-        },
-        closeRainGameDialog: (state) => {
-            const game = phaserGame.scene.keys.game as Game
-            game.enableKeys()
-            state.rainGameOpen = false
+        validateInitialization: (state) => {
+            console.log(state.states)
+            if (state.states.length !== 2) {
+                console.error("Initialization failed: There should be two RainGameState instances.");
+                return;
+            }
+    
+            const ownerA = state.states.find(rgs => rgs.owner === 'A');
+            const ownerB = state.states.find(rgs => rgs.owner === 'B');
+    
+            if (!ownerA) {
+                console.error("Initialization failed: RainGameState with owner 'A' is missing.");
+                return;
+            }
+    
+            if (!ownerB) {
+                console.error("Initialization failed: RainGameState with owner 'B' is missing.");
+                return;
+            }
+    
+            const validateRainGameState = (rainGameState, owner) => {
+                if (rainGameState.point !== 0) {
+                    console.error(`Initialization failed: RainGameState with owner '${owner}' should have a point of 0.`);
+                    return false;
+                }
+                if (rainGameState.item.length !== 0) {
+                    console.error(`Initialization failed: RainGameState with owner '${owner}' should have an empty item array.`);
+                    return false;
+                }
+                if (rainGameState.heart !== 5) {
+                    console.error(`Initialization failed: RainGameState with owner '${owner}' should have heart set to 5.`);
+                    return false;
+                }
+                if (rainGameState.words.length !== 0) {
+                    console.error(`Initialization failed: RainGameState with owner '${owner}' should have an empty words array.`);
+                    return false;
+                }
+                if (rainGameState.used.length !== 0) {
+                    console.error(`Initialization failed: RainGameState with owner '${owner}' should have an empty used array.`);
+                    return false;
+                }
+                return true;
+            };
+    
+            const isValidA = validateRainGameState(ownerA, 'A');
+            const isValidB = validateRainGameState(ownerB, 'B');
+    
+            if (isValidA && isValidB) {
+                console.log("게임 초기화 검증 완료! 시작할 준비가 되었습니다!");
+            }
         },
 
         updateKeywords: (state, action: PayloadAction<{ owner: string }>) => {
@@ -75,21 +115,32 @@ export const rainGameSlice = createSlice({
         
             if (gameStateIndex === -1) return;
 
-            const lineHeight = window.innerHeight * 0.8;
-        
+            const lineHeight = 600;
             const gameState = state.states[gameStateIndex];
             let shouldDecrementHeart = false;
+                     
             for (let i = gameState.words.length - 1; i >= 0; i--) {
-                gameState.words[i].y += gameState.words[i].speed;
+                const keywordRain = gameState.words[i];
+                keywordRain.y += keywordRain.speed;
+                console.log(`KeywordRain[${i}]: y=${keywordRain.y}`);
+        
+                if(!keywordRain.rendered){
+                    keywordRain.rendered=true;
+                    console.log(`Removing rendered KeywordRain[${i}]`);
+                } else{
+                    console.log(`KeywordRain[$({1}]: y=${keywordRain.y}`);
+                }
 
-                if (gameState.words[i].y > lineHeight) {
-                    gameState.words.splice(i, 1);
+                if (keywordRain.y > lineHeight) {
+                    gameState.words.splice(i,1);
                     shouldDecrementHeart = true;
+                }       
             }
-        }
-        if (shouldDecrementHeart) {
+            
+        if(shouldDecrementHeart) {
             gameState.heart -= 1;
         }
+        
     },
         
         removeKeyword: (state, action: PayloadAction<{ keyword:string, owner: string }>) => {
@@ -188,22 +239,32 @@ export const rainGameSlice = createSlice({
         
         setRainGameState: (state, action: PayloadAction<RainGameState>) => {
             const receivedState = action.payload;
-      
             const existingStateIndex = state.states.findIndex((rgs) => rgs.owner === receivedState.owner);
-            if (existingStateIndex !== -1) {
-                state.states[existingStateIndex] = receivedState;
+            if (existingStateIndex !== -1) { 
+                console.log("6. 클라이언트에 초기화 진행중이다!") 
+                // 기존 words 목록을 가져오고, 배열이 아닌 경우 빈 배열로 설정
+                const existingWords = state.states[existingStateIndex].words || [];
+
+                // receivedState.words도 배열인지 확인하고, 배열이 아닌 경우 빈 배열로 설정
+                const newWords = receivedState.words || [];
+    
+                state.states[existingStateIndex].words = [...existingWords, ...newWords];
+
+                state.states[existingStateIndex] = {
+                    ...state.states[existingStateIndex],
+                    ...receivedState,
+                    words: state.states[existingStateIndex].words
+
+                }
             } else {
                 state.states.push(receivedState);
             }
-            console.log("받은 변화 적용하는 함수 호출됌")
         },
-        
     },
 });
 
 
 
-export const { updateKeywords,openRainGameDialog, closeRainGameDialog, removeKeyword, setRainGameState} = rainGameSlice.actions;
-
+export const { validateInitialization, updateKeywords, removeKeyword, setRainGameState} = rainGameSlice.actions;
 
 export default rainGameSlice.reducer

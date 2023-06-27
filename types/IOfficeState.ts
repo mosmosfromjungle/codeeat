@@ -54,16 +54,17 @@ export interface IKeywordRain extends Schema {
   blind: boolean,
   accel: boolean,
   multifly: boolean,
+  rendered: boolean,
 }
 
 export interface IRainGameState extends Schema {
   owner: string,
-  rainGameOpen: boolean,
   item: string[],
   point: number,
   heart: number,
   period: number,
-  words: ArraySchema<IKeywordRain>
+  words: ArraySchema<IKeywordRain>,
+  used: string[],
 }
 
 

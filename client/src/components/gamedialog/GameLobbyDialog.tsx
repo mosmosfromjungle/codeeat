@@ -11,7 +11,7 @@ import { CreateRoomForm } from './CreateRoomForm'
 import { RoomType } from '../../../../types/Rooms'
 import { closeBrickGameDialog } from '../../stores/BrickGameStore'
 import { closeMoleGameDialog } from '../../stores/MoleGameStore'
-import { closeRainGameDialog } from '../../stores/RainGameStore'
+import { closeRainGameDialog } from '../../stores/RainGameDialogStore'
 
 import phaserGame from '../../PhaserGame'
 import Bootstrap from '../../scenes/Bootstrap'
@@ -76,7 +76,7 @@ export default function GameLobbyDialog() {
   const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
-  const rainGameOpen = useAppSelector((state) => state.raingame.rainGameOpen)
+  const rainGameOpen = useAppSelector((state) => state.rainGameDialog.rainGameOpen)
   const dispatch = useAppDispatch()
 
   useEffect(() => {

@@ -25,7 +25,7 @@ import {
   pushPlayerLeftMessage,
 } from '../stores/ChatStore'
 import {
-  initialState,rainGameSlice,RainGameState, setRainGameState
+  rainGameSlice, setRainGameState, validateInitialization
 } from '../stores/RainGameStore'
 
 export default class GameNetwork {
@@ -180,11 +180,13 @@ export default class GameNetwork {
       store.dispatch(setGamePlayers(content))
     })
 
-    this.room.onMessage(Message.SEND_RAIN_GAME_PLAYERS, (content) => {
-      console.log("서버가 보낸 메시지 받았음!")
+    this.room.onMessage(Message.RAIN_GAME_START, (content) => {
       store.dispatch(setRainGameState(content))
     })
-    
+    this.room.onMessage(Message.SEND_RAIN_GAME_PLAYERS, (content) => {
+      console.log("이게 제대로받는거다")
+      store.dispatch(setRainGameState(content));
+    });   
   } 
   // method to send player updates to Colyseus server
   updatePlayer(currentX: number, currentY: number, currentAnim: string) {
@@ -201,12 +203,13 @@ export default class GameNetwork {
     this.room?.send(Message.READY_TO_CONNECT)
     phaserEvents.emit(Event.MY_PLAYER_READY)
 
-  this.room?.onMessage("message", (message) => {
-    console.log("서버로부터 메시지 수신", message);
-  });
   }
   startRainGame() {
-    console.log("타이핑 게임 시작!")
+    console.log("1. 게임 초기화 과정이 진행된다!")
     this.room?.send(Message.RAIN_GAME_START);
+  }
+  MakingWord(){
+    console.log("단어 만들라고 서버에게 명령함")
+    this.room?.send(Message.SEND_RAIN_GAME_PLAYERS);
   }
 }

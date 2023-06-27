@@ -1,23 +1,15 @@
-import React from 'react'
-import styled from 'styled-components'
-import IconButton from '@mui/material/IconButton'
-import CloseIcon from '@mui/icons-material/Close'
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import RainGame from './RainGame';
+import { useAppSelector, useAppDispatch } from '../../hooks';
+import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore';
+import { closeRainGameDialog } from '../../stores/RainGameDialogStore';
+import phaserGame from '../../PhaserGame';
+import Bootstrap from '../../scenes/Bootstrap';
+import { validateInitialization } from '../../stores/RainGameStore'
 
-import { useAppSelector, useAppDispatch } from '../../hooks'
-import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore'
-import { closeRainGameDialog } from '../../stores/RainGameStore'
-import RainGame from './RainGame'
-import * as Colyseus from "colyseus.js";
-import GameNetwork from '../../services/GameNetwork'
-
-
-import phaserGame from '../../PhaserGame'
-import Bootstrap from '../../scenes/Bootstrap'
-
-// import * as Colyseus from "colyseus.js";
-// var client = new Colyseus.Client('ws://localhost:5173');
-
-// 원래 패딩 : 16px, 180px, 16px, 10px
 const Backdrop = styled.div`
   position: fixed;
   top: 0;
@@ -28,7 +20,8 @@ const Backdrop = styled.div`
   padding: 16px 180px 16px 10px; 
   width: 100%;
   height: 100%;
-`
+`;
+
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
@@ -46,26 +39,47 @@ const Wrapper = styled.div`
     top: 0px;
     right: 0px;
   }
-`
+`;
 
-export default function RainGameDialog() {
-  const dispatch = useAppDispatch()
+const RainGameDialog = () => {
+  const dispatch = useAppDispatch();
+  const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap;
+
+  const [showGame, setShowGame] = useState(false);
+
+  useEffect(() => {
+    const initializeRainGame = async () => {
+      try {
+        await bootstrap.gameNetwork.startRainGame();
+        dispatch(validateInitialization());
+      } catch (error){
+        console.error("초기화 과정에서 에러 발생:",error);
+      }
+    };
+
+    initializeRainGame();
+  },[]);
+
+  const handleStartGame = () => {
+    setShowGame(true);
+  };
 
   const handleClose = () => {
     try {
-      const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-      bootstrap.gameNetwork.leaveGameRoom()
-      dispatch(closeRainGameDialog())
-      dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
+      bootstrap.gameNetwork.leaveGameRoom();
+      dispatch(closeRainGameDialog());
+      dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN));
     } catch (error) {
-      console.error('Error leaving the room:', error)
+      console.error('Error leaving the room:', error);
     }
-  }
+  };
+
 
   return (
     <Backdrop>
       <Wrapper>
-        <RainGame />
+        <button onClick={handleStartGame}>게임 시작하기</button>
+        {showGame && <RainGame />}
         {<IconButton
           aria-label="close dialog"
           className="close"
@@ -75,5 +89,7 @@ export default function RainGameDialog() {
         </IconButton>}
       </Wrapper>
     </Backdrop>
-  )
-}
+  );
+};
+
+export default RainGameDialog;

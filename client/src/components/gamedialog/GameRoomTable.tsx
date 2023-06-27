@@ -95,7 +95,7 @@ export const CustomRoomTable = () => {
   const character = useAppSelector((state) => state.user.character)
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
-  const rainGameOpen = useAppSelector((state) => state.raingame.rainGameOpen)
+  const rainGameOpen = useAppSelector((state) => state.rainGameDialog.rainGameOpen)
   const availableRooms = useAppSelector((state) => {
     if (brickGameOpen) return state.room.availableRooms.brickRooms
     if (moleGameOpen) return state.room.availableRooms.moleRooms

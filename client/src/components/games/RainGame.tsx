@@ -1,78 +1,70 @@
 import React, { useEffect, useRef, useState } from "react";
-import rain_Background from "../../../public/assets/game/RainGame/blackboard.png"
+import rain_Background from "../../../public/assets/game/RainGame/blackboard.png";
 import { useSelector, useDispatch } from 'react-redux';
 import { KeywordRain, removeKeyword, updateKeywords } from "../../stores/RainGameStore";
 import { RootState } from "../../stores";
-import flicker from "../../../public/assets/game/RainGame/flicker.png"
-import blind from "../../../public/assets/game/RainGame/blind.png"
-import accel from "../../../public/assets/game/RainGame/accel.png"
-import multiply from "../../../public/assets/game/RainGame/multify.png"
-import Bootstrap from "../../scenes/Bootstrap";
-import phaserGame from "../../PhaserGame";
+import flicker from "../../../public/assets/game/RainGame/flicker.png";
+import blind from "../../../public/assets/game/RainGame/blind.png";
+import accel from "../../../public/assets/game/RainGame/accel.png";
+import multiply from "../../../public/assets/game/RainGame/multify.png";
+import Bootstrap from '../../scenes/Bootstrap';
+import phaserGame from '../../PhaserGame';
+
+const calculateWinner = (rainGameStateA, rainGameStateB, time) => {
+    if (rainGameStateA && rainGameStateB) {
+        if (time <= 0) {
+            return rainGameStateA.points > rainGameStateB.points ? 'A' : 'B';
+        } else if (rainGameStateA.heart <= 0) {
+            return 'B';
+        } else if (rainGameStateB.heart <= 0) {
+            return 'A';
+        }
+    }
+    return null;
+};
+
+const ScoreInfo = ({ score, coin }) => (
+    <>
+        <span style={{ marginRight: "1vw", position: "relative", zIndex: 1 }}>점수: {score}</span>
+        <span style={{ marginLeft: "1vw", position: "relative", zIndex: 1 }}>Coin: {coin}</span>
+    </>
+);
 
 export function RainGame() {
-    const keywordInput = useRef<HTMLInputElement>(null);
-    const state = useSelector((state: RootState) => state.raingame);
     const dispatch = useDispatch();
-    const rainGameStateA = state.states.find(rgs => rgs.owner === 'A');
-    const rainGameStateB = state.states.find(rgs => rgs.owner === 'B');
-    const [time, setTime] = useState(100);
+    const keywordInput = useRef<HTMLInputElement>(null);
+    const rainGameState = useSelector((state: RootState) => state.raingame);
+    const rainGameDialogState = useSelector((state: RootState) => state.rainGameDialog);
+    const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap;
+    
+    const rainGameStateA = rainGameState.states.find(rgs => rgs.owner === 'A');
+    const rainGameStateB = rainGameState.states.find(rgs => rgs.owner === 'B');
+
+    const [time, setTime ] = useState(100);
+    const [items, setItems] = useState([]);
 
     useEffect(() => {
+        console.log("RainGame component mounted");
+        bootstrap.gameNetwork.MakingWord();
+        
+        const timeInterval = setInterval(() => {
+            setTime(prevTime => Math.max(prevTime -1, 0));
+            }, 1000);
 
-        const bootstrap= phaserGame.scene.keys.bootstrap as Bootstrap
-        bootstrap.gameNetwork.startRainGame()
-         
+        
+
         const updateKeywordsInterval = setInterval(() => {
-            dispatch(updateKeywords({ owner: "A" }));
-            dispatch(updateKeywords({ owner: "B" }));
-
-            dispatch(checkGameEnd({ owner: "A"}));
-            dispatch(checkGameEnd({ owner: "B"}));
-
-            if (state.time <= 0 || rainGameStateA?.heart <= 0 || rainGameStateB?.heart <= 0) {
-                dispatch(declareWinner());
+            dispatch(updateKeywords({ owner : 'A' }));
+            dispatch(updateKeywords({ owner : 'B' }));
+    
+            if (time <= 0 || rainGameStateA?.heart <= 0 || rainGameStateB?.heart <= 0) {
                 clearInterval(updateKeywordsInterval);
             }
         }, 50);
 
-        const countdownInterval = setInterval(() => {
-            setTime(prevTime => {
-                const newTime = Math.max(prevTime - 1, 0);
-                // 시간이 0이 되면 승자 선언
-                if (newTime === 0) {
-                    dispatch(declareWinner());
-                    clearInterval(countdownInterval);
-                }
-                return newTime;
-            });
-        }, 1000);
-
-        
-
-        return () => {
-            clearInterval(updateKeywordsInterval);
-            clearInterval(countdownInterval);
-        }
     }, []);
 
-    let winner = null;
-
-    // winner 계산
-    if (rainGameStateA && rainGameStateB) {
-        if (time <= 0) {
-            winner = rainGameStateA.points > rainGameStateB.points ? 'A' : 'B';
-        } else if (rainGameStateA.heart <= 0) {
-            winner = 'B';
-        } else if (rainGameStateB.heart <= 0) {
-            winner = 'A';
-        }
-    }
-
-
-
-    
-
+    const winner = calculateWinner(rainGameStateA, rainGameStateB, time);
 
     const keydown = (keyCode) => {
         if (keyCode === 13 && keywordInput.current) {
@@ -81,7 +73,10 @@ export function RainGame() {
             keywordInput.current.value = '';
         }
     };
+    console.log("RainGame component rendering");
 
+    console.log("Words array:", rainGameStateA?.words);
+    console.log("Words array:", rainGameStateB?.words);
     return (
         <>
             {/* Time Section */}
@@ -111,6 +106,9 @@ export function RainGame() {
                 }}>
                     <div style={{ position: "absolute", top: "1vh", left: "1vw", color: '#FFFFFF', fontSize: '1.5vw' }}>나</div>
                     {rainGameStateA && rainGameStateA.words.map((item: KeywordRain, index :number)=> {
+                        if(item.y > window.innerHeight*0.8){
+                            return null;
+                        }
                         let backgroundImage = '';
                         if (item.flicker) {
                             backgroundImage = `url(${flicker})`;
@@ -155,6 +153,9 @@ export function RainGame() {
                 }}>
                     <div style={{ position: "absolute", top: "1vh", left: "1vw", color: '#FFFFFF', fontSize: '1.5vw' }}>상대편</div>
                     {rainGameStateB && rainGameStateB.words.map((item: KeywordRain, index: number) => {
+                        if(item.y > window.innerHeight*0.8){
+                            return null;
+                        }
                         let backgroundImage = '';
                         if (item.flicker) {
                             backgroundImage = `url(${flicker})`;
@@ -213,13 +214,11 @@ export function RainGame() {
                         style={{ marginRight: "1vw", fontSize: "1vw" }}
                     />
                     <button onClick={() => keydown(13)} style={{ marginRight: "1vw", fontSize: "1vw" }}>입력</button>
-                    <span style={{ marginRight: "1vw", position: "relative", zIndex: 1 }}>점수: {state.point}</span>
-                    <span style={{ marginLeft: "1vw", position: "relative", zIndex: 1 }}>Coin: {state.heart}</span>
+                    <ScoreInfo score={rainGameState.states[0].point} coin={rainGameState.states[0].heart} />
                 </div>
                 {/* Score Section - Right Side */}
                 <div style={{ flex: 1, textAlign: "center" }}>
-                    <span style={{ marginRight: "1vw", position: "relative", zIndex: 1 }}>점수: {state.point}</span>
-                    <span style={{ marginLeft: "1vw", position: "relative", zIndex: 1 }}>Coin: {state.heart}</span>
+                <ScoreInfo score={rainGameState.states[0].point} coin={rainGameState.states[0].heart} />
                 </div>
             </div>
         </>
