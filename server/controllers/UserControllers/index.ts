@@ -60,10 +60,10 @@ export const signUp = async (req: Request, res: Response) => {
             message: 'error - password missing',
         })
     }
-    if (!user.username) {
+    if (!user.userName) {
         return res.status(400).json({
             status: 400,
-            message: 'error - username missing',
+            message: 'error - userName missing',
         })
     }
     if (!user.character) {
@@ -83,7 +83,7 @@ export const signUp = async (req: Request, res: Response) => {
     }
 
     /* 닉네임 중복확인 */
-    const foundUsername = await User.findOne({ username: user.username })
+    const foundUsername = await User.findOne({ userName: user.userName })
     if (foundUsername) {
         return res.status(410).json({
             status: 410,
@@ -98,7 +98,7 @@ export const signUp = async (req: Request, res: Response) => {
     const result = await User.collection.insertOne({
         userId: user.userId,
         hashedPassword: user.password,
-        username: user.username,
+        userName: user.userName,
         userProfile: {
             character: user.character,
             userLevel: 0,
@@ -199,7 +199,7 @@ export const login = async (req: Request, res: Response) => {
         status: 200,
         payload: {
             userId: foundUser.userId,
-            username: foundUser.username,
+            userName: foundUser.userName,
             character: foundUser.userProfile.character,
             userLevel: foundUser.userProfile.userLevel,
             accessToken: accessToken,
@@ -217,7 +217,7 @@ export const myProfile = async (req: CustomRequest, res: Response) => {
             status: 200,
             payload: {
                 userId: foundUser.userId,
-                username: foundUser.username,
+                userName: foundUser.userName,
                 character: foundUser.userProfile.character,
                 userLevel: foundUser.userProfile.userLevel,
                 contactGit: foundUser.userProfile.contactGit,
@@ -244,7 +244,7 @@ export const updateProfile = async (req: CustomRequest, res: Response) => {
         message: '유저 데이터 조회 실패'
     })
 
-    const existingUsername = await User.findOne({ username: newUserData.username })
+    const existingUsername = await User.findOne({ userName: newUserData.userName })
     if (existingUsername) {
         return res.status(410).json({
             status: 410,
@@ -252,7 +252,7 @@ export const updateProfile = async (req: CustomRequest, res: Response) => {
         })
     }
 
-    foundUser.username = newUserData.username
+    foundUser.userName = newUserData.userName
     foundUser.userProfile!.character = newUserData.character
     foundUser.userProfile!.contactGit = newUserData.contactGit
     foundUser.userProfile!.contactEmail = newUserData.contactEmail
@@ -367,7 +367,7 @@ export const authenticateUser = async (req: CustomRequest, res: Response) => {
             status: 200, 
             payload: {
                 userId: foundUser.userId,
-                username: foundUser.username,
+                userName: foundUser.userName,
                 character: foundUser.userProfile.character,
                 userLevel: foundUser.userProfile.userLevel,
             }
@@ -377,13 +377,13 @@ export const authenticateUser = async (req: CustomRequest, res: Response) => {
 
 /* 닉네임 기반 유저 정보 조회 */
 export const userProfile = async (req: Request, res: Response) => {
-    const foundUser = await User.collection.findOne({ userId: req.params.username })
+    const foundUser = await User.collection.findOne({ userId: req.params.userName })
     
     if (foundUser) {
         return res.status(200).json({
             status: 200,
             payload: {
-                username: foundUser.username,
+                userName: foundUser.userName,
                 character: foundUser.userProfile.character,
                 userLevel: foundUser.userProfile.userLevel,
                 contactGit: foundUser.userProfile.contactGit,

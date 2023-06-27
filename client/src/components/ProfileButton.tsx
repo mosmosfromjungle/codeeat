@@ -36,7 +36,7 @@ export default function ProfileButton() {
   const roomJoined = useAppSelector((state) => state.room.roomJoined)
   const focused = useAppSelector((state) => state.chat.focused)
   const showProfile = useAppSelector((state) => state.user.showProfile)
-  const username = useAppSelector((state) => state.user.username)
+  const userName = useAppSelector((state) => state.user.userName)
   const character = useAppSelector((state) => state.user.character)
   const userLevel = useAppSelector((state) => state.user.userLevel)
   const imgpath = `../../public/assets/character/single/${character}_idle_anim_19.png`
@@ -67,7 +67,6 @@ export default function ProfileButton() {
             dispatch(setShowProfile(true)),
             dispatch(setShowLogout(false)),
             dispatch(setShowChat(false)),
-            // dispatch(setShowDMRoom(false)),
             dispatch(setShowDMList(false)),
             dispatch(setShowUser(false)),
             dispatch(setShowLogout(false))
@@ -79,7 +78,7 @@ export default function ProfileButton() {
             </ListItemAvatar>
             <Profile>
               레벨 {userLevel}<br/>
-              <strong>{username}</strong>
+              <strong>{userName}</strong>
             </Profile>
           </ListItem>
         </Button>

@@ -4,15 +4,14 @@ import LastDM, { ILastDMDocument } from '../../models/LastDM'
 const time_diff = 9 * 60 * 60 * 1000;
 /* last dm 가져오기 */
 export const loadData = async (req: Request, res: Response) => {
-    const userId  = req.body;
-  
-    if (!userId)
+    const user  = req.body;
+    if (!user.userId)
       return res.status(404).json({
         status: 404,
         message: 'not found',
     });
   
-    getLastDM(userId)
+    getLastDM(user.userId)
       .then((result) => {
         res.status(200).json({
           status: 200,
@@ -28,13 +27,13 @@ export const loadData = async (req: Request, res: Response) => {
       });
   };
 
-export const getLastDM = async (myId: string) => {
+export const getLastDM = async (userId: string) => {
   let result = new Array();
   try {
     await LastDM.collection
     .find({$or:[
-      { 'senderInfo.userId': myId },
-      {'receiverInfo.userId': myId}]
+      { "senderInfo.userId": userId },
+      {"receiverInfo.userId": userId}]
     })
     .sort({ _id: -1 })
     .toArray()
@@ -43,7 +42,7 @@ export const getLastDM = async (myId: string) => {
         result.push(json);
         });
     });
-  
+    
     return result;
   } catch (err) {
     console.error(err);
@@ -59,7 +58,7 @@ export const addLastDM = async (obj: {
     let utc = cur_date.getTime() + cur_date.getTimezoneOffset() * 60 * 1000;
     let updatedAt = utc + time_diff;
     LastDM.collection.insertOne({
-      senderId: obj.senderId,
+      senderInfo: obj.senderId,
       receiverId: obj.receiverId,
       message: obj.message,
       updatedAt: updatedAt,
@@ -74,17 +73,17 @@ export const addLastDM = async (obj: {
     return true;
 }
 
-export const updateLastDM = async (obj: { myId: string; receiverId: string; message: string }) => {
-    const { myId, receiverId, message } = obj;
+export const updateLastDM = async (obj: { senderId: string; receiverId: string; message: string }) => {
+    const { senderId, receiverId, message } = obj;
     let cur_date = new Date();
     let utc = cur_date.getTime() + cur_date.getTimezoneOffset() * 60 * 1000;
     let updatedAt = utc + time_diff;
     await LastDM.collection.findOneAndUpdate(
-      { $and: [{ 'senderInfo.userId': myId }, { 'receiverInfo.userId': receiverId }] },
+      { $and: [{ 'senderInfo.userId': senderId }, { 'receiverInfo.userId': receiverId }] },
       { $set: { message: message, updatedAt: updatedAt } }
     );
     await LastDM.collection.findOneAndUpdate(
-      { $and: [{ 'senderInfo.userId': receiverId }, { 'receiverInfo.userId': myId }] },
+      { $and: [{ 'senderInfo.userId': receiverId }, { 'receiverInfo.userId': senderId }] },
       { $set: { message: message, updatedAt: updatedAt } }
     );
   };
@@ -93,7 +92,7 @@ export const updateLastDM = async (obj: { myId: string; receiverId: string; mess
   
     LastDM.collection.findOneAndUpdate(
       { $and: [{ 'senderInfo.userId': senderId }, { 'receiverInfo.userId': receiverId }] },
-      { $set: { roomId: roomId, unreadCount: 0 } }
+      { $set: { roomId: roomId } }
     );
     LastDM.collection.findOneAndUpdate(
       { $and: [{ 'senderInfo.userId': receiverId }, { 'receiverInfo.userId': senderId }] },

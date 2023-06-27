@@ -34,14 +34,21 @@ export default class DMNetwork {
     return this.socketClient;
   };
 
-  joinRoom = (roomId: string, user1_Id: string, user2_Id: string, callback: any) => {
-    this.socketClient.emit('join-room', { roomId: roomId, user1_Id: user1_Id, user2_Id: user2_Id });
+  async joinRoom (roomId: string, user1_Id: string, user2_Id: string, callback: any) {
+    console.log('JOINROOM-----MyId:',user1_Id,'acqId:',user2_Id) // 🐱
+    this.socketClient.emit('join-room', { roomId: roomId, userId: user1_Id, receiverId: user2_Id });
 
     this.socketClient.on('old-messages', (data) => {
+      console.log('old messages')
       const userId = store.getState().user.userId;
       this.oldMessages = [];
-      data.forEach((element: OldMessage) => {
-        if (element.senderId == userId) {
+      data.forEach((element: any) => {
+        if (element.senderId) {
+          if (element.senderId == userId) {
+            element.id = 0
+          } else {
+            element.id = 1
+          }
           this.oldMessages.push(element);
         }
       });
@@ -50,6 +57,7 @@ export default class DMNetwork {
   };
 
   sendMessage = (message: object) => {
+    console.log('디엠네트워크 60줄 소켓이벤트 분출 직전 ') // 🐱
     this.socketClient.emit('message', message)
   }
 

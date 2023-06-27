@@ -1,15 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
-import ClearIcon from '@mui/icons-material/Clear';
-import { useAppDispatch } from '../../hooks';
 import logo from '../../images/logo.png';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 
 export function DMHeader() {
+  const dispatch = useAppDispatch();
+  const friendName = useAppSelector((state) => state.dm.receiverName)
   return (
     <DMtop>
       <PrivateMessageHeader>
         <TitleImage src={logo} width="30" />
-        <TitleText>개인 메시지</TitleText>
+        <TitleText>{friendName}님과의 채팅</TitleText>
       </PrivateMessageHeader>
     </DMtop>
   );

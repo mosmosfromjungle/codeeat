@@ -131,7 +131,7 @@ const CustomList = styled.div`
 
 export default function BrickGameDialog() {
   const dispatch = useAppDispatch()
-  const username = useAppSelector((state) => state.user.username)
+  const userName = useAppSelector((state) => state.user.userName)
   const gamePlayers = useAppSelector((state) => state.room.gamePlayers)
   const [players, setPlayers] = useState<PlayersInterface[]>([])
 

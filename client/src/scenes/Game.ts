@@ -24,7 +24,7 @@ import { createCharacterAnims } from '../anims/CharacterAnims'
 
 import store from '../stores'
 import { setFocused, setShowChat } from '../stores/ChatStore'
-import { setShowDMList, setShowDM, setShowDMRoom } from '../stores/DMStore'
+import { setShowDMList, setShowDMRoom } from '../stores/DMStore'
 import { NavKeys, Keyboard } from '../../../types/KeyboardState'
 
 export default class Game extends Phaser.Scene {
@@ -63,7 +63,7 @@ export default class Game extends Phaser.Scene {
     })
     this.input.keyboard.on('keydown-ESC', (event) => {
       store.dispatch(setShowChat(false))
-      store.dispatch(setShowDM(false))
+      store.dispatch(setShowDMRoom(false))
       // store.dispatch(setShowDMRoom(false))
       store.dispatch(setShowDMList(false))
     })
@@ -80,7 +80,6 @@ export default class Game extends Phaser.Scene {
     })
     this.input.keyboard.on('keydown-ESC', (event) => {
       store.dispatch(setShowChat(false))
-      store.dispatch(setShowDM(false))
       store.dispatch(setShowDMRoom(false))
       store.dispatch(setShowDMList(false))
     })
@@ -94,7 +93,7 @@ export default class Game extends Phaser.Scene {
     this.input.keyboard.enabled = true
   }
 
-  create(data: { network: Network }) {
+  create(data: { network: Network; network2: Network2 }) {
     if (!data.network) {
       throw new Error('server instance missing')
     } else {

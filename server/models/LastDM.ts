@@ -5,11 +5,11 @@ import { ILastDM } from '../controllers/LastDMControllers/type';
 const lastdm = new Schema<ILastDM>({
   senderInfo: {
     userId: String,
-    username: String,
+    userName: String,
   },
   receiverInfo: {
     userId: String,
-    username: String,
+    userName: String,
   },
   message: { type: String, required: false },
   roomId: { type: String, required: true },

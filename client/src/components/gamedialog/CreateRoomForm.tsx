@@ -32,7 +32,7 @@ export const CreateRoomForm = () => {
   const [nameFieldEmpty, setNameFieldEmpty] = useState(false)
   const [descriptionFieldEmpty, setDescriptionFieldEmpty] = useState(false)
   const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)
-  const username = useAppSelector((state) => state.user.username)
+  const userName = useAppSelector((state) => state.user.userName)
   const character = useAppSelector((state) => state.user.character)
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
@@ -64,7 +64,7 @@ export const CreateRoomForm = () => {
         if (faceChatOpen) await bootstrap.gameNetwork.createFaceChatRoom(values)
         
         bootstrap.gameNetwork.updatePlayer(0, 0, `${character}_idle_down`)
-        bootstrap.gameNetwork.updatePlayerName(username)
+        bootstrap.gameNetwork.updatePlayerName(userName)
         dispatch(setDialogStatus(DIALOG_STATUS.GAME_WELCOME))
         // setTimeout(() => {
         // }, 100);

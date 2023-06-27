@@ -139,7 +139,7 @@ export default function LoginDialog() {
             bootstrap.network2.whoAmI(payload.userId)
             dispatch(setDialogStatus(DIALOG_STATUS.WELCOME))
             dispatch(setUserId(payload.userId))
-            dispatch(setUsername(payload.username))
+            dispatch(setUsername(payload.userName))
             dispatch(setCharacter(payload.character))
             dispatch(setUserLevel(payload.userLevel))
             

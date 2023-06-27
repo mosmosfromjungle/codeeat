@@ -2,10 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import Box from '@mui/material/Box'
 import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useState } from 'react'
 import { ConversationList } from './DMList';
 import { DMHeader } from './DMHeader';
-import DMBubbles from './DMBubbles';
+import DMBubbles from './DMContents';
 import { setNewMessage } from '../../stores/DMStore';
+import { ChatBubble } from 'react-chat-ui';
+import DMBottom from './DMBottom';
 
 const Backdrop = styled.div`
   position: fixed;
@@ -30,15 +33,15 @@ const DMwrapper = styled(Box)`
   }
 `
 /* DMboxButton, something pop-up when clicks it */
-export const DMRoom = () => {
-  const dispatch = useAppDispatch();
-
-  function handleClick() {
-  }
+export function DMRoom() {
+  const [newMessage, setNewMessage] = useState<any>(null);
 
   return (
     <Backdrop>
         <DMwrapper>
+          <DMHeader/>
+          <DMBubbles newMessage={newMessage}/>
+          <DMBottom setNewMessage={setNewMessage}/>
         </DMwrapper>
     </Backdrop>
   );

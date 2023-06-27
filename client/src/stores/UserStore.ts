@@ -32,7 +32,7 @@ export const userSlice = createSlice({
     gameSessionId:'',
     accessToken: '',
     userId: '',
-    username: '',
+    userName: '',
     character: '',
     userLevel: '',
     // userTier: '',
@@ -74,7 +74,7 @@ export const userSlice = createSlice({
       state.userId = action.payload
     },
     setUsername: (state, action: PayloadAction<string>) => {
-      state.username = action.payload
+      state.userName = action.payload
     },
     setCharacter: (state, action: PayloadAction<string>) => {
       state.character = action.payload

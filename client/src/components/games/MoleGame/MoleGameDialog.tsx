@@ -81,7 +81,7 @@ const YourPoint = styled.div`
 
 export default function MoleGameDialog() {
   // My information
-  const username = useAppSelector((state) => state.user.username);
+  const userName = useAppSelector((state) => state.user.userName);
   const character = useAppSelector((state) => state.user.character);
   const imgpath = `../../public/assets/character/single/${character}_idle_anim_19.png`;
 
@@ -92,10 +92,10 @@ export default function MoleGameDialog() {
   
   // Send my info to friend
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-  bootstrap.gameNetwork.sendMyInfo(username, character);
+  bootstrap.gameNetwork.sendMyInfo(userName, character);
 
   // console.log("====== Player Information ======");
-  // console.log("My name: "+username);
+  // console.log("My name: "+userName);
   // console.log("Friend name: "+friendname);
   
   const dispatch = useAppDispatch()
@@ -559,7 +559,7 @@ export default function MoleGameDialog() {
   let winner = '';
 
   if ( total > friendTotal ) {
-    winner = username;
+    winner = userName;
   } else if ( total < friendTotal) {
     winner = friendname;
   } else {
@@ -658,7 +658,7 @@ export default function MoleGameDialog() {
                 <div className="point-wrap">
                   <img src={ imgpath } width="50px"></img>
                   <p id="point-text-name">
-                    [{username}]<br/><br/>
+                    [{userName}]<br/><br/>
                   </p>
                   <p id="point-text">
                     My Point<br/><br/>

@@ -91,7 +91,7 @@ export const CustomRoomTable = () => {
   const [showPasswordError, setShowPasswordError] = useState(false)
   const [passwordFieldEmpty, setPasswordFieldEmpty] = useState(false)
   const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)
-  const username = useAppSelector((state) => state.user.username)
+  const userName = useAppSelector((state) => state.user.userName)
   const character = useAppSelector((state) => state.user.character)
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
@@ -113,7 +113,7 @@ export const CustomRoomTable = () => {
     const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
     bootstrap.gameNetwork.joinCustomById(roomId, password).then(() => {
       bootstrap.gameNetwork.updatePlayer(0, 0, `${character}_idle_down`)
-      bootstrap.gameNetwork.updatePlayerName(username)
+      bootstrap.gameNetwork.updatePlayerName(userName)
       dispatch(setDialogStatus(DIALOG_STATUS.GAME_WELCOME))
       // setTimeout(() => {
       // }, 100);

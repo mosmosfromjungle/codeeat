@@ -50,6 +50,7 @@
     "nodemon": "^2.0.22",
     "peerjs": "^1.4.7",
     "phaser": "^3.60.0",
+    "react-chat-ui": "^0.4.0",
     "react-router-dom": "^6.12.1",
     "regenerator-runtime": "^0.13.7",
     "socket.io": "^4.7.0",

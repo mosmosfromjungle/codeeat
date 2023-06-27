@@ -94,7 +94,7 @@ export default function GameWelcomeDialog() {
   const gameJoined = useAppSelector((state) => state.room.gameJoined)
   const videoConnected = useAppSelector((state) => state.user.videoConnected)
   const character = useAppSelector((state) => state.user.character)
-  const username = useAppSelector((state) => state.user.username)
+  const userName = useAppSelector((state) => state.user.userName)
   const index = avatars.findIndex((avatar) => avatar.name === character)
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -116,7 +116,7 @@ export default function GameWelcomeDialog() {
           </ImgContainer>
         </Left>
         <Right>
-            <h1 style={{ fontSize: '24px' }}>{username} 님</h1>
+            <h1 style={{ fontSize: '24px' }}>{userName} 님</h1>
           {/* {!videoConnected && (
             <Warning>
               <Alert variant="outlined" severity="warning">

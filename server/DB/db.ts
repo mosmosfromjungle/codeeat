@@ -15,7 +15,7 @@ const mongoose = require('mongoose')
 
 export async function connectDB() {
   mongoose.set('strictQuery', false)
-  mongoose.connect(config.db.host, {
+  mongoose.connect(config.db.host || 'mongodb://127.0.0.1:27017/mosmos', {
     dbName: 'mosmos',
     useNewUrlParser: true,
   })
@@ -23,7 +23,6 @@ export async function connectDB() {
   createCollection('user')
   createCollection('friends')
   createCollection('friendrequest')
-  createCollection('lastdm')
   createCollection('dm')
   createCollection('raingame')
   createCollection('molegame')
@@ -49,11 +48,11 @@ export const createCollection = (modelName : string) => {
     case 'friendrequest':
       new FriendRequest()
       break
-    case 'lastdm':
-      new LastDM();
-      break;
     case 'dm':
       new DM();
+      break;
+    case 'lastdm':
+      new LastDM();
       break;
     case 'raingame':
       new raingameUser()

@@ -7,7 +7,6 @@ export const DMSlice = createSlice({
     directMessages: Message,
     showDMList: false,
     showDMRoom: false,
-    showDM: false,
     roomId: '',
     receiverId: '',
     receiverName: '',
@@ -20,9 +19,6 @@ export const DMSlice = createSlice({
     },
   },
   reducers: {
-    setShowDM: (state, action: PayloadAction<boolean>) => {
-      state.showDM = action.payload;
-    },
     setShowDMList: (state, action: PayloadAction<boolean>) => {
       state.showDMList = action.payload;
     },
@@ -47,7 +43,6 @@ export const DMSlice = createSlice({
 export const {
   setReceiverId,
   setReceiverName,
-  setShowDM,
   setRoomId,
   setNewMessage,
   setShowDMList,

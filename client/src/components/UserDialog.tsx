@@ -23,6 +23,7 @@ import { IPlayer } from '../../../types/IOfficeState';
 import { setShowUser } from '../stores/ChatStore'
 import { setShowDMList, setShowDMRoom } from '../stores/DMStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
+import { createRoom } from '../apicalls/DM/DM';
 
 const Backdrop = styled.div`
   position: fixed;
@@ -146,7 +147,6 @@ export default function UserDialog() {
   const focused = useAppSelector((state) => state.chat.focused)
   const showUser = useAppSelector((state) => state.chat.showUser)
 
-  const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
   const userLevel = useAppSelector((state) => state.user.userLevel)
   const imgpath = `../../public/assets/character/single/${character}_idle_anim_19.png`
@@ -219,9 +219,10 @@ export default function UserDialog() {
                       <Button>
                         친구 추가하기
                       </Button>
-                      <Button onClick={() => {
-                        // dispatch(setShowDMRoom(true));
-                        dispatch(setShowDMList(true));
+                      <Button onClick={(e) => {
+                        e.preventDefault();
+                        
+                        dispatch(setShowDMRoom(true));
                         dispatch(setShowUser(false))
                         } }>
                         메세지 보내기

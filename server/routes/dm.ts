@@ -1,12 +1,9 @@
-import express from 'express'
-import {
-    loadData
-} from '../controllers/LastDMControllers/index';
+import express from 'express';
+import { DMController } from '../controllers/DMControllers';
 
 express().use(express.json());
-
 const router = express.Router();
 
-router.post('/roomList', loadData);
+router.post('/', DMController)
 
-export default router
+export default router;

@@ -26,7 +26,7 @@ router.post('/refresh', refreshAccessToken)
 
 router.get('/authenticate', authenticateToken, authenticateUser)
 
-router.get('/profile/:username', userProfile)
+router.get('/profile/:userName', userProfile)
 
 router.use((err, res) => {
   console.error(err)

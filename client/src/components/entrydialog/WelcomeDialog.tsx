@@ -119,7 +119,7 @@ export default function WelcomeDialog() {
 
   const dispatch = useAppDispatch()
   const roomJoined = useAppSelector((state) => state.room.roomJoined)
-  const username = useAppSelector((state) => state.user.username)
+  const userName = useAppSelector((state) => state.user.userName)
   const character = useAppSelector((state) => state.user.character)
   const videoConnected = useAppSelector((state) => state.user.videoConnected)
 
@@ -135,7 +135,7 @@ export default function WelcomeDialog() {
 
   useEffect(() => {
     if (roomJoined) {
-      game.myPlayer.setPlayerName(username)
+      game.myPlayer.setPlayerName(userName)
       game.myPlayer.setPlayerTexture(character)
       game.network.readyToConnect()          
     }
@@ -155,7 +155,7 @@ export default function WelcomeDialog() {
           </ImgContainer>
         </Left>
         <Right>
-            <h1 style={{ fontSize: '24px' }}>{username} 님</h1>
+            <h1 style={{ fontSize: '24px' }}>{userName} 님</h1>
           {!videoConnected && (
             <Warning>
               <Alert variant="outlined" severity="warning">

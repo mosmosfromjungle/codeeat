@@ -11,5 +11,5 @@ export interface ILastDM {
 
 export interface UserResponseDto {
   userId: string
-  username: string
+  userName: string
 }

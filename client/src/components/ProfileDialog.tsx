@@ -97,7 +97,7 @@ export default function ProfileDialog() {
   const chatMessages = useAppSelector((state) => state.chat.chatMessages)
   const focused = useAppSelector((state) => state.chat.focused)
   const showProfile = useAppSelector((state) => state.user.showProfile)
-  const username = useAppSelector((state) => state.user.username)
+  const userName = useAppSelector((state) => state.user.userName)
   const character = useAppSelector((state) => state.user.character)
   const userLevel = useAppSelector((state) => state.user.userLevel)
   const imgpath = `../../public/assets/character/single/${character}_idle_anim_19.png`
@@ -169,7 +169,7 @@ export default function ProfileDialog() {
                   </ListItemAvatar>
                   <Profile>
                     레벨 {userLevel}<br/><br/>
-                    <strong>{username}</strong>님
+                    <strong>{userName}</strong>님
                   </Profile>
                 </ListItem>
               </List>
