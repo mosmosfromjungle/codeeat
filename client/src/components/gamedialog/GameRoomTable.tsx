@@ -32,25 +32,28 @@ const MessageText = styled.p`
   font-size: 20px;
   font-family: Font_DungGeun;
 `
-const CustomRoomTableContainer = styled(TableContainer) <{
-  component: React.ElementType
-}>`
+
+const CustomRoomTableContainer = styled(TableContainer) <{component: React.ElementType}>`
   max-height: 500px;
 
   table {
     min-width: 650px;
   }
 `
+
 const TableRowWrapper = styled(TableRow)`
   &:last-child td,
   &:last-child th {
     border: 0;
+    font-size: 15px;
+    font-family: Font_DungGeun;
   }
 
   .avatar {
     height: 30px;
     width: 30px;
-    font-size: 15px;
+    font-size: 20px;
+    font-family: Font_DungGeun;
   }
 
   .name {
@@ -59,7 +62,7 @@ const TableRowWrapper = styled(TableRow)`
   }
 
   .description {
-    min-width: 200px;
+    min-width: 120px;
     overflow-wrap: anywhere;
   }
 
@@ -73,6 +76,7 @@ const TableRowWrapper = styled(TableRow)`
     font-size: 18px;
   }
 `
+
 const PasswordDialog = styled(Dialog)`
   .dialog-content {
     display: flex;
@@ -82,6 +86,13 @@ const PasswordDialog = styled(Dialog)`
 
   .MuiDialog-paper {
     background: #222639;
+  }
+`
+
+const JoinButton = styled.div`
+  Button {
+    font-size: 15px;
+    font-family: Font_DungGeun;
   }
 `
 
@@ -144,16 +155,16 @@ export const CustomRoomTable = () => {
       <CustomRoomTableContainer component={Paper}>
         <Table>
           <TableHead>
-            <TableRow>
+            <TableRowWrapper>
               <TableCell></TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell>ID</TableCell>
+              <TableCell>방 이름</TableCell>
+              <TableCell>방 설명</TableCell>
+              <TableCell>만든 사람</TableCell>
               <TableCell align="center">
                 <PeopleAltIcon />
               </TableCell>
               <TableCell align="right"></TableCell>
-            </TableRow>
+            </TableRowWrapper>
           </TableHead>
           <TableBody>
             {availableRooms.map((room) => {
@@ -176,23 +187,25 @@ export const CustomRoomTable = () => {
                   <TableCell align="center">{clients}</TableCell>
                   <TableCell align="center">
                     <Tooltip title={hasPassword ? 'Password required' : ''}>
-                      <Button
-                        variant="outlined"
-                        color="secondary"
-                        onClick={() => {
-                          if (hasPassword) {
-                            setShowPasswordDialog(true)
-                            setSelectedRoom(roomId)
-                          } else {
-                            handleJoinClick(roomId, null)
-                          }
-                        }}
-                      >
-                        <div className="join-wrapper">
-                          {hasPassword && <LockIcon className="lock-icon" />}
-                          Join
-                        </div>
-                      </Button>
+                      <JoinButton>
+                        <Button
+                          variant="outlined"
+                          color="secondary"
+                          onClick={() => {
+                            if (hasPassword) {
+                              setShowPasswordDialog(true)
+                              setSelectedRoom(roomId)
+                            } else {
+                              handleJoinClick(roomId, null)
+                            }
+                          }}
+                        >
+                          <div className="join-wrapper">
+                            {hasPassword && <LockIcon className="lock-icon" />}
+                            참여하기
+                          </div>
+                        </Button>
+                      </JoinButton>
                     </Tooltip>
                   </TableCell>
                 </TableRowWrapper>
