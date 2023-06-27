@@ -12,48 +12,48 @@ import phaserGame from '../../../PhaserGame'
 import PointsAndHearts from './PointsAndHearts'
 import ScoreInfo from './ScoreInfo'
 
-const calculateWinner = (rainGameStateA, rainGameStateB, time) => {
-  if (rainGameStateA && rainGameStateB) {
+const calculateWinner = (myRainGameState, opponentRainGameState, time) => {
+  if (myRainGameState && opponentRainGameState) {
     if (time <= 0) {
-      return rainGameStateA.points > rainGameStateB.points ? 'A' : 'B'
-    } else if (rainGameStateA.heart <= 0) {
+      return myRainGameState.points > opponentRainGameState.points ? 'A' : 'B'
+    } else if (myRainGameState.heart <= 0) {
       return 'B'
-    } else if (rainGameStateB.heart <= 0) {
+    } else if (opponentRainGameState.heart <= 0) {
       return 'A'
     }
   }
   return null
 }
 
-const useUpdateKeywords = (dispatch, rainGameStateA, rainGameStateB, time) => {
+const useUpdateKeywords = (dispatch, myRainGameState, opponentRainGameState, time) => {
   useEffect(() => {
     const updateKeywordsInterval = setInterval(() => {
       dispatch(updateKeywords({ owner: 'A' }))
       dispatch(updateKeywords({ owner: 'B' }))
 
-      if (time <= 0 || rainGameStateA?.heart <= 0 || rainGameStateB?.heart <= 0) {
+      if (time <= 0 || myRainGameState?.heart <= 0 || opponentRainGameState?.heart <= 0) {
         clearInterval(updateKeywordsInterval)
       }
     }, 50)
 
     return () => clearInterval(updateKeywordsInterval)
-  }, [dispatch, rainGameStateA, rainGameStateB, time])
+  }, [dispatch, myRainGameState, opponentRainGameState, time])
 }
 
-export function RainGame() {
+export function RainGame({clientId }) {
   const dispatch = useDispatch()
   const keywordInput = useRef<HTMLInputElement>(null)
   const rainGameState = useSelector((state: RootState) => state.raingame)
   const rainGameDialogState = useSelector((state: RootState) => state.rainGameDialog)
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-
-  const rainGameStateA = rainGameState.states.find((rgs) => rgs.owner === 'A')
-  const rainGameStateB = rainGameState.states.find((rgs) => rgs.owner === 'B')
+  
+  const myRainGameState = rainGameState.states.find((rgs) => rgs.owner ===clientId);
+  const opponentRainGameState = rainGameState.states.find((rgs) => rgs.owner !== clientId);
 
   const [time, setTime] = useState(100)
   const [items, setItems] = useState([])
 
-  useUpdateKeywords(dispatch, rainGameStateA, rainGameStateB, time)
+  useUpdateKeywords(dispatch, myRainGameState, opponentRainGameState, time)
 
   useEffect(() => {
     bootstrap.gameNetwork.MakingWord()
@@ -67,7 +67,7 @@ export function RainGame() {
     }
   }, [])
 
-  const winner = calculateWinner(rainGameStateA, rainGameStateB, time)
+  const winner = calculateWinner(myRainGameState, opponentRainGameState, time)
 
   const keydown = (keyCode) => {
     if (keyCode === 13 && keywordInput.current) {
@@ -117,8 +117,8 @@ export function RainGame() {
             textAlign: 'center',
           }}
         >
-          {rainGameStateA &&
-            rainGameStateA.words.map((item: KeywordRain, index: number) => {
+          {myRainGameState &&
+            myRainGameState.words.map((item: KeywordRain, index: number) => {
               if (item.y > window.innerHeight * 0.8) {
                 return null
               }
@@ -167,8 +167,8 @@ export function RainGame() {
             textAlign: 'center',
           }}
         >
-          {rainGameStateB &&
-            rainGameStateB.words.map((item: KeywordRain, index: number) => {
+          {opponentRainGameState &&
+            opponentRainGameState.words.map((item: KeywordRain, index: number) => {
               if (item.y > window.innerHeight * 0.8) {
                 return null
               }

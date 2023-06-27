@@ -25,7 +25,7 @@ export enum Message {
   UPDATE_RAIN_GAME_PLAY,
   RAIN_GAME_START,
   // Server
-  SEND_RAIN_GAME_PLAYERS,  
+  SEND_RAIN_GAME_PLAYERS, 
  
 
   // ***** Brick Game *****

@@ -48,8 +48,9 @@ export class RainGameState extends Schema implements IRainGameState {
 }
 
 export class RainGameUser extends Schema implements IRainGameUser{
-  @type("string") name = '';
-  @type('string') anim = 'adam_idle_down';
+  @type("string") username = '';
+  @type('string') character = '';
+  @type('string') clientId = '';
 }
 
 /* BRICK GAME ROOM SCHEMA */

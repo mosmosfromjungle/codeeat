@@ -25,7 +25,8 @@ import {
   pushPlayerLeftMessage,
 } from '../stores/ChatStore'
 import {
-  setRainGameState
+  setRainGameState,
+  setRainGameUser
 } from '../stores/RainGameStore'
 
 export default class GameNetwork {
@@ -94,7 +95,11 @@ export default class GameNetwork {
 
   async joinCustomById(roomId: string, password: string | null, username: string) {
     this.room = await this.client.joinById(roomId, { password, username })
-    this.brick_game_init()
+    if (this.room.name === RoomType.BRICK) {
+      this.brick_game_init()
+    } else {
+      this.initialize()
+    }
   }
 
   async createBrickRoom(roomData: IGameRoomData) {
@@ -141,6 +146,14 @@ export default class GameNetwork {
     this.initialize()
   }
 
+  async sendMyInfoToServer(username, character) {
+    if (!this.room) return;
+
+    const clientId = this.room.sessionId; 
+    
+    this.room.send(Message.UPDATE_RAIN_GAME_PLAY, { clientId, username, character });
+  }
+
   // set up all network listeners before the game starts
   initialize() {
     if (!this.room) return
@@ -185,13 +198,22 @@ export default class GameNetwork {
       store.dispatch(setJoinedGameRoomData(content))
     })
 
+    this.room.onMessage(Message.UPDATE_RAIN_GAME_PLAY, (data) => {
+      const {clientId, username, character, owner } = data;
+      const payload = {
+        username,
+        character,
+        clientId,
+      };
+      store.dispatch(setRainGameUser(payload));
+    });
+
     // when the server sends data of players in this room
     this.room.onMessage(Message.SEND_GAME_PLAYERS, (content) => {
       store.dispatch(setGamePlayers(content))
     })
 
     this.room.onMessage(Message.SEND_RAIN_GAME_PLAYERS, (content)=>{
-      console.log("만든단어 잘받았다 서버야!")
       store.dispatch(setRainGameState(content))
     })
   }
@@ -311,7 +333,6 @@ export default class GameNetwork {
     this.room?.send(Message.RAIN_GAME_START);
   }
   MakingWord(){
-    console.log("단어 만들라고 서버에게 명령함")
     this.room?.send(Message.SEND_RAIN_GAME_PLAYERS);
   }
 }

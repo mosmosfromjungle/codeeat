@@ -58,10 +58,17 @@ const RainGameDialog = () => {
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap;
 
   const [showGame, setShowGame] = useState(false);
+  const [clientId, setClientId] = useState(null);
+
+  const username = useAppSelector((state) => state.user.username);
+  const character = useAppSelector((state) => state.user.character);
 
   useEffect(() => {
     const initializeRainGame = async () => {
       try {
+        const clientId = await bootstrap.gameNetwork.sendMyInfoToServer(username, character);
+        setClientId(clientId);
+
         await bootstrap.gameNetwork.startRainGame();
       } catch (error){
         console.error("초기화 과정에서 에러 발생:",error);
@@ -92,7 +99,7 @@ const RainGameDialog = () => {
       {!showGame && (
           <StartButton onClick={handleStartGame}>게임 시작</StartButton>
         )}
-        {showGame && <RainGame />}
+        {showGame && <RainGame clientId={clientId}/>}
         {<IconButton
           aria-label="close dialog"
           className="close"

@@ -7,8 +7,9 @@ import { Schema, MapSchema, ArraySchema } from '@colyseus/schema'
 /* RAIN GAME ROOM SCHEMA */
 
 export interface IRainGameUser extends Schema {
-  name: string;
-  anim: string;
+  username: string;
+  character: string;
+  clientId: string;
 }
 
 export interface IKeywordRain extends Schema {

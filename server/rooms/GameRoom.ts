@@ -18,7 +18,7 @@ import { MakeWordCommand } from './commands/RainGameMakeWordCommand'
 // } from './commands/TypingGameUpdateArrayCommand'
 // import ChatMessageUpdateCommand from './commands/ChatMessageUpdateCommand'
 import { IGameRoomData } from '../../types/Rooms'
-import { GameState, GamePlayer } from './schema/GameState'
+import { GameState, GamePlayer, RainGameState } from './schema/GameState'
 import PlayerUpdateCommand from './commands/PlayerUpdateCommand'
 import PlayerUpdateNameCommand from './commands/PlayerUpdateNameCommand'
 import GamePlayUpdateCommand from './commands/GamePlayUpdateCommand'
@@ -26,6 +26,7 @@ import {
   MoleGameGetUserInfo,
   MoleGameAddPoint,
 } from './commands/MoleGameUpdateArrayCommand'
+import RainGameUserUpdateCommand from './commands/RainGameUserUpdateCommand'
 
 export class GameRoom extends Room<GameState> {
   private dispatcher = new Dispatcher(this)
@@ -95,6 +96,24 @@ export class GameRoom extends Room<GameState> {
       this.startGeneratingKeywords();
       
     })
+
+    this.onMessage(Message.UPDATE_RAIN_GAME_PLAY, (client, data) => {
+      const { clientId, username, character } = data;
+
+      const newRainGameState = new RainGameState();
+      newRainGameState.owner = clientId;
+
+      // rainGameStates에 추가 (key는 clientId로 사용합니다)
+    this.state.rainGameStates.set(clientId, newRainGameState);
+
+    const payload = {
+        clientId,
+        username,
+        character,
+    };
+      
+      this.broadcast(Message.UPDATE_RAIN_GAME_PLAY,payload);
+    });
 
   
     // when a player is ready to connect, call the PlayerReadyToConnectCommand

@@ -6,8 +6,9 @@ import { Interface } from "readline";
 // Define Interface
 
 export interface RainGameUser {
-    name: String,
-    anim: String,
+    username: String,
+    character: String,
+    owner: string,
 }
 
 export interface KeywordRain {
@@ -202,11 +203,32 @@ export const rainGameSlice = createSlice({
                 state.states.push(receivedState);
             }
         },
+        setRainGameUser: (state, action: PayloadAction<RainGameUser>) => {
+            const newUserData = action.payload;
+            const existingStateIndex = state.states.findIndex((rgs) => rgs.owner === newUserData.clientId);
+
+            if (existingStateIndex !== -1) {
+                state.states[existingStateIndex].username = newUserData.username;
+                state.states[existingStateIndex].character = newUserData.character;
+                state.states[existingStateIndex].owner = newUserData.owner;
+            } else {
+                const newRainGameState: RainGameState = {
+                    owner: newUserData.clientId,
+                    item: [],
+                    point: 0,
+                    heart: 3,
+                    period: 0,
+                    words: [],
+                    used: []
+                };
+                state.states.push(newRainGameState);
+            }
+        },
     },
 });
 
 
 
-export const { updateKeywords, removeKeyword, setRainGameState} = rainGameSlice.actions;
+export const { updateKeywords, removeKeyword, setRainGameState, setRainGameUser} = rainGameSlice.actions;
 
 export default rainGameSlice.reducer
