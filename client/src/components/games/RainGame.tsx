@@ -173,7 +173,7 @@ export function RainGame() {
                                     fontSize: "1.4vw",
                                     letterSpacing: '0.3vw',
                                     top: `${item.y}px`,
-                                    left: `${item.x + window.innerWidth/ 2}px`,
+                                    left: `${item.x + 300}px`,
                                     color: '#FF7F00',
                                     backgroundImage: backgroundImage,
                                     backgroundSize: '150% 150%',
