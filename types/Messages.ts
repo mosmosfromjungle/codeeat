@@ -17,6 +17,15 @@ export enum Message {
   // Server
   SEND_GAME_PLAYERS,
 
+  // ***** Brick Game *****
+  // Client
+  // BRICK_GAME_READY,  // 상태 체크를 한번 더 하려고 만들었던거같음
+  BRICK_GAME_COMMAND,
+  // Server
+  BRICK_GAME_ERROR,
+  BRICK_GAME_STATE,
+  BRICK_PLAYER_UPDATE,
+
   // ***** NOT USED *****
   // CONNECT_TO_MOLEGAME,
   // DISCONNECT_FROM_MOLEGAME,
