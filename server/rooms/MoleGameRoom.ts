@@ -6,9 +6,12 @@ import { IGameRoomData } from '../../types/Rooms'
 import { GameState, GamePlayer } from './schema/GameState'
 import PlayerUpdateCommand from './commands/PlayerUpdateCommand'
 import PlayerUpdateNameCommand from './commands/PlayerUpdateNameCommand'
-import GamePlayUpdateCommand from './commands/GamePlayUpdateCommand'
+import {
+  MoleGameGetUserInfo,
+  MoleGameAddPoint,
+} from './commands/MoleGameUpdateArrayCommand'
 
-export class GameRoom extends Room<GameState> {
+export class MoleGameRoom extends Room<GameState> {
   private dispatcher = new Dispatcher(this)
   private name: string
   private description: string
@@ -53,23 +56,27 @@ export class GameRoom extends Room<GameState> {
       })
       this.broadcastPlayersData(this)
     })
-    
 
-    // // TODO: 각각의 게임에 필요한 정보에 맞춰 수정 필요 
-    // this.onMessage(Message.UPDATE_GAME_PLAY,
-    //   (client, message: { x: number; y: number; anim: string }) => {
-    //     this.dispatcher.dispatch(new GamePlayUpdateCommand(), {
-    //       client,
-    //       anim: message.anim,
-    //     })
-    //   }
-    // )
+    // ↓ Mole Game
+    this.onMessage(Message.SEND_MOLE, (client, message: { name: string, character: string }) => {
+      this.dispatcher.dispatch(new MoleGameGetUserInfo(), {
+        client,
+        name: message.name,
+        character: message.character,
+        point: ''
+      })
+      this.broadcast(Message.RECEIVE_MOLE, { name: message.name, character: message.character, host: this.state.host }, { except: client });
+    })
 
-    // // when a player is ready to connect, call the PlayerReadyToConnectCommand
-    // this.onMessage(Message.READY_TO_CONNECT, (client) => {
-    //   const player = this.state.players.get(client.sessionId)
-    //   if (player) player.readyToConnect = true
-    // })
+    this.onMessage(Message.SEND_MY_POINT, (client, message: { point: string }) => {
+      this.dispatcher.dispatch(new MoleGameAddPoint(), {
+        client,
+        name: '',
+        character: '',
+        point: message.point,
+      })
+      this.broadcast(Message.RECEIVE_YOUR_POINT, { point: message.point }, { except: client });
+    })
   }
 
   async onAuth(client: Client, options: { password: string | null }) {
@@ -103,11 +110,11 @@ export class GameRoom extends Room<GameState> {
   }
 
   onDispose() {
-    console.log('room', this.roomId, 'disposing...')
+    console.log('Mole game room ', this.roomId, ' disposing ...')
     this.dispatcher.stop()
   }
 
-  broadcastPlayersData(room: GameRoom) {
+  broadcastPlayersData(room: MoleGameRoom) {
     const players = Array.from(room.state.players.values())
       .map((player: GamePlayer) => ({
         name: player.name,

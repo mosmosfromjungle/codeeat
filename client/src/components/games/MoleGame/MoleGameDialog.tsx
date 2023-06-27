@@ -78,23 +78,32 @@ const YourPoint = styled.div`
 `
 
 export default function MoleGameDialog() {
+  // For communication between client and server
+  const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
+
   // My information
   const username = useAppSelector((state) => state.user.username);
   const character = useAppSelector((state) => state.user.character);
   const imgpath = `../../public/assets/character/single/${character}_idle_anim_19.png`;
+
+  // Send my info to friend (client -> server)
+  bootstrap.gameNetwork.sendMyInfo(username, character);
 
   // Friend information
   const friendname = useAppSelector((state) => state.molegame.friendName);
   const friendcharacter = useAppSelector((state) => state.molegame.friendCharacter);
   const friendimgpath = `../../public/assets/character/single/${friendcharacter}_idle_anim_19.png`;
   
-  // Send my info to friend
-  const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-  bootstrap.gameNetwork.sendMyInfo(username, character);
+  // Get room host information
+  const host = useAppSelector((state) => state.molegame.host);
 
-  // console.log("====== Player Information ======");
-  // console.log("My name: "+username);
-  // console.log("Friend name: "+friendname);
+  // 처음 들어와 있던 아이는 두번째로 들어온 아이 정보 알 수 있음
+  // 두번째로 들어온 아이는 첫번째로 들어온 아이의 정보를 어떻게 알지?
+
+  console.log("====== Player Information ======");
+  console.log("My name: "+username);
+  console.log("Friend name: "+friendname);
+  console.log("Room host: "+ host);
   
   const dispatch = useAppDispatch()
 
@@ -621,8 +630,8 @@ export default function MoleGameDialog() {
     clearTimeout(moleCatch);
 
     try {
-      const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
       bootstrap.gameNetwork.leaveGameRoom()
+
       dispatch(closeMoleGameDialog())
       dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
 

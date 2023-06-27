@@ -14,6 +14,7 @@ export const moleGameSlice = createSlice({
     friendName: '',
     friendCharacter: '',
     friendPoint: '',
+    host: '',
   },
   reducers: {
     openMoleGameDialog: (state) => {
@@ -28,10 +29,11 @@ export const moleGameSlice = createSlice({
     },
     setMoleGameFriendInfo: (
       state,
-      action: PayloadAction<{ name: string, character: string }>
+      action: PayloadAction<{ name: string, character: string, host: string }>
     ) => {
       state.friendName = action.payload.name
       state.friendCharacter = action.payload.character
+      state.host = action.payload.host
     },
     setMoleGameFriendData: (
       state,

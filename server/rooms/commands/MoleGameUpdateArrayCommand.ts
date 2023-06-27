@@ -4,9 +4,9 @@ import { IOfficeState } from '../../../types/IOfficeState'
 
 type Payload = {
   client: Client
-  point: string
   name: string
   character: string
+  point: string
 }
 
 export class MoleGameGetUserInfo extends Command<IOfficeState, Payload> {
