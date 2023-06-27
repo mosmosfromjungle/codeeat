@@ -31,7 +31,7 @@ export async function connectDB() {
   // createCollection('lastchat')
 
   // Insert default mole game problems at first
-  defaultProblems()
+  // defaultProblems()
 }
 
 export const createCollection = (modelName : string) => {
