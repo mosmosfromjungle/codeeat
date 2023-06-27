@@ -80,6 +80,24 @@ const YourPoint = styled.div`
 `
 
 export default function MoleGameDialog() {
+  // My information
+  const username = useAppSelector((state) => state.user.username);
+  const character = useAppSelector((state) => state.user.character);
+  const imgpath = `../../public/assets/character/single/${character}_idle_anim_19.png`;
+
+  // Friend information
+  const friendname = useAppSelector((state) => state.molegame.friendName);
+  const friendcharacter = useAppSelector((state) => state.molegame.friendCharacter);
+  const friendimgpath = `../../public/assets/character/single/${friendcharacter}_idle_anim_19.png`;
+  
+  // Send my info to friend
+  const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
+  bootstrap.gameNetwork.sendMyInfo(username, character);
+
+  // console.log("====== Player Information ======");
+  // console.log("My name: "+username);
+  // console.log("Friend name: "+friendname);
+  
   const dispatch = useAppDispatch()
 
   const [problems, setProblems] = useState(String);
@@ -100,8 +118,8 @@ export default function MoleGameDialog() {
   const [answerText8, setAnswerText8] = useState(String);
   const [answerText9, setAnswerText9] = useState(String);
 
-  const [startButtonColor, setStartButtonColor] = useState('');
-  const [startButtonText, setStartButtonText] = useState('PRESS START');
+  // const [startButtonColor, setStartButtonColor] = useState('');
+  // const [startButtonText, setStartButtonText] = useState('PRESS START');
 
   const [activeNumber, setActiveNumber] = useState(0);
   const [activeNumberList, setActiveNumberList] = useState([0, 0, 0]);
@@ -110,7 +128,6 @@ export default function MoleGameDialog() {
   const [hideEnding, setHideEnding] = React.useState(true);
   
   const [point, setPoint] = useState(0);
-  const [yourPoint, setYourPoint] = useState(0);
   
   const [turn, setTurn] = useState(0);
   
@@ -127,6 +144,38 @@ export default function MoleGameDialog() {
   let moleNumber3 = 0;
 
   const [executed, setExecuted] = useState(false);
+
+  // Client Events (My Point)
+  const displayToFriend = (myPoint) => {
+    bootstrap.gameNetwork.sendMyPoint(myPoint)
+  }
+
+  // Server Events (Friend Point)
+  let friendPoint = useAppSelector((state) => state.molegame.friendPoint);
+
+  // 0. Start game
+  const [timer, setTimer] = useState(5);
+
+  useEffect(() => {
+    if (friendname) {
+      console.log("[Timer] Start")
+      const intervalId = setInterval(() => {
+        setTimer(prevTimer => {
+          if (prevTimer === 1) {
+            clearInterval(intervalId);
+            console.log("[Timer] Stop");
+          }
+          return prevTimer - 1;
+        });
+      }, 1000);
+
+      return () => {
+        clearInterval(intervalId);
+        console.log("[Timer] Stop");
+        startMole();
+      };
+    }
+  }, [friendname]);
 
   // 1. Load problems
 
@@ -177,7 +226,7 @@ export default function MoleGameDialog() {
   const startMole = () => {
     console.log("Function [startMole]");
 
-    setStartButtonColor('#3d3f43');
+    // setStartButtonColor('#3d3f43');
     setPoint(0);
 
     setTimeout(showingMole, 1000);
@@ -393,7 +442,7 @@ export default function MoleGameDialog() {
       setActiveNumber(randomNumber1);
       setActiveNumberList([randomNumber1, randomNumber2, randomNumber3]);
 
-      setDisableStartButton(true);
+      { friendname ? setDisableStartButton(true) : setDisableStartButton(false)}
 
       setTurn(turn + 1);
 
@@ -407,8 +456,8 @@ export default function MoleGameDialog() {
       const FinishAudio = new Audio(FinishBGM);
       FinishAudio.play();
 
-      setStartButtonText('PRESS AGAIN');
-      setStartButtonColor('#f2ecff');
+      // setStartButtonText('PRESS AGAIN');
+      // setStartButtonColor('#f2ecff');
 
       setDisableStartButton(false);
     }
@@ -457,6 +506,9 @@ export default function MoleGameDialog() {
         getPoint.classList.add('get-point');
 
         setPoint(point + 1);
+        
+        // 상대방에게 보내주어야 함
+        displayToFriend(point + 1);
 
         setTimeout(function() {
           const removePoint = document.getElementById('point-current');
@@ -490,10 +542,11 @@ export default function MoleGameDialog() {
   // 6. Score Modal
 
   let total = (point / 10) * 100;
+  let friendTotal = (friendPoint / 10) * 100;
 
   const modalEvent = () => {
     setHideEnding(true);
-    setDisableStartButton(true);
+    { friendname ? setDisableStartButton(true) : setDisableStartButton(false)}
   }
 
   const hideModal = () => {
@@ -501,9 +554,17 @@ export default function MoleGameDialog() {
     setDisableStartButton(false);
   }
 
+
   // 7. Check the winner
-  const username = useAppSelector((state) => state.user.username)
-  const friendname = ''
+  let winner = '';
+
+  if ( total > friendTotal ) {
+    winner = username;
+  } else if ( total < friendTotal) {
+    winner = friendname;
+  } else {
+    winner = "both"
+  }
 
   const Modal = () => {
     return(
@@ -516,11 +577,11 @@ export default function MoleGameDialog() {
           </p>
           <p>
             <span>Friend score is &nbsp;</span>
-            <span className='last'>{ total }</span>
+            <span className='last'>{ friendTotal }</span>
           </p>
           <p>
             <span>The winner is &nbsp;</span>
-            <span className='winner'>{ username }</span>
+            <span className='winner'>{ winner }</span>
           </p>
 
           <div className="btn-wrap">
@@ -595,6 +656,7 @@ export default function MoleGameDialog() {
             <Content>
               <MyPoint>
                 <div className="point-wrap">
+                  <img src={ imgpath } width="50px"></img>
                   <p id="point-text-name">
                     [{username}]<br/><br/>
                   </p>
@@ -664,12 +726,16 @@ export default function MoleGameDialog() {
 
               <YourPoint>
                 <div className="point-wrap">
+                  <img src={ friendimgpath }
+                       width="50px"
+                       className={ friendname ? "" : "hidden" }
+                  ></img>
                   <p id="point-text-name">
                     [{friendname}]<br/><br/>
                   </p>
                   <p id="point-text">
                     Friend Point<br/><br/>
-                    <span id="point-current">{ yourPoint }</span>/10
+                    <span id="point-current">{ friendPoint ? friendPoint : '0' }</span>/10
                   </p>
                 </div>
               </YourPoint>
@@ -677,14 +743,17 @@ export default function MoleGameDialog() {
 
             <div className="point-box clearfix">
               <div className="btn-wrap">
-                <button type="button" 
+                <p className="friend-comment">
+                  { friendname ? `친구가 들어왔어요, 5초 뒤에 시작해요 ! ${ timer }` : '아직 친구가 들어오지 않았어요 !' }
+                </p>
+                {/* <button type="button" 
                         className="start-btn" 
                         style={{ color: startButtonColor }} 
                         disabled={ disableStartButton } 
                         onClick={() => startMole()}
                         onMouseEnter={ handleMouseOver }>
                   { startButtonText }
-                </button>
+                </button> */}
               </div>
             </div>
           </div>
