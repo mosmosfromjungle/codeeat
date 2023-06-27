@@ -199,7 +199,7 @@ export default class GameNetwork {
     })
 
     this.room.onMessage(Message.UPDATE_RAIN_GAME_PLAY, (data) => {
-      const {clientId, username, character, owner } = data;
+      const {clientId, username, character } = data;
       const payload = {
         username,
         character,

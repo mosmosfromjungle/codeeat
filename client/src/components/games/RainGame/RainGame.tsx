@@ -12,25 +12,35 @@ import phaserGame from '../../../PhaserGame'
 import PointsAndHearts from './PointsAndHearts'
 import ScoreInfo from './ScoreInfo'
 
-const calculateWinner = (myRainGameState, opponentRainGameState, time) => {
+const calculateWinner = (myRainGameState, opponentRainGameState, time, clientId) => {
   if (myRainGameState && opponentRainGameState) {
     if (time <= 0) {
-      return myRainGameState.points > opponentRainGameState.points ? 'A' : 'B'
+      return myRainGameState.owner === clientId
+        ? myRainGameState.point > opponentRainGameState.point
+          ? 'You'
+          : 'Opponent'
+        : opponentRainGameState.point > myRainGameState.point
+        ? 'You'
+        : 'Opponent';
     } else if (myRainGameState.heart <= 0) {
-      return 'B'
+      return myRainGameState.owner === clientId ? 'Opponent' : 'You';
     } else if (opponentRainGameState.heart <= 0) {
-      return 'A'
+      return myRainGameState.owner === clientId ? 'You' : 'Opponent';
     }
   }
-  return null
-}
+  return null;
+};
 
 const useUpdateKeywords = (dispatch, myRainGameState, opponentRainGameState, time) => {
   useEffect(() => {
     const updateKeywordsInterval = setInterval(() => {
-      dispatch(updateKeywords({ owner: 'A' }))
-      dispatch(updateKeywords({ owner: 'B' }))
+      if (myRainGameState && myRainGameState.owner) {
 
+      dispatch(updateKeywords({ owner: myRainGameState.owner }))
+      }
+      if (opponentRainGameState && opponentRainGameState.owner) {
+        dispatch(updateKeywords({ owner: opponentRainGameState.owner }))
+      }
       if (time <= 0 || myRainGameState?.heart <= 0 || opponentRainGameState?.heart <= 0) {
         clearInterval(updateKeywordsInterval)
       }
@@ -47,8 +57,8 @@ export function RainGame({clientId }) {
   const rainGameDialogState = useSelector((state: RootState) => state.rainGameDialog)
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
   
-  const myRainGameState = rainGameState.states.find((rgs) => rgs.owner ===clientId);
-  const opponentRainGameState = rainGameState.states.find((rgs) => rgs.owner !== clientId);
+  const myRainGameState = rainGameState.states.filter((rgs) => rgs.owner ===clientId);
+  const opponentRainGameState = rainGameState.states.filter((rgs) => rgs.owner !== clientId);
 
   const [time, setTime] = useState(100)
   const [items, setItems] = useState([])
@@ -67,12 +77,12 @@ export function RainGame({clientId }) {
     }
   }, [])
 
-  const winner = calculateWinner(myRainGameState, opponentRainGameState, time)
+  const winner = calculateWinner(myRainGameState, opponentRainGameState, time, clientId)
 
   const keydown = (keyCode) => {
     if (keyCode === 13 && keywordInput.current) {
       const text = keywordInput.current.value
-      dispatch(removeKeyword({ keyword: text, owner: 'A' }))
+      dispatch(removeKeyword({ keyword: text, owner: clientId }))
       keywordInput.current.value = ''
     }
   }

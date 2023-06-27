@@ -8,7 +8,7 @@ import { Interface } from "readline";
 export interface RainGameUser {
     username: String,
     character: String,
-    owner: string,
+    clientId: string,
 }
 
 export interface KeywordRain {
@@ -47,9 +47,11 @@ export interface RainGameState {
 };
 export interface RainGameStates{
     states:RainGameState[],
+    users: RainGameUser[],
 }
 export const initialState: RainGameStates = {
     states: [],
+    users: [],
 };
 
 // Define Slice
@@ -205,23 +207,12 @@ export const rainGameSlice = createSlice({
         },
         setRainGameUser: (state, action: PayloadAction<RainGameUser>) => {
             const newUserData = action.payload;
-            const existingStateIndex = state.states.findIndex((rgs) => rgs.owner === newUserData.clientId);
+            const existingUserIndex = state.users.findIndex((user) => user.clientId === newUserData.clientId);
 
-            if (existingStateIndex !== -1) {
-                state.states[existingStateIndex].username = newUserData.username;
-                state.states[existingStateIndex].character = newUserData.character;
-                state.states[existingStateIndex].owner = newUserData.owner;
+            if (existingUserIndex !== -1) {
+                state.users[existingUserIndex] = newUserData;
             } else {
-                const newRainGameState: RainGameState = {
-                    owner: newUserData.clientId,
-                    item: [],
-                    point: 0,
-                    heart: 3,
-                    period: 0,
-                    words: [],
-                    used: []
-                };
-                state.states.push(newRainGameState);
+                state.users.push(newUserData);
             }
         },
     },

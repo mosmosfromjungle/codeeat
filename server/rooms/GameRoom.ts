@@ -85,15 +85,15 @@ export class GameRoom extends Room<GameState> {
       }
     )
 
-    this.onMessage(Message.RAIN_GAME_START, (client) => {
+    this.onMessage(Message.RAIN_GAME_START, (client, content) => {
       this.dispatcher.dispatch(new RainGameStartCommand(), { client });
       this.dispatcher.dispatch(new MakeWordCommand(), { room: this });
       this.broadcast(Message.RAIN_GAME_START, Array.from(this.state.rainGameStates).reduce((obj, [key, value]) => (obj[key]= value, obj), {}));
     });
 
-    this.onMessage(Message.SEND_RAIN_GAME_PLAYERS, (content) => {
+    this.onMessage(Message.SEND_RAIN_GAME_PLAYERS, (client, content) => {
 
-      this.startGeneratingKeywords();
+      this.startGeneratingKeywords(client);
       
     })
 
@@ -213,10 +213,12 @@ export class GameRoom extends Room<GameState> {
     this.broadcastPlayersData(this)
   }
 
-  private startGeneratingKeywords() {
+  private startGeneratingKeywords(client) {
+    const clientId = client.sessionId
     const generateKeywords = async () => {
+      console.log("키워드제작!")
       try {
-        await this.dispatcher.dispatch(new MakeWordCommand(), { room: this });
+        await this.dispatcher.dispatch(new MakeWordCommand(), { room: this, clientId: clientId });
   
         this.state.rainGameStates.forEach((RainGameState, owner) => {
           this.broadcast(Message.SEND_RAIN_GAME_PLAYERS, RainGameState);
