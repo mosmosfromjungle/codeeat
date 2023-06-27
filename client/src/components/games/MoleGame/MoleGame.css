@@ -1,6 +1,6 @@
 html, body {
+  margin-bottom: 20px;
   box-sizing: border-box;
-  background-color: #222222;
   font-family: 'Press Start 2P';
 }
 
@@ -29,14 +29,14 @@ h1 {
 .whack-a-mole {
   margin: 0 auto;
   list-style: none;
-  width: 480px;
+  width: 520px;
   border-radius: 20px;
 }
 
 .mole{
   float: left;
-  width: 136px;
-  height: 136px;
+  width: 150px;
+  height: 150px;
   margin: 5px;
   overflow: hidden;
   cursor : url('/assets/game/molegame/cursor_1.png'), pointer;
@@ -131,7 +131,9 @@ li {
 
 @keyframes point {
   0% { font-size: 60px; }
+  25% { font-size: 50px; }
   50% { font-size: 40px; }
+  75% { font-size: 30px; }
   100% { font-size: 20px; }
 }
 
@@ -177,8 +179,20 @@ li {
   border-radius: 20px;
 }
 
+@keyframes blink-effect {
+  50% {
+    opacity: 0;
+  }
+}
+
+.start-game {
+  animation: blink-effect 1s step-end infinite;
+}
+
 .friend-comment {
-  font-size: 30px;
+  float: right;
+  margin-right: 20px;
+  font-size: 20px;
   font-family: Font_DungGeun;
 }
 
@@ -189,7 +203,7 @@ li {
 }
 
 #point-text-name {
-  font-size: 25px;
+  font-size: 35px;
   font-weight: bold;
   color: #f2ecff;
   font-family: Font_DungGeun;
@@ -262,10 +276,20 @@ li {
   border-style: dashed;
   text-align: center;
   width: 800px;
-  height: 90px;
+  height: 100px;
   margin: 10px auto 10px auto;
 }
 
 .hidden {
   display: none;
+}
+
+@keyframes jump-effect {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-50px); }
+  100% { transform: translateY(0); }
+}
+
+.jump-animation {
+  animation: jump-effect 0.3s infinite;
 }

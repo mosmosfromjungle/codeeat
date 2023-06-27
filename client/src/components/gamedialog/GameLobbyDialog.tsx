@@ -158,7 +158,7 @@ export default function GameLobbyDialog() {
             <CustomRoomWrapper>
               <TitleWrapper>
                 <Title>
-                  방 선택
+                  방 선택하기
                 </Title>
               </TitleWrapper>
               <CustomRoomTable />
