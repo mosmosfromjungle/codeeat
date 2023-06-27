@@ -27,9 +27,10 @@ import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore'
 
 const MessageText = styled.p`
   margin: 10px;
-  font-size: 18px;
   color: #eee;
   text-align: center;
+  font-size: 20px;
+  font-family: Font_DungGeun;
 `
 const CustomRoomTableContainer = styled(TableContainer) <{
   component: React.ElementType
@@ -139,8 +140,10 @@ export const CustomRoomTable = () => {
   }
 
   return availableRooms.length === 0 ? (
-    <MessageText>There are no custom rooms now, create one or join the public lobby.</MessageText>
-  ) : (
+    <MessageText>
+      아직 만들어진 방이 없어요. 방을 만들어 친구들과 게임을 시작하세요 !
+    </MessageText>
+    ) : (
     <>
       <CustomRoomTableContainer component={Paper}>
         <Table>
