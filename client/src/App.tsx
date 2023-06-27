@@ -16,7 +16,7 @@ import GameLobbyDialog from './components/gamedialog/GameLobbyDialog'
 import GameWelcomeDialog from './components/gamedialog/GameWelcomeDialog'
 import MoleGameDialog from './components/games/MoleGame/MoleGameDialog'
 import BrickGameDialog from './components/games/BrickGameDialog'
-import RainGameDialog from './components/games/RainGameDialog'
+import RainGameDialog from './components/games/RainGame/RainGameDialog'
 import FaceChatDialog from './components/games/FaceChatDialog'
 
 // ↓ HelperButtonGroup Dialog

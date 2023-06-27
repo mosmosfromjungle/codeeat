@@ -3,12 +3,11 @@ import styled from 'styled-components';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import RainGame from './RainGame';
-import { useAppSelector, useAppDispatch } from '../../hooks';
-import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore';
-import { closeRainGameDialog } from '../../stores/RainGameDialogStore';
-import phaserGame from '../../PhaserGame';
-import Bootstrap from '../../scenes/Bootstrap';
-import { validateInitialization } from '../../stores/RainGameStore'
+import { useAppSelector, useAppDispatch } from '../../../hooks';
+import { DIALOG_STATUS, setDialogStatus } from '../../../stores/UserStore';
+import { closeRainGameDialog } from '../../../stores/RainGameDialogStore';
+import phaserGame from '../../../PhaserGame';
+import Bootstrap from '../../../scenes/Bootstrap';
 
 const Backdrop = styled.div`
   position: fixed;
@@ -41,6 +40,19 @@ const Wrapper = styled.div`
   }
 `;
 
+const StartButton = styled.button`
+  width: 120px;
+  height: 40px;
+  margin: auto;
+  font-size: 18px;
+  font-weight: bold;
+  transition: opacity 0.3s;
+
+  &:hover {
+    opacity: 0;
+  }
+`;
+
 const RainGameDialog = () => {
   const dispatch = useAppDispatch();
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap;
@@ -51,7 +63,6 @@ const RainGameDialog = () => {
     const initializeRainGame = async () => {
       try {
         await bootstrap.gameNetwork.startRainGame();
-        dispatch(validateInitialization());
       } catch (error){
         console.error("초기화 과정에서 에러 발생:",error);
       }
@@ -78,7 +89,9 @@ const RainGameDialog = () => {
   return (
     <Backdrop>
       <Wrapper>
-        <button onClick={handleStartGame}>게임 시작하기</button>
+      {!showGame && (
+          <StartButton onClick={handleStartGame}>게임 시작</StartButton>
+        )}
         {showGame && <RainGame />}
         {<IconButton
           aria-label="close dialog"

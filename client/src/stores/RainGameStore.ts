@@ -57,58 +57,6 @@ export const rainGameSlice = createSlice({
     name: "raingame",
     initialState,
     reducers: {
-        validateInitialization: (state) => {
-            console.log(state.states)
-            if (state.states.length !== 2) {
-                console.error("Initialization failed: There should be two RainGameState instances.");
-                return;
-            }
-    
-            const ownerA = state.states.find(rgs => rgs.owner === 'A');
-            const ownerB = state.states.find(rgs => rgs.owner === 'B');
-    
-            if (!ownerA) {
-                console.error("Initialization failed: RainGameState with owner 'A' is missing.");
-                return;
-            }
-    
-            if (!ownerB) {
-                console.error("Initialization failed: RainGameState with owner 'B' is missing.");
-                return;
-            }
-    
-            const validateRainGameState = (rainGameState, owner) => {
-                if (rainGameState.point !== 0) {
-                    console.error(`Initialization failed: RainGameState with owner '${owner}' should have a point of 0.`);
-                    return false;
-                }
-                if (rainGameState.item.length !== 0) {
-                    console.error(`Initialization failed: RainGameState with owner '${owner}' should have an empty item array.`);
-                    return false;
-                }
-                if (rainGameState.heart !== 5) {
-                    console.error(`Initialization failed: RainGameState with owner '${owner}' should have heart set to 5.`);
-                    return false;
-                }
-                if (rainGameState.words.length !== 0) {
-                    console.error(`Initialization failed: RainGameState with owner '${owner}' should have an empty words array.`);
-                    return false;
-                }
-                if (rainGameState.used.length !== 0) {
-                    console.error(`Initialization failed: RainGameState with owner '${owner}' should have an empty used array.`);
-                    return false;
-                }
-                return true;
-            };
-    
-            const isValidA = validateRainGameState(ownerA, 'A');
-            const isValidB = validateRainGameState(ownerB, 'B');
-    
-            if (isValidA && isValidB) {
-                console.log("게임 초기화 검증 완료! 시작할 준비가 되었습니다!");
-            }
-        },
-
         updateKeywords: (state, action: PayloadAction<{ owner: string }>) => {
             const { owner } = action.payload;
             const gameStateIndex = state.states.findIndex((rgs) => rgs.owner === owner);
@@ -235,8 +183,7 @@ export const rainGameSlice = createSlice({
         setRainGameState: (state, action: PayloadAction<RainGameState>) => {
             const receivedState = action.payload;
             const existingStateIndex = state.states.findIndex((rgs) => rgs.owner === receivedState.owner);
-            if (existingStateIndex !== -1) { 
-                console.log("6. 클라이언트에 초기화 진행중이다!") 
+            if (existingStateIndex !== -1) {  
                 // 기존 words 목록을 가져오고, 배열이 아닌 경우 빈 배열로 설정
                 const existingWords = state.states[existingStateIndex].words || [];
 
@@ -260,6 +207,6 @@ export const rainGameSlice = createSlice({
 
 
 
-export const { validateInitialization, updateKeywords, removeKeyword, setRainGameState} = rainGameSlice.actions;
+export const { updateKeywords, removeKeyword, setRainGameState} = rainGameSlice.actions;
 
 export default rainGameSlice.reducer
