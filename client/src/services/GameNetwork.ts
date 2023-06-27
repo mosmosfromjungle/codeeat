@@ -7,6 +7,10 @@ import { phaserEvents, Event } from '../events/EventCenter'
 import WebRTC from '../web/WebRTC'
 import store from '../stores'
 import { setPlayerNameMap, removePlayerNameMap, setGameSessionId } from '../stores/UserStore'
+import { 
+  setMoleGameFriendInfo,
+  setMoleGameFriendData
+ } from '../stores/MoleGameStore'
 import {
   setLobbyJoined,
   // setJoinedRoomData,
@@ -191,6 +195,17 @@ export default class GameNetwork {
     this.room.onMessage(Message.SEND_GAME_PLAYERS, (content) => {
       store.dispatch(setGamePlayers(content))
     })
+
+    // ↓ Mole Game
+    // method to receive friend info to me in mole game
+    this.room.onMessage(Message.RECEIVE_MOLE, (content) => {
+      store.dispatch(setMoleGameFriendInfo(content));
+    });
+
+    // method to receive friend point to me in mole game
+    this.room.onMessage(Message.RECEIVE_YOUR_POINT, (content) => {
+      store.dispatch(setMoleGameFriendData(content));
+    });
   }
 
   // method to send player updates to Colyseus server
@@ -209,4 +224,14 @@ export default class GameNetwork {
     phaserEvents.emit(Event.MY_PLAYER_READY)
   }
 
+  // ↓ Mole Game
+  // method to send my info to friend in mole game
+  sendMyInfo(myName: string, myCharacter: string) {
+    this.room?.send(Message.SEND_MOLE, { name: myName, character: myCharacter })
+  }
+
+  // method to send my point to friend in mole game
+  sendMyPoint(myPoint: string) {
+    this.room?.send(Message.SEND_MY_POINT, { point: myPoint })
+  }
 }

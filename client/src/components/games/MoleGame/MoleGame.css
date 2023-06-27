@@ -177,6 +177,11 @@ li {
   border-radius: 20px;
 }
 
+.friend-comment {
+  font-size: 30px;
+  font-family: Font_DungGeun;
+}
+
 #point-text {
   font-size: 20px;
   font-weight: bold;
@@ -259,4 +264,8 @@ li {
   width: 800px;
   height: 90px;
   margin: 10px auto 10px auto;
+}
+
+.hidden {
+  display: none;
 }
