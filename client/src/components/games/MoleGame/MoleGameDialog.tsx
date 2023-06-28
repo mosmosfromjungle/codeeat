@@ -143,7 +143,7 @@ export default function MoleGameDialog() {
   const [canClick, setCanClick] = useState(true);
   // const [startGameFlag, setStartGameFlag] = useState(true);
 
-  let startGameFlag = true;
+  // let startGameFlag = true;
 
   let randomNumber1 = 0;
   let randomNumber2 = 0;
@@ -154,11 +154,6 @@ export default function MoleGameDialog() {
   let moleNumber3 = 0;
 
   const [executed, setExecuted] = useState(false);
-
-  // Client Events (My Point)
-  const displayToFriend = (myPoint) => {
-    bootstrap.gameNetwork.sendMyPoint(myPoint)
-  }
 
   // If friend get point, display event
   let friendPoint = useAppSelector((state) => state.molegame.friendPoint);
@@ -233,7 +228,7 @@ export default function MoleGameDialog() {
     console.log("Function [startMole]");
 
     // Request start game
-    bootstrap.gameNetwork.startGame('1');
+    bootstrap.gameNetwork.startGame('0');
   }
 
   // 4. Show Event
@@ -481,10 +476,9 @@ export default function MoleGameDialog() {
 
   const catchMole = () => {
     console.log("Function [catchMole]");
-    
     seeMole();
-
-    clearTimeout(moleCatch);
+    
+    // clearTimeout(moleCatch);
   }
 
   const handleClick = (num) => {
@@ -499,10 +493,10 @@ export default function MoleGameDialog() {
       return;
 
     } else {
-      setCanClick(false);
-
       // Correct Answer
       if (activeNumber === num) {
+        setCanClick(false);
+  
         const CorrectAudio = new Audio(CorrectBGM);
         CorrectAudio.play();
 
@@ -511,21 +505,21 @@ export default function MoleGameDialog() {
 
         setPoint(point + 1);
         
-        // 상대방에게 보내주어야 함
-        displayToFriend(point + 1);
+        // 상대방에게 내 점수를 보내주어야 함
+        bootstrap.gameNetwork.sendMyPoint(point + 1);
 
         setTimeout(function() {
           const removePoint = document.getElementById('point-current');
           removePoint.classList.remove('get-point');
         }, 1000);
 
-        // Mole Event
-        const number = document.getElementById(`${num}`);
-        number.classList.add('click-correct');
+        // // Mole Event
+        // const number = document.getElementById(`${num}`);
+        // number.classList.add('click-correct');
   
-        setTimeout(function() {
-          number.classList.remove('click-correct');
-        }, 1000);
+        // setTimeout(function() {
+        //   number.classList.remove('click-correct');
+        // }, 1000);
 
         // Character Event
         const character = document.getElementById(`my-character`);
@@ -534,7 +528,13 @@ export default function MoleGameDialog() {
         setTimeout(function() {
           character.classList.remove('jump-animation');
         }, 1000);
+
+        console.log("turn: "+turn);
         
+        // 다음 문제로 넘어가라고 요청
+        bootstrap.gameNetwork.startGame(turn.toString());
+
+        // catchMole();
 
       // Wrong Answer
       } else {
@@ -548,8 +548,6 @@ export default function MoleGameDialog() {
           number.classList.remove('click-wrong');
         }, 1000);
       }
-
-      catchMole();
     }
   };
 
@@ -638,11 +636,19 @@ export default function MoleGameDialog() {
 
   // Start game !
   useEffect(() => {
-    if (problem === '1') {
+    if (problem === '') {
+      console.log("Wait for press start button")
+
+    } else if (problem === '1') {
       setStartButtonColor('#3d3f43');
       setPoint(0);
-  
+
       setTimeout(showingMole, 1000);
+
+    } else {
+      console.log("problem: "+problem);
+
+      catchMole();
     }
   }, [problem]);
   

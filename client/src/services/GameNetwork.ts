@@ -12,6 +12,7 @@ import {
   setMoleGameFriendInfo,
   setMoleGameFriendData,
   setMoleGameProblem,
+  setMoleGameNext,
  } from '../stores/MoleGameStore'
 import {
   setLobbyJoined,

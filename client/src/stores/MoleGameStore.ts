@@ -46,7 +46,7 @@ export const moleGameSlice = createSlice({
       state,
       action: PayloadAction<{ problem: string }>
     ) => {
-      state.problem = action.payload.problem
+      state.problem = (parseInt(action.payload.problem) + 1).toString();
     },
   },
 })
