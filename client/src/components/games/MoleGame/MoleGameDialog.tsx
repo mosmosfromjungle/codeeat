@@ -475,7 +475,6 @@ export default function MoleGameDialog() {
       setStartButtonText('PRESS AGAIN');
       setStartButtonColor('#f2ecff');
 
-      setDisableStartButton(false);
       setStartGame(false);
     }
   }
