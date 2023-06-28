@@ -103,8 +103,6 @@ export default function MoleGameDialog() {
   
   // Get room host information
   const host = useAppSelector((state) => state.molegame.host);
-
-  // console.log("host: "+host);
   
   const dispatch = useAppDispatch()
 
@@ -246,12 +244,14 @@ export default function MoleGameDialog() {
       if (startGame) {
         // Clear the game
         clearTimeout(moleCatch);
+  
         setTurn(0);
-        // setPoint(0);
+        setPoint(0);
         
         moleHide();
         
         setStartGame(false);
+
         modalEvent();
 
         const FinishAudio = new Audio(FinishBGM);
@@ -474,7 +474,7 @@ export default function MoleGameDialog() {
       moleActive(moleNumber2);
       moleActive(moleNumber3);
 
-      const timeoutId = setTimeout(seeMole, 5000);
+      let timeoutId = setTimeout(seeMole, 5000);
       setMoleCatch(timeoutId);
 
       setActiveNumber(randomNumber1);
@@ -566,8 +566,6 @@ export default function MoleGameDialog() {
         setTimeout(function() {
           character.classList.remove('jump-animation');
         }, 1000);
-
-        console.log("turn: "+turn);
         
         // 다음 문제로 넘어가라고 요청
         bootstrap.gameNetwork.startGame(turn.toString());
@@ -616,7 +614,11 @@ export default function MoleGameDialog() {
       winner = friendname;
     }
   } else {
-    winner = "both"
+    if (friendname === '') {
+      winner = username;
+    } else {
+      winner = "both"
+    }
   }
 
   const Modal = () => {
@@ -660,10 +662,13 @@ export default function MoleGameDialog() {
 
   const handleClose = () => {
     // Clear the game
+    clearTimeout(moleCatch);
     setTurn(0);
     setPoint(0);
-
-    clearTimeout(moleCatch);
+    
+    moleHide();
+    
+    setStartGame(false);
 
     try {
       // 상대방에게 나 나간다고 알려줌
@@ -694,8 +699,6 @@ export default function MoleGameDialog() {
       setTimeout(showingMole, 1000);
 
     } else {
-      console.log("problem: "+problem);
-
       catchMole();
     }
   }, [problem]);
