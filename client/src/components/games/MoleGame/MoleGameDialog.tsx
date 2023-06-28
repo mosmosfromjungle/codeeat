@@ -103,14 +103,6 @@ export default function MoleGameDialog() {
   
   // Get room host information
   const host = useAppSelector((state) => state.molegame.host);
-
-  // 처음 들어와 있던 아이는 두번째로 들어온 아이 정보 알 수 있음
-  // 두번째로 들어온 아이는 첫번째로 들어온 아이의 정보를 어떻게 알지?
-
-  // console.log("====== Player Information ======");
-  // console.log("My name: "+username);
-  // console.log("Friend name: "+friendname);
-  // console.log("Room host: "+ host);
   
   const dispatch = useAppDispatch()
 
@@ -123,7 +115,6 @@ export default function MoleGameDialog() {
 
   const [problemText1, setProblemText1] = useState("정답을 말하고 있는 두더지를 잡아라!");
   // const [problemText2, setProblemText2] = useState();
-  // let problemText2 = friendname ? `친구가 들어왔어요, ${ timer }초 뒤에 시작해요 !` : '** 아직 친구가 들어오지 않았어요 !'
 
   const [answerText1, setAnswerText1] = useState(String);
   const [answerText2, setAnswerText2] = useState(String);
@@ -137,11 +128,11 @@ export default function MoleGameDialog() {
 
   const [startButtonColor, setStartButtonColor] = useState('');
   const [startButtonText, setStartButtonText] = useState('PRESS START');
+  const [disableStartButton, setDisableStartButton] = React.useState(false);
 
   const [activeNumber, setActiveNumber] = useState(0);
   const [activeNumberList, setActiveNumberList] = useState([0, 0, 0]);
 
-  const [disableStartButton, setDisableStartButton] = React.useState(false);
   const [hideEnding, setHideEnding] = React.useState(true);
   
   const [point, setPoint] = useState(0);
@@ -187,36 +178,6 @@ export default function MoleGameDialog() {
     }, 1000);
   }, [friendPoint]);
 
-  // 0. Start game
-
-  // useEffect(() => {
-  //   if (friendname) {
-  //     console.log("[Timer] Start")
-  //     const intervalId = setInterval(() => {
-  //       setTimer(prevTimer => {
-  //         if (prevTimer === 1) {
-  //           clearInterval(intervalId);
-  //           console.log("[Timer] Stop");
-
-  //           const comment = document.getElementById('problem-text2');
-  //           comment.classList.add('hidden');
-            
-  //           setTimer(5);
-
-  //           startMole();
-  //           // setProblemText2('');
-  //         }
-  //         return prevTimer - 1;
-  //       });
-  //     }, 1000);
-
-  //     return () => {
-  //       clearInterval(intervalId);
-  //       console.log("[Timer] Wait");
-  //     };
-  //   }
-  // }, [friendname]);
-
   // 1. Load problems
 
   const problems = [
@@ -231,29 +192,6 @@ export default function MoleGameDialog() {
     ['Q09. 파이썬에서 유니코드 숫자값을 입력받아 그 코드에 해당하는 문자를 리턴하는 함수는?', ['char', 'len', 'map']],
     ['Q10. 파이썬에서 for문과 함께 자주 사용하는 함수로, 입력받은 숫자에 해당하는 범위 값을 반복 가능한 객체로 만들어 리턴하는 함수는?', ['range', 'len', 'map']]  
   ];
-
-  // useEffect(() => {
-  //   if (!executed) {
-  //     loadProblems();
-  //     setExecuted(true);
-  //   }
-  // }, [executed]);
-
-  // const loadProblems = async () => {
-  //   try {
-  //     const datas = await axios.get('/molegame/problems');
-  //     if (datas.status === 200) {
-  //       setProblems(datas.data.problems);
-  
-  //     } else {
-  //       console.log("Failed to get problems data. Try again.")
-  //       return;
-  //     }
-  //   } catch (error: any) {
-  //     console.log("Failed to get problems data. Try again.")
-  //     return;
-  //   }
-  // }
 
   // 2. Bling the Text
 
@@ -275,6 +213,16 @@ export default function MoleGameDialog() {
   }, [flag]);
 
   // 3. Start Button Event
+  
+  // 친구가 들어왔는데 내가 방장이면, 시작 버튼이 보여야 함
+  // 내가 방장이 아니면 시작 버튼 보이지 않음
+
+  if (friendname) {
+    if (host === username) {
+      const startButton = document.getElementById('start-button-div');
+      startButton.classList.remove('hidden');
+    }
+  }
 
   const startMole = () => {
     console.log("Function [startMole]");
@@ -617,7 +565,6 @@ export default function MoleGameDialog() {
     setDisableStartButton(false);
   }
 
-
   // 7. Check the winner
   let winner = '';
 
@@ -727,7 +674,7 @@ export default function MoleGameDialog() {
               <MyPoint>
                 <div className="point-wrap">
                   <span id="is-host">
-                    { username === host ? '방장' : ''}<br/><br/>
+                    { ( friendname && (username === host)) ? '방장' : ''}<br/><br/>
                   </span>
                   <img src={ imgpath } width="50px" id="my-character"></img>
                   <p id="point-text-name">
@@ -800,7 +747,7 @@ export default function MoleGameDialog() {
               <YourPoint>
                 <div className="point-wrap">
                   <span id="is-host">
-                    { friendname === host ? '방장' : ''}<br/><br/>
+                    { ( friendname && (friendname === host)) ? '방장' : ''}<br/><br/>
                   </span>
                   <img src={ friendimgpath } width="50px" id="friend-character" className={ friendname ? "" : "hidden" }></img>
                   <p id="point-text-name">
@@ -814,7 +761,7 @@ export default function MoleGameDialog() {
               </YourPoint>
             </Content>
 
-            <div className="point-box clearfix">
+            <div id="start-button-div" className="point-box clearfix hidden">
               <div className="btn-wrap">
                 <button type="button" 
                         className="start-btn" 
