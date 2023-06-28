@@ -16,8 +16,6 @@ import './MoleGame.css'
 import phaserGame from '../../../PhaserGame'
 import Bootstrap from '../../../scenes/Bootstrap'
 
-import axios from 'axios'
-
 const Backdrop = styled.div`
   position: fixed;
   top: 0;
@@ -63,11 +61,6 @@ const ProblemText = styled.div`
   font-family: Font_DungGeun;
 `
 
-const ProblemText2 = styled.div`
-  font-size: 25px;
-  font-family: Font_DungGeun;
-`
-
 const Content = styled.div`
   display: flex;
 `
@@ -106,14 +99,10 @@ export default function MoleGameDialog() {
   
   const dispatch = useAppDispatch()
 
-  // const [problems, setProblems] = useState(String);
-  // const [timer, setTimer] = useState(5);
-
   const [flag, setFlag] = useState(0);
   const [titleColor, setTitleColor] = useState('#f2ecff');
 
   const [problemText1, setProblemText1] = useState("정답을 말하고 있는 두더지를 잡아라!");
-  // const [problemText2, setProblemText2] = useState();
 
   const [answerText1, setAnswerText1] = useState(String);
   const [answerText2, setAnswerText2] = useState(String);
@@ -133,19 +122,13 @@ export default function MoleGameDialog() {
   const [activeNumberList, setActiveNumberList] = useState([0, 0, 0]);
 
   const [hideEnding, setHideEnding] = React.useState(true);
+  const [canClick, setCanClick] = useState(true);
+  const [startGame, setStartGame] = useState(false);
   
   const [point, setPoint] = useState(0);
-  
   const [turn, setTurn] = useState(0);
   
   const [moleCatch, setMoleCatch] = useState(0);
-
-  const [canClick, setCanClick] = useState(true);
-  // const [startGameFlag, setStartGameFlag] = useState(true);
-
-  // let startGameFlag = true;
-
-  const [startGame, setStartGame] = useState(false);
 
   let randomNumber1 = 0;
   let randomNumber2 = 0;
@@ -154,8 +137,6 @@ export default function MoleGameDialog() {
   let moleNumber1 = 0;
   let moleNumber2 = 0;
   let moleNumber3 = 0;
-
-  const [executed, setExecuted] = useState(false);
 
   // If friend get point, display event
   let friendPoint = useAppSelector((state) => state.molegame.friendPoint);
@@ -468,7 +449,6 @@ export default function MoleGameDialog() {
       setCanClick(true);
 
       setProblemText1(problems[turn][0]);
-      // setProblemText2('');
 
       moleActive(moleNumber1);
       moleActive(moleNumber2);
@@ -508,7 +488,6 @@ export default function MoleGameDialog() {
     moleHide();
     
     clearTimeout(moleCatch);
-    
     setTimeout(showingMole, 1000);
   }
 
@@ -551,15 +530,7 @@ export default function MoleGameDialog() {
           removePoint.classList.remove('get-point');
         }, 1000);
 
-        // // Mole Event
-        // const number = document.getElementById(`${num}`);
-        // number.classList.add('click-correct');
-  
-        // setTimeout(function() {
-        //   number.classList.remove('click-correct');
-        // }, 1000);
-
-        // Character Event
+        // Character Jump Event
         const character = document.getElementById(`my-character`);
         character.classList.add('jump-animation');
   
@@ -569,8 +540,6 @@ export default function MoleGameDialog() {
         
         // 다음 문제로 넘어가라고 요청
         bootstrap.gameNetwork.startGame(turn.toString());
-
-        // catchMole();
 
       // Wrong Answer
       } else {
@@ -733,11 +702,6 @@ export default function MoleGameDialog() {
               <ProblemText>
                 { problemText1 }
               </ProblemText>
-              {/* <ProblemText2>
-                <p id="problem-text2" className={`friend-comment ${friendname ? '' : 'start-game'}`}>
-                  { problemText2 }
-                </p>
-              </ProblemText2> */}
             </div>
 
             <Content>
