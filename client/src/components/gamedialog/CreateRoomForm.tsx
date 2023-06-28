@@ -21,6 +21,17 @@ const CreateRoomFormWrapper = styled.form`
   gap: 20px;
 `
 
+const RoomButton = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  Button {
+    font-size: 20px;
+    font-family: Font_DungGeun;
+  }
+`
+
 export const CreateRoomForm = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [nameFieldEmpty, setNameFieldEmpty] = useState(false)
@@ -30,7 +41,7 @@ export const CreateRoomForm = () => {
   const character = useAppSelector((state) => state.user.character)
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
-  const rainGameOpen = useAppSelector((state) => state.raingame.rainGameOpen)
+  const rainGameOpen = useAppSelector((state) => state.rainGameDialog.rainGameOpen)
   const faceChatOpen = useAppSelector((state) => state.facechat.faceChatOpen)
 
   const dispatch = useAppDispatch()
@@ -73,21 +84,21 @@ export const CreateRoomForm = () => {
   return (
     <CreateRoomFormWrapper onSubmit={handleSubmit}>
       <TextField
-        label="Name"
+        label="방 이름"
         variant="outlined"
         color="secondary"
         autoFocus
         error={nameFieldEmpty}
-        helperText={nameFieldEmpty && 'Name is required'}
+        helperText={nameFieldEmpty && '방 이름을 입력해주세요 !'}
         onChange={handleChange('name')}
       />
 
       <TextField
-        label="Description"
+        label="방 설명"
         variant="outlined"
         color="secondary"
         error={descriptionFieldEmpty}
-        helperText={descriptionFieldEmpty && 'Description is required'}
+        helperText={descriptionFieldEmpty && '방 설명을 입력해주세요 !'}
         multiline
         rows={4}
         onChange={handleChange('description')}
@@ -95,7 +106,7 @@ export const CreateRoomForm = () => {
 
       <TextField
         type={showPassword ? 'text' : 'password'}
-        label="Password (optional)"
+        label="방 비밀번호 (선택사항)"
         onChange={handleChange('password')}
         color="secondary"
         InputProps={{
@@ -112,9 +123,12 @@ export const CreateRoomForm = () => {
           ),
         }}
       />
-      <Button variant="contained" color="secondary" type="submit">
-        Create
-      </Button>
+      
+      <RoomButton>
+        <Button variant="contained" size="large" type="submit">
+          만들기
+        </Button>
+      </RoomButton>
     </CreateRoomFormWrapper>
   )
 }

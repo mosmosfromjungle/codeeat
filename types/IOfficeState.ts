@@ -40,6 +40,6 @@ export interface IOfficeState extends Schema {
   // molegames: MapSchema<IMoleGame>
   // brickgames: MapSchema<IBrickGame>
   // raingames: MapSchema<IRainGame>
-  // faceChats: MapSchema<IFaceChat>
+  // rainGameStates : MapSchema<IRainGameState>
   chatMessages: ArraySchema<IChatMessage>
 }

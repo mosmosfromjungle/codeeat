@@ -23,7 +23,6 @@ import {
   setAvailableBrickRooms,
   setAvailableMoleRooms,
   setAvailableRainRooms,
-  setAvailableFaceChatRooms,
   addAvailableRooms,
   removeAvailableRooms,
   clearAvailabelGameRooms,
@@ -78,10 +77,6 @@ export default class GameNetwork {
     } else if (type === RoomType.RAINLOBBY) {
       this.lobby.onMessage('rooms', (rooms) => {
         store.dispatch(setAvailableRainRooms(rooms))
-      })
-    } else if (type === RoomType.FACECHATLOBBY) {
-      this.lobby.onMessage('rooms', (rooms) => {
-        store.dispatch(setAvailableFaceChatRooms(rooms))
       })
     }
 
@@ -165,17 +160,6 @@ export default class GameNetwork {
     this.room.onMessage(Message.SEND_GAME_PLAYERS, (content) => {
       store.dispatch(setGamePlayers(content))
     })
-
-    // ↓ Mole Game
-    // method to receive friend info to me in mole game
-    this.room.onMessage(Message.RECEIVE_MOLE, (content) => {
-      store.dispatch(setMoleGameFriendInfo(content));
-    });
-
-    // method to receive friend point to me in mole game
-    this.room.onMessage(Message.RECEIVE_YOUR_POINT, (content) => {
-      store.dispatch(setMoleGameFriendData(content));
-    });
   }
 
   // method to send player updates to Colyseus server
@@ -276,8 +260,7 @@ export default class GameNetwork {
     console.log('command: ', command)
     this.room?.send(Message.BRICK_GAME_COMMAND, { command: command })
   }
-
-
+  
   // ↓ Mole Game
   // method to send my info to friend in mole game
   sendMyInfo(myName: string, myCharacter: string) {
@@ -288,4 +271,15 @@ export default class GameNetwork {
   sendMyPoint(myPoint: string) {
     this.room?.send(Message.SEND_MY_POINT, { point: myPoint })
   }
+  // Rain Game
+  startRainGame() {
+    console.log("1. 게임 초기화 과정이 진행된다!")
+    this.room?.send(Message.RAIN_GAME_START);
+  }
+  MakingWord(){
+    console.log("단어 만들라고 서버에게 명령함")
+    this.room?.send(Message.SEND_RAIN_GAME_PLAYERS);
+  }
 }
+
+

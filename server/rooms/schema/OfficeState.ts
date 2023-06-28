@@ -7,6 +7,9 @@ import {
   // IRainGame,
   // IFaceChat,
   IChatMessage,
+  // IRainGameState,
+  // IKeywordRain,
+  // IRainGameUser,
 } from '../../../types/IOfficeState'
 
 export class Player extends Schema implements IPlayer {
@@ -39,6 +42,8 @@ export class ChatMessage extends Schema implements IChatMessage {
   @type('string') content = ''
 }
 
+
+
 // export class FaceChat extends Schema implements IFaceChat {
 //   // @type('string') roomId = getRoomId()
 //   @type({ set: 'string' }) connectedUser = new SetSchema<string>()
@@ -60,9 +65,15 @@ export class OfficeState extends Schema implements IOfficeState {
   @type([ChatMessage])
   chatMessages = new ArraySchema<ChatMessage>()
 
+  // @type({ map: RainGameState })
+  // rainGameStates = new MapSchema<RainGameState>()
   // @type({ map: FaceChat })
   // faceChats = new MapSchema<FaceChat>()
 }
+
+
+
+
 
 // export const RainGameRoomIds = new Set<string>()
 // export const moleGameRoomIds = new Set<string>()

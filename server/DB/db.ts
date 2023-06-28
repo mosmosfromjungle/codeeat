@@ -2,9 +2,9 @@ import { config } from '../envconfig'
 import User from '../models/User'
 import Friends from '../models/Friends'
 import FriendRequest from '../models/FriendRequest'
+import { KeywordRainModel } from '../models/RainGame'
 import LastDM from '../models/LastDM'
 import DM from '../models/DM'
-import raingameUser from '../models/RainGame'
 import MoleGame from '../models/MoleGame'
 
 import { defaultProblems } from '../controllers/MoleGameControllers/index'
@@ -37,13 +37,13 @@ export const createCollection = (modelName : string) => {
 
   switch (modelName) {
     case 'user':
-      new User()
+      new User();
       break
     case 'friends':
-      new Friends()
+      new Friends();
       break
     case 'friendrequest':
-      new FriendRequest()
+      new FriendRequest();
       break
     case 'lastdm':
       new LastDM();
@@ -52,7 +52,7 @@ export const createCollection = (modelName : string) => {
       new DM();
       break;
     case 'raingame':
-      new raingameUser()
+      new KeywordRainModel();
       break
     case 'molegame':
       new MoleGame()
