@@ -10,20 +10,25 @@ export interface IPlayer extends Schema {
   videoConnected: boolean
 }
 
-export interface IBrickGame extends Schema {
-  // roomId: string
-  connectedUser: SetSchema<string>
-}
+// export interface IBrickGame extends Schema {
+//   // roomId: string
+//   connectedUser: SetSchema<string>
+// }
 
-export interface IMoleGame extends Schema {
-  // roomId: string
-  connectedUser: SetSchema<string>
-}
+// export interface IMoleGame extends Schema {
+//   // roomId: string
+//   connectedUser: SetSchema<string>
+// }
 
-export interface IRainGame extends Schema {
-  // roomId: string
-  connectedUser: SetSchema<string>
-}
+// export interface IRainGame extends Schema {
+//   // roomId: string
+//   connectedUser: SetSchema<string>
+// }
+
+// export interface IFaceChat extends Schema {
+//   // roomId: string
+//   connectedUser: SetSchema<string>
+// }
 
 export interface IChatMessage extends Schema {
   author: string
@@ -31,23 +36,20 @@ export interface IChatMessage extends Schema {
   content: string
 }
 
-export interface IFaceChat extends Schema {
-  // roomId: string
-  connectedUser: SetSchema<string>
-}
-
 export interface IOfficeState extends Schema {
   players: MapSchema<IPlayer>
-  molegames: MapSchema<IMoleGame>
-  brickgames: MapSchema<IBrickGame>
-  raingames: MapSchema<IRainGame>
+  // molegames: MapSchema<IMoleGame>
+  // brickgames: MapSchema<IBrickGame>
+  // raingames: MapSchema<IRainGame>
   chatMessages: ArraySchema<IChatMessage>
-  faceChats: MapSchema<IFaceChat>
+  // rainGameStates : MapSchema<IRainGameState>
 }
 
 // export interface IGameState extends Schema {
 //   players: MapSchema<IPlayer>
   // molegames: MapSchema<IMoleGame>
   // brickgames: MapSchema<IBrickGame>
-  // typinggames: MapSchema<ITypingGame>
-// }
+  // raingames: MapSchema<IRainGame>
+  // faceChats: MapSchema<IFaceChat>
+  //chatMessages: ArraySchema<IChatMessage>
+//}

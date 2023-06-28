@@ -1,8 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import styled, { createGlobalStyle } from 'styled-components'
-import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
-import CloseIcon from '@mui/icons-material/Close'
 
 import { useAppSelector, useAppDispatch } from '../../hooks'
 import { closeBrickGameDialog } from '../../stores/BrickGameStore'
@@ -13,280 +9,84 @@ import phaserGame from '../../PhaserGame'
 import Bootstrap from '../../scenes/Bootstrap'
 import Game from '../../scenes/Game'
 
+import img1 from '../../images/game/brickGame/52-2.png'
+import img2 from '../../images/game/brickGame/25-2.png'
+import img3 from '../../images/game/brickGame/37-2.png'
+import img4 from '../../images/game/brickGame/51-2.png'
+import img5 from '../../images/game/brickGame/50-2.png'
+import img6 from '../../images/game/brickGame/39-2.png'
+
+import IconButton from '@mui/material/IconButton'
+import CloseIcon from '@mui/icons-material/Close'
+import TextField from '@mui/material/TextField'
+import { 
+  GlobalStyle, Backdrop, Wrapper, BottomWrapper, TopWrapper,
+  RoundWrapper, MidWrapper, HelperWrapper, QuizWrapper, OpponentWrapper, MyWrapper, 
+  ImageContainer, ImageText, CustomBracket, CustomInput, OptionWrapper,
+  CustomButton, CustomResetButton, CustomList, CommandArrayWrapper, 
+} from './BrickGameStyle'
+
 
 const WRONG_OPERATION = '해당 자료구조에서 사용되지 않는 연산입니다!'
 const COMMON_MESSAGE = (
   <>
-    <br />
+    {/* <br /> */}
     <span style={{ fontSize: '22px' }}>더하기 </span>
     <span style={{ fontSize: '30px' }}>sum</span>
-    <span style={{ fontSize: '22px' }}> | 원래대로 </span>
-    <span style={{ fontSize: '30px' }}>restore</span>
+    {/* <span style={{ fontSize: '22px' }}> | 원래대로 </span>
+    <span style={{ fontSize: '30px' }}>restore</span> */}
     <span style={{ fontSize: '22px' }}> | 게임 초기화 </span>
     <span style={{ fontSize: '30px' }}> reset</span>
-    <br />
+    {/* <br /> */}
   </>
 )
-
-const GlobalStyle = createGlobalStyle`
-  @font-face {
-    font-family: 'CustomFont';
-    src: url('/assets/fonts/neodgm_code.woff') format('woff');
-  }
-
-  body {
-    font-family: 'CustomFont', sans-serif;
-  }
-`
-const Backdrop = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  padding: 16px 180px 16px 16px;
-`
-const Wrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  background: #222639;
-  border-radius: 16px;
-  padding: 16px;
-  color: #eee;
-  background-color: black;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0px 0px 5px #0000006f;
-  justify-content: center;
-  align-items: center;
-
-  .close {
-    position: absolute;
-    top: 0px;
-    right: 0px;
-  }
-`
-const ImageContainer = styled.div`
-  position: relative;
-  margin: 10px;
-`
-const ImageText = styled.div`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 8px;
-  // background-color: rgba(0, 0, 0, 0.6);
-  color: white;
-  font-family: 'CustomFont', sans-serif;
-  font-size: 40px;
-  font-weight: bold;
-  text-align: center;
-  text-shadow: 0px 0px 12px rgba(0, 0, 0, 0.9); /* 텍스트 그림자 스타일링 */
-`
-const CustomBracket = styled.div`
-  position: relative;
-  font-family: 'CustomFont', sans-serif;
-  font-size: 32px;
-  margin-top: 60px;
-`
-const CustomInput = styled.input`
-  font-family: 'CustomFont', sans-serif;
-  font-size: 32px;
-  color: white;
-  background-color: black;
-  width: 80%;
-  // height: 100px;
-`
-const CustomButton = styled(Button)`
-  && {
-    font-family: 'CustomFont', sans-serif;
-    font-size: 32px;
-    color: white;
-    &:hover {
-      color: blue;
-  }
-`
-const CustomResetButton = styled(Button)`
-  && {
-    font-family: 'CustomFont', sans-serif;
-    font-size: 24px;
-    color: white;
-    &:hover {
-      color: blue;
-  }
-`
-const CustomList = styled.div`
-  font-family: 'CustomFont', sans-serif;
-  font-size: 28px;
-  color: white;
-  width: 80%;
-  line-height: 1.5;
-  text-align: center;
-
-`
-
 
 export default function BrickGameDialog() {
   const dispatch = useAppDispatch()
   const userName = useAppSelector((state) => state.user.userName)
   const gamePlayers = useAppSelector((state) => state.room.gamePlayers)
+  const currentQuiz  = useAppSelector((state) => state.brickgame.brickGameState.currentQuiz)
+  const myCurrentImages = useAppSelector((state) => state.brickgame.myPlayerStatus.currentImages)
+  const mySelectedOption = useAppSelector((state) => state.brickgame.myPlayerStatus.selectedOption)
+  const myCommandArray = useAppSelector((state) => state.brickgame.myPlayerStatus.commandArray)
+  const oppSelectedOption = useAppSelector((state) => state.brickgame.oppPlayerStatus.selectedOption)
+  const oppCommandArray = useAppSelector((state) => state.brickgame.oppPlayerStatus.commandArray)
   const [players, setPlayers] = useState<PlayersInterface[]>([])
+  const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
 
-  /* TODO: FETCH PLAYERS IN ROOM */
+  /* FETCH PLAYERS IN ROOM */
   useEffect(() => {
     setPlayers(gamePlayers)
-    console.log(gamePlayers)
-  }, [dispatch, gamePlayers])
+    console.log('game player: ', gamePlayers)
+  }, [gamePlayers])
 
-  /* TODO: SET IMAGE AND NUMBERS */
-  function getRandomIntInclusive(min: number, max: number): number {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-  const n = getRandomIntInclusive(1, 100);
-  const m = getRandomIntInclusive(1, n);
-  const x = n - m;
+  // Update selected data structure option 
+  // useEffect(() => {
+  //   setCurrentOption(mySelectedOption)
+  //   console.log('selected option: ', currentOption)
+  // }, [mySelectedOption])
 
-  const arr: number[] = [m, x];
+  const imgsrc = [img1, img2, img3, img4, img5, img6]
 
-  while (arr.length < 6) {
-    const num = getRandomIntInclusive(1, n);
-    if (!arr.includes(num)) {
-      arr.push(num);
-    }
-  }
-
-  const [images, setImages] = useState([
-    { src: '/assets/game/brickGame/52-2.png', text: arr[0].toString() },
-    { src: '/assets/game/brickGame/25-2.png', text: arr[1].toString() },
-    { src: '/assets/game/brickGame/37-2.png', text: arr[2].toString() },
-    { src: '/assets/game/brickGame/51-2.png', text: arr[3].toString() },
-    { src: '/assets/game/brickGame/50-2.png', text: arr[4].toString() },
-    { src: '/assets/game/brickGame/39-2.png', text: arr[5].toString() },
-  ])
-  const [originalImages, setOriginalImages] = useState([...images]) // 원래의 이미지 배열 복사
+  const [images, setImages] = useState<{ src: any; text: string }[]>([])
   const [command, setCommand] = useState('')
-  const [selectedOption, setSelectedOption] = useState('')
+
+  useEffect(() => {
+    setImages(myCurrentImages.map((value, index) => ({
+      src: imgsrc[value.imgidx - 1],
+      text: value.text
+    })));
+  }, [myCurrentImages]);
 
 
-  const handleRemoveImage = () => {
-    const match = command.match(/remove\((\d+)\)/) || command.match(/discard\((\d+)\)/);
-    if (match) {
-      const number = match[1];
-      const index = images.findIndex((image) => image.text === number);
-      if (index !== -1) {
-        removeImage(index);
-      }
-    } else {
-      alert('제거할 숫자를 같이 입력해주세요.');
-    }
-    setCommand('');
-  }
-
-  const removeImage = (index) => {
-    setImages((prevImages) => {
-      const newImages = [...prevImages]
-      newImages.splice(index, 1)
-      return newImages
-    })
-  }
-
-  const restoreImages = () => {
-    setImages([...originalImages]) // 원래의 이미지 배열로 복구
-  }
-
-  const handleCommand = () => {
-    const lowercaseCommand = command.toLowerCase();
-    if (lowercaseCommand === 'sum') {
-      const sum = images.reduce((total, image) => total + parseInt(image.text), 0);
-      if (n == sum) {
-        alert('정답입니다');
-        restoreImages(); // 점수? 추가 필요
-      } else {
-        restoreImages();
-      }
-    } else if (lowercaseCommand === 'restore') {
-      restoreImages(); // 이미지 복구
-    } else if (lowercaseCommand === 'reset') {
-      handleReset();
-    } else {
-      switch (selectedOption) {
-        case 'list':
-          if (lowercaseCommand.startsWith('remove')) {
-            handleRemoveImage();
-          } else if (lowercaseCommand === 'pop') {
-            removeImage(images.length - 1);
-          } else {
-            alert(WRONG_OPERATION);
-          }
-          break;
-        case 'set':
-          if (lowercaseCommand.startsWith('remove') || lowercaseCommand.startsWith('discard')) {
-            handleRemoveImage();
-          } else {
-            alert(WRONG_OPERATION);
-          }
-          break;
-        case 'stack':
-          if (lowercaseCommand === 'pop') {
-            removeImage(images.length - 1);
-          } else {
-            alert(WRONG_OPERATION);
-          }
-          break;
-        case 'queue':
-          if (lowercaseCommand === 'dequeue') {
-            removeImage(0);
-          } else {
-            alert(WRONG_OPERATION);
-          }
-          break;
-        case 'deque':
-          if (lowercaseCommand === 'popleft') {
-            removeImage(0);
-          } else if (lowercaseCommand === 'pop') {
-            removeImage(images.length - 1);
-          } else {
-            alert(WRONG_OPERATION);
-          }
-          break;
-        default:
-          if (lowercaseCommand === 'list') {
-            setSelectedOption('list');
-          } else if (lowercaseCommand === 'set') {
-            setSelectedOption('set');
-          } else if (lowercaseCommand === 'stack') {
-            setSelectedOption('stack');
-          } else if (lowercaseCommand === 'queue') {
-            setSelectedOption('queue');
-          } else if (lowercaseCommand === 'deque') {
-            setSelectedOption('deque');
-          } else {
-            alert(`자료구조를 입력해주세요!`);
-          }
-          break;
-      }
-    }
-    setCommand('');
-  }
-
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      handleCommand()
-    }
-  }
+  // const handleKeyDown = (event) => {
+  //   if (event.key === 'Enter') {
+  //     bootstrap.gameNetwork.brickGameCommand(command)
+  //   }
+  // }
 
   const handleOptionClick = (option) => {
-    setSelectedOption(option)
-  }
-
-  const handleReset = () => {
-    setImages([...originalImages])
-    setSelectedOption('')
+    bootstrap.gameNetwork.brickGameCommand(option)
   }
 
   const handleClose = () => {
@@ -299,41 +99,214 @@ export default function BrickGameDialog() {
       console.error('Error leaving the room:', error)
     }
   }
-
   
   return (
-    
     <>
-      <GlobalStyle />
-
+     <GlobalStyle />
       <Backdrop>
-
         <Wrapper>
-          <div id='container'>
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              Players: 
-              {players.map((player, index) => (
-                <div key={index} style={{ marginLeft: '10px', textAlign: 'center' }}>
-                  <div>{player.name}</div>
-                </div>
-              ))}
+          <RoundWrapper>
+            <div style={{ flex: 1 }}></div>
+            <div style={{ flex: 'auto', textAlign: 'center', fontSize: '40px' }}>동물 멀리뛰기!</div>
+            <div style={{ flex: 1, textAlign: 'right' }}>ROUND 5/8</div>
+          </RoundWrapper>
+          <TopWrapper>
+            <div id='container'>
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', fontSize: '32px' }}>
+                Current Players<br />
+                {players.map((player, index) => (
+                  <div key={index} style={{ marginLeft: '10px', textAlign: 'center' }}>
+                    <div>{player.name}<br /></div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-          <div style={{ fontSize: '40px' }}>
-            몬스터 줄세우기!<br></br>
-            <br></br>
-          </div>
+          </TopWrapper>
 
-          <div style={{ fontSize: '40px', display: 'flex', alignItems: 'center' }}>
-            <span style={{ fontSize: '24px', marginLeft: '10px' }}>
-              숫자의 합이 <span style={{ fontSize: '36px', color: 'yellow' }}> {n} </span>이 되도록
-              몬스터 배열을 수정해주세요!
-            </span>
-          </div>
-          
-          <br></br><br></br>
-          <br></br><br></br>
-          <br></br>
+          <MidWrapper>
+            <HelperWrapper>
+              {/* HelperWrapper 내용 */}
+              문제에 알맞은 자료구조를 선택하면 추가 점수를 얻을 수 있어요! <br /><br />
+              <div style={{ fontSize: '24px ', textAlign: 'left' }}>
+                List : remove()<br />
+                Set : 중복제거 + remove()<br />
+                Stack : pop<br />
+                Queue : dequeue<br />
+                Deque : pop, popleft<br />
+              </div>
+            </HelperWrapper>
+
+            <QuizWrapper>
+              <div style={{ fontSize: '40px', display: 'flex', alignItems: 'center' }}>
+                <span style={{ fontSize: '32px', margin: '20px' }}>
+                  {/* 숫자의 합이 <span style={{ fontSize: '36px', color: 'yellow' }}> {n} </span>이 되도록
+                  몬스터 배열을 수정해주세요! */}
+                  {currentQuiz}
+                </span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <CustomBracket>&#91;</CustomBracket>
+                {images.map((image, index) => (
+                  <ImageContainer key={index}>
+                    <img
+                      src={image.src}
+                      alt={`Image ${index + 1}`}
+                      style={{ width: '100px', height: '100px' }}
+                    />
+                    <ImageText>{image.text}</ImageText>
+                  </ImageContainer>
+                ))}
+                <CustomBracket>&#93;</CustomBracket>
+              </div>
+            </QuizWrapper>
+          </MidWrapper>
+
+          <BottomWrapper>
+            <OpponentWrapper>
+              <OptionWrapper>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <CustomBracket>&#91;</CustomBracket>
+                {images.map((image, index) => (
+                  <ImageContainer key={index}>
+                    <img
+                      src={image.src}
+                      alt={`Image ${index + 1}`}
+                      style={{ width: '60px', height: '60px' }}
+                    />
+                    {/* <OppImageText>{image.text}</OppImageText> */}
+                  </ImageContainer>
+                ))}
+                <CustomBracket>&#93;</CustomBracket>
+              </div>
+              {oppSelectedOption === 'list' ? (
+                <CustomList>
+                  <span style={{ fontSize: '32px', color: 'yellow' }}>List</span> - 
+                  remove(), pop<br />
+                  {COMMON_MESSAGE}
+                  <br />
+                </CustomList>
+              ) : oppSelectedOption === 'set' ? (
+                <CustomList>
+                  <span style={{ fontSize: '32px', color: 'yellow' }}>Set</span> - 
+                  remove(), discard()<br />
+                  {COMMON_MESSAGE}
+                  <br />
+                </CustomList>
+              ) : oppSelectedOption === 'stack' ? (
+                <CustomList>
+                  <span style={{ fontSize: '32px', color: 'yellow' }}>Stack</span> - 
+                  pop<br />
+                  {COMMON_MESSAGE}
+                  <br />
+                </CustomList>
+              ) : oppSelectedOption === 'queue' ? (
+                <CustomList>
+                  <span style={{ fontSize: '32px', color: 'yellow' }}>Queue</span> - 
+                  dequeue<br />
+                  {COMMON_MESSAGE}
+                  <br />
+                </CustomList>
+              ) : oppSelectedOption === 'deque' ? (
+                <CustomList>
+                  <span style={{ fontSize: '32px', color: 'yellow' }}>Deque</span> - 
+                  pop, popleft<br />
+                  {COMMON_MESSAGE}
+                  <br />
+                </CustomList>
+              ) : (
+                <div>
+                  <br /><br />
+                  <CustomButton onClick={() => handleOptionClick('list')}>list</CustomButton>
+                  <CustomButton onClick={() => handleOptionClick('set')}>set</CustomButton>
+                  <CustomButton onClick={() => handleOptionClick('stack')}>stack</CustomButton>
+                  <CustomButton onClick={() => handleOptionClick('queue')}>queue</CustomButton>
+                  <CustomButton onClick={() => handleOptionClick('deque')}>deque</CustomButton>
+                  <br /><br /><br />
+                </div>
+              )}
+              </OptionWrapper>
+              <CommandArrayWrapper>
+                {oppCommandArray}
+              </CommandArrayWrapper>
+            </OpponentWrapper>
+
+            <MyWrapper>
+              <OptionWrapper>
+              {mySelectedOption === 'list' ? (
+                <CustomList>
+                  <span style={{ fontSize: '32px', color: 'yellow' }}>List</span> - 
+                  remove(), pop<br />
+                  {COMMON_MESSAGE}
+                  <br />
+                </CustomList>
+              ) : mySelectedOption === 'set' ? (
+                <CustomList>
+                  <span style={{ fontSize: '32px', color: 'yellow' }}>Set</span> - 
+                  remove(), discard()<br />
+                  {COMMON_MESSAGE}
+                  <br />
+                </CustomList>
+              ) : mySelectedOption === 'stack' ? (
+                <CustomList>
+                  <span style={{ fontSize: '32px', color: 'yellow' }}>Stack</span> - 
+                  pop<br />
+                  {COMMON_MESSAGE}
+                  <br />
+                </CustomList>
+              ) : mySelectedOption === 'queue' ? (
+                <CustomList>
+                  <span style={{ fontSize: '32px', color: 'yellow' }}>Queue</span> - 
+                  dequeue<br />
+                  {COMMON_MESSAGE}
+                  <br />
+                </CustomList>
+              ) : mySelectedOption === 'deque' ? (
+                <CustomList>
+                  <span style={{ fontSize: '32px', color: 'yellow' }}>Deque</span> - 
+                  pop, popleft<br />
+                  {COMMON_MESSAGE}
+                  <br />
+                </CustomList>
+              ) : (
+                <div>
+                  <br /><br />
+                  <CustomButton onClick={() => handleOptionClick('list')}>list</CustomButton>
+                  <CustomButton onClick={() => handleOptionClick('set')}>set</CustomButton>
+                  <CustomButton onClick={() => handleOptionClick('stack')}>stack</CustomButton>
+                  <CustomButton onClick={() => handleOptionClick('queue')}>queue</CustomButton>
+                  <CustomButton onClick={() => handleOptionClick('deque')}>deque</CustomButton>
+                  <br /><br /><br />
+                </div>
+              )}
+              </OptionWrapper>
+              <CommandArrayWrapper>
+                {myCommandArray}
+              </CommandArrayWrapper>
+              {/* <CustomInput
+                type="text"
+                // value={command}
+                onChange={(event) => setCommand(event.target.value)}
+                onKeyDown={handleKeyDown} // 키 다운 이벤트 핸들러 추가
+                style={{ margin: '10px' }}
+              /> */}
+              <TextField
+                label="Enter Command"
+                variant="outlined"
+                value={command}
+                onChange={(event) => setCommand(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    setCommand('');
+                    bootstrap.gameNetwork.brickGameCommand(command);
+                  }
+                }}
+                fullWidth
+                InputProps={{
+                  style: { fontSize: '24px' },
+                }}
+              />
+            </MyWrapper>
+          </BottomWrapper>
 
           <IconButton
             aria-label="close dialog"
@@ -342,109 +315,6 @@ export default function BrickGameDialog() {
           >
             <CloseIcon />
           </IconButton>
-
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <CustomBracket>&#91;</CustomBracket>
-            {images.map((image, index) => (
-              <ImageContainer key={index}>
-                <img
-                  src={image.src}
-                  alt={`Image ${index + 1}`}
-                  style={{ width: '100px', height: '100px' }}
-                />
-                <ImageText>{image.text}</ImageText>
-              </ImageContainer>
-            ))}
-            <CustomBracket>&#93;</CustomBracket>
-          </div>
-
-          {selectedOption === 'list' ? (
-            <CustomList>
-              <br></br>
-              <span style={{ fontSize: '32px', color: 'yellow' }}>List</span><br></br>
-              {/* <br></br>
-              삽입(Insertion): append, insert<br></br> */}
-              삭제(Deletion): remove(), pop<br></br>
-              {COMMON_MESSAGE}
-              <br></br>
-            </CustomList>
-          ) : selectedOption === 'set' ? (
-            <CustomList>
-              <br></br>
-              <span style={{ fontSize: '32px', color: 'yellow' }}>Set</span><br></br>
-              {/* <br></br>
-              삽입(Insertion): add<br></br> */}
-              삭제(Deletion): remove(), discard()<br></br>
-              {COMMON_MESSAGE}
-              <br></br>
-            </CustomList>
-          ) : selectedOption === 'stack' ? (
-            <CustomList>
-              <br></br>
-              <span style={{ fontSize: '32px', color: 'yellow' }}>Stack</span><br></br>
-              {/* <br></br>
-              삽입(Insertion): push, append<br></br> */}
-              삭제(Deletion): pop<br></br>
-              {COMMON_MESSAGE}
-              <br></br>
-            </CustomList>
-          ) : selectedOption === 'queue' ? (
-            <CustomList>
-              <br></br>
-              <span style={{ fontSize: '32px', color: 'yellow' }}>Queue</span><br></br>
-              {/* <br></br>
-              삽입(Insertion): enqueue<br></br> */}
-              삭제(Deletion): dequeue<br></br>
-              {COMMON_MESSAGE}
-              <br></br>
-            </CustomList>
-          ) : selectedOption === 'deque' ? (
-            <CustomList>
-              <br></br>
-              <span style={{ fontSize: '32px', color: 'yellow' }}>Deque</span><br></br>
-              {/* <br></br>
-              삽입(Insertion): append, appendleft<br></br> */}
-              삭제(Deletion): pop, popleft<br></br>
-              {COMMON_MESSAGE}
-              <br></br>
-            </CustomList>
-          ) : (
-            <div>
-              <br></br>
-              <br></br>
-              <br></br>
-              <br></br>
-              <CustomButton onClick={() => handleOptionClick('list')}>list</CustomButton>
-              <CustomButton onClick={() => handleOptionClick('set')}>set</CustomButton>
-              <CustomButton onClick={() => handleOptionClick('stack')}>stack</CustomButton>
-              <CustomButton onClick={() => handleOptionClick('queue')}>queue</CustomButton>
-              <CustomButton onClick={() => handleOptionClick('deque')}>deque</CustomButton>
-              <br></br>
-              <br></br>
-              <br></br>
-              <br></br>
-            </div>
-          )}
-
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              width: '100%',
-            }}
-          >
-            <CustomInput
-              type="text"
-              value={command}
-              onChange={(event) => setCommand(event.target.value)}
-              onKeyDown={handleKeyDown} // 키 다운 이벤트 핸들러 추가
-              style={{ margin: '10px' }}
-            />
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-            <CustomResetButton onClick={handleReset}>게임 초기화</CustomResetButton>
-          </div>
         </Wrapper>
       </Backdrop>
     </>

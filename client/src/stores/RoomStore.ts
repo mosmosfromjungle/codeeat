@@ -8,7 +8,7 @@ interface RoomInterface extends RoomAvailable {
 
 export interface PlayersInterface {
   name: string
-  texture: string
+  // texture: string
 }
 
 /**
