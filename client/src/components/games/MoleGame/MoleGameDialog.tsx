@@ -16,23 +16,21 @@ import './MoleGame.css'
 import phaserGame from '../../../PhaserGame'
 import Bootstrap from '../../../scenes/Bootstrap'
 
-import axios from 'axios'
-
 const Backdrop = styled.div`
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   overflow: hidden;
-  padding: 16px 180px 16px 16px;
+  padding: 16px 16px 16px 16px;
 `
 
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
-  background: #222639;
+  background: black;
   border-radius: 16px;
-  padding: 16px;
+  padding: 20px;
   color: #eee;
   position: relative;
   display: flex;
@@ -41,25 +39,25 @@ const Wrapper = styled.div`
 
   .close {
     position: absolute;
-    top: 0px;
-    right: 0px;
-  }
-
-  .music {
-    position: absolute;
-    top: 0px;
-    left: 0px;
+    top: 20px;
+    right: 20px;
   }
 `
 
-const ProblemText = styled.div`
-  margin-top: 10px;
+const Header = styled.div`
+  margin-top: 20px;
+`
+
+const Comment = styled.div`
+  float: right;
+  right: 10px;
   font-size: 20px;
   font-family: Font_DungGeun;
 `
 
-const ProblemText2 = styled.div`
-  font-size: 30px;
+const ProblemText = styled.div`
+  margin-top: 10px;
+  font-size: 25px;
   font-family: Font_DungGeun;
 `
 
@@ -80,33 +78,31 @@ const YourPoint = styled.div`
 `
 
 export default function MoleGameDialog() {
+  // For communication between client and server
+  const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
+
   // My information
   const username = useAppSelector((state) => state.user.username);
   const character = useAppSelector((state) => state.user.character);
   const imgpath = `../../public/assets/character/single/${character}_idle_anim_19.png`;
+
+  // Send my info to friend (client -> server)
+  bootstrap.gameNetwork.sendMyInfo(username, character);
 
   // Friend information
   const friendname = useAppSelector((state) => state.molegame.friendName);
   const friendcharacter = useAppSelector((state) => state.molegame.friendCharacter);
   const friendimgpath = `../../public/assets/character/single/${friendcharacter}_idle_anim_19.png`;
   
-  // Send my info to friend
-  const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-  bootstrap.gameNetwork.sendMyInfo(username, character);
-
-  // console.log("====== Player Information ======");
-  // console.log("My name: "+username);
-  // console.log("Friend name: "+friendname);
+  // Get room host information
+  const host = useAppSelector((state) => state.molegame.host);
   
   const dispatch = useAppDispatch()
-
-  const [problems, setProblems] = useState(String);
 
   const [flag, setFlag] = useState(0);
   const [titleColor, setTitleColor] = useState('#f2ecff');
 
   const [problemText1, setProblemText1] = useState("정답을 말하고 있는 두더지를 잡아라!");
-  const [problemText2, setProblemText2] = useState("");
 
   const [answerText1, setAnswerText1] = useState(String);
   const [answerText2, setAnswerText2] = useState(String);
@@ -118,22 +114,21 @@ export default function MoleGameDialog() {
   const [answerText8, setAnswerText8] = useState(String);
   const [answerText9, setAnswerText9] = useState(String);
 
-  // const [startButtonColor, setStartButtonColor] = useState('');
-  // const [startButtonText, setStartButtonText] = useState('PRESS START');
+  const [startButtonColor, setStartButtonColor] = useState('');
+  const [startButtonText, setStartButtonText] = useState('PRESS START');
+  const [disableStartButton, setDisableStartButton] = React.useState(false);
 
   const [activeNumber, setActiveNumber] = useState(0);
   const [activeNumberList, setActiveNumberList] = useState([0, 0, 0]);
 
-  const [disableStartButton, setDisableStartButton] = React.useState(false);
   const [hideEnding, setHideEnding] = React.useState(true);
+  const [canClick, setCanClick] = useState(true);
+  const [startGame, setStartGame] = useState(false);
   
   const [point, setPoint] = useState(0);
-  
   const [turn, setTurn] = useState(0);
   
   const [moleCatch, setMoleCatch] = useState(0);
-
-  const [canClick, setCanClick] = useState(true);
 
   let randomNumber1 = 0;
   let randomNumber2 = 0;
@@ -143,64 +138,40 @@ export default function MoleGameDialog() {
   let moleNumber2 = 0;
   let moleNumber3 = 0;
 
-  const [executed, setExecuted] = useState(false);
-
-  // Client Events (My Point)
-  const displayToFriend = (myPoint) => {
-    bootstrap.gameNetwork.sendMyPoint(myPoint)
-  }
-
-  // Server Events (Friend Point)
+  // If friend get point, display event
   let friendPoint = useAppSelector((state) => state.molegame.friendPoint);
 
-  // 0. Start game
-  const [timer, setTimer] = useState(5);
-
   useEffect(() => {
-    if (friendname) {
-      console.log("[Timer] Start")
-      const intervalId = setInterval(() => {
-        setTimer(prevTimer => {
-          if (prevTimer === 1) {
-            clearInterval(intervalId);
-            console.log("[Timer] Stop");
-          }
-          return prevTimer - 1;
-        });
-      }, 1000);
+    // Point and Character event
+    const friendPoint = document.getElementById('friend-point-current');
+    friendPoint.classList.add('get-point');
 
-      return () => {
-        clearInterval(intervalId);
-        console.log("[Timer] Stop");
-        startMole();
-      };
-    }
-  }, [friendname]);
+    setTimeout(function() {
+      friendPoint.classList.remove('get-point');
+    }, 1000);
+
+    const friendCharacter = document.getElementById(`friend-character`);
+    friendCharacter.classList.add('jump-animation');
+
+    setTimeout(function() {
+      friendCharacter.classList.remove('jump-animation');
+    }, 1000);
+  }, [friendPoint]);
 
   // 1. Load problems
 
-  useEffect(() => {
-    if (!executed) {
-      loadProblems();
-      setExecuted(true);
-    }
-  }, [executed]);
-
-  const loadProblems = async () => {
-    try {
-      const datas = await axios.get('/molegame/problems');
-      if (datas.status === 200) {
-        setProblems(datas.data.problems);
-  
-      } else {
-        console.log("Failed to get problems data. Try again.")
-        return;
-      }
-    } catch (error: any) {
-      console.log("Failed to get problems data. Try again.")
-      return;
-    }
-  }
+  const problems = [
+    ['Q01. 파이썬에서 리스트에 들어있는 모든 수를 합하는 함수는?', ['sum', 'len', 'map']],
+    ['Q02. 파이썬에서 리스트의 개수를 구하는 함수는?', ['len', 'abs', 'map']],
+    ['Q03. 파이썬에서 새로운 정렬된 리스트를 반환하는 함수는?', ['sorted', 'len', 'map']],
+    ['Q04. 파이썬에서 리스트 자체를 정렬시켜버리는 것은?', ['sort', 'len', 'map']],
+    ['Q05. 파이썬에서 내림차순 정렬을 위해 사용하는 옵션은?', ['reverse', 'len', 'map']],
+    ['Q06. 파이썬에서 숫자의 절댓값을 리턴하는 함수는?', ['abs', 'len', 'map']],
+    ['Q07. 파이썬에서 문자열로 구성된 표현식을 입력으로 받아 해당 문자열을 실행한 결괏값을 리턴하는 함수는?', ['eval', 'len', 'map']],
+    ['Q08. 파이썬에서 문자의 유니코드 숫자 값을 리턴하는 함수는?', ['ord', 'len', 'map']],
+    ['Q09. 파이썬에서 유니코드 숫자값을 입력받아 그 코드에 해당하는 문자를 리턴하는 함수는?', ['char', 'len', 'map']],
+    ['Q10. 파이썬에서 for문과 함께 자주 사용하는 함수로, 입력받은 숫자에 해당하는 범위 값을 반복 가능한 객체로 만들어 리턴하는 함수는?', ['range', 'len', 'map']]  
+  ];
 
   // 2. Bling the Text
 
@@ -222,14 +193,62 @@ export default function MoleGameDialog() {
   }, [flag]);
 
   // 3. Start Button Event
+  
+  // 친구가 들어왔는데 내가 방장이면, 시작 버튼이 보여야 함
+  // 내가 방장이 아니면 시작 버튼 보이지 않음
+  // 게임 시작 전에 누가 나가면 시작 버튼 숨겨야 함
 
+  useEffect(() => {
+    if (friendname) {
+      if (host === username) {
+        const startButton = document.getElementById('start-button-div');
+        startButton.classList.remove('hidden');
+
+      } else {
+        const startButton = document.getElementById('start-button-div');
+        startButton.classList.add('hidden');
+      }
+
+    } else {
+      // 한 명이 되었으니 일단 게임 시작 못 함
+      const startButton = document.getElementById('start-button-div');
+      startButton.classList.add('hidden');
+
+      if (host !== username) {
+        // 내가 방장이 아닌데, 상대방(방장)이 나갔다면,
+        // 이 방의 방장을 나로 업데이트
+        bootstrap.gameNetwork.changeHost(username);
+      }
+
+      // 게임 도중에 한명이 나갔다면,
+      // 남은 사람이 승리
+      if (startGame) {
+        // Clear the game
+        clearTimeout(moleCatch);
+  
+        setTurn(0);
+        setPoint(0);
+        
+        moleHide();
+        
+        setStartGame(false);
+
+        modalEvent();
+
+        const FinishAudio = new Audio(FinishBGM);
+        FinishAudio.play();
+      }
+    }
+  }, [friendname, host]);
+
+  const problem = useAppSelector((state) => state.molegame.problem);
+
+  // startMole 함수는 방장만 들어올 수 있음
   const startMole = () => {
     console.log("Function [startMole]");
 
-    // setStartButtonColor('#3d3f43');
-    setPoint(0);
-
-    setTimeout(showingMole, 1000);
+    // Request start game
+    bootstrap.gameNetwork.startGame('0');
   }
 
   // 4. Show Event
@@ -315,134 +334,133 @@ export default function MoleGameDialog() {
 
       switch(randomNumber1) {
         case 1:
-          setAnswerText1(problems[turn].answer1);
+          setAnswerText1(problems[turn][1][0]);
           break;
 
         case 2:
-          setAnswerText2(problems[turn].answer1);
+          setAnswerText2(problems[turn][1][0]);
           break;
 
         case 3:
-          setAnswerText3(problems[turn].answer1);
+          setAnswerText3(problems[turn][1][0]);
           break;
 
         case 4:
-          setAnswerText4(problems[turn].answer1);
+          setAnswerText4(problems[turn][1][0]);
           break;
 
         case 5:
-          setAnswerText5(problems[turn].answer1);
+          setAnswerText5(problems[turn][1][0]);
           break;
 
         case 6:
-          setAnswerText6(problems[turn].answer1);
+          setAnswerText6(problems[turn][1][0]);
           break;
 
         case 7:
-          setAnswerText7(problems[turn].answer1);
+          setAnswerText7(problems[turn][1][0]);
           break;
 
         case 8:
-          setAnswerText8(problems[turn].answer1);
+          setAnswerText8(problems[turn][1][0]);
           break;
 
         case 9:
-          setAnswerText9(problems[turn].answer1);
+          setAnswerText9(problems[turn][1][0]);
           break;
       }
 
       switch(randomNumber2) {
         case 1:
-          setAnswerText1(problems[turn].answer2);
+          setAnswerText1(problems[turn][1][1]);
           break;
 
         case 2:
-          setAnswerText2(problems[turn].answer2);
+          setAnswerText2(problems[turn][1][1]);
           break;
 
         case 3:
-          setAnswerText3(problems[turn].answer2);
+          setAnswerText3(problems[turn][1][1]);
           break;
 
         case 4:
-          setAnswerText4(problems[turn].answer2);
+          setAnswerText4(problems[turn][1][1]);
           break;
 
         case 5:
-          setAnswerText5(problems[turn].answer2);
+          setAnswerText5(problems[turn][1][1]);
           break;
 
         case 6:
-          setAnswerText6(problems[turn].answer2);
+          setAnswerText6(problems[turn][1][1]);
           break;
 
         case 7:
-          setAnswerText7(problems[turn].answer2);
+          setAnswerText7(problems[turn][1][1]);
           break;
 
         case 8:
-          setAnswerText8(problems[turn].answer2);
+          setAnswerText8(problems[turn][1][1]);
           break;
 
         case 9:
-          setAnswerText9(problems[turn].answer2);
+          setAnswerText9(problems[turn][1][1]);
           break;
       }
 
       switch(randomNumber3) {
         case 1:
-          setAnswerText1(problems[turn].answer3);
+          setAnswerText1(problems[turn][1][2]);
           break;
 
         case 2:
-          setAnswerText2(problems[turn].answer3);
+          setAnswerText2(problems[turn][1][2]);
           break;
 
         case 3:
-          setAnswerText3(problems[turn].answer3);
+          setAnswerText3(problems[turn][1][2]);
           break;
 
         case 4:
-          setAnswerText4(problems[turn].answer3);
+          setAnswerText4(problems[turn][1][2]);
           break;
 
         case 5:
-          setAnswerText5(problems[turn].answer3);
+          setAnswerText5(problems[turn][1][2]);
           break;
 
         case 6:
-          setAnswerText6(problems[turn].answer3);
+          setAnswerText6(problems[turn][1][2]);
           break;
 
         case 7:
-          setAnswerText7(problems[turn].answer3);
+          setAnswerText7(problems[turn][1][2]);
           break;
 
         case 8:
-          setAnswerText8(problems[turn].answer3);
+          setAnswerText8(problems[turn][1][2]);
           break;
 
         case 9:
-          setAnswerText9(problems[turn].answer3);
+          setAnswerText9(problems[turn][1][2]);
           break;
       }
 
       setCanClick(true);
 
-      setProblemText1(problems[turn].question);
-      setProblemText2(problems[turn].description);
+      setProblemText1(problems[turn][0]);
 
       moleActive(moleNumber1);
       moleActive(moleNumber2);
       moleActive(moleNumber3);
 
-      const timeoutId = setTimeout(seeMole, 5000);
+      let timeoutId = setTimeout(seeMole, 5000);
       setMoleCatch(timeoutId);
 
       setActiveNumber(randomNumber1);
       setActiveNumberList([randomNumber1, randomNumber2, randomNumber3]);
 
-      { friendname ? setDisableStartButton(true) : setDisableStartButton(false)}
+      setDisableStartButton(true);
 
       setTurn(turn + 1);
 
@@ -450,16 +468,14 @@ export default function MoleGameDialog() {
       modalEvent();
       
       setTurn(0);
-      
-      setHideEnding(false);
 
       const FinishAudio = new Audio(FinishBGM);
       FinishAudio.play();
 
-      // setStartButtonText('PRESS AGAIN');
-      // setStartButtonColor('#f2ecff');
+      setStartButtonText('PRESS AGAIN');
+      setStartButtonColor('#f2ecff');
 
-      setDisableStartButton(false);
+      setStartGame(false);
     }
   }
 
@@ -471,15 +487,13 @@ export default function MoleGameDialog() {
     moleHide();
     
     clearTimeout(moleCatch);
-    
     setTimeout(showingMole, 1000);
   }
 
   const catchMole = () => {
     console.log("Function [catchMole]");
-    
     seeMole();
-
+    
     clearTimeout(moleCatch);
   }
 
@@ -495,10 +509,10 @@ export default function MoleGameDialog() {
       return;
 
     } else {
-      setCanClick(false);
-
       // Correct Answer
       if (activeNumber === num) {
+        setCanClick(false);
+  
         const CorrectAudio = new Audio(CorrectBGM);
         CorrectAudio.play();
 
@@ -507,20 +521,24 @@ export default function MoleGameDialog() {
 
         setPoint(point + 1);
         
-        // 상대방에게 보내주어야 함
-        displayToFriend(point + 1);
+        // 상대방에게 내 점수를 보내주어야 함
+        bootstrap.gameNetwork.sendMyPoint(point + 1);
 
         setTimeout(function() {
           const removePoint = document.getElementById('point-current');
           removePoint.classList.remove('get-point');
         }, 1000);
 
-        const number = document.getElementById(`${num}`);
-        number.classList.add('click-correct');
+        // Character Jump Event
+        const character = document.getElementById(`my-character`);
+        character.classList.add('jump-animation');
   
         setTimeout(function() {
-          number.classList.remove('click-correct');
+          character.classList.remove('jump-animation');
         }, 1000);
+        
+        // 다음 문제로 넘어가라고 요청
+        bootstrap.gameNetwork.startGame(turn.toString());
 
       // Wrong Answer
       } else {
@@ -534,8 +552,6 @@ export default function MoleGameDialog() {
           number.classList.remove('click-wrong');
         }, 1000);
       }
-
-      catchMole();
     }
   };
 
@@ -545,8 +561,8 @@ export default function MoleGameDialog() {
   let friendTotal = (friendPoint / 10) * 100;
 
   const modalEvent = () => {
-    setHideEnding(true);
-    { friendname ? setDisableStartButton(true) : setDisableStartButton(false)}
+    setHideEnding(false);
+    setDisableStartButton(true);
   }
 
   const hideModal = () => {
@@ -554,16 +570,23 @@ export default function MoleGameDialog() {
     setDisableStartButton(false);
   }
 
-
   // 7. Check the winner
   let winner = '';
 
   if ( total > friendTotal ) {
     winner = username;
   } else if ( total < friendTotal) {
-    winner = friendname;
+    if (friendname === '') {
+      winner = username;
+    } else {
+      winner = friendname;
+    }
   } else {
-    winner = "both"
+    if (friendname === '') {
+      winner = username;
+    } else {
+      winner = "both"
+    }
   }
 
   const Modal = () => {
@@ -607,14 +630,27 @@ export default function MoleGameDialog() {
 
   const handleClose = () => {
     // Clear the game
+    clearTimeout(moleCatch);
     setTurn(0);
     setPoint(0);
-
-    clearTimeout(moleCatch);
+    
+    moleHide();
+    
+    setStartGame(false);
 
     try {
-      const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
+      // 상대방에게 나 나간다고 알려줌
+      // 만약 내가 방장이었다면, 방장 이임 해주어야 함
+      bootstrap.gameNetwork.sendMyInfo('', '');
+
+      // 그리고 나갈 때 problem 초기화
+      bootstrap.gameNetwork.startGame('-1');
+
+      // 내 점수도 초기화
+      bootstrap.gameNetwork.sendMyPoint(0);
+
       bootstrap.gameNetwork.leaveGameRoom()
+
       dispatch(closeMoleGameDialog())
       dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
 
@@ -622,6 +658,24 @@ export default function MoleGameDialog() {
       console.error('Error leaving the room:', error)
     }
   }
+
+  // Start game !
+  useEffect(() => {
+    if (problem === '' || problem === '0') {
+      console.log("Wait for press start button")
+
+    } else if (problem === '1') {
+      setStartGame(true);
+
+      setStartButtonColor('#3d3f43');
+      setPoint(0);
+
+      setTimeout(showingMole, 1000);
+
+    } else {
+      catchMole();
+    }
+  }, [problem]);
   
   return (
     <Backdrop>
@@ -634,29 +688,34 @@ export default function MoleGameDialog() {
           <CloseIcon />
         </IconButton>
 
-        {
-          hideEnding === false ? <Modal /> : ''
-        }
+        { hideEnding === false ? <Modal /> : '' }
 
         <body>
-          <header>
+          <Header>
               <h1 className="title" style={{ color:titleColor }}>Welcome! Whack-A-Mole</h1> 
-          </header>
+          </Header>
+
+          <Comment>
+            <p className={`friend-comment ${friendname ? '' : 'start-game'}`}>
+              {friendname ? '친구가 들어왔어요,' : '친구가 아직 들어오지 않았어요 !'}<br />
+              {friendname ? '방장은 Start 버튼을 눌러주세요 !' : ''}
+            </p>
+          </Comment>
 
           <div className="main">
             <div id="problem" className="problem">
               <ProblemText>
                 { problemText1 }
               </ProblemText>
-              <ProblemText2>
-                { problemText2 }
-              </ProblemText2>
             </div>
 
             <Content>
               <MyPoint>
                 <div className="point-wrap">
-                  <img src={ imgpath } width="50px"></img>
+                  <span id="is-host">
+                    { ( friendname && (username === host)) ? '방장' : ''}<br/><br/>
+                  </span>
+                  <img src={ imgpath } width="50px" id="my-character"></img>
                   <p id="point-text-name">
                     [{username}]<br/><br/>
                   </p>
@@ -668,22 +727,22 @@ export default function MoleGameDialog() {
               </MyPoint>
               
               <ul className="whack-a-mole clearfix">
-                <li className="mole" onClick={() => handleClick(7)}>
-                  <img id="7" src="/assets/game/molegame/mole.png"></img>
-                  <div id="answer-div-7" className={`answer-text-7 ${activeNumberList.includes(7) ? '' : 'hiding'}`}>
-                    <p id="answer-text-7">{ answerText7 }</p>
+                <li className="mole" onClick={() => handleClick(1)}>
+                  <img id="1" src="/assets/game/molegame/mole.png"></img>
+                  <div id="answer-div-1" className={`answer-text-1 ${activeNumberList.includes(1) ? '' : 'hiding'}`}>
+                    <p id="answer-text-1">{ answerText1 }</p>
                   </div>
                 </li>
-                <li className="mole" onClick={() => handleClick(8)}>
-                  <img id="8" src="/assets/game/molegame/mole.png"></img>
-                  <div id="answer-div-8" className={`answer-text-8 ${activeNumberList.includes(8) ? '' : 'hiding'}`}>
-                    <p id="answer-text-8">{ answerText8 }</p>
+                <li className="mole" onClick={() => handleClick(2)}>
+                  <img id="2" src="/assets/game/molegame/mole.png"></img>
+                  <div id="answer-div-2" className={`answer-text-2 ${activeNumberList.includes(2) ? '' : 'hiding'}`}>
+                    <p id="answer-text-2">{ answerText2 }</p>
                   </div>
                 </li>
-                <li className="mole" onClick={() => handleClick(9)}>
-                  <img id="9" src="/assets/game/molegame/mole.png"></img>
-                  <div id="answer-div-9" className={`answer-text-9 ${activeNumberList.includes(9) ? '' : 'hiding'}`}>
-                    <p id="answer-text-9">{ answerText9 }</p>
+                <li className="mole" onClick={() => handleClick(3)}>
+                  <img id="3" src="/assets/game/molegame/mole.png"></img>
+                  <div id="answer-div-3" className={`answer-text-3 ${activeNumberList.includes(3) ? '' : 'hiding'}`}>
+                    <p id="answer-text-3">{ answerText3 }</p>
                   </div>
                 </li>
                 <li className="mole" onClick={() => handleClick(4)}>
@@ -704,56 +763,53 @@ export default function MoleGameDialog() {
                     <p id="answer-text-6">{ answerText6 }</p>
                   </div>
                 </li>
-                <li className="mole" onClick={() => handleClick(1)}>
-                  <img id="1" src="/assets/game/molegame/mole.png"></img>
-                  <div id="answer-div-1" className={`answer-text-1 ${activeNumberList.includes(1) ? '' : 'hiding'}`}>
-                    <p id="answer-text-1">{ answerText1 }</p>
+                <li className="mole" onClick={() => handleClick(7)}>
+                  <img id="7" src="/assets/game/molegame/mole.png"></img>
+                  <div id="answer-div-7" className={`answer-text-7 ${activeNumberList.includes(7) ? '' : 'hiding'}`}>
+                    <p id="answer-text-7">{ answerText7 }</p>
                   </div>
                 </li>
-                <li className="mole" onClick={() => handleClick(2)}>
-                  <img id="2" src="/assets/game/molegame/mole.png"></img>
-                  <div id="answer-div-2" className={`answer-text-2 ${activeNumberList.includes(2) ? '' : 'hiding'}`}>
-                    <p id="answer-text-2">{ answerText2 }</p>
+                <li className="mole" onClick={() => handleClick(8)}>
+                  <img id="8" src="/assets/game/molegame/mole.png"></img>
+                  <div id="answer-div-8" className={`answer-text-8 ${activeNumberList.includes(8) ? '' : 'hiding'}`}>
+                    <p id="answer-text-8">{ answerText8 }</p>
                   </div>
                 </li>
-                <li className="mole" onClick={() => handleClick(3)}>
-                  <img id="3" src="/assets/game/molegame/mole.png"></img>
-                  <div id="answer-div-3" className={`answer-text-3 ${activeNumberList.includes(3) ? '' : 'hiding'}`}>
-                    <p id="answer-text-3">{ answerText3 }</p>
+                <li className="mole" onClick={() => handleClick(9)}>
+                  <img id="9" src="/assets/game/molegame/mole.png"></img>
+                  <div id="answer-div-9" className={`answer-text-9 ${activeNumberList.includes(9) ? '' : 'hiding'}`}>
+                    <p id="answer-text-9">{ answerText9 }</p>
                   </div>
                 </li>
               </ul>
 
               <YourPoint>
                 <div className="point-wrap">
-                  <img src={ friendimgpath }
-                       width="50px"
-                       className={ friendname ? "" : "hidden" }
-                  ></img>
+                  <span id="is-host">
+                    { ( friendname && (friendname === host)) ? '방장' : ''}<br/><br/>
+                  </span>
+                  <img src={ friendimgpath } width="50px" id="friend-character" className={ friendname ? "" : "hidden" }></img>
                   <p id="point-text-name">
                     [{friendname}]<br/><br/>
                   </p>
                   <p id="point-text">
                     Friend Point<br/><br/>
-                    <span id="point-current">{ friendPoint ? friendPoint : '0' }</span>/10
+                    <span id="friend-point-current">{ friendPoint ? friendPoint : '0' }</span>/10
                   </p>
                 </div>
               </YourPoint>
             </Content>
 
-            <div className="point-box clearfix">
+            <div id="start-button-div" className="point-box clearfix hidden">
               <div className="btn-wrap">
-                <p className="friend-comment">
-                  { friendname ? `친구가 들어왔어요, 5초 뒤에 시작해요 ! ${ timer }` : '아직 친구가 들어오지 않았어요 !' }
-                </p>
-                {/* <button type="button" 
+                <button type="button" 
                         className="start-btn" 
                         style={{ color: startButtonColor }} 
                         disabled={ disableStartButton } 
-                        onClick={() => startMole()}
+                        onClick={ !disableStartButton ? () => startMole() : null}
                         onMouseEnter={ handleMouseOver }>
                   { startButtonText }
-                </button> */}
+                </button>
               </div>
             </div>
           </div>
