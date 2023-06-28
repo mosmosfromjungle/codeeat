@@ -49,7 +49,7 @@ export default function BrickGameDialog() {
   const myCurrentImages = useAppSelector((state) => state.brickgame.myPlayerStatus.currentImages)
   const mySelectedOption = useAppSelector((state) => state.brickgame.myPlayerStatus.selectedOption)
   const myCommandArray = useAppSelector((state) => state.brickgame.myPlayerStatus.commandArray)
-  const oppSelectedOption = useAppSelector((state) => state.brickgame.myPlayerStatus.selectedOption)
+  const oppSelectedOption = useAppSelector((state) => state.brickgame.oppPlayerStatus.selectedOption)
   const oppCommandArray = useAppSelector((state) => state.brickgame.oppPlayerStatus.commandArray)
   const [players, setPlayers] = useState<PlayersInterface[]>([])
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
@@ -79,11 +79,11 @@ export default function BrickGameDialog() {
   }, [myCurrentImages]);
 
 
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      bootstrap.gameNetwork.brickGameCommand(command)
-    }
-  }
+  // const handleKeyDown = (event) => {
+  //   if (event.key === 'Enter') {
+  //     bootstrap.gameNetwork.brickGameCommand(command)
+  //   }
+  // }
 
   const handleOptionClick = (option) => {
     bootstrap.gameNetwork.brickGameCommand(option)
@@ -164,6 +164,20 @@ export default function BrickGameDialog() {
           <BottomWrapper>
             <OpponentWrapper>
               <OptionWrapper>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <CustomBracket>&#91;</CustomBracket>
+                {images.map((image, index) => (
+                  <ImageContainer key={index}>
+                    <img
+                      src={image.src}
+                      alt={`Image ${index + 1}`}
+                      style={{ width: '60px', height: '60px' }}
+                    />
+                    {/* <OppImageText>{image.text}</OppImageText> */}
+                  </ImageContainer>
+                ))}
+                <CustomBracket>&#93;</CustomBracket>
+              </div>
               {oppSelectedOption === 'list' ? (
                 <CustomList>
                   <span style={{ fontSize: '32px', color: 'yellow' }}>List</span> - 
@@ -266,7 +280,7 @@ export default function BrickGameDialog() {
               )}
               </OptionWrapper>
               <CommandArrayWrapper>
-                {oppCommandArray}
+                {myCommandArray}
               </CommandArrayWrapper>
               {/* <CustomInput
                 type="text"
