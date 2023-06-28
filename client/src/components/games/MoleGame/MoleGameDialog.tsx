@@ -644,6 +644,12 @@ export default function MoleGameDialog() {
       // 만약 내가 방장이었다면, 방장 이임 해주어야 함
       bootstrap.gameNetwork.sendMyInfo('', '');
 
+      // 그리고 나갈 때 problem 초기화
+      bootstrap.gameNetwork.startGame('-1');
+
+      // 내 점수도 초기화
+      bootstrap.gameNetwork.sendMyPoint(0);
+
       bootstrap.gameNetwork.leaveGameRoom()
 
       dispatch(closeMoleGameDialog())
@@ -656,7 +662,7 @@ export default function MoleGameDialog() {
 
   // Start game !
   useEffect(() => {
-    if (problem === '') {
+    if (problem === '' || problem === '0') {
       console.log("Wait for press start button")
 
     } else if (problem === '1') {
