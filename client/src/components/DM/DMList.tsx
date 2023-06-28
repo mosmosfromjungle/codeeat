@@ -38,14 +38,13 @@ export const ConversationList = () => {
 
 const handleClick = async (room) => {
   console.log(room)
-  dispatch(setReceiverId(room.receiverInfo.userId == userId ? room.senderInfo.userId : room.receiverInfo.userId));
-  console.log('setReceiverId :', room.receiverInfo.userId == userId ? room.senderInfo.userId : room.receiverInfo.userId)
-  dispatch(setReceiverName(room.receiverInfo.userName == userName ? room.senderInfo.userName : room.receiverInfo.userName));
-  console.log('setReceiverName :', room.receiverInfo.userName == userName ? room.senderInfo.userName : room.receiverInfo.userName )
+  dispatch(setReceiverId(room.receiverInfo.userId));
+  console.log('setReceiverId :', room.receiverInfo.userId)
+  dispatch(setReceiverName(room.receiverInfo.userName));
+  console.log('setReceiverName :', room.receiverInfo.userName)
   dispatch(setRoomId(room.roomId));
   console.log('setRoomId:', room.roomId)
   dispatch(setShowDMRoom(true))
-  
 }
 
 return (

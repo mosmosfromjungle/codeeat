@@ -14,6 +14,14 @@ export const createRoom = async (param: CreateRoomRequest) => {
     });
 };
 
+export const DMReq = async (body: any) => {
+  try{
+    await axios.post(`/lastdm/newdm`, body)
+  } catch(err) {
+    console.error(err)
+  }
+}
+
 // 현재 채팅방 목록을 가져옴
 export const fetchRoomList = async (userId: string): Promise<any> => {
   try {

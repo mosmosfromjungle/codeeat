@@ -1,17 +1,18 @@
 import { Request, Response } from 'express';
 import LastDM, { ILastDMDocument } from '../../models/LastDM' 
-
+import { UserResponseDto } from './type';
+import {userMap} from '../..'
 const time_diff = 9 * 60 * 60 * 1000;
 /* last dm 가져오기 */
 export const loadData = async (req: Request, res: Response) => {
     const user  = req.body;
-    if (!user.userId)
+    if (!user)
       return res.status(404).json({
         status: 404,
         message: 'not found',
     });
   
-    getLastDM(user.userId)
+    getLastDM(user)
       .then((result) => {
         res.status(200).json({
           status: 200,
@@ -26,6 +27,24 @@ export const loadData = async (req: Request, res: Response) => {
         });
       });
   };
+export const firstdata = async (req: Request, res: Response) => {
+  const user = req.body
+  console.log(user) // 🐱
+  await addLastDM({
+    senderInfo: user.senderInfo,
+    receiverInfo: user.receiverInfo,
+    message: user.message,
+  })
+  console.log(userMap.get(user.receiverInfo.userId),'에게 dm요청') // 🐱
+  return res.status(200).json({
+    status: 200,
+    payload: {
+      senderInfo: user.senderInfo,
+      receiverInfo: user.receiverInfo,
+    },
+  })
+}
+
 
 export const getLastDM = async (userId: string) => {
   let result = new Array();
@@ -50,22 +69,22 @@ export const getLastDM = async (userId: string) => {
 };
 
 export const addLastDM = async (obj: {
-  senderId: String;
-  receiverId: String;
+  senderInfo: UserResponseDto;
+  receiverInfo: UserResponseDto;
   message: string;
 }) => {
     let cur_date = new Date();
     let utc = cur_date.getTime() + cur_date.getTimezoneOffset() * 60 * 1000;
     let updatedAt = utc + time_diff;
     LastDM.collection.insertOne({
-      senderInfo: obj.senderId,
-      receiverId: obj.receiverId,
+      senderInfo: obj.senderInfo,
+      receiverId: obj.receiverInfo,
       message: obj.message,
       updatedAt: updatedAt,
     });
     LastDM.collection.insertOne({
-      senderId: obj.receiverId,
-      receiverId: obj.senderId,
+      senderId: obj.receiverInfo,
+      receiverId: obj.senderInfo,
       message: obj.message,
       updatedAt: updatedAt,
     });

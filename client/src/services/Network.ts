@@ -1,5 +1,5 @@
 import { Client, Room } from 'colyseus.js'
-import { IOfficeState, IPlayer, IMoleGame, IBrickGame, IRainGame, IFaceChat } from '../../../types/IOfficeState'
+import { IOfficeState, IPlayer } from '../../../types/IOfficeState'
 import { Message } from '../../../types/Messages'
 import { IRoomData, RoomType } from '../../../types/Rooms'
 import { ItemType } from '../../../types/Items'
@@ -205,6 +205,7 @@ export default class Network {
       const players: any = [];
       this.room?.state.players.forEach((value) => {
         players.push(value);
+        console.log(value)
       });
       store.dispatch(setRoomPlayers(players));
     });

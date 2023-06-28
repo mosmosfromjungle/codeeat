@@ -45,7 +45,7 @@ const isSmallScreen = (smallScreenSize: number) => {
 export default function MobileVirtualJoystick() {
   const showJoystick = useAppSelector((state) => state.user.showJoystick)
   const showChat = useAppSelector((state) => state.chat.showChat)
-  const showDM = useAppSelector((state) => state.chat.showDM)
+  const showDM = useAppSelector((state) => state.dm.showDMRoom)
   const hasSmallScreen = isSmallScreen(minimumScreenWidthSize)
   const game = phaserGame.scene.keys.game as Game
 

@@ -34,9 +34,9 @@ export default class DMNetwork {
     return this.socketClient;
   };
 
-  async joinRoom (roomId: string, user1_Id: string, user2_Id: string, callback: any) {
-    console.log('JOINROOM-----MyId:',user1_Id,'acqId:',user2_Id) // 🐱
-    this.socketClient.emit('join-room', { roomId: roomId, userId: user1_Id, receiverId: user2_Id });
+  async joinRoom (roomId: string, senderId: string, receiverId: string, callback: any) {
+    console.log('JOINROOM-----MyId:',senderId,'acqId:',receiverId) // 🐱
+    this.socketClient.emit('join-room', { roomId: roomId, userId: senderId, receiverId: receiverId });
 
     this.socketClient.on('old-messages', (data) => {
       console.log('old messages')
@@ -44,11 +44,6 @@ export default class DMNetwork {
       this.oldMessages = [];
       data.forEach((element: any) => {
         if (element.senderId) {
-          if (element.senderId == userId) {
-            element.id = 0
-          } else {
-            element.id = 1
-          }
           this.oldMessages.push(element);
         }
       });

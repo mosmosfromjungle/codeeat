@@ -23,7 +23,7 @@ import { IPlayer } from '../../../types/IOfficeState';
 import { setShowUser } from '../stores/ChatStore'
 import { setShowDMList, setShowDMRoom } from '../stores/DMStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
-import { createRoom } from '../apicalls/DM/DM';
+import { DMReq, createRoom } from '../apicalls/DM/DM';
 
 const Backdrop = styled.div`
   position: fixed;
@@ -147,6 +147,8 @@ export default function UserDialog() {
   const focused = useAppSelector((state) => state.chat.focused)
   const showUser = useAppSelector((state) => state.chat.showUser)
 
+  const myId = useAppSelector((state) => state.user.userId)
+  const myName = useAppSelector((state) => state.user.userName)
   const character = useAppSelector((state) => state.user.character)
   const userLevel = useAppSelector((state) => state.user.userLevel)
   const imgpath = `../../public/assets/character/single/${character}_idle_anim_19.png`
@@ -157,7 +159,25 @@ export default function UserDialog() {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
-
+  async function reqNewDM(id, name) {
+    let body = {
+      senderInfo: {
+        userId: myId,
+        userName: myName,
+      },
+      receiverInfo: {
+        userId: id,
+        userName: name
+      },
+      message: `${myName}님이 메시지를 보냈습니다`
+    }
+    try{
+      await DMReq(body);
+      console.log('userDialog dmreq') //🐱
+    } catch (error) {
+      console.error(error)
+    }
+  }
   useEffect(() => {
     if (focused) {
       inputRef.current?.focus()
@@ -202,10 +222,11 @@ export default function UserDialog() {
                 <Button>Ruby</Button>
               </ButtonGroup>
               {otherPlayers?.map((player, i: number) => {
+              if (player.name !== myName) { 
                 return (
-              <UserList>
+              <UserList key={i}>
                 <User>
-                  <ListItem divider key={i}>
+                  <ListItem>
                     <ListItemAvatar>
                       <Avatar src={imgpath} />
                     </ListItemAvatar>
@@ -220,8 +241,13 @@ export default function UserDialog() {
                         친구 추가하기
                       </Button>
                       <Button onClick={(e) => {
+                        console.log(player?.name ?? "unknown") // 🐱
+                        console.log(player)
                         e.preventDefault();
-                        
+                        reqNewDM(
+                          player.userid,
+                          player.name
+                        )
                         dispatch(setShowDMRoom(true));
                         dispatch(setShowUser(false))
                         } }>
@@ -231,7 +257,7 @@ export default function UserDialog() {
                   </ListItem>
                 </User>
               </UserList>)
-              })}
+              }})}
             </ChatBox>
           </Content>
         </Wrapper>
