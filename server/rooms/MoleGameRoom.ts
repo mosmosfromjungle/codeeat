@@ -9,6 +9,7 @@ import PlayerUpdateNameCommand from './commands/PlayerUpdateNameCommand'
 import {
   MoleGameGetUserInfo,
   MoleGameAddPoint,
+  MoleGameProblems,
 } from './commands/MoleGameUpdateArrayCommand'
 
 export class MoleGameRoom extends Room<GameState> {
@@ -63,7 +64,8 @@ export class MoleGameRoom extends Room<GameState> {
         client,
         name: message.name,
         character: message.character,
-        point: ''
+        point: '',
+        problem: '',
       })
       this.broadcast(Message.RECEIVE_MOLE, { name: message.name, character: message.character, host: this.state.host }, { except: client });
     })
@@ -74,8 +76,20 @@ export class MoleGameRoom extends Room<GameState> {
         name: '',
         character: '',
         point: message.point,
+        problem: '',
       })
       this.broadcast(Message.RECEIVE_YOUR_POINT, { point: message.point }, { except: client });
+    })
+
+    this.onMessage(Message.REQUEST_MOLE, (client, message: { problem: string }) => {
+      this.dispatcher.dispatch(new MoleGameProblems(), {
+        client,
+        name: '',
+        character: '',
+        point: '',
+        problem: message.problem,
+      })
+      this.broadcast(Message.RESPONSE_MOLE, { problem: message.problem });
     })
   }
 

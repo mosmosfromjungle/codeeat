@@ -11,6 +11,7 @@ import { setPlayerNameMap, removePlayerNameMap, setGameSessionId } from '../stor
 import { 
   setMoleGameFriendInfo,
   setMoleGameFriendData,
+  setMoleGameProblem,
  } from '../stores/MoleGameStore'
 import {
   setLobbyJoined,
@@ -205,6 +206,11 @@ export default class GameNetwork {
     this.room.onMessage(Message.RECEIVE_YOUR_POINT, (content) => {
       store.dispatch(setMoleGameFriendData(content));
     });
+
+    // method to receive friend point to me in mole game
+    this.room.onMessage(Message.RESPONSE_MOLE, (content) => {
+      store.dispatch(setMoleGameProblem(content));
+    });
   }
 
   // method to send player updates to Colyseus server
@@ -319,7 +325,7 @@ export default class GameNetwork {
   }
 
   // method to send my point to friend in mole game
-  startGame() {
-    this.room?.send(Message.START_MOLE_GAME)
+  startGame(problem: string) {
+    this.room?.send(Message.REQUEST_MOLE, { problem: problem })
   }
 }

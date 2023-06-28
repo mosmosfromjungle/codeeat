@@ -107,11 +107,10 @@ export default function MoleGameDialog() {
   const dispatch = useAppDispatch()
 
   // const [problems, setProblems] = useState(String);
-  const [timer, setTimer] = useState(5);
+  // const [timer, setTimer] = useState(5);
 
   const [flag, setFlag] = useState(0);
   const [titleColor, setTitleColor] = useState('#f2ecff');
-
 
   const [problemText1, setProblemText1] = useState("정답을 말하고 있는 두더지를 잡아라!");
   // const [problemText2, setProblemText2] = useState();
@@ -142,6 +141,9 @@ export default function MoleGameDialog() {
   const [moleCatch, setMoleCatch] = useState(0);
 
   const [canClick, setCanClick] = useState(true);
+  // const [startGameFlag, setStartGameFlag] = useState(true);
+
+  let startGameFlag = true;
 
   let randomNumber1 = 0;
   let randomNumber2 = 0;
@@ -224,13 +226,14 @@ export default function MoleGameDialog() {
     }
   }
 
+  const problem = useAppSelector((state) => state.molegame.problem);
+
+  // startMole 함수는 방장만 들어올 수 있음
   const startMole = () => {
     console.log("Function [startMole]");
 
-    setStartButtonColor('#3d3f43');
-    setPoint(0);
-
-    setTimeout(showingMole, 1000);
+    // Request start game
+    bootstrap.gameNetwork.startGame('1');
   }
 
   // 4. Show Event
@@ -443,7 +446,7 @@ export default function MoleGameDialog() {
       setActiveNumber(randomNumber1);
       setActiveNumberList([randomNumber1, randomNumber2, randomNumber3]);
 
-      { host === username ? setDisableStartButton(true) : setDisableStartButton(false)}
+      setDisableStartButton(true);
 
       setTurn(turn + 1);
 
@@ -557,7 +560,7 @@ export default function MoleGameDialog() {
 
   const modalEvent = () => {
     setHideEnding(true);
-    { host === username ? setDisableStartButton(true) : setDisableStartButton(false)}
+    setDisableStartButton(true);
   }
 
   const hideModal = () => {
@@ -632,6 +635,16 @@ export default function MoleGameDialog() {
       console.error('Error leaving the room:', error)
     }
   }
+
+  // Start game !
+  useEffect(() => {
+    if (problem === '1') {
+      setStartButtonColor('#3d3f43');
+      setPoint(0);
+  
+      setTimeout(showingMole, 1000);
+    }
+  }, [problem]);
   
   return (
     <Backdrop>
@@ -767,7 +780,7 @@ export default function MoleGameDialog() {
                         className="start-btn" 
                         style={{ color: startButtonColor }} 
                         disabled={ disableStartButton } 
-                        onClick={() => startMole()}
+                        onClick={ !disableStartButton ? () => startMole() : null}
                         onMouseEnter={ handleMouseOver }>
                   { startButtonText }
                 </button>
