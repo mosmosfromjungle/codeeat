@@ -167,9 +167,13 @@ export const CommandArrayWrapper = styled.div`
   width: 100%;
   height: 100%;
   background-color: beige;
+  border-radius: 16px;
   color: gray;
   position: relative;
   overflow: auto;
+  margin: 32px 0 32px 0;
+  padding: 16px;
+  font-size: 28px;
 `
 
 export const ImageContainer = styled.div`
@@ -190,11 +194,12 @@ export const ImageText = styled.div`
   text-align: center;
   text-shadow: 0px 0px 12px rgba(0, 0, 0, 0.9);
 `
+
 export const CustomBracket = styled.div`
   position: relative;
   font-family: 'CustomFont', sans-serif;
   font-size: 32px;
-  margin-top: 60px;
+  margin-top: 30px;
 `
 export const CustomInput = styled.input`
   font-family: 'CustomFont', sans-serif;
