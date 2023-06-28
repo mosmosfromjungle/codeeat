@@ -77,6 +77,10 @@ const YourPoint = styled.div`
   text-align: center;
 `
 
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 export default function MoleGameDialog() {
   // For communication between client and server
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
@@ -84,7 +88,7 @@ export default function MoleGameDialog() {
   // My information
   const username = useAppSelector((state) => state.user.username);
   const character = useAppSelector((state) => state.user.character);
-  const imgpath = `/public/assets/character/single/${character}_idle_anim_19.png`;
+  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`;
 
   // Send my info to friend (client -> server)
   bootstrap.gameNetwork.sendMyInfo(username, character);
@@ -92,7 +96,7 @@ export default function MoleGameDialog() {
   // Friend information
   const friendname = useAppSelector((state) => state.molegame.friendName);
   const friendcharacter = useAppSelector((state) => state.molegame.friendCharacter);
-  const friendimgpath = `/public/assets/character/single/${friendcharacter}_idle_anim_19.png`;
+  const friendimgpath = `/assets/character/single/${capitalizeFirstLetter(friendcharacter)}_idle_anim_19.png`;
   
   // Get room host information
   const host = useAppSelector((state) => state.molegame.host);
