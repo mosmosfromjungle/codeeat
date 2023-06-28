@@ -26,6 +26,9 @@ const app = express()
 const allowedOrigins = [
   'http://localhost:5173',
   'http://127.0.0.1:5173',
+  'http://43.200.172.83:5173',
+  'http://43.200.172.83',
+  'http://3.35.25.114:5173',
 ];
 
 const options: cors.CorsOptions = {
@@ -36,6 +39,7 @@ const options: cors.CorsOptions = {
     'Accept',
     'X-Access-Token',
     'authorization',
+    'Access-Control-Allow-Origin',
     '*',
   ],
   credentials: true,
