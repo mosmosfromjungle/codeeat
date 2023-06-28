@@ -6,7 +6,8 @@ import store from '../stores'
 import { setGameSessionId } from '../stores/UserStore'
 import { 
   setMoleGameFriendInfo,
-  setMoleGameFriendData
+  setMoleGameFriendData,
+  setMoleGameProblem,
  } from '../stores/MoleGameStore'
 import { 
   setBrickGameState,
@@ -160,6 +161,22 @@ export default class GameNetwork {
     this.room.onMessage(Message.SEND_GAME_PLAYERS, (content) => {
       store.dispatch(setGamePlayers(content))
     })
+
+    // ↓ Mole Game
+    // method to receive friend info to me in mole game
+    this.room.onMessage(Message.RECEIVE_MOLE, (content) => {
+      store.dispatch(setMoleGameFriendInfo(content));
+    });
+
+    // method to receive friend point to me in mole game
+    this.room.onMessage(Message.RECEIVE_YOUR_POINT, (content) => {
+      store.dispatch(setMoleGameFriendData(content));
+    });
+
+    // method to receive friend point to me in mole game
+    this.room.onMessage(Message.RESPONSE_MOLE, (content) => {
+      store.dispatch(setMoleGameProblem(content));
+    });
   }
 
   // method to send player updates to Colyseus server
@@ -271,11 +288,18 @@ export default class GameNetwork {
   sendMyPoint(myPoint: string) {
     this.room?.send(Message.SEND_MY_POINT, { point: myPoint })
   }
+
+  // method to send my point to friend in mole game
+  startGame(problem: string) {
+    this.room?.send(Message.REQUEST_MOLE, { problem: problem })
+  }
+
   // Rain Game
   startRainGame() {
     console.log("1. 게임 초기화 과정이 진행된다!")
     this.room?.send(Message.RAIN_GAME_START);
   }
+
   MakingWord(){
     console.log("단어 만들라고 서버에게 명령함")
     this.room?.send(Message.SEND_RAIN_GAME_PLAYERS);

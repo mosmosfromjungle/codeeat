@@ -6,11 +6,13 @@ import { IGameRoomData } from '../../types/Rooms'
 import { GameState, GamePlayer } from './schema/GameState'
 import PlayerUpdateCommand from './commands/PlayerUpdateCommand'
 import PlayerUpdateNameCommand from './commands/PlayerUpdateNameCommand'
-import GamePlayUpdateCommand from './commands/GamePlayUpdateCommand'
-import { RainGameStartCommand } from './commands/RainGameStartCommand'
-import { MakeWordCommand } from './commands/RainGameMakeWordCommand'
+import {
+  MoleGameGetUserInfo,
+  MoleGameAddPoint,
+  MoleGameProblems,
+} from './commands/MoleGameUpdateArrayCommand'
 
-export class GameRoom extends Room<GameState> {
+export class MoleGameRoom extends Room<GameState> {
   private dispatcher = new Dispatcher(this)
   private name: string
   private description: string
@@ -56,16 +58,38 @@ export class GameRoom extends Room<GameState> {
       this.broadcastPlayersData(this)
     })
 
-    this.onMessage(Message.RAIN_GAME_START, (client) => {
-      this.dispatcher.dispatch(new RainGameStartCommand(), { client });
-      this.dispatcher.dispatch(new MakeWordCommand(), { room: this });
-      this.broadcast(Message.RAIN_GAME_START, Array.from(this.state.rainGameStates).reduce((obj, [key, value]) => (obj[key]= value, obj), {}));
-    });
+    // ↓ Mole Game
+    this.onMessage(Message.SEND_MOLE, (client, message: { name: string, character: string }) => {
+      this.dispatcher.dispatch(new MoleGameGetUserInfo(), {
+        client,
+        name: message.name,
+        character: message.character,
+        point: '',
+        problem: '',
+      })
+      this.broadcast(Message.RECEIVE_MOLE, { name: message.name, character: message.character, host: this.state.host }, { except: client });
+    })
 
-    this.onMessage(Message.SEND_RAIN_GAME_PLAYERS, (content) => {
-      console.log("만들라는 명령 서버가 받았습니다.")
-      this.startGeneratingKeywords();
-      
+    this.onMessage(Message.SEND_MY_POINT, (client, message: { point: string }) => {
+      this.dispatcher.dispatch(new MoleGameAddPoint(), {
+        client,
+        name: '',
+        character: '',
+        point: message.point,
+        problem: '',
+      })
+      this.broadcast(Message.RECEIVE_YOUR_POINT, { point: message.point }, { except: client });
+    })
+
+    this.onMessage(Message.REQUEST_MOLE, (client, message: { problem: string }) => {
+      this.dispatcher.dispatch(new MoleGameProblems(), {
+        client,
+        name: '',
+        character: '',
+        point: '',
+        problem: message.problem,
+      })
+      this.broadcast(Message.RESPONSE_MOLE, { problem: message.problem });
     })
   }
 
@@ -99,33 +123,12 @@ export class GameRoom extends Room<GameState> {
     this.broadcastPlayersData(this)
   }
 
-  private startGeneratingKeywords() {
-    const generateKeywords = async () => {
-      try {
-        await this.dispatcher.dispatch(new MakeWordCommand(), { room: this });
-  
-        this.state.rainGameStates.forEach((RainGameState, owner) => {
-          this.broadcast(Message.SEND_RAIN_GAME_PLAYERS, RainGameState);
-          console.log("만든 단어 서버가 보냈습니다.")
-        });
-        
-        // Schedule the next execution
-        setTimeout(generateKeywords, 10000);
-      } catch (error) {
-        console.error('Failed to generate keywords:', error);
-      }
-    };
-
-    // Start the first execution
-    generateKeywords();
-  }
-
   onDispose() {
-    console.log('room', this.roomId, 'disposing...')
+    console.log('Mole game room', this.roomId, 'disposing ...')
     this.dispatcher.stop()
   }
 
-  broadcastPlayersData(room: GameRoom) {
+  broadcastPlayersData(room: MoleGameRoom) {
     const players = Array.from(room.state.players.values())
       .map((player: GamePlayer) => ({
         name: player.name,
