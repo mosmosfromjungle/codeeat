@@ -20,12 +20,10 @@ export enum Message {
   // Server
   SEND_GAME_PLAYERS,
 
-  // ***** RAIN GAME *****
-  // Client  
-  UPDATE_RAIN_GAME_PLAY,
+  // ***** RAIN GAME *****  
+  RAIN_GAME_USER,
   RAIN_GAME_START,
-  // Server
-  SEND_RAIN_GAME_PLAYERS, 
+  RAIN_GAME_WORD, 
  
 
   // ***** Brick Game *****

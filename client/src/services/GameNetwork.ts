@@ -155,8 +155,9 @@ export default class GameNetwork {
     if (!this.room) return;
 
     const clientId = this.room.sessionId; 
-    
-    this.room.send(Message.UPDATE_RAIN_GAME_PLAY, { clientId, username, character });
+    this.room.send(Message.RAIN_GAME_USER, { clientId, username, character });
+
+    return clientId;
   }
 
   // set up all network listeners before the game starts
@@ -173,7 +174,7 @@ export default class GameNetwork {
       store.dispatch(setJoinedGameRoomData(content))
     })
 
-    this.room.onMessage(Message.UPDATE_RAIN_GAME_PLAY, (data) => {
+    this.room.onMessage(Message.RAIN_GAME_USER, (data) => {
       const {clientId, username, character } = data;
       const payload = {
         username,
@@ -188,7 +189,7 @@ export default class GameNetwork {
       store.dispatch(setGamePlayers(content))
     })
 
-    this.room.onMessage(Message.SEND_RAIN_GAME_PLAYERS, (content)=>{
+    this.room.onMessage(Message.RAIN_GAME_WORD, (content)=>{
       store.dispatch(setRainGameState(content))
     })
   }
@@ -307,7 +308,7 @@ export default class GameNetwork {
     this.room?.send(Message.RAIN_GAME_START);
   }
   MakingWord(){
-    this.room?.send(Message.SEND_RAIN_GAME_PLAYERS);
+    this.room?.send(Message.RAIN_GAME_WORD);
   }
 }
 

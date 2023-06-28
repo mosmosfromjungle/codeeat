@@ -60,8 +60,6 @@ export function RainGame({clientId }) {
   const myRainGameState = rainGameState.states.filter((rgs) => rgs.owner ===clientId);
   const opponentRainGameState = rainGameState.states.filter((rgs) => rgs.owner !== clientId);
   
-  console.log("My rain game state: ", myRainGameState);
-  console.log("Opponent rain game state: ", opponentRainGameState);
 
   const [time, setTime] = useState(100)
   const [items, setItems] = useState([])
@@ -69,7 +67,10 @@ export function RainGame({clientId }) {
   useUpdateKeywords(dispatch, myRainGameState, opponentRainGameState, time)
 
   useEffect(() => {
-    bootstrap.gameNetwork.MakingWord()
+    const makingWordInterval = setInterval(() => {
+      bootstrap.gameNetwork.MakingWord();
+    }, 3000);
+    
 
     const timeInterval = setInterval(() => {
       setTime((prevTime) => Math.max(prevTime - 1, 0))
@@ -77,10 +78,13 @@ export function RainGame({clientId }) {
 
     return () => {
       clearInterval(timeInterval)
+      clearInterval(makingWordInterval);
     }
   }, [])
 
   const winner = calculateWinner(myRainGameState, opponentRainGameState, time, clientId)
+
+  
 
   const keydown = (keyCode) => {
     if (keyCode === 13 && keywordInput.current) {
@@ -89,6 +93,7 @@ export function RainGame({clientId }) {
       keywordInput.current.value = ''
     }
   }
+
   return (
     <>
       {/* Time Section */}
@@ -121,9 +126,9 @@ export function RainGame({clientId }) {
         {/* Left Side (내것) */}
         <div
           style={{
-            width: '50vw',
-            backgroundImage: `url(${rain_Background})`,
-            backgroundSize: '50%',
+            // width: '40%',
+            // backgroundImage: `url(${rain_Background})`,
+            backgroundSize: '100%',
             backgroundRepeat: 'no-repeat',
             position: 'relative',
             overflow: 'hidden',
@@ -172,9 +177,9 @@ export function RainGame({clientId }) {
         {/* Right Side (상대편) */}
         <div
           style={{
-            width: '50vw',
-            backgroundImage: `url(${rain_Background})`,
-            backgroundSize: '50%',
+            // width: '50vw',
+            // backgroundImage: `url(${rain_Background})`,
+            backgroundSize: '100%',
             backgroundRepeat: 'no-repeat',
             position: 'relative',
             overflow: 'hidden',

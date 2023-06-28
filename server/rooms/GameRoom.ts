@@ -13,7 +13,6 @@ import {
   MoleGameGetUserInfo,
   MoleGameAddPoint,
 } from './commands/MoleGameUpdateArrayCommand'
-import RainGameUserUpdateCommand from './commands/RainGameUserUpdateCommand'
 
 export class GameRoom extends Room<GameState> {
   private dispatcher = new Dispatcher(this)
@@ -71,43 +70,45 @@ export class GameRoom extends Room<GameState> {
       }
     )
 
-    this.onMessage(Message.RAIN_GAME_START, (client, content) => {
-      this.dispatcher.dispatch(new RainGameStartCommand(), { client });
-      this.dispatcher.dispatch(new MakeWordCommand(), { room: this });
-      this.broadcast(Message.RAIN_GAME_START, Array.from(this.state.rainGameStates).reduce((obj, [key, value]) => (obj[key]= value, obj), {}));
-    });
+    // this.onMessage(Message.RAIN_GAME_START, (client, content) => {
+    //   this.dispatcher.dispatch(new RainGameStartCommand(), { client });
+    //   this.dispatcher.dispatch(new MakeWordCommand(), { room: this });
+    //   this.broadcast(Message.RAIN_GAME_START, Array.from(this.state.rainGameStates).reduce((obj, [key, value]) => (obj[key]= value, obj), {}));
+    // });
 
-    this.onMessage(Message.SEND_RAIN_GAME_PLAYERS, (client, content) => {
-      this.startGeneratingKeywords(client);
-    })
+    // this.onMessage(Message.RAIN_GAME_WORD, (client, content) => {console.log("클라에게 키워드 만들라고 요청 받음")
+    //   this.startGeneratingKeywords(client);
+    // })
 
-    this.onMessage(Message.UPDATE_RAIN_GAME_PLAY, (client, data) => {
-      const { clientId, username, character } = data;
+    // this.onMessage(Message.RAIN_GAME_USER, (client, data) => {
+    //   const { clientId, username, character } = data;
 
-      const newRainGameState = new RainGameState();
-      newRainGameState.owner = clientId;
-      this.state.rainGameUsers[clientId] = newRainGameState;
+    //   const newRainGameState = new RainGameState();
+    //   newRainGameState.owner = clientId;
 
-      const newRainGameUser = new RainGameUser();
-      newRainGameUser.username = username;
-      newRainGameUser.character = character;
-      newRainGameUser.clientId = clientId;
-      this.state.rainGameUsers[clientId] = newRainGameUser;
+    //   const newRainGameUser = new RainGameUser();
+    //   newRainGameUser.username = username;
+    //   newRainGameUser.character = character;
+    //   newRainGameUser.clientId = clientId;
+    //   console.log("클라에게 유저 정보 메시지받음")
 
+    //   this.state.rainGameUsers.set(clientId, newRainGameUser);
+    //   this.state.rainGameStates.set(clientId, newRainGameState);
       
-      
-      const payload = {
-        clientId,
-        username,
-        character,
-      };
+    //   const payload = {
+    //     clientId,
+    //     username,
+    //     character,
+    //   };
 
-      const rainGameUserUpdateCommand = new RainGameUserUpdateCommand();
-      rainGameUserUpdateCommand.room = this;
-      rainGameUserUpdateCommand.execute(payload);
+    //   const rainGameUser = this.state.rainGameUsers.get(clientId);
+    // if (rainGameUser) {
+    //     rainGameUser.username = username;
+    //     rainGameUser.character = character;
+    //   }
 
-      this.broadcast(Message.UPDATE_RAIN_GAME_PLAY,payload);
-    });
+    //   this.broadcast(Message.RAIN_GAME_USER,payload);
+    // });
 
   
     // when a player is ready to connect, call the PlayerReadyToConnectCommand
@@ -183,27 +184,27 @@ export class GameRoom extends Room<GameState> {
     this.broadcastPlayersData(this)
   }
 
-  private startGeneratingKeywords(client) {
-    const clientId = client.sessionId
-    const generateKeywords = async () => {
-      console.log("키워드제작!")
-      try {
-        await this.dispatcher.dispatch(new MakeWordCommand(), { room: this, clientId: clientId });
+  // private startGeneratingKeywords(client) {
+  //   const clientId = client.sessionId
+  //   const generateKeywords = async () => {
+  //     console.log("서버가 키워드제작 시작함")
+  //     try {
+  //       await this.dispatcher.dispatch(new MakeWordCommand(), { room: this, clientId: clientId });
   
-        this.state.rainGameStates.forEach((RainGameState, owner) => {
-          this.broadcast(Message.SEND_RAIN_GAME_PLAYERS, RainGameState);
-        });
+  //       this.state.rainGameStates.forEach((RainGameState, owner) => {
+  //         this.broadcast(Message.RAIN_GAME_WORD, RainGameState);
+  //       });
         
-        // Schedule the next execution
-        setTimeout(generateKeywords, 10000);
-      } catch (error) {
-        console.error('Failed to generate keywords:', error);
-      }
-    };
+  //       // Schedule the next execution
+  //       setTimeout(generateKeywords, 10000);
+  //     } catch (error) {
+  //       console.error('Failed to generate keywords:', error);
+  //     }
+  //   };
 
-    // Start the first execution
-    generateKeywords();
-  }
+  //   // Start the first execution
+  //   generateKeywords();
+  // }
 
   onDispose() {
     console.log('room', this.roomId, 'disposing...')

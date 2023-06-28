@@ -11,7 +11,8 @@ import {
   IImageContainer,
   IRainGameState,
   IRainGameUser,
-  IKeywordRain
+  IKeywordRain,
+  IRainGameRoomState
 } from '../../../types/IGameState'
 
 
@@ -51,6 +52,13 @@ export class RainGameUser extends Schema implements IRainGameUser{
   @type("string") username = '';
   @type('string') character = '';
   @type('string') clientId = '';
+}
+
+export class RainGameRoomState extends Schema implements IRainGameRoomState {
+  @type([ "string" ]) players: string[] = [];
+  @type("string") host = ''; 
+  @type({ map: RainGameState }) rainGameStates = new MapSchema<RainGameState>()
+  @type({ map: RainGameUser }) rainGameUsers = new MapSchema<RainGameUser>()
 }
 
 /* BRICK GAME ROOM SCHEMA */
@@ -108,7 +116,7 @@ export class GameState extends Schema implements IGameState {
   @type({ map: GamePlayer }) players = new MapSchema<GamePlayer>()
   @type('string') host = ''
   // molegames
-  @type({ map: RainGameState }) rainGameStates = new MapSchema<RainGameState>()
-  @type({ map: RainGameUser }) rainGameUsers = new MapSchema<RainGameUser>()
+  // @type({ map: RainGameState }) rainGameStates = new MapSchema<RainGameState>()
+  // @type({ map: RainGameUser }) rainGameUsers = new MapSchema<RainGameUser>()
   @type(BrickGameState) brickgames = new BrickGameState()
 }

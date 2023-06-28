@@ -12,12 +12,12 @@ import { rainGameSlice } from '../../../stores/RainGameStore'
 
 const Backdrop = styled.div`
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  // top: 0;
+  // left: 0;
+  // width: 100vw;
+  // height: 100vh;
   overflow: hidden;
-  padding: 16px 180px 16px 10px; 
+  padding: 16px; 
   width: 100%;
   height: 100%;
 `;
@@ -88,15 +88,24 @@ const RainGameDialog = () => {
       try {
         const clientId = await bootstrap.gameNetwork.sendMyInfoToServer(username, character);
         setClientId(clientId);
-
         await bootstrap.gameNetwork.startRainGame();
       } catch (error){
-        console.error("초기화 과정에서 에러 발생:",error);
+
       }
     };
 
     initializeRainGame();
   },[]);
+
+  useEffect(() => {
+    const updatedMyInfo = users.find((user) => user.clientId === clientId);
+    const updatedOpponent = users.find((user) => user.clientId !== clientId);
+
+    if (updatedMyInfo && updatedOpponent) {
+      console.log("업데이트된 유저 정보 확인해보자:", updatedMyInfo)
+      console.log("업데이트된 상대 정보 확인해보자:", updatedOpponent)
+    }
+  }, [users]);
 
   const handleStartGame = () => {
     setShowGame(true);

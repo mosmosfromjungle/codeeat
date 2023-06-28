@@ -1,17 +1,17 @@
 import { Command } from '@colyseus/command';
-import { GameRoom } from '../GameRoom';
-import { GameState, KeywordRain, RainGameState } from '../schema/GameState';
+import { RainGameRoom } from '../RainGameRoom';
+import { KeywordRain, RainGameRoomState } from '../schema/GameState';
 import mongoose from 'mongoose';
 
 type Payload = {
-  room: GameRoom;
+  room: RainGameRoom;
   clientId: string;
 };
 
-export class MakeWordCommand extends Command<GameState, Payload> {
+export class MakeWordCommand extends Command<RainGameRoomState, Payload> {
   async execute({ room, clientId }: Payload) {
     try {
-      
+      console.log("단어 만드는 서버 커맨드")
       const raingamewords = mongoose.connection.collection('raingamewords');
       const randomWord = await raingamewords.aggregate([{ $sample: { size: 1 } }]).toArray();
 

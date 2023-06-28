@@ -35,6 +35,13 @@ export interface IRainGameState extends Schema {
   used: string[],
 }
 
+export interface IRainGameRoomState extends Schema {
+  players: string[],
+  host: string,
+  rainGameStates: MapSchema<IRainGameState>
+  rainGameUsers: MapSchema<IRainGameUser>
+}
+
 /* BRICK GAME ROOM SCHEMA */
 
 export interface IBrickPlayerScore extends Schema {
@@ -79,8 +86,8 @@ export interface IGameState extends Schema {
   players: MapSchema<IGamePlayer>
   host: string  // username of the player that created the room
   // molegames: 
-  raingames: MapSchema<IRainGameState>
-  rainGameUsers: MapSchema<IRainGameUser>
+  // raingames: MapSchema<IRainGameState>
+  // rainGameUsers: MapSchema<IRainGameUser>
   brickgames: IBrickGameState
 }
 
