@@ -29,16 +29,18 @@ export default class MyPlayer extends Player {
     y: number,
     texture: string,
     id: string,
+    userId: string,
     frame?: string | number
   ) {
-    super(scene, x, y, texture, id, frame)
+    super(scene, x, y, texture, id,userId, frame)
     this.playContainerBody = this.playerContainer.body as Phaser.Physics.Arcade.Body
     // this.playerTexture = texture // 플레이어 인스턴스를 생성할 떄 바로 캐릭터 이미지를 지정해줄 수 있다.
   }
 
   setPlayerName(name: string) {
     this.playerName.setText(name)
-    phaserEvents.emit(Event.MY_PLAYER_NAME_CHANGE, name)
+    const userId = store.getState().user?.userId
+    phaserEvents.emit(Event.MY_PLAYER_NAME_CHANGE, name, userId)
     store.dispatch(pushPlayerJoinedMessage(name))  // TODO: 플레이어 이름이 바뀔떄마다 새로 join 한다는 메세지와 관련된 부분인듯
   }
 
@@ -209,7 +211,7 @@ export default class MyPlayer extends Player {
 declare global {
   namespace Phaser.GameObjects {
     interface GameObjectFactory {
-      myPlayer(x: number, y: number, texture: string, id: string, frame?: string | number): MyPlayer
+      myPlayer(x: number, y: number, texture: string, id: string, userId: string, frame?: string | number): MyPlayer
     }
   }
 }
@@ -222,9 +224,10 @@ Phaser.GameObjects.GameObjectFactory.register(
     y: number,
     texture: string,
     id: string,
+    userId: string,
     frame?: string | number
   ) {
-    const sprite = new MyPlayer(this.scene, x, y, texture, id, frame)
+    const sprite = new MyPlayer(this.scene, x, y, texture, id,userId, frame)
 
     this.displayList.add(sprite)
     this.updateList.add(sprite)

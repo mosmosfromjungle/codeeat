@@ -3,17 +3,11 @@ import { io, Socket } from 'socket.io-client';
 import store from '../stores'
 import { Message } from '../../../types/Messages'
 import { setNewMessage } from '../stores/DMStore';
-
-interface OldMessage{
-  _id: string;
-  createdAt: number;
-  message: string;
-  receiverId: string;
-  senderId: string;
-}
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 export default class DMNetwork {
   private socketClient: Socket;
-  public oldMessages: OldMessage[];
+  public oldMessages: any[];
   constructor() {
     const socketUrl = `http://localhost:8888/`
     this.socketClient = io(socketUrl, {
@@ -40,7 +34,7 @@ export default class DMNetwork {
 
     this.socketClient.on('old-messages', (data) => {
       console.log('old messages')
-      const userId = store.getState().user.userId;
+      const userId = store.getState().user.userId || cookies.get('userId');
       this.oldMessages = [];
       data.forEach((element: any) => {
         if (element.senderId) {

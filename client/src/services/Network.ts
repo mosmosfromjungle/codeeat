@@ -202,10 +202,11 @@ export default class Network {
       this.webRTC?.deleteOnCalledVideoStream(clientId)
     })
     this.room.onStateChange((state) => {
+      const playerSize = this.room?.state.players.size;
+      if(playerSize == undefined) return
       const players: any = [];
       this.room?.state.players.forEach((value) => {
         players.push(value);
-        console.log(value)
       });
       store.dispatch(setRoomPlayers(players));
     });
@@ -266,8 +267,11 @@ export default class Network {
   }
 
   // method to send player name to Colyseus server
-  updatePlayerName(currentName: string) {
-    this.room?.send(Message.UPDATE_PLAYER_NAME, { name: currentName })
+  updatePlayerName(currentName: string, currentUserId: string) {
+    this.room?.send(Message.UPDATE_PLAYER_NAME, { 
+      name: currentName,
+      userid: currentUserId,
+    })
   }
 
   // method to send ready-to-connect signal to Colyseus server

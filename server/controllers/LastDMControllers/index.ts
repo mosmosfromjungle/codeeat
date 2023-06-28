@@ -5,15 +5,16 @@ import {userMap} from '../..'
 const time_diff = 9 * 60 * 60 * 1000;
 /* last dm 가져오기 */
 export const loadData = async (req: Request, res: Response) => {
-    const user  = req.body;
-    if (!user)
+    const userId = req.body;
+    if (!userId)
       return res.status(404).json({
         status: 404,
         message: 'not found',
     });
   
-    getLastDM(user)
+    getLastDM(userId)
       .then((result) => {
+        console.log(result)
         res.status(200).json({
           status: 200,
           payload: result,
@@ -51,8 +52,8 @@ export const getLastDM = async (userId: string) => {
   try {
     await LastDM.collection
     .find({$or:[
-      { "senderInfo.userId": userId },
-      {"receiverInfo.userId": userId}]
+      { 'senderInfo.userId': userId },
+      {'receiverInfo.userId': userId}]
     })
     .sort({ _id: -1 })
     .toArray()
@@ -61,7 +62,6 @@ export const getLastDM = async (userId: string) => {
         result.push(json);
         });
     });
-    
     return result;
   } catch (err) {
     console.error(err);
@@ -78,13 +78,13 @@ export const addLastDM = async (obj: {
     let updatedAt = utc + time_diff;
     LastDM.collection.insertOne({
       senderInfo: obj.senderInfo,
-      receiverId: obj.receiverInfo,
+      receiverInfo: obj.receiverInfo,
       message: obj.message,
       updatedAt: updatedAt,
     });
     LastDM.collection.insertOne({
-      senderId: obj.receiverInfo,
-      receiverId: obj.senderInfo,
+      senderInfo: obj.receiverInfo,
+      receiverInfo: obj.senderInfo,
       message: obj.message,
       updatedAt: updatedAt,
     });

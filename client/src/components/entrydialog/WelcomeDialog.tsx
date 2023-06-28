@@ -5,7 +5,7 @@ import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 
 import { useAppSelector, useAppDispatch } from '../../hooks'
-import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore'
+import { DIALOG_STATUS, setCharacter, setDialogStatus, setUsername } from '../../stores/UserStore'
 
 import Adam from '../../images/login/Adam_login.png'
 import Ash from '../../images/login/Ash_login.png'
@@ -119,7 +119,7 @@ export default function WelcomeDialog() {
 
   const dispatch = useAppDispatch()
   const roomJoined = useAppSelector((state) => state.room.roomJoined)
-  const userName = useAppSelector((state) => state.user.userName)
+  const username = useAppSelector((state) => state.user.userName)
   const character = useAppSelector((state) => state.user.character)
   const videoConnected = useAppSelector((state) => state.user.videoConnected)
 
@@ -129,17 +129,19 @@ export default function WelcomeDialog() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    game.registerKeys()
     dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
+    game.registerKeys()
+    game.network.readyToConnect()
+    dispatch(setUsername(username))
   }
 
   useEffect(() => {
-    if (roomJoined) {
-      game.myPlayer.setPlayerName(userName)
+    if (roomJoined && game.myPlayer) {
+      game.myPlayer.setPlayerName(username)
       game.myPlayer.setPlayerTexture(character)
       game.network.readyToConnect()          
     }
-  })
+  }),[game, game?.myPlayer]
 
   return (
     <>
@@ -155,7 +157,7 @@ export default function WelcomeDialog() {
           </ImgContainer>
         </Left>
         <Right>
-            <h1 style={{ fontSize: '24px' }}>{userName} 님</h1>
+            <h1 style={{ fontSize: '24px' }}>{username} 님</h1>
           {!videoConnected && (
             <Warning>
               <Alert variant="outlined" severity="warning">

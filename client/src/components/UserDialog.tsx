@@ -241,9 +241,9 @@ export default function UserDialog() {
                         친구 추가하기
                       </Button>
                       <Button onClick={(e) => {
-                        console.log(player?.name ?? "unknown") // 🐱
-                        console.log(player)
                         e.preventDefault();
+                        console.log(player?.userid ?? "unknown") // 🐱
+                        console.log(player)
                         reqNewDM(
                           player.userid,
                           player.name
