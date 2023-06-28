@@ -104,7 +104,7 @@ export default function MoleGameDialog() {
   // Get room host information
   const host = useAppSelector((state) => state.molegame.host);
 
-  console.log("host: "+host);
+  // console.log("host: "+host);
   
   const dispatch = useAppDispatch()
 
@@ -146,6 +146,8 @@ export default function MoleGameDialog() {
   // const [startGameFlag, setStartGameFlag] = useState(true);
 
   // let startGameFlag = true;
+
+  const [startGame, setStartGame] = useState(false);
 
   let randomNumber1 = 0;
   let randomNumber2 = 0;
@@ -229,6 +231,7 @@ export default function MoleGameDialog() {
       }
 
     } else {
+      // 한 명이 되었으니 일단 게임 시작 못 함
       const startButton = document.getElementById('start-button-div');
       startButton.classList.add('hidden');
 
@@ -236,6 +239,23 @@ export default function MoleGameDialog() {
         // 내가 방장이 아닌데, 상대방(방장)이 나갔다면,
         // 이 방의 방장을 나로 업데이트
         bootstrap.gameNetwork.changeHost(username);
+      }
+
+      // 게임 도중에 한명이 나갔다면,
+      // 남은 사람이 승리
+      if (startGame) {
+        // Clear the game
+        clearTimeout(moleCatch);
+        setTurn(0);
+        // setPoint(0);
+        
+        moleHide();
+        
+        setStartGame(false);
+        modalEvent();
+
+        const FinishAudio = new Audio(FinishBGM);
+        FinishAudio.play();
       }
     }
   }, [friendname, host]);
@@ -468,8 +488,6 @@ export default function MoleGameDialog() {
       modalEvent();
       
       setTurn(0);
-      
-      setHideEnding(false);
 
       const FinishAudio = new Audio(FinishBGM);
       FinishAudio.play();
@@ -478,6 +496,7 @@ export default function MoleGameDialog() {
       setStartButtonColor('#f2ecff');
 
       setDisableStartButton(false);
+      setStartGame(false);
     }
   }
 
@@ -497,7 +516,7 @@ export default function MoleGameDialog() {
     console.log("Function [catchMole]");
     seeMole();
     
-    // clearTimeout(moleCatch);
+    clearTimeout(moleCatch);
   }
 
   const handleClick = (num) => {
@@ -576,7 +595,7 @@ export default function MoleGameDialog() {
   let friendTotal = (friendPoint / 10) * 100;
 
   const modalEvent = () => {
-    setHideEnding(true);
+    setHideEnding(false);
     setDisableStartButton(true);
   }
 
@@ -591,7 +610,11 @@ export default function MoleGameDialog() {
   if ( total > friendTotal ) {
     winner = username;
   } else if ( total < friendTotal) {
-    winner = friendname;
+    if (friendname === '') {
+      winner = username;
+    } else {
+      winner = friendname;
+    }
   } else {
     winner = "both"
   }
@@ -644,9 +667,8 @@ export default function MoleGameDialog() {
 
     try {
       // 상대방에게 나 나간다고 알려줌
-      bootstrap.gameNetwork.sendMyInfo('', '');
       // 만약 내가 방장이었다면, 방장 이임 해주어야 함
-
+      bootstrap.gameNetwork.sendMyInfo('', '');
 
       bootstrap.gameNetwork.leaveGameRoom()
 
@@ -664,6 +686,8 @@ export default function MoleGameDialog() {
       console.log("Wait for press start button")
 
     } else if (problem === '1') {
+      setStartGame(true);
+
       setStartButtonColor('#3d3f43');
       setPoint(0);
 
