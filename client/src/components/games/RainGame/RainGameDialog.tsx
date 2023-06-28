@@ -8,6 +8,7 @@ import { DIALOG_STATUS, setDialogStatus } from '../../../stores/UserStore';
 import { closeRainGameDialog } from '../../../stores/RainGameDialogStore';
 import phaserGame from '../../../PhaserGame';
 import Bootstrap from '../../../scenes/Bootstrap';
+import { rainGameSlice } from '../../../stores/RainGameStore'
 
 const Backdrop = styled.div`
   position: fixed;
@@ -53,6 +54,21 @@ const StartButton = styled.button`
   }
 `;
 
+const UserInfo = styled.div`
+  position: absolute;
+  top: 16px;
+  font-size: 16px;
+  color: white;
+
+  &.myInfo {
+    left: 16px;
+  }
+
+  &.opponentInfo {
+    right: 16px;
+  }
+`;
+
 const RainGameDialog = () => {
   const dispatch = useAppDispatch();
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap;
@@ -62,6 +78,10 @@ const RainGameDialog = () => {
 
   const username = useAppSelector((state) => state.user.username);
   const character = useAppSelector((state) => state.user.character);
+
+  const users = useAppSelector((state) => state.raingame.users);
+  const myInfo = users.find((user) => user.clientId === clientId);
+  const opponent = users.find((user) => user.clientId !== clientId);
 
   useEffect(() => {
     const initializeRainGame = async () => {
@@ -96,6 +116,27 @@ const RainGameDialog = () => {
   return (
     <Backdrop>
       <Wrapper>
+      <UserInfo className="myInfo">
+  {users ? (
+    <>
+      <div>Username: {username}</div>
+      <div>Character: {character}</div>
+    </>
+  ) : (
+    <div>Loading..</div>
+  )}
+</UserInfo>
+         {/* 상대방의 닉네임과 캐릭터 출력 */}
+         <UserInfo className="opponentInfo">
+  {opponent ? (
+    <>
+      <div>Username: {opponent.username}</div>
+      <div>Character: {opponent.character}</div>
+    </>
+  ) : (
+    <div>No opponent connected</div>
+  )}
+</UserInfo>
       {!showGame && (
           <StartButton onClick={handleStartGame}>게임 시작</StartButton>
         )}

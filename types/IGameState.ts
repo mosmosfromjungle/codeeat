@@ -80,6 +80,7 @@ export interface IGameState extends Schema {
   host: string  // username of the player that created the room
   // molegames: 
   raingames: MapSchema<IRainGameState>
+  rainGameUsers: MapSchema<IRainGameUser>
   brickgames: IBrickGameState
 }
 

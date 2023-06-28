@@ -208,9 +208,14 @@ export const rainGameSlice = createSlice({
         setRainGameUser: (state, action: PayloadAction<RainGameUser>) => {
             const newUserData = action.payload;
             const existingUserIndex = state.users.findIndex((user) => user.clientId === newUserData.clientId);
-
+        
             if (existingUserIndex !== -1) {
-                state.users[existingUserIndex] = newUserData;
+                // 새로운 배열을 만들어서 상태를 변경합니다.
+                state.users = [
+                    ...state.users.slice(0, existingUserIndex),
+                    newUserData,
+                    ...state.users.slice(existingUserIndex + 1),
+                ];
             } else {
                 state.users.push(newUserData);
             }

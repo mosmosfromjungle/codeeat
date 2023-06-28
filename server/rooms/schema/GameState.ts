@@ -109,5 +109,6 @@ export class GameState extends Schema implements IGameState {
   @type('string') host = ''
   // molegames
   @type({ map: RainGameState }) rainGameStates = new MapSchema<RainGameState>()
+  @type({ map: RainGameUser }) rainGameUsers = new MapSchema<RainGameUser>()
   @type(BrickGameState) brickgames = new BrickGameState()
 }

@@ -18,7 +18,7 @@ import { MakeWordCommand } from './commands/RainGameMakeWordCommand'
 // } from './commands/TypingGameUpdateArrayCommand'
 // import ChatMessageUpdateCommand from './commands/ChatMessageUpdateCommand'
 import { IGameRoomData } from '../../types/Rooms'
-import { GameState, GamePlayer, RainGameState } from './schema/GameState'
+import { GameState, GamePlayer, RainGameState, RainGameUser } from './schema/GameState'
 import PlayerUpdateCommand from './commands/PlayerUpdateCommand'
 import PlayerUpdateNameCommand from './commands/PlayerUpdateNameCommand'
 import GamePlayUpdateCommand from './commands/GamePlayUpdateCommand'
@@ -74,7 +74,6 @@ export class GameRoom extends Room<GameState> {
       this.broadcastPlayersData(this)
     })
 
-
     // TODO: 각각의 게임에 필요한 정보에 맞춰 수정 필요 
     this.onMessage(Message.UPDATE_GAME_PLAY,
       (client, message: { x: number; y: number; anim: string }) => {
@@ -92,9 +91,7 @@ export class GameRoom extends Room<GameState> {
     });
 
     this.onMessage(Message.SEND_RAIN_GAME_PLAYERS, (client, content) => {
-
       this.startGeneratingKeywords(client);
-      
     })
 
     this.onMessage(Message.UPDATE_RAIN_GAME_PLAY, (client, data) => {
@@ -102,16 +99,26 @@ export class GameRoom extends Room<GameState> {
 
       const newRainGameState = new RainGameState();
       newRainGameState.owner = clientId;
+      this.state.rainGameUsers[clientId] = newRainGameState;
 
-      // rainGameStates에 추가 (key는 clientId로 사용합니다)
-    this.state.rainGameStates.set(clientId, newRainGameState);
+      const newRainGameUser = new RainGameUser();
+      newRainGameUser.username = username;
+      newRainGameUser.character = character;
+      newRainGameUser.clientId = clientId;
+      this.state.rainGameUsers[clientId] = newRainGameUser;
 
-    const payload = {
+      
+      
+      const payload = {
         clientId,
         username,
         character,
-    };
-      
+      };
+
+      const rainGameUserUpdateCommand = new RainGameUserUpdateCommand();
+      rainGameUserUpdateCommand.room = this;
+      rainGameUserUpdateCommand.execute(payload);
+
       this.broadcast(Message.UPDATE_RAIN_GAME_PLAY,payload);
     });
 

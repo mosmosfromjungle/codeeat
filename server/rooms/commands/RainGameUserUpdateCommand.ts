@@ -3,16 +3,18 @@ import { Client } from 'colyseus'
 import { IGameState } from '../../../types/IGameState'
 
 type Payload = {
-  client: Client
+  clientId: string;
   username: string
   character: string
 }
 
 export default class RainGameUserUpdateCommand extends Command<IGameState, Payload> {
   execute(data: Payload) {
-    const { client, username, character } = data
+    const { clientId, username, character } = data
 
-    const player = this.room.state.players.get(client.sessionId)
+    const player = this.room.state.raingames.get(clientId)
+    console.log("문제점은여기다")
+    console.log(player)
 
     if (!player) return
 

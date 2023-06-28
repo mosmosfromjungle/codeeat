@@ -59,6 +59,9 @@ export function RainGame({clientId }) {
   
   const myRainGameState = rainGameState.states.filter((rgs) => rgs.owner ===clientId);
   const opponentRainGameState = rainGameState.states.filter((rgs) => rgs.owner !== clientId);
+  
+  console.log("My rain game state: ", myRainGameState);
+  console.log("Opponent rain game state: ", opponentRainGameState);
 
   const [time, setTime] = useState(100)
   const [items, setItems] = useState([])
@@ -127,8 +130,9 @@ export function RainGame({clientId }) {
             textAlign: 'center',
           }}
         >
-          {myRainGameState &&
-            myRainGameState.words.map((item: KeywordRain, index: number) => {
+          {myRainGameState.length > 0 &&
+            myRainGameState[0].words.map((item: KeywordRain, index: number) => {
+              console.log("My item y value: ", item.y);
               if (item.y > window.innerHeight * 0.8) {
                 return null
               }
@@ -177,8 +181,9 @@ export function RainGame({clientId }) {
             textAlign: 'center',
           }}
         >
-          {opponentRainGameState &&
-            opponentRainGameState.words.map((item: KeywordRain, index: number) => {
+          {opponentRainGameState.length > 0 &&
+            opponentRainGameState[0].words.map((item: KeywordRain, index: number) => {
+              console.log("Opponent item y value: ", item.y);
               if (item.y > window.innerHeight * 0.8) {
                 return null
               }
