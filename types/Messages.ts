@@ -44,6 +44,8 @@ export enum Message {
   RECEIVE_YOUR_POINT,
   REQUEST_MOLE,
   RESPONSE_MOLE,
+  SEND_HOST,
+  RECEIVE_HOST,
 
   // ***** NOT USED *****
   // CONNECT_TO_MOLEGAME,

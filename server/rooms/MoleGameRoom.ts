@@ -10,6 +10,7 @@ import {
   MoleGameGetUserInfo,
   MoleGameAddPoint,
   MoleGameProblems,
+  MoleGameChangeHost,
 } from './commands/MoleGameUpdateArrayCommand'
 
 export class MoleGameRoom extends Room<GameState> {
@@ -66,6 +67,7 @@ export class MoleGameRoom extends Room<GameState> {
         character: message.character,
         point: '',
         problem: '',
+        host: '',
       })
       this.broadcast(Message.RECEIVE_MOLE, { name: message.name, character: message.character, host: this.state.host }, { except: client });
     })
@@ -77,6 +79,7 @@ export class MoleGameRoom extends Room<GameState> {
         character: '',
         point: message.point,
         problem: '',
+        host: '',
       })
       this.broadcast(Message.RECEIVE_YOUR_POINT, { point: message.point }, { except: client });
     })
@@ -88,8 +91,22 @@ export class MoleGameRoom extends Room<GameState> {
         character: '',
         point: '',
         problem: message.problem,
+        host: '',
       })
       this.broadcast(Message.RESPONSE_MOLE, { problem: message.problem });
+    })
+
+    this.onMessage(Message.SEND_HOST, (client, message: { host: string }) => {
+      this.dispatcher.dispatch(new MoleGameChangeHost(), {
+        client,
+        name: '',
+        character: '',
+        point: '',
+        problem: '',
+        host: message.host,
+      })
+      this.state.host = message.host;
+      this.broadcast(Message.RECEIVE_HOST, { host: message.host });
     })
   }
 
