@@ -103,6 +103,8 @@ export default function MoleGameDialog() {
   
   // Get room host information
   const host = useAppSelector((state) => state.molegame.host);
+
+  console.log("host: "+host);
   
   const dispatch = useAppDispatch()
 
@@ -213,13 +215,30 @@ export default function MoleGameDialog() {
   
   // 친구가 들어왔는데 내가 방장이면, 시작 버튼이 보여야 함
   // 내가 방장이 아니면 시작 버튼 보이지 않음
+  // 게임 시작 전에 누가 나가면 시작 버튼 숨겨야 함
 
-  if (friendname) {
-    if (host === username) {
+  useEffect(() => {
+    if (friendname) {
+      if (host === username) {
+        const startButton = document.getElementById('start-button-div');
+        startButton.classList.remove('hidden');
+
+      } else {
+        const startButton = document.getElementById('start-button-div');
+        startButton.classList.add('hidden');
+      }
+
+    } else {
       const startButton = document.getElementById('start-button-div');
-      startButton.classList.remove('hidden');
+      startButton.classList.add('hidden');
+
+      if (host !== username) {
+        // 내가 방장이 아닌데, 상대방(방장)이 나갔다면,
+        // 이 방의 방장을 나로 업데이트
+        bootstrap.gameNetwork.changeHost(username);
+      }
     }
-  }
+  }, [friendname, host]);
 
   const problem = useAppSelector((state) => state.molegame.problem);
 
@@ -624,6 +643,11 @@ export default function MoleGameDialog() {
     clearTimeout(moleCatch);
 
     try {
+      // 상대방에게 나 나간다고 알려줌
+      bootstrap.gameNetwork.sendMyInfo('', '');
+      // 만약 내가 방장이었다면, 방장 이임 해주어야 함
+
+
       bootstrap.gameNetwork.leaveGameRoom()
 
       dispatch(closeMoleGameDialog())

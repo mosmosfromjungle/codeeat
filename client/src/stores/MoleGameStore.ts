@@ -48,6 +48,12 @@ export const moleGameSlice = createSlice({
     ) => {
       state.problem = (parseInt(action.payload.problem) + 1).toString();
     },
+    setMoleGameHost: (
+      state,
+      action: PayloadAction<{ host: string }>
+    ) => {
+      state.host = action.payload.host;
+    },
   },
 })
 
@@ -57,6 +63,7 @@ export const {
   setMoleGameFriendInfo,
   setMoleGameFriendData,
   setMoleGameProblem,
+  setMoleGameHost,
 } =
 moleGameSlice.actions
 

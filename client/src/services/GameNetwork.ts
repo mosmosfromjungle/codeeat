@@ -8,6 +8,7 @@ import {
   setMoleGameFriendInfo,
   setMoleGameFriendData,
   setMoleGameProblem,
+  setMoleGameHost,
  } from '../stores/MoleGameStore'
 import { 
   setBrickGameState,
@@ -177,6 +178,11 @@ export default class GameNetwork {
     this.room.onMessage(Message.RESPONSE_MOLE, (content) => {
       store.dispatch(setMoleGameProblem(content));
     });
+
+    // method to receive host to me in mole game
+    this.room.onMessage(Message.RECEIVE_HOST, (content) => {
+      store.dispatch(setMoleGameHost(content));
+    });
   }
 
   // method to send player updates to Colyseus server
@@ -292,6 +298,11 @@ export default class GameNetwork {
   // method to send my point to friend in mole game
   startGame(problem: string) {
     this.room?.send(Message.REQUEST_MOLE, { problem: problem })
+  }
+
+  // method to send host in mole game
+  changeHost(host: string) {
+    this.room?.send(Message.SEND_HOST, { host: host })
   }
 
   // Rain Game
