@@ -156,6 +156,12 @@ export const roomSlice = createSlice({
       state.availableRooms.rainRooms = state.availableRooms.rainRooms.filter((room) => room.roomId !== action.payload)
       state.availableRooms.faceChatRooms = state.availableRooms.faceChatRooms.filter((room) => room.roomId !== action.payload)
     },
+    clearAvailabelGameRooms: (state) => {
+      state.availableRooms.brickRooms = []
+      state.availableRooms.moleRooms = []
+      state.availableRooms.rainRooms = []
+      state.availableRooms.faceChatRooms = []
+    },
     setRoomPlayers: (state, action: PayloadAction<IPlayer[]>) => {
       state.players = action.payload;
     },
@@ -176,6 +182,7 @@ export const {
   setAvailableFaceChatRooms,
   addAvailableRooms,
   removeAvailableRooms,
+  clearAvailabelGameRooms,
   setRoomPlayers,
 } = roomSlice.actions
 

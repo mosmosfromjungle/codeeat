@@ -106,17 +106,6 @@ export default function GameLobbyDialog() {
 
   const dispatch = useAppDispatch()
 
-  useEffect(() => {
-    try {
-      const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-      if (brickGameOpen) bootstrap.gameNetwork.joinLobbyRoom(RoomType.BRICKLOBBY)
-      if (moleGameOpen) bootstrap.gameNetwork.joinLobbyRoom(RoomType.MOLELOBBY)
-      if (rainGameOpen) bootstrap.gameNetwork.joinLobbyRoom(RoomType.RAINLOBBY)
-      if (faceChatOpen) bootstrap.gameNetwork.joinLobbyRoom(RoomType.FACECHATLOBBY)
-
-    } catch (error) {console.error(error)}
-  })
-
   const handleClose = () => {
     try {
       const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
@@ -158,7 +147,7 @@ export default function GameLobbyDialog() {
             <CustomRoomWrapper>
               <TitleWrapper>
                 <Title>
-                  방 선택
+                  방 선택하기
                 </Title>
               </TitleWrapper>
               <CustomRoomTable />

@@ -319,15 +319,4 @@ export default class Network {
   // disconnectFromTypingGame(id: string) {
   //   this.room?.send(Message.DISCONNECT_FROM_TYPINGGAME, { typinggameId: id })
   // }
-
-  // TODO: Might need it, not sure 
-  // disableGamePlayer(playerSessionId: string) {
-  //   phaserEvents.off(Event.MY_PLAYER_NAME_CHANGE, this.updatePlayer, this);
-  //   this.room?.send(Message.DISABLE_GAME_PLAYER, {playerSessionId: playerSessionId})
-  // }
-
-  // reactivateGamePlayer(playerSessionId: string) {
-  //   phaserEvents.on(Event.MY_PLAYER_NAME_CHANGE, this.updatePlayer, this);
-  //   this.room?.send(Message.REACTIVATE_GAME_PLAYER, {playerSessionId: playerSessionId})
-  // }
 }
