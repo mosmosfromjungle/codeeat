@@ -4,6 +4,9 @@ import Item from './Item'
 import Network from '../services/Network'
 import { openMoleGameDialog } from '../stores/MoleGameStore'
 import { DIALOG_STATUS, setDialogStatus } from '../stores/UserStore'
+import Bootstrap from '../scenes/Bootstrap'
+import phaserGame from '../PhaserGame'
+import { RoomType } from '../../../types/Rooms'
 
 
 export default class MoleGame extends Item {
@@ -49,6 +52,8 @@ export default class MoleGame extends Item {
 
   openDialog(network: Network) {
     // if (!this.id) return
+    const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
+    bootstrap.gameNetwork.joinLobbyRoom(RoomType.MOLELOBBY)
     store.dispatch(openMoleGameDialog())
     store.dispatch(setDialogStatus(DIALOG_STATUS.GAME_LOBBY))
     // network.connectToMoleGame(this.id)

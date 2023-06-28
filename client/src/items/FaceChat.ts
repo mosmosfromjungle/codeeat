@@ -4,6 +4,9 @@ import Item from './Item'
 import Network from '../services/Network'
 import { openFaceChatDialog } from '../stores/FaceChatStore'
 import { DIALOG_STATUS, setDialogStatus } from '../stores/UserStore'
+import Bootstrap from '../scenes/Bootstrap'
+import phaserGame from '../PhaserGame'
+import { RoomType } from '../../../types/Rooms'
 
 
 export default class FaceChat extends Item {
@@ -50,6 +53,8 @@ export default class FaceChat extends Item {
 
   openDialog(playerId: string, network: Network) {
     if (!this.faceChatId) return
+    const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
+    bootstrap.gameNetwork.joinLobbyRoom(RoomType.FACECHATLOBBY)
     store.dispatch(openFaceChatDialog({ faceChatId: this.faceChatId, myUserId: playerId }))
     store.dispatch(setDialogStatus(DIALOG_STATUS.GAME_LOBBY))
     // network.connectToFaceChat(this.id)

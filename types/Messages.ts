@@ -20,6 +20,14 @@ export enum Message {
   // Server
   SEND_GAME_PLAYERS,
 
+  // ***** RAIN GAME *****
+  // Client  
+  UPDATE_RAIN_GAME_PLAY,
+  RAIN_GAME_START,
+  // Server
+  SEND_RAIN_GAME_PLAYERS,  
+ 
+
   // ***** Brick Game *****
   // Client
   // BRICK_GAME_READY,  // 플레이어 준비 상태 한번 더 확인?

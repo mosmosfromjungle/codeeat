@@ -6,6 +6,33 @@ import { Schema, MapSchema, ArraySchema } from '@colyseus/schema'
 
 /* RAIN GAME ROOM SCHEMA */
 
+export interface IRainGameUser extends Schema {
+  name: string;
+  anim: string;
+}
+
+export interface IKeywordRain extends Schema {
+  owner: string,
+  y: number,
+  speed: number,
+  keyword: string,
+  x: number,
+  flicker: boolean,
+  blind: boolean,
+  accel: boolean,
+  multifly: boolean,
+  rendered: boolean,
+}
+
+export interface IRainGameState extends Schema {
+  owner: string,
+  item: string[],
+  point: number,
+  heart: number,
+  period: number,
+  words: ArraySchema<IKeywordRain>,
+  used: string[],
+}
 
 /* BRICK GAME ROOM SCHEMA */
 
@@ -51,7 +78,7 @@ export interface IGameState extends Schema {
   players: MapSchema<IGamePlayer>
   host: string  // username of the player that created the room
   // molegames: 
-  // raingames:
+  raingames: MapSchema<IRainGameState>
   brickgames: IBrickGameState
 }
 

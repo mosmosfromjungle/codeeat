@@ -7,6 +7,8 @@ import { GameState, GamePlayer } from './schema/GameState'
 import PlayerUpdateCommand from './commands/PlayerUpdateCommand'
 import PlayerUpdateNameCommand from './commands/PlayerUpdateNameCommand'
 import GamePlayUpdateCommand from './commands/GamePlayUpdateCommand'
+import { RainGameStartCommand } from './commands/RainGameStartCommand'
+import { MakeWordCommand } from './commands/RainGameMakeWordCommand'
 
 export class GameRoom extends Room<GameState> {
   private dispatcher = new Dispatcher(this)
@@ -53,23 +55,18 @@ export class GameRoom extends Room<GameState> {
       })
       this.broadcastPlayersData(this)
     })
-    
 
-    // // TODO: 각각의 게임에 필요한 정보에 맞춰 수정 필요 
-    // this.onMessage(Message.UPDATE_GAME_PLAY,
-    //   (client, message: { x: number; y: number; anim: string }) => {
-    //     this.dispatcher.dispatch(new GamePlayUpdateCommand(), {
-    //       client,
-    //       anim: message.anim,
-    //     })
-    //   }
-    // )
+    this.onMessage(Message.RAIN_GAME_START, (client) => {
+      this.dispatcher.dispatch(new RainGameStartCommand(), { client });
+      this.dispatcher.dispatch(new MakeWordCommand(), { room: this });
+      this.broadcast(Message.RAIN_GAME_START, Array.from(this.state.rainGameStates).reduce((obj, [key, value]) => (obj[key]= value, obj), {}));
+    });
 
-    // // when a player is ready to connect, call the PlayerReadyToConnectCommand
-    // this.onMessage(Message.READY_TO_CONNECT, (client) => {
-    //   const player = this.state.players.get(client.sessionId)
-    //   if (player) player.readyToConnect = true
-    // })
+    this.onMessage(Message.SEND_RAIN_GAME_PLAYERS, (content) => {
+      console.log("만들라는 명령 서버가 받았습니다.")
+      this.startGeneratingKeywords();
+      
+    })
   }
 
   async onAuth(client: Client, options: { password: string | null }) {
@@ -100,6 +97,27 @@ export class GameRoom extends Room<GameState> {
     }
     
     this.broadcastPlayersData(this)
+  }
+
+  private startGeneratingKeywords() {
+    const generateKeywords = async () => {
+      try {
+        await this.dispatcher.dispatch(new MakeWordCommand(), { room: this });
+  
+        this.state.rainGameStates.forEach((RainGameState, owner) => {
+          this.broadcast(Message.SEND_RAIN_GAME_PLAYERS, RainGameState);
+          console.log("만든 단어 서버가 보냈습니다.")
+        });
+        
+        // Schedule the next execution
+        setTimeout(generateKeywords, 10000);
+      } catch (error) {
+        console.error('Failed to generate keywords:', error);
+      }
+    };
+
+    // Start the first execution
+    generateKeywords();
   }
 
   onDispose() {

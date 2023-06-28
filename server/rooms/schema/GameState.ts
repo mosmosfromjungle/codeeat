@@ -9,6 +9,9 @@ import {
   DATA_STRUCTURE,
   QUIZ_TYPE,
   IImageContainer,
+  IRainGameState,
+  IRainGameUser,
+  IKeywordRain
 } from '../../../types/IGameState'
 
 
@@ -17,6 +20,37 @@ import {
 
 /* RAIN GAME ROOM SCHEMA */
 
+export class KeywordRain extends Schema implements IKeywordRain{
+  @type('string') owner = '';
+  @type('number') y = 0;
+  @type('number') speed = 1 ;
+  @type('string') keyword = '';
+  @type('number') x = Math.floor(Math.random()*(550-50+1)) + 50;
+  @type('boolean') flicker = false;
+  @type('boolean') blind = false;
+  @type('boolean') accel = false;
+  @type('boolean') multifly = false;
+  @type('boolean') rendered = false;
+
+  constructor(keyword: string) {
+    super();
+    this.keyword = keyword;
+  }
+}
+export class RainGameState extends Schema implements IRainGameState {
+  @type('string') owner = '';
+  @type([ "string" ]) item: string[] = [];
+  @type('number') point = 0;
+  @type('number') heart = 5;
+  @type('number') period = 2000;
+  @type([KeywordRain]) words = new ArraySchema<KeywordRain>();
+  @type([ "string" ]) used: string[] = [];
+}
+
+export class RainGameUser extends Schema implements IRainGameUser{
+  @type("string") name = '';
+  @type('string') anim = 'adam_idle_down';
+}
 
 /* BRICK GAME ROOM SCHEMA */
 
@@ -73,6 +107,6 @@ export class GameState extends Schema implements IGameState {
   @type({ map: GamePlayer }) players = new MapSchema<GamePlayer>()
   @type('string') host = ''
   // molegames
-  // raingames
+  @type({ map: RainGameState }) rainGameStates = new MapSchema<RainGameState>()
   @type(BrickGameState) brickgames = new BrickGameState()
 }
