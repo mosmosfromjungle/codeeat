@@ -28,6 +28,10 @@ const Profile = styled.div`
   font-family: Font_DungGeun;
 `
 
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 export default function ProfileButton() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -39,7 +43,7 @@ export default function ProfileButton() {
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
   const userLevel = useAppSelector((state) => state.user.userLevel)
-  const imgpath = `../../public/assets/character/single/${character}_idle_anim_19.png`
+  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`
 
   const dispatch = useAppDispatch()
 
