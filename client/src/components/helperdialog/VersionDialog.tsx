@@ -119,11 +119,11 @@ export default function ProfileDialog() {
 
                 <InfoTitle>만든 친구들 소개</InfoTitle>
                 <Person>
-                  김초혜 | BE | <Button href="https://github.com/chohk10" target="_blank"><GitButton>GIT</GitButton></Button><br/>
                   배준수 | BE | <Button href="https://github.com/junsoopooh" target="_blank"><GitButton>GIT</GitButton></Button><br/>
-                  서준택 | BE | <Button href="https://github.com/Taek222" target="_blank"><GitButton>GIT</GitButton></Button><br/>
+                  조재혁 | BE | <Button href="https://github.com/whwogur" target="_blank"><GitButton>GIT</GitButton></Button>
+                  김초혜 | BE | <Button href="https://github.com/chohk10" target="_blank"><GitButton>GIT</GitButton></Button><br/>
+                  서준택 | FE | <Button href="https://github.com/Taek222" target="_blank"><GitButton>GIT</GitButton></Button><br/>
                   서지원 | FE | <Button href="https://github.com/unauthorized-401" target="_blank"><GitButton>GIT</GitButton></Button><br/>
-                  조재혁 | FE | <Button href="https://github.com/whwogur" target="_blank"><GitButton>GIT</GitButton></Button>
                 </Person>
               </VersionInfo>
             </ChatBox>
