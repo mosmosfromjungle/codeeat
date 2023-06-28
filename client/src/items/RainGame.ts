@@ -4,6 +4,9 @@ import Item from './Item'
 import Network from '../services/Network'
 import { openRainGameDialog } from '../stores/RainGameDialogStore'
 import { DIALOG_STATUS, setDialogStatus } from '../stores/UserStore'
+import Bootstrap from '../scenes/Bootstrap'
+import phaserGame from '../PhaserGame'
+import { RoomType } from '../../../types/Rooms'
 
 
 export default class RainGame extends Item {
@@ -49,6 +52,8 @@ export default class RainGame extends Item {
 
   openDialog(network: Network) {
     // if (!this.id) return
+    const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
+    bootstrap.gameNetwork.joinLobbyRoom(RoomType.RAINLOBBY)
     store.dispatch(openRainGameDialog())
     store.dispatch(setDialogStatus(DIALOG_STATUS.GAME_LOBBY))
     // network.connectToRainGame(this.id)
