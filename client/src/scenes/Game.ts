@@ -69,23 +69,6 @@ export default class Game extends Phaser.Scene {
     })
   }
 
-  registerGameKeys() {
-    // maybe we can have a dedicated method for adding keys if more keys are needed in the future
-    this.keyE = this.input.keyboard.addKey('E')
-    this.keyR = this.input.keyboard.addKey('R')
-    this.input.keyboard.disableGlobalCapture()
-    this.input.keyboard.on('keydown-ENTER', (event) => {
-      store.dispatch(setShowChat(true))
-      store.dispatch(setFocused(true))
-    })
-    this.input.keyboard.on('keydown-ESC', (event) => {
-      store.dispatch(setShowChat(false))
-      store.dispatch(setShowDM(false))
-      store.dispatch(setShowDMRoom(false))
-      store.dispatch(setShowDMList(false))
-    })
-  }
-
   disableKeys() {
     this.input.keyboard.enabled = false
   }
@@ -119,40 +102,19 @@ export default class Game extends Phaser.Scene {
     const shadowImage = this.map.addTilesetImage('shadow', 'shadow')
     const wallImage = this.map.addTilesetImage('wall', 'wall')
 
-    this.map.createLayer('ground', [
-      groundImage,
-    ]);
+    this.map.createLayer('ground', [groundImage])
+    this.map.createLayer('wall', [wallImage])
+    this.map.createLayer('shadow', [shadowImage])
 
-    this.map.createLayer('wall', [
-      wallImage,
-    ]);
+    const buildingsLayer = this.map.createLayer('buildings', [buildingsImage])
+    const secondGroundLayer = this.map.createLayer('secondground', [secondlayerImage])
+    const fenceLayer = this.map.createLayer('fence', [secondlayerImage])
+    const foreGroundLayer = this.map.createLayer('foreground', [foregroundImage])
 
-    this.map.createLayer('shadow', [
-      shadowImage,
-    ]);
-
-    const buildingsLayer = this.map.createLayer('buildings', [
-      buildingsImage,
-    ]);
-
-    const secondGroundLayer = this.map.createLayer('secondground', [
-      secondlayerImage,
-    ]);
-
-    const fenceLayer = this.map.createLayer('fence', [
-      secondlayerImage,
-    ]);
-
-    const foreGroundLayer = this.map.createLayer('foreground', [
-      foregroundImage,
-    ]);
-
-
-
-    // thirdGroundLayer.setDepth(6500);
-    foreGroundLayer.setDepth(6000);
-    secondGroundLayer.setCollisionByProperty({ collisions: true });
-    fenceLayer.setCollisionByProperty({ collisions: true });
+    // thirdGroundLayer.setDepth(6500)
+    foreGroundLayer.setDepth(6000)
+    secondGroundLayer.setCollisionByProperty({ collisions: true })
+    fenceLayer.setCollisionByProperty({ collisions: true })
 
     // debugDraw(groundLayer, this)
 
@@ -170,7 +132,7 @@ export default class Game extends Phaser.Scene {
     */
 
     // this.myPlayer = this.add.myPlayer(400, 900, 'kevin', this.network.mySessionId)
-    this.myPlayer = this.add.myPlayer(705, 500, 'adam', this.network.mySessionId)
+    this.myPlayer = this.add.myPlayer(705, 500, 'adam', this.network.mySessionId) // TODO: 캐릭터 시작 위치 수정 가능 -> 서버와 통일해야함
     this.playerSelector = new PlayerSelector(this, 0, 0, 32, 32)  // TODO: 아이템과 상호작용할 수 있는 면적 
 
 
@@ -348,9 +310,9 @@ export default class Game extends Phaser.Scene {
     otherPlayer?.updateOtherPlayer(field, value)
   }
 
-  private handlePlayersOverlap(myPlayer, otherPlayer) {
-    otherPlayer.makeCall(myPlayer, this.network?.webRTC)
-  }
+  // private handlePlayersOverlap(myPlayer, otherPlayer) {
+  //   otherPlayer.makeCall(myPlayer, this.network?.webRTC)
+  // }
 
   private handleItemUserAdded(playerId: string, itemId: string, itemType: ItemType) {
     if (itemType === ItemType.BRICKGAME) {

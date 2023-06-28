@@ -3,9 +3,6 @@ import User from '../models/User'
 import Friends from '../models/Friends'
 import FriendRequest from '../models/FriendRequest'
 import { KeywordRainModel } from '../models/RainGame'
-
-// import Chat from '../models/Chat'
-// import LastChat from '../models/LastChat'
 import LastDM from '../models/LastDM'
 import DM from '../models/DM'
 import MoleGame from '../models/MoleGame'
@@ -57,13 +54,6 @@ export const createCollection = (modelName : string) => {
     case 'raingame':
       new KeywordRainModel();
       break
-      
-    // case 'chat':
-    //   new Chat()
-    //   break
-    // case 'lastchat':
-    //   new LastChat()
-    //   break
     case 'molegame':
       new MoleGame()
       break

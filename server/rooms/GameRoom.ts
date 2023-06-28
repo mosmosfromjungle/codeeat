@@ -2,26 +2,13 @@ import bcrypt from 'bcrypt'
 import { Room, Client, ServerError } from 'colyseus'
 import { Dispatcher } from '@colyseus/command'
 import { Message } from '../../types/Messages'
-import { RainGameStartCommand } from './commands/RainGameStartCommand'
-import { MakeWordCommand } from './commands/RainGameMakeWordCommand'
-// import {
-//   BrickGameAddUserCommand,
-//   BrickGameRemoveUserCommand,
-// } from './commands/BrickGameUpdateArrayCommand'
-// import {
-//   MoleGameAddUserCommand,
-//   MoleGameRemoveUserCommand,
-// } from './commands/MoleGameUpdateArrayCommand'
-// import {
-//   TypingGameAddUserCommand,
-//   TypingGameRemoveUserCommand,
-// } from './commands/TypingGameUpdateArrayCommand'
-// import ChatMessageUpdateCommand from './commands/ChatMessageUpdateCommand'
 import { IGameRoomData } from '../../types/Rooms'
 import { GameState, GamePlayer } from './schema/GameState'
 import PlayerUpdateCommand from './commands/PlayerUpdateCommand'
 import PlayerUpdateNameCommand from './commands/PlayerUpdateNameCommand'
 import GamePlayUpdateCommand from './commands/GamePlayUpdateCommand'
+import { RainGameStartCommand } from './commands/RainGameStartCommand'
+import { MakeWordCommand } from './commands/RainGameMakeWordCommand'
 import {
   MoleGameGetUserInfo,
   MoleGameAddPoint,
@@ -74,16 +61,6 @@ export class GameRoom extends Room<GameState> {
     })
 
 
-    // TODO: 각각의 게임에 필요한 정보에 맞춰 수정 필요 
-    this.onMessage(Message.UPDATE_GAME_PLAY,
-      (client, message: { x: number; y: number; anim: string }) => {
-        this.dispatcher.dispatch(new GamePlayUpdateCommand(), {
-          client,
-          anim: message.anim,
-        })
-      }
-    )
-
     this.onMessage(Message.RAIN_GAME_START, (client) => {
       this.dispatcher.dispatch(new RainGameStartCommand(), { client });
       this.dispatcher.dispatch(new MakeWordCommand(), { room: this });
@@ -95,28 +72,6 @@ export class GameRoom extends Room<GameState> {
       this.startGeneratingKeywords();
       
     })
-
-  
-    // when a player is ready to connect, call the PlayerReadyToConnectCommand
-    this.onMessage(Message.READY_TO_CONNECT, (client) => {
-      const player = this.state.players.get(client.sessionId)
-      if (player) player.readyToConnect = true
-    })
-    // // TODO: 각각의 게임에 필요한 정보에 맞춰 수정 필요 
-    // this.onMessage(Message.UPDATE_GAME_PLAY,
-    //   (client, message: { x: number; y: number; anim: string }) => {
-    //     this.dispatcher.dispatch(new GamePlayUpdateCommand(), {
-    //       client,
-    //       anim: message.anim,
-    //     })
-    //   }
-    // )
-
-    // // when a player is ready to connect, call the PlayerReadyToConnectCommand
-    // this.onMessage(Message.READY_TO_CONNECT, (client) => {
-    //   const player = this.state.players.get(client.sessionId)
-    //   if (player) player.readyToConnect = true
-    // })
 
     // ↓ Mole Game
     this.onMessage(Message.SEND_MOLE, (client, message: { name: string, character: string }) => {
@@ -165,30 +120,6 @@ export class GameRoom extends Room<GameState> {
   onLeave(client: Client, consented: boolean) {
     if (this.state.players.has(client.sessionId)) {
       this.state.players.delete(client.sessionId)
-    }
-    // this.state.brickgames.forEach((brickgame) => {
-    //   if (brickgame.connectedUser.has(client.sessionId)) {
-    //     brickgame.connectedUser.delete(client.sessionId)
-    //   }
-    // })
-    // this.state.typinggames.forEach((typinggame) => {
-    //   if (typinggame.connectedUser.has(client.sessionId)) {
-    //     typinggame.connectedUser.delete(client.sessionId)
-    //   }
-    // })
-    // this.state.molegames.forEach((molegame) => {
-    //   if (molegame.connectedUser.has(client.sessionId)) {
-    //     molegame.connectedUser.delete(client.sessionId)
-    //   }
-    // })
-
-    function broadcastPlayersData(room: GameRoom) {
-      const players = Array.from(room.state.players.values())
-        .map((player: Player) => ({
-          name: player.name,
-          anim: player.anim,
-        }))
-      room.broadcast(Message.SEND_GAME_PLAYERS, players);
     }
     
     this.broadcastPlayersData(this)
