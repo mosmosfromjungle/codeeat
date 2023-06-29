@@ -72,6 +72,7 @@ export class RainGameRoom extends Room<IRainGameRoomState> {
     }
     // Handle RAIN_GAME_START message
   private handleRainGameStart(client: Client, content: any) {
+    console.log("9")
       this.dispatcher.dispatch(new RainGameStartCommand(), { client });
       this.dispatcher.dispatch(new MakeWordCommand(), { room: this, clientId: client.sessionId });
       this.broadcast(
@@ -83,6 +84,7 @@ export class RainGameRoom extends Room<IRainGameRoomState> {
   // Handle RAIN_GAME_USER message
   private handleRainGameUser(client: Client, data: any) {
     const { clientId, username, character } = data;
+    console.log("4")
 
     const newRainGameState = new RainGameState();
     newRainGameState.owner = clientId;
@@ -126,7 +128,7 @@ export class RainGameRoom extends Room<IRainGameRoomState> {
           });
           
           // Schedule the next execution
-          setTimeout(generateKeywords, 10000);
+          setTimeout(generateKeywords, 2000);
         } catch (error) {
           console.error('Failed to generate keywords:', error);
         }
@@ -134,7 +136,5 @@ export class RainGameRoom extends Room<IRainGameRoomState> {
       // Start the first execution
       generateKeywords();
     }
-
-
   }
   

@@ -11,7 +11,7 @@ type Payload = {
 export class MakeWordCommand extends Command<RainGameRoomState, Payload> {
   async execute({ room, clientId }: Payload) {
     try {
-      console.log("단어 만드는 서버 커맨드")
+      console.log("11")
       const raingamewords = mongoose.connection.collection('raingamewords');
       const randomWord = await raingamewords.aggregate([{ $sample: { size: 1 } }]).toArray();
 

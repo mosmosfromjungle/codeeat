@@ -153,7 +153,7 @@ export default class GameNetwork {
 
   async sendMyInfoToServer(username, character) {
     if (!this.room) return;
-
+    console.log("2")
     const clientId = this.room.sessionId; 
     this.room.send(Message.RAIN_GAME_USER, { clientId, username, character });
 
@@ -181,7 +181,12 @@ export default class GameNetwork {
         character,
         clientId,
       };
+      console.log("5")
       store.dispatch(setRainGameUser(payload));
+    });
+
+    this.room.onMessage(Message.RAIN_GAME_START, (content) => {
+      store.dispatch(setRainGameState(content));
     });
 
     // when the server sends data of players in this room
@@ -305,6 +310,7 @@ export default class GameNetwork {
   }
   // Rain Game
   startRainGame() {
+    console.log("8")
     this.room?.send(Message.RAIN_GAME_START);
   }
   MakingWord(){

@@ -8,7 +8,6 @@ import { DIALOG_STATUS, setDialogStatus } from '../../../stores/UserStore';
 import { closeRainGameDialog } from '../../../stores/RainGameDialogStore';
 import phaserGame from '../../../PhaserGame';
 import Bootstrap from '../../../scenes/Bootstrap';
-import { rainGameSlice } from '../../../stores/RainGameStore'
 
 const Backdrop = styled.div`
   position: fixed;
@@ -86,6 +85,7 @@ const RainGameDialog = () => {
   useEffect(() => {
     const initializeRainGame = async () => {
       try {
+        console.log("1")
         const clientId = await bootstrap.gameNetwork.sendMyInfoToServer(username, character);
         setClientId(clientId);
         await bootstrap.gameNetwork.startRainGame();
@@ -101,10 +101,6 @@ const RainGameDialog = () => {
     const updatedMyInfo = users.find((user) => user.clientId === clientId);
     const updatedOpponent = users.find((user) => user.clientId !== clientId);
 
-    if (updatedMyInfo && updatedOpponent) {
-      console.log("업데이트된 유저 정보 확인해보자:", updatedMyInfo)
-      console.log("업데이트된 상대 정보 확인해보자:", updatedOpponent)
-    }
   }, [users]);
 
   const handleStartGame = () => {

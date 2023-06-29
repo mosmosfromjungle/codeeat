@@ -23,8 +23,8 @@ import {
 
 export class KeywordRain extends Schema implements IKeywordRain{
   @type('string') owner = '';
-  @type('number') y = 0;
-  @type('number') speed = 1 ;
+  @type('number') y = 10;
+  @type('number') speed = 1;
   @type('string') keyword = '';
   @type('number') x = Math.floor(Math.random()*(550-50+1)) + 50;
   @type('boolean') flicker = false;

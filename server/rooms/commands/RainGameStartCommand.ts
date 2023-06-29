@@ -85,6 +85,7 @@ export class RainGameStartCommand extends Command<GameState, Payload> {
       try {
 
         const clientId = data.client.sessionId;
+        console.log("10")
 
           // MongoDB 연결 설정
           await mongoose.set('strictQuery', false);

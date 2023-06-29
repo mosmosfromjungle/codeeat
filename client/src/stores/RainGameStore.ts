@@ -6,27 +6,27 @@ import { Interface } from "readline";
 // Define Interface
 
 export interface RainGameUser {
-    username: String,
-    character: String,
+    username: string,
+    character: string,
     clientId: string,
 }
 
 export interface KeywordRain {
-    owner: String,
+    owner: string,
     y: number,
     speed: number,
-    keyword: String,
+    keyword: string,
     x: number,
-    flicker: Boolean,
-    blind: Boolean,
-    accel: Boolean,
-    multifly: Boolean,
-    rendered: Boolean,
+    flicker: boolean,
+    blind: boolean,
+    accel: boolean,
+    multifly: boolean,
+    rendered: boolean,
 }
 const initialKeywordRain: KeywordRain = {
     owner: '',
-    y: 0,
-    speed: 0.2,
+    y: 10,
+    speed: 1,
     keyword: '',
     x: Math.floor(Math.random() * (550 - 50 + 1)) + 50,
     flicker: false,
@@ -37,11 +37,11 @@ const initialKeywordRain: KeywordRain = {
 }
 
 export interface RainGameState {
-    owner : String,
-    item: String[],
+    owner : string,
+    item: string[],
     point: number,
     heart: number,
-    period: Number,
+    period: number,
     words: KeywordRain[],
     used : string[],
 };
@@ -61,23 +61,24 @@ export const rainGameSlice = createSlice({
     initialState,
     reducers: {
         updateKeywords: (state, action: PayloadAction<{ owner: string }>) => {
+            
             const { owner } = action.payload;
             const gameStateIndex = state.states.findIndex((rgs) => rgs.owner === owner);
-        
-            if (gameStateIndex === -1) return;
 
+        
             const lineHeight = 600;
             const gameState = state.states[gameStateIndex];
+
             let shouldDecrementHeart = false;
-                     
+         
             for (let i = gameState.words.length - 1; i >= 0; i--) {
                 const keywordRain = gameState.words[i];
-                keywordRain.y += keywordRain.speed;
-        
-                if(!keywordRain.rendered){
-                    keywordRain.rendered=true;  
-                } 
-                if (keywordRain.y > lineHeight) {
+                const updatedKeywordRain = { ...keywordRain, y: keywordRain.y + keywordRain.speed };
+                gameState.words[i] = updatedKeywordRain;
+                console.log(updatedKeywordRain.y)
+
+
+                if (updatedKeywordRain.y > lineHeight) {
                     gameState.words.splice(i,1);
                     shouldDecrementHeart = true;
                 }       
@@ -86,7 +87,6 @@ export const rainGameSlice = createSlice({
         if(shouldDecrementHeart) {
             gameState.heart -= 1;
         }
-        
     },
         
         removeKeyword: (state, action: PayloadAction<{ keyword:string, owner: string }>) => {
@@ -208,6 +208,7 @@ export const rainGameSlice = createSlice({
         setRainGameUser: (state, action: PayloadAction<RainGameUser>) => {
             const newUserData = action.payload;
             const existingUserIndex = state.users.findIndex((user) => user.clientId === newUserData.clientId);
+            console.log("6")
         
             if (existingUserIndex !== -1) {
                 // 새로운 배열을 만들어서 상태를 변경합니다.
