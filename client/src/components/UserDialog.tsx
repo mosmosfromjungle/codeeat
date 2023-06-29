@@ -151,7 +151,7 @@ export default function UserDialog() {
   const focused = useAppSelector((state) => state.chat.focused)
   const showUser = useAppSelector((state) => state.chat.showUser)
 
-  const myId = useAppSelector((state) => state.user.userId)
+  const receiverName = useAppSelector((state) => state.dm.receiverName)
   const myName = useAppSelector((state) => state.user.userName)
   const character = useAppSelector((state) => state.user.character)
   const userLevel = useAppSelector((state) => state.user.userLevel)
@@ -163,16 +163,10 @@ export default function UserDialog() {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
-  async function reqNewDM(id, name) {
+  async function reqNewDM(name) {
     let body = {
-      senderInfo: {
-        userId: myId,
-        userName: myName,
-      },
-      receiverInfo: {
-        userId: id,
-        userName: name
-      },
+      senderName: myName,
+      receiverName: name,
       message: `${myName}님이 메시지를 보냈습니다`
     }
     try{
@@ -249,7 +243,6 @@ export default function UserDialog() {
                         console.log(player?.userid ?? "unknown") // 🐱
                         console.log(player)
                         reqNewDM(
-                          player.userid,
                           player.name
                         )
                         dispatch(setShowDMRoom(true));

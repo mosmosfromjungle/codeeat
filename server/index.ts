@@ -118,9 +118,9 @@ export const userMap = new Map<string, Socket>();
 
 io.on('connection', (socket: Socket) => {
   console.log('접속', socket.id);
-  socket.on('whoAmI', (userId) => {
-    console.log('아이디는', userId);
-    userMap.set(userId, socket);
+  socket.on('whoAmI', (userName) => {
+    console.log('닉네임', userName);
+    userMap.set(userName, socket);
   });
   DMController(socket);
   socket.on('disconnect', () => {

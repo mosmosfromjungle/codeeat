@@ -23,9 +23,9 @@ export const DMReq = async (body: any) => {
 }
 
 // 현재 채팅방 목록을 가져옴
-export const fetchRoomList = async (userId: string): Promise<any> => {
+export const fetchRoomList = async (userName: string): Promise<any> => {
   try {
-    const response = await axios.post(`/lastdm/roomList`, {userId : userId} );
+    const response = await axios.post(`/lastdm/roomList`, {senderName : userName} );
     return response.data.payload;
   } catch (error) {
     console.error(error);
@@ -52,8 +52,8 @@ export interface CreateRoomResponse {
 }
 export interface RoomListResponse {
   _id: string;
-  senderInfo: UserResponseDto;
-  receiverInfo: UserResponseDto;
+  senderName: string;
+  receiverName: string;
   message: string;
   roomId: string;
   updatedAt: Date | null;

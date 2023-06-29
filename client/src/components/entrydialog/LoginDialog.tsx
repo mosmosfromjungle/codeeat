@@ -136,7 +136,7 @@ export default function LoginDialog() {
               .joinOrCreatePublic()
               .then(() => bootstrap.launchGame())
               .catch((error) => console.error(error))
-            bootstrap.network2.whoAmI(payload.userId)
+            bootstrap.network2.whoAmI(payload.userName)
             dispatch(setDialogStatus(DIALOG_STATUS.WELCOME))
             dispatch(setUserId(payload.userId))
             dispatch(setUsername(payload.userName))

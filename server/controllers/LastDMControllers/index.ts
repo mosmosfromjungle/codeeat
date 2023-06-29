@@ -5,14 +5,15 @@ import {userMap} from '../..'
 const time_diff = 9 * 60 * 60 * 1000;
 /* last dm 가져오기 */
 export const loadData = async (req: Request, res: Response) => {
-    const userId = req.body;
-    if (!userId)
+    const userName = req.body;
+    // console.log(userName)
+    if (!userName)
       return res.status(404).json({
         status: 404,
         message: 'not found',
     });
   
-    getLastDM(userId)
+    getLastDM(userName)
       .then((result) => {
         console.log(result)
         res.status(200).json({
@@ -32,33 +33,34 @@ export const firstdata = async (req: Request, res: Response) => {
   const user = req.body
   console.log(user) // 🐱
   await addLastDM({
-    senderInfo: user.senderInfo,
-    receiverInfo: user.receiverInfo,
+    senderName: user.senderName,
+    receiverName: user.receiverName,
     message: user.message,
   })
-  console.log(userMap.get(user.receiverInfo.userId),'에게 dm요청') // 🐱
   return res.status(200).json({
     status: 200,
     payload: {
-      senderInfo: user.senderInfo,
-      receiverInfo: user.receiverInfo,
+      senderName: user.senderName,
+      receiverName: user.receiverName,
     },
   })
 }
 
 
-export const getLastDM = async (userId: string) => {
+export const getLastDM = async (obj:{senderName: string} ) => {
   let result = new Array();
+  console.log(obj)
   try {
     await LastDM.collection
     .find({$or:[
-      { 'senderInfo.userId': userId },
-      {'receiverInfo.userId': userId}]
+      { 'senderName': obj.senderName },
+      {'receiverName': obj.senderName}]
     })
     .sort({ _id: -1 })
     .toArray()
     .then((elem) => {
       elem.forEach((json) => {
+        console.log(elem)
         result.push(json);
         });
     });
@@ -69,22 +71,22 @@ export const getLastDM = async (userId: string) => {
 };
 
 export const addLastDM = async (obj: {
-  senderInfo: UserResponseDto;
-  receiverInfo: UserResponseDto;
+  senderName: string;
+  receiverName: string;
   message: string;
 }) => {
     let cur_date = new Date();
     let utc = cur_date.getTime() + cur_date.getTimezoneOffset() * 60 * 1000;
     let updatedAt = utc + time_diff;
     LastDM.collection.insertOne({
-      senderInfo: obj.senderInfo,
-      receiverInfo: obj.receiverInfo,
+      senderName: obj.senderName,
+      receiverName: obj.receiverName,
       message: obj.message,
       updatedAt: updatedAt,
     });
     LastDM.collection.insertOne({
-      senderInfo: obj.receiverInfo,
-      receiverInfo: obj.senderInfo,
+      senderName: obj.receiverName,
+      receiverName: obj.senderName,
       message: obj.message,
       updatedAt: updatedAt,
     });
@@ -92,29 +94,29 @@ export const addLastDM = async (obj: {
     return true;
 }
 
-export const updateLastDM = async (obj: { senderId: string; receiverId: string; message: string }) => {
-    const { senderId, receiverId, message } = obj;
+export const updateLastDM = async (obj: { senderName: string; receiverName: string; message: string }) => {
+    const { senderName, receiverName, message } = obj;
     let cur_date = new Date();
     let utc = cur_date.getTime() + cur_date.getTimezoneOffset() * 60 * 1000;
     let updatedAt = utc + time_diff;
     await LastDM.collection.findOneAndUpdate(
-      { $and: [{ 'senderInfo.userId': senderId }, { 'receiverInfo.userId': receiverId }] },
+      { $and: [{ 'senderName': senderName }, { 'receiverName': receiverName }] },
       { $set: { message: message, updatedAt: updatedAt } }
     );
     await LastDM.collection.findOneAndUpdate(
-      { $and: [{ 'senderInfo.userId': receiverId }, { 'receiverInfo.userId': senderId }] },
+      { $and: [{ 'senderName': receiverName }, { 'receiverName': senderName }] },
       { $set: { message: message, updatedAt: updatedAt } }
     );
   };
-  export const updateRoomId = async (obj: { senderId: string; receiverId: string; roomId: string }) => {
-    const { senderId, receiverId, roomId } = obj;
+  export const updateRoomId = async (obj: { senderName: string; receiverName: string; roomId: string }) => {
+    const { senderName, receiverName, roomId } = obj;
   
     LastDM.collection.findOneAndUpdate(
-      { $and: [{ 'senderInfo.userId': senderId }, { 'receiverInfo.userId': receiverId }] },
+      { $and: [{ 'senderName': senderName }, { 'receiverName': receiverName }] },
       { $set: { roomId: roomId } }
     );
     LastDM.collection.findOneAndUpdate(
-      { $and: [{ 'senderInfo.userId': receiverId }, { 'receiverInfo.userId': senderId }] },
+      { $and: [{ 'senderName': receiverName }, { 'receiverName': senderName }] },
       { $set: { roomId: roomId } }
     );
   };

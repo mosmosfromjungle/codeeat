@@ -211,7 +211,7 @@ export default class MyPlayer extends Player {
 declare global {
   namespace Phaser.GameObjects {
     interface GameObjectFactory {
-      myPlayer(x: number, y: number, texture: string, id: string, userId: string, frame?: string | number): MyPlayer
+      myPlayer(x: number, y: number, texture: string, id: string, frame?: string | number): MyPlayer
     }
   }
 }

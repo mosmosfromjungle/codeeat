@@ -2,8 +2,8 @@ import { Schema } from "mongoose"
 export type Token = string
 
 export interface ILastDM {
-  senderInfo: UserResponseDto
-  receiverInfo: UserResponseDto
+  senderName: string
+  receiverName: string
   message: string
   roomId?: string
   updatedAt: Date | null

@@ -23,10 +23,9 @@ import DefaultAvatar from '../../images/logo.png'
 export const ConversationList = () => {
   const [rooms, setRooms] = useState<RoomListResponse[]>([]);
   const dispatch = useAppDispatch();
-  const userId = useAppSelector((state) => state.user.userId);
   const userName = useAppSelector((state) => state.user.userName);
   useEffect(() => {
-    fetchRoomList(userId)
+    fetchRoomList(userName)
     .then((data) => {
         setRooms(data);
     });
@@ -38,12 +37,8 @@ export const ConversationList = () => {
 
 const handleClick = async (room) => {
   console.log(room)
-  dispatch(setReceiverId(room.receiverInfo.userId));
-  console.log('setReceiverId :', room.receiverInfo.userId)
-  dispatch(setReceiverName(room.receiverInfo.userName));
-  console.log('setReceiverName :', room.receiverInfo.userName)
+  dispatch(setReceiverName(room.receiverName));
   dispatch(setRoomId(room.roomId));
-  console.log('setRoomId:', room.roomId)
   dispatch(setShowDMRoom(true))
 }
 
@@ -73,10 +68,10 @@ return (
               >
                 <ProfileAvatarImage
                   src={DefaultAvatar}
-                  alt={room.receiverInfo.userName}
+                  alt={room.receiverName}
                 />
                 <UserNamewithLastMessage>
-                  <UserName>{room.receiverInfo.userName}</UserName>
+                  <UserName>{room.receiverName}</UserName>
                     <LastMessage>
                       {room.message}
                     </LastMessage>

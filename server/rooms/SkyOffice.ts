@@ -74,17 +74,17 @@ export class SkyOffice extends Room<OfficeState> {
 
     this.onMessage(
       Message.SEND_DM,
-      (client, payload: { senderId: string; receiverId: string; message: string }) => {
-        const { senderId, receiverId, message } = payload;
-        const receiverSocket = userMap.get(receiverId)
+      (client, payload: { senderName: string; receiverName: string; message: string }) => {
+        const { senderName, receiverName, message } = payload;
+        const receiverSocket = userMap.get(receiverName)
       }
     );
     this.onMessage(
       Message.CHECK_DM,
-      (client, message: { senderId: string; receiverId: string }) => {
-        const { senderId, receiverId } = message;
+      (client, message: { senderName: string; receiverName: string }) => {
+        const { senderName, receiverName } = message;
 
-        getDMMessage(senderId, receiverId)
+        getDMMessage(senderName, receiverName)
         .then((DMMessage) => {
           client.send(Message.CHECK_DM, DMMessage);
         })

@@ -11,8 +11,8 @@ export const DMSlice = createSlice({
     receiverId: '',
     receiverName: '',
     newMessage: {
-      senderId: '',
-      receiverId: '',
+      senderName: '',
+      receiverName: '',
       id: 0,
       message: '',
       roomId: '',

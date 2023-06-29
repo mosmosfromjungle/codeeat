@@ -28,16 +28,16 @@ export default class DMNetwork {
     return this.socketClient;
   };
 
-  async joinRoom (roomId: string, senderId: string, receiverId: string, callback: any) {
-    console.log('JOINROOM-----MyId:',senderId,'acqId:',receiverId) // 🐱
-    this.socketClient.emit('join-room', { roomId: roomId, userId: senderId, receiverId: receiverId });
+  async joinRoom (roomId: string, senderName: string, receiverName: string, callback: any) {
+    console.log('JOINROOM-----MyId:',senderName,'acqId:',receiverName) // 🐱
+    this.socketClient.emit('join-room', { roomId: roomId, userName: senderName, receiverName: receiverName });
 
     this.socketClient.on('old-messages', (data) => {
       console.log('old messages')
-      const userId = store.getState().user.userId || cookies.get('userId');
+      const userName = store.getState().user.userName || cookies.get('userName');
       this.oldMessages = [];
       data.forEach((element: any) => {
-        if (element.senderId) {
+        if (element.senderName) {
           this.oldMessages.push(element);
         }
       });
@@ -50,7 +50,7 @@ export default class DMNetwork {
     this.socketClient.emit('message', message)
   }
 
-  whoAmI = (userId: string) => {
-    this.socketClient.emit('whoAmI', userId);
+  whoAmI = (userName: string) => {
+    this.socketClient.emit('whoAmI', userName);
   };
 }

@@ -16,26 +16,26 @@ export default function DMBubbles(props) {
   const game = phaserGame.scene.keys.game as Game;
   const socketNetwork = game.network2;
   const roomId = useAppSelector((state) => state.dm.roomId);
-  const receiverId = useAppSelector((state) => state.dm.receiverId);
-  const userId = useAppSelector((state) => state.user.userId);
+  const receiverName = useAppSelector((state) => state.dm.receiverName);
+  const userName = useAppSelector((state) => state.user.userName);
   const newMessage = useAppSelector((state) => state.dm.newMessage);
 
   const [messageList, setMessageList] = useState<any>([]);
   const _joinRoom = (oldMessages) => {
+    console.log(oldMessages)
       setMessageList(oldMessages);
     };
 // 🐱
   useEffect(() => {
-    socketNetwork.joinRoom(roomId, userId, receiverId, _joinRoom);
+    socketNetwork.joinRoom(roomId, userName, receiverName, _joinRoom);
   }, []);
 
   useEffect(() => {
-    if (!props.newMessage || props.newMessage?.message.length === 0) return;
 
     const body = {
       roomId: roomId,
-      userId: userId,
-      receiverId: receiverId,
+      userName: userName,
+      receiverName: receiverName,
       message: props.newMessage.message,
     };
 

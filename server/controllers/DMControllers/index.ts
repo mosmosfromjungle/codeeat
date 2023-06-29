@@ -8,8 +8,8 @@ import { userMap } from '../..';
 const rooms: Record<string, string[]> = {}
 interface IRoomParams {
   roomId: string;
-  userId: string;
-  receiverId: string;
+  userName: string;
+  receiverName: string;
 }
 const time_diff = 9 * 60 * 60 * 1000;
 const createRoom = () => {
@@ -20,50 +20,50 @@ const createRoom = () => {
 }
 
 export const DMController = (socket: Socket) => {
-  const joinRoom = (host: { roomId: string; userId: string; receiverId: string }) => {
+  const joinRoom = (host: { roomId: string; userName: string; receiverName: string }) => {
     let { roomId } = host;
-    const { userId, receiverId } = host;
+    const { userName, receiverName } = host;
   
     if (rooms[roomId]) {
       console.log('대화방 유저 입장') // 🐱
-      rooms[roomId].push(userId);
+      rooms[roomId].push(userName);
       socket.join(roomId);
     } else {
       roomId = createRoom();
-      rooms[roomId].push(userId);
-      updateRoomId({ roomId: roomId, senderId: userId, receiverId: receiverId })
-      rooms[roomId].push(userId);
+      rooms[roomId].push(userName);
+      updateRoomId({ roomId: roomId, senderName: userName, receiverName: receiverName })
+      rooms[roomId].push(userName);
     }
-    readMessage({ roomId, userId, receiverId });
+    readMessage({ roomId, userName, receiverName });
     socket.on('disconnect', () => {
       console.log(' 유저 퇴장 ')
-      leaveRoom({ roomId, userId: userId, receiverId })
+      leaveRoom({ roomId, userName: userName, receiverName })
     })
   };
 
-  const leaveRoom = ({ roomId, userId: userId, receiverId: receiverId}: IRoomParams) => {
-    rooms[roomId] = rooms[roomId].filter((id) => id !== userId)
-    socket.to(roomId).emit('player-disconnected:', userId)
+  const leaveRoom = ({ roomId, userName: userName, receiverName: receiverName}: IRoomParams) => {
+    rooms[roomId] = rooms[roomId].filter((id) => id !== userName)
+    socket.to(roomId).emit('player-disconnected:', userName)
   }
 
   const sendMessage = (obj: {
     roomId: string;
-    senderId: string;
-    receiverId: string;
+    senderName: string;
+    receiverName: string;
     message: string;
   }) => {
-  const { roomId, senderId, receiverId, message } = obj;
+  const { roomId, senderName, receiverName, message } = obj;
     if (message) {
-      addDM({ senderId: senderId, receiverId: receiverId, message: message });
+      addDM({ senderName: senderName, receiverName: receiverName, message: message });
         
-      userMap.get(receiverId)?.emit('message', obj);
+      userMap.get(receiverName)?.emit('message', obj);
     }
   };
 
-  const readMessage = (message: { roomId: string; userId: string; receiverId: string; }) => {
-    const { roomId, userId, receiverId } = message;
+  const readMessage = (message: { roomId: string; userName: string; receiverName: string; }) => {
+    const { roomId, userName, receiverName } = message;
   
-    getDMMessage(userId, receiverId)
+    getDMMessage(userName, receiverName)
     .then((dmMessage) => {
       socket.emit('old-messages', dmMessage);
     })
@@ -77,29 +77,29 @@ export const DMController = (socket: Socket) => {
 
 
 export const addDM = (message: {
-  senderId: string;
-  receiverId: string;
+  senderName: string;
+  receiverName: string;
   message: string;
 }) => {
   let cur_date = new Date();
   let utc = cur_date.getTime() + cur_date.getTimezoneOffset() * 60 * 1000;
   let createdAt = utc + time_diff;
   dm.collection.insertOne({
-    senderId: message.senderId,
-    receiverId: message.receiverId,
+    senderName: message.senderName,
+    receiverName: message.receiverName,
     message: message.message,
     createdAt: createdAt
   });
 };
 
   
-export const getDMMessage = async (senderId: string, receiverId: string) => {
+export const getDMMessage = async (senderName: string, receiverName: string) => {
     let result = new Array();
     await dm.collection
       .find({
         $or: [
-          { $and: [{ senderId: senderId }, { receiverId: receiverId }] },
-          { $and: [{ senderId: receiverId }, { receiverId: senderId }] },
+          { $and: [{ senderName: senderName }, { receiverName: receiverName }] },
+          { $and: [{ senderName: receiverName }, { receiverName: senderName }] },
         ],
       })
       .limit(100)
@@ -110,7 +110,7 @@ export const getDMMessage = async (senderId: string, receiverId: string) => {
           result.push(json);
         });
       });
-    // LastDM.collection.find();
+    LastDM.collection.find();
     console.log('dm컨트롤러 114번줄- dm컬렉션에서 이전 dm들 모아서 배열로 리턴 하기 바로직전',result) // 🐱
     return result;
   };
