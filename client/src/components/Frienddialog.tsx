@@ -31,10 +31,8 @@ import {
   AcceptRequest,
   RejectRequest,
   RemoveRequest,
-  FriendRequest,
 } from '../apicalls/friends'
 import { IFriends } from '../../../server/controllers/FriendsControllers/types'
-import FriendRequestModal from './FriendRequestModal'
 import axios from 'axios'
 
 const Backdrop = styled.div`
@@ -120,38 +118,6 @@ const ProfileButton = styled.div`
   }
 `
 
-// Todo: change the parameter in body part
-const getUser = async () => {
-  const apiUrl: string = 'http://auth/user/list'
-  await fetch(apiUrl, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }).then((res) => {
-    if (res.ok) {
-      console.log('Get user list is success.')
-    }
-    // Todo: need to hanle return codes - 200, 400, 409 ...
-  })
-}
-
-// Todo: change the parameter in body part
-const getUserDetail = async (userId: string) => {
-  const apiUrl: string = 'http://auth/user/detaul/' + userId
-  await fetch(apiUrl, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }).then((res) => {
-    if (res.ok) {
-      console.log('Get user detail is success.')
-    }
-    // Todo: need to hanle return codes - 200, 400, 409 ...
-  })
-}
-
 export default function FriendDialog() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -186,8 +152,6 @@ export default function FriendDialog() {
   const [friendRequestList, setFriendRequestList] = useState<IFriends[]>([])
   // const [requesterId, setRequesterId] = useState<string>('')
   // const [recipientId, setRecipientId] = useState<string>('')
-
-  const [request, setRequest] = useState<FriendRequest | null>(null)
   const [isOpen, isSetOpen] = useState(false)
 
 
@@ -298,7 +262,7 @@ export default function FriendDialog() {
   }
 
   const removeFriendList = (value) => {
-    const body: RejectRequest = {
+    const body: RemoveRequest = {
       requester: value.requesterId,
       recipient: value.recipientId,
     }

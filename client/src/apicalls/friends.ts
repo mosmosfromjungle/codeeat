@@ -128,13 +128,7 @@ export interface RemoveRequest {
   recipient: string
 }
 
-
 export interface sendRequest {
   requester: string
   recipient: string
-}
-
-export interface FriendRequest {
-  id: string
-  from: string
 }
