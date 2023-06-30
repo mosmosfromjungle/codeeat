@@ -45,25 +45,12 @@ export const Wrapper = styled.div`
 
 export const RoundWrapper = styled.div`
   color: black;
-  font-size: 28px;
+  font-size: 30px;
   margin: 16px 16px 8px 16px;
   padding: 8px;
   position: relative;
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  align-items: center;
-`
-
-export const TopWrapper = styled.div`
-  // width: 100%;
-  height: 20%;
-  background-color: gray;
-  border-radius: 20px;
-  margin: 8px 16px 8px 16px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
 `
@@ -79,7 +66,7 @@ export const MidWrapper = styled.div`
 `
 
 export const HelperWrapper = styled.div`
-  width: 30%;
+  width: 40%;
   border-radius: 20px;
   background-color: gray;
   color: white;
@@ -92,12 +79,12 @@ export const HelperWrapper = styled.div`
   margin: 0 8px 0 0;
   padding: 32px;
 
-  font-size: 26px;
+  font-size: 25px;
   line-height: 1.15;
 `
 
 export const QuizWrapper = styled.div`
-  width: 70%;
+  width: 60%;
   background-color: gray;
   border-radius: 20px;
   margin: 0 0 0 8px;
@@ -108,7 +95,7 @@ export const QuizWrapper = styled.div`
 `
 
 export const BottomWrapper = styled.div`
-  height: 40%;
+  height: 55%;
   // width: 100%;
   margin: 8px 16px 8px 16px;
   display: flex;
@@ -132,21 +119,47 @@ export const OpponentWrapper = styled.div`
   padding: 32px;
 `
 
-export const MyWrapper = styled.div`
-  width: 50%;
-  background-color: gray;
-  border-radius: 20px;
+export const ScoreWrapper = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+`
+
+export const OppInfo = styled.div`
+  width: 100px;
   position: relative;
   display: flex;
   flex-direction: column;
-  // justify-content: center;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  margin: 0 0 0 8px;
+`
+
+export const MyInfo = styled.div`
+  width: 100px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
+
+export const MyWrapper = styled.div`
+  width: 50%;
+  border-radius: 20px;
+  background-color: gray;
+  color: gray;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between
+  // justify-content: center;
+  align-items: center;
+  margin: 0 8px 0 0;
   padding: 32px;
 `
 
 export const ImageArrayWrapper = styled.div`
+  height: 140px;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -170,13 +183,12 @@ export const CommandArrayWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  height: 100%;
+  height: 60px;
   background-color: lightgray;
   border-radius: 16px;
   color: gray;
   position: relative;
   overflow: auto;
-  margin: 32px 0 32px 0;
   padding: 16px;
   font-size: 28px;
 `
@@ -185,6 +197,7 @@ export const ImageContainer = styled.div`
   position: relative;
   margin: 10px;
 `
+
 export const ImageText = styled.div`
   position: absolute;
   bottom: 0;
@@ -204,7 +217,7 @@ export const MyBracket = styled.div`
   position: relative;
   font-family: 'CustomFont', sans-serif;
   font-size: 32px;
-  margin-top: 60px;
+  margin-top: 30px;
 `
 
 export const OppBracket = styled.div`
@@ -223,11 +236,13 @@ export const CustomInput = styled.input`
   width: 80%;
   // height: 100px;
 `
-export const CustomButton = styled(Button)`
+
+export const CustomButton = styled.text`
   && {
     font-family: 'CustomFont', sans-serif;
     font-size: 32px;
     color: white;
+    margin: 10px;
     &:hover {
       color: blue;
   }
@@ -248,12 +263,40 @@ export const CustomResetButton = styled(Button)`
       color: blue;
   }
 `
+
 export const CustomList = styled.div`
   font-family: 'CustomFont', sans-serif;
-  font-size: 28px;
+  font-size: 32px;
   color: white;
-  // width: 80%;
-  line-height: 1.5;
   text-align: center;
 `
 
+export const Answer = styled.div`
+  display: flex;
+  flex-direction: row;
+  position: relative;
+`
+
+export const Left = styled.div`
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
+
+export const Right = styled.div`
+  width: 20%;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-left: 20px;
+  background-color: white;
+
+  Button {
+    font-size: 20px;
+    font-family: 'CustomFont', sans-serif;
+  }
+`

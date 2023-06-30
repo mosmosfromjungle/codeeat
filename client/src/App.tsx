@@ -15,7 +15,7 @@ import WelcomeDialog from './components/entrydialog/WelcomeDialog'
 import GameLobbyDialog from './components/gamedialog/GameLobbyDialog'
 import GameWelcomeDialog from './components/gamedialog/GameWelcomeDialog'
 import MoleGameDialog from './components/games/MoleGame/MoleGameDialog'
-import BrickGameDialog from './components/games/BrickGameDialog'
+import BrickGameDialog from './components/games/BrickGame/BrickGameDialog'
 import RainGameDialog from './components/games/RainGameDialog'
 import FaceChatDialog from './components/games/FaceChatDialog'
 
