@@ -76,12 +76,15 @@ const RainGameDialog = () => {
   const you = useAppSelector((state) => state.raingame.you)
   const isReady = useAppSelector((state) => state.raingame.rainGameReady)
   const inProgress = useAppSelector((state) => state.raingame.rainGameInProgress)
+  const sessionId = useAppSelector((state) => state.user.sessionId);
+  const host = useAppSelector((state) => state.raingame.host);
+  const isHost = username === host;
 
   bootstrap.gameNetwork.sendMyInfoToServer(username, character)
 
   const handleStartGame = () => {
     console.log('handleStartGame')
-    if(isReady){
+    if(isReady && isHost){
       bootstrap.gameNetwork.startRainGame()
   }
   }
@@ -120,7 +123,7 @@ const RainGameDialog = () => {
         </UserInfo>
         </>
         )}
-        {<StartButton onClick={handleStartGame} disabled={!isReady}>게임 시작</StartButton>}
+        {<StartButton onClick={handleStartGame} disabled={!isReady || !isHost}>게임 시작</StartButton>}
         {inProgress && <RainGame />}
         <IconButton aria-label="close dialog" className="close" onClick={handleClose}>
           <CloseIcon />

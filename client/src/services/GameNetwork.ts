@@ -34,7 +34,7 @@ import {
   pushPlayerJoinedMessage,
   pushPlayerLeftMessage,
 } from '../stores/ChatStore'
-import { setRainGameMe, setRainGameYou, setRainGameMyState, setRainGameYouState, setRainGameReady, setRainGameInProgress } from '../stores/RainGameStore'
+import { setRainGameMe, setRainGameYou, setRainGameMyState,setRainGameHost, setRainGameYouState, setRainGameReady, setRainGameInProgress } from '../stores/RainGameStore'
 export default class GameNetwork {
   private client: Client
   private lobby?: Room | undefined
@@ -100,7 +100,9 @@ export default class GameNetwork {
     this.room = await this.client.joinById(roomId, { password, username })
     if (this.room.name === RoomType.BRICK) {
       this.brick_game_init()
-    } else {
+    } else if(this.room.name === RoomType.RAIN){
+      this.rain_game_init()
+    }else {
       this.initialize()
     }
   }
@@ -135,7 +137,7 @@ export default class GameNetwork {
       password,
       username,
     })
-    this.initialize()
+    this.rain_game_init()
   }
 
   async createFaceChatRoom(roomData: IGameRoomData) {
@@ -357,5 +359,54 @@ export default class GameNetwork {
     if (!this.room) return
 
     this.room.send(Message.RAIN_GAME_USER, { username: username, character: character })
+  }
+
+  rain_game_init() {
+    if (!this.room) return
+    this.lobby.leave()
+    store.dispatch(setLobbyJoined(false))
+    this.mySessionId = this.room.sessionId
+    store.dispatch(setGameSessionId(this.room.sessionId))
+
+    // when the server sends room data
+    this.room.onMessage(Message.SEND_ROOM_DATA, (content) => {
+      const roomData = {
+        id : content.id,
+        name: content.name,
+        description: content.description
+      }
+      store.dispatch(setJoinedGameRoomData(roomData))
+      store.dispatch(setRainGameHost(content.host))
+    })
+
+    this.room.onMessage(Message.RAIN_GAME_USER, (data) => {
+
+      
+      for (let key in data) {
+          let user = data[key];
+          if (key === this.mySessionId) {
+              store.dispatch(setRainGameMe(user));
+          } else {
+              store.dispatch(setRainGameYou(user));
+          }
+      }
+  });
+
+  this.room.onMessage(Message.RAIN_GAME_START, () => {
+    store.dispatch(setRainGameInProgress(true));
+    
+    const mySessionId = this.mySessionId;
+    
+  
+});
+
+    this.room.onMessage(Message.RAIN_GAME_READY, () => {
+      store.dispatch(setRainGameReady(true))
+    })
+
+    // when the server sends data of players in this room
+    this.room.onMessage(Message.SEND_GAME_PLAYERS, (content) => {
+      store.dispatch(setGamePlayers(content))
+    })
   }
 }

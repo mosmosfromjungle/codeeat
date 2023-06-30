@@ -13,6 +13,7 @@ export interface RainGameState {
   heart: number
 }
 export interface RainGameStates {
+  host : string
   rainGameReady: boolean
   rainGameInProgress : boolean
   myState: RainGameState
@@ -21,6 +22,7 @@ export interface RainGameStates {
   you: RainGameUser
 }
 export const initialState: RainGameStates = {
+  host: '',
   rainGameReady: false,
   rainGameInProgress: false,
   myState: {
@@ -46,6 +48,9 @@ export const rainGameSlice = createSlice({
   name: 'raingame',
   initialState,
   reducers: {
+    setRainGameHost: (state, action: PayloadAction<string>) => {
+      state.host = action.payload
+    },
     setRainGameReady: (state, action: PayloadAction<boolean>) => {
       console.log('setRainGameReady')
       state.rainGameReady = action.payload
@@ -88,6 +93,7 @@ export const rainGameSlice = createSlice({
 })
 
 export const {
+  setRainGameHost,
   setRainGameReady,
   setRainGameInProgress,
   setRainGameYou,

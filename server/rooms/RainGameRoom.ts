@@ -69,7 +69,10 @@ export class RainGameRoom extends Room<IRainGameRoomState> {
       id: this.roomId,
       name: this.name,
       description: this.description,
+      host: this.state.host
+
     })
+
     if(this.clients.length === 2){
       this.state.rainGameReady = true
       this.broadcast(Message.RAIN_GAME_READY)

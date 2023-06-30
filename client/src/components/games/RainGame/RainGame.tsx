@@ -26,10 +26,9 @@ export function RainGame() {
   const [time, setTime] = useState(100)
   const [game, setGame] = useState<KeywordRain[]>([]);
   const [point, setPoint] = useState<number>(0);
-    
-    // const [heart, setHeart] = useState<number>(5);
-    // const [level, setLevel] = useState<number>(1);
-    // const [goal, setGoal] = useState<number>(10);
+  const host = useAppSelector((state) => state.raingame.host);
+  const username = useAppSelector((state) => state.user.username);
+
 
     const Awords = [
       { y: 0, speed: 1, keyword: "abs", x: 331 },
@@ -63,7 +62,7 @@ export function RainGame() {
       { y: 0, speed: 1, keyword: "queen", x: 331 },
       { y: 0, speed: 1.5, keyword: "rabbit", x: 253 }
     ]
-    const BWords = [
+    const Bwords = [
       { y: 0, speed: 1.2, keyword: "zebra", x: 467 },
       { y: 0, speed: 1.4, keyword: "umbrella", x: 174 },
       { y: 0, speed: 1.3, keyword: "table", x: 290 },
@@ -95,10 +94,14 @@ export function RainGame() {
       { y: 0, speed: 1.4, keyword: "kite", x: 317 },
       { y: 0, speed: 1.5, keyword: "jazz", x: 217 }
     ]
+    if ( username === host){
+
+    }
 
 
   useEffect(() => {
     let currentWordIndex = 0;
+    const words = username === host ? Awords : Bwords;
     const interval1 = setInterval(() => {
       if(currentWordIndex < words.length) {
       const keyword = words[currentWordIndex];
