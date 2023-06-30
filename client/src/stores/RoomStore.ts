@@ -46,7 +46,7 @@ export const roomSlice = createSlice({
     gameRoomId: '',
     gameRoomName: '',
     gameRoomDescription: '',
-    players: new Array<IPlayer>(),
+    mainPlayers: new Array<IPlayer>(),
     gamePlayers: new Array<PlayersInterface>(),
     availableRooms: {
       generalRooms: new Array<RoomAvailable>(),
@@ -163,7 +163,7 @@ export const roomSlice = createSlice({
       state.availableRooms.faceChatRooms = []
     },
     setRoomPlayers: (state, action: PayloadAction<IPlayer[]>) => {
-      state.players = action.payload;
+      state.mainPlayers = action.payload;
     },
   },
 })

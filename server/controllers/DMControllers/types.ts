@@ -1,6 +1,6 @@
 export interface IDM {
-    senderId: string
-    receiverId: string
+    senderName: string
+    receiverName: string
     roomId: string
     message: string
     createdAt: Date | null

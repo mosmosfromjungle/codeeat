@@ -1,5 +1,5 @@
 import { Client, Room } from 'colyseus.js'
-import { IOfficeState, IPlayer, IMoleGame, IBrickGame, IRainGame, IFaceChat } from '../../../types/IOfficeState'
+import { IOfficeState, IPlayer } from '../../../types/IOfficeState'
 import { Message } from '../../../types/Messages'
 import { IRoomData, RoomType } from '../../../types/Rooms'
 import { ItemType } from '../../../types/Items'
@@ -201,6 +201,14 @@ export default class Network {
     this.room.onMessage(Message.DISCONNECT_STREAM, (clientId: string) => {
       this.webRTC?.deleteOnCalledVideoStream(clientId)
     })
+
+    this.room.onStateChange((state) => {
+      const players: any = [];
+      this.room?.state.players.forEach((value) => {
+        players.push(value);
+      });
+      store.dispatch(setRoomPlayers(players));
+    });
   }
 
   // method to register event listener and call back function when a item user added
@@ -280,9 +288,9 @@ export default class Network {
     this.webRTC?.deleteVideoStream(id)
   }
   
-  // addChatMessage(content: string) {
-  //   this.room?.send(Message.ADD_CHAT_MESSAGE, { content: content })
-  // }
+  addChatMessage(content: string) {
+    this.room?.send(Message.ADD_CHAT_MESSAGE, { content: content })
+  }
   
   // connectToMoleGame(id: string) {
   //   this.room?.send(Message.CONNECT_TO_MOLEGAME, { moleGameId: id })

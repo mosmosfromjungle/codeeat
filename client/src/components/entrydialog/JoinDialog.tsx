@@ -340,7 +340,7 @@ export default function JoinDialog() {
         </Content>
         <Bottom>
           <Button variant="contained" size="large" type="submit">
-            가입하기
+            가입
           </Button>
         </Bottom>
       </Wrapper>

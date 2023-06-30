@@ -3,6 +3,7 @@ export enum RoomType {
   PUBLIC = 'skyoffice',
   CUSTOM = 'custom',
 
+  DM = 'dm',
   BRICKLOBBY = 'brick_lobby',
   MOLELOBBY = 'mole_lobby',
   RAINLOBBY = 'rain_lobby',

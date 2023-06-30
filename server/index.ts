@@ -5,8 +5,9 @@ import { Server, LobbyRoom } from 'colyseus'
 import { monitor } from '@colyseus/monitor'
 import { RoomType } from '../types/Rooms'
 import authRouter from './routes/auth';
-import friendsRouter from './routes/friends';
-import dmRouter from './routes/lastdm'
+import lastdmRouter from './routes/lastdm'
+import dmRouter from './routes/dm'
+import friendsRouter from './routes/friends'
 import molegameRouter from './routes/molegame';
 // import socialRoutes from "@colyseus/social/express"
 
@@ -23,6 +24,7 @@ import { Socket } from 'socket.io'
 // var cookieParser = require('cookie-parser')
 const port = Number(process.env.PORT || 2567)
 const socketPort = Number(process.env.SOCKET_PORT || 8888);
+
 const app = express()
 
 const allowedOrigins = [
@@ -94,7 +96,8 @@ app.use('/colyseus', monitor())
 /* API Routes */
 app.use('/auth', authRouter);
 app.use('/friends', friendsRouter);
-app.use('/dm', dmRouter);
+app.use('/dm', dmRouter)
+app.use('/lastdm', lastdmRouter);
 app.use('/molegame', molegameRouter);
 
 /* Connect DB and run game server */
@@ -103,6 +106,7 @@ connectDB().then(db => {
   console.log(`Listening on ws://localhost:${port}`)
 }).catch(console.error);
 
+export const userMap = new Map<string, Socket>();
 const socketServer = http.createServer(app)
 socketServer.listen(socketPort, () => console.log(`socketServer listening on ${socketPort}`))
 export const io = require('socket.io')(socketServer, {
@@ -114,13 +118,12 @@ export const io = require('socket.io')(socketServer, {
   },
 });
 
-export const userMap = new Map<string, Socket>();
 
 io.on('connection', (socket: Socket) => {
   console.log('접속', socket.id);
-  socket.on('whoAmI', (userId) => {
-    console.log('아이디는', userId);
-    userMap.set(userId, socket);
+  socket.on('whoAmI', (username) => {
+    console.log('닉네임', username);
+    userMap.set(username, socket);
   });
   DMController(socket);
   socket.on('disconnect', () => {

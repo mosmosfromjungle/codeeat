@@ -71,7 +71,6 @@ export default function ProfileButton() {
             dispatch(setShowProfile(true)),
             dispatch(setShowLogout(false)),
             dispatch(setShowChat(false)),
-            // dispatch(setShowDMRoom(false)),
             dispatch(setShowDMList(false)),
             dispatch(setShowUser(false)),
             dispatch(setShowLogout(false))
