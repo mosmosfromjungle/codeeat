@@ -398,21 +398,3 @@ export const userProfile = async (req: Request, res: Response) => {
         message: '유저 데이터 조회 실패'
     })
 }
-
-export const findIdWithName = async (req: CustomRequest, res: Response) => {
-    const decoded = req.decoded
-    const foundUser = await User.collection.findOne({ userId: decoded.userId })
-    
-    if (foundUser) {
-        return res.status(200).json({
-            status: 200,
-            payload: {
-                username: foundUser.username,
-            }
-        })
-    }
-    return res.status(404).json({
-        status: 404,
-        message: '유저 데이터 조회 실패'
-    })
-}

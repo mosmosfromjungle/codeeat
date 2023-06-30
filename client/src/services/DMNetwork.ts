@@ -16,7 +16,10 @@ export default class DMNetwork {
   private socketClient: Socket;
   public oldMessages: OldMessage[];
   constructor() {
-    const socketUrl = `http://localhost:8888/`
+    const socketUrl = process.env.NODE_ENV === 'production'
+    ? import.meta.env.VITE_SERVER_URL
+    : `http://${window.location.hostname}:8888`
+    
     this.socketClient = io(socketUrl, {
       transports: ['websocket', 'polling', 'flashsocket'],
       withCredentials: true,
@@ -51,7 +54,7 @@ export default class DMNetwork {
   };
 
   sendMessage = (message: object) => {
-    console.log('메시지 전송 호출') // 🐱
+    console.log('메시지 전송 호출')
     this.socketClient.emit('message', message)
   }
 

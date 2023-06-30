@@ -25,7 +25,7 @@ export const DMController = (socket: Socket) => {
     const { username, receiverName } = host;
   
     if (rooms[roomId]) {
-      console.log('대화방 유저 입장') // 🐱
+      console.log('대화방 유저 입장')
       rooms[roomId].push(username);
       socket.join(roomId);
     } else {
@@ -114,6 +114,6 @@ export const getDMMessage = async (senderName: string, receiverName: string) => 
         });
       });
     LastDM.collection.find();
-    console.log('dm컨트롤러 114번줄- dm컬렉션에서 이전 dm들 모아서 배열로 리턴 하기 바로직전',result) // 🐱
+    console.log('dm컨트롤러 114번줄- dm컬렉션에서 이전 dm들 모아서 배열로 리턴 하기 바로직전',result)
     return result;
   };

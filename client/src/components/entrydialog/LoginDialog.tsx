@@ -136,12 +136,12 @@ export default function LoginDialog() {
               .joinOrCreatePublic()
               .then(() => bootstrap.launchGame())
               .catch((error) => console.error(error))
-              dispatch(setDialogStatus(DIALOG_STATUS.WELCOME))
-              dispatch(setUserId(payload.userId))
-              dispatch(setUsername(payload.username))
-              dispatch(setCharacter(payload.character))
-              dispatch(setUserLevel(payload.userLevel))
-              bootstrap.dmNetwork.whoAmI(payload.username)
+            dispatch(setDialogStatus(DIALOG_STATUS.WELCOME))
+            dispatch(setUserId(payload.userId))
+            dispatch(setUsername(payload.username))
+            dispatch(setCharacter(payload.character))
+            dispatch(setUserLevel(payload.userLevel))
+            bootstrap.dmNetwork.whoAmI(payload.username)
               
             setTimeout(() => {
               dispatch(setDialogStatus(DIALOG_STATUS.WELCOME));

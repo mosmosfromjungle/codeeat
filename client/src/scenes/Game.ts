@@ -69,22 +69,6 @@ export default class Game extends Phaser.Scene {
     })
   }
 
-  registerGameKeys() {
-    // maybe we can have a dedicated method for adding keys if more keys are needed in the future
-    this.keyE = this.input.keyboard.addKey('E')
-    this.keyR = this.input.keyboard.addKey('R')
-    this.input.keyboard.disableGlobalCapture()
-    this.input.keyboard.on('keydown-ENTER', (event) => {
-      store.dispatch(setShowChat(true))
-      store.dispatch(setFocused(true))
-    })
-    this.input.keyboard.on('keydown-ESC', (event) => {
-      store.dispatch(setShowChat(false))
-      store.dispatch(setShowDMRoom(false))
-      store.dispatch(setShowDMList(false))
-    })
-  }
-
   disableKeys() {
     this.input.keyboard.enabled = false
   }

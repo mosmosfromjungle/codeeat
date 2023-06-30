@@ -29,10 +29,9 @@ export default class MyPlayer extends Player {
     y: number,
     texture: string,
     id: string,
-    userId: string,
     frame?: string | number
   ) {
-    super(scene, x, y, texture, id,userId, frame)
+    super(scene, x, y, texture, id, frame)
     this.playContainerBody = this.playerContainer.body as Phaser.Physics.Arcade.Body
     // this.playerTexture = texture // 플레이어 인스턴스를 생성할 떄 바로 캐릭터 이미지를 지정해줄 수 있다.
   }
@@ -224,10 +223,9 @@ Phaser.GameObjects.GameObjectFactory.register(
     y: number,
     texture: string,
     id: string,
-    userId: string,
     frame?: string | number
   ) {
-    const sprite = new MyPlayer(this.scene, x, y, texture, id,userId, frame)
+    const sprite = new MyPlayer(this.scene, x, y, texture, id, frame)
 
     this.displayList.add(sprite)
     this.updateList.add(sprite)
