@@ -42,7 +42,7 @@ import { authenticateUser } from './apicalls/auth';
 // const cookies = new Cookies();
 
 // TODO: Production 서버에 옮겨가면 해당 부분 수정 필요 
-axios.defaults.baseURL = 'http://43.200.172.83:2567'
+axios.defaults.baseURL = 'http://localhost:2567'
 console.log('axios.defaults.baseURL ', axios.defaults.baseURL);
 
 const Backdrop = styled.div`
