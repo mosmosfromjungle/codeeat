@@ -51,7 +51,7 @@ export default class DMNetwork {
   };
 
   sendMessage = (message: object) => {
-    console.log('디엠네트워크 50줄 소켓이벤트 분출 직전 ') // 🐱
+    console.log('메시지 전송 호출') // 🐱
     this.socketClient.emit('message', message)
   }
 

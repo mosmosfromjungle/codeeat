@@ -26,6 +26,7 @@ export default function DMBubbles(props) {
     };
 // 🐱
   useEffect(() => {
+    console.log('채팅방 들어감, roomId:' , roomId)
     socketNetwork.joinRoom(roomId, userName, receiverName, _joinRoom);
   }, []);
 
@@ -61,7 +62,8 @@ export default function DMBubbles(props) {
             text: {
               fontFamily: 'Font-Dungeun',
               fontSize: 20,
-              color: 'black',
+              color: 'white',
+              fontWeight: 'bold'
             },
             chatbubble: {
               borderRadius: 8,
@@ -69,14 +71,14 @@ export default function DMBubbles(props) {
               maxWidth: 200,
               width: 'fit-content',
               marginTop: 2,
-              marginRight: 7,
+              marginRight: 15,
               marginBottom: 1,
-              marginLeft: 7,
+              marginLeft: 15,
               wordBreak: 'break-all',
-              backgroundColor: 'gray',
+              backgroundColor: '#147814',
             },
             userBubble: {
-              backgroundColor: 'yellow',
+              backgroundColor: '#3ED0C8',
             },
           }}
         />

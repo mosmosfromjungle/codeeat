@@ -72,27 +72,6 @@ export class SkyOffice extends Room<OfficeState> {
     //   })
     // })
 
-    this.onMessage(
-      Message.SEND_DM,
-      (client, payload: { senderName: string; receiverName: string; message: string }) => {
-        const { senderName, receiverName, message } = payload;
-        const receiverSocket = userMap.get(receiverName)
-      }
-    );
-    this.onMessage(
-      Message.CHECK_DM,
-      (client, message: { senderName: string; receiverName: string }) => {
-        const { senderName, receiverName } = message;
-
-        getDMMessage({senderName: senderName, receiverName: receiverName})
-        .then((DMMessage) => {
-          client.send(Message.CHECK_DM, DMMessage);
-        })
-        .catch((error) => {
-          console.error('CHECK_DM', error);
-        });
-      }
-    );
     // // when a player disconnect from a typinggame, remove from the typinggame connectedUser array
     // this.onMessage(Message.DISCONNECT_FROM_TYPINGGAME, (client, message: { typinggameId: string }) => {
     //     this.dispatcher.dispatch(new TypingGameRemoveUserCommand(), {

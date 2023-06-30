@@ -166,6 +166,7 @@ export default function UserDialog() {
   const checkFirstChat = async (receiverName) => {
     try {
       const first = await checkIfFirst({ senderName: myName, receiverName: receiverName});
+      console.log('첫 디엠인지 아닌지 체크, 첫디엠이면 status:200 && undefined')
       return first?.status
     } catch(err) {
       console.error('check first chat error: ',err)
@@ -174,22 +175,23 @@ export default function UserDialog() {
   
 
   const handleClick = async (player) => {
-    const firstChatStatus = await checkFirstChat(player.name)
-    if (firstChatStatus !== undefined && firstChatStatus == 200) {
-      dispatch(setReceiverName(player.name))
-      dispatch(setShowDMRoom(true))
-      dispatch(setShowUser(false)) // 수정 가능
-    } else {
+    // const firstChatStatus = await checkFirstChat(player.name)
+    // if (firstChatStatus !== undefined && firstChatStatus == 200) {
+    //   dispatch(setReceiverName(player.name))
+    //   dispatch(setShowDMRoom(true))
+    //   dispatch(setShowUser(false)) // 수정 가능
+    // } else {
       let body = {
         senderName: myName,
         receiverName: player.name,
         message: `${myName} 님이 메시지를 보냈습니다`
       }
+      console.log(body)
       insertLastDM(body)
       dispatch(setReceiverName(player.name))
       dispatch(setShowDMRoom(true))
       dispatch(setShowUser(false))
-    }
+    // }
   }
 
   useEffect(() => {

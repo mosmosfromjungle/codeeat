@@ -6,7 +6,7 @@ const lastdm = new Schema<ILastDM>({
   senderName: { type: String, required: true },
   receiverName:{ type: String, required: true },
   message: { type: String, required: false },
-  roomId: { type: String, required: true },
+  roomId: { type: String, required: false },
   updatedAt: { type: Date, default: Date.now, required: false },
 });
 

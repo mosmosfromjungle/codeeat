@@ -1,18 +1,18 @@
 import { Request, Response } from 'express';
 import LastDM, { ILastDMDocument } from '../../models/LastDM' 
-import { UserResponseDto } from './type';
 import {userMap} from '../..'
 const time_diff = 9 * 60 * 60 * 1000;
 /* last dm 가져오기 */
 export const loadData = async (req: Request, res: Response) => {
-    const userName = req.body;
-    if (!userName)
-    return res.status(404).json({
-      status: 404,
-      message: 'not found',
-    });
-    console.log(userName)
-    getLastDM(userName)
+    const body = req.body;
+    if (!body.senderName){
+      return res.status(404).json({
+        status: 404,
+        message: 'not found',
+      });
+    }
+    console.log(body.senderName)
+    getLastDM(body.senderName)
       .then((result) => {
         res.status(200).json({
           status: 200,
@@ -28,13 +28,13 @@ export const loadData = async (req: Request, res: Response) => {
       });
   };
 
-export const getLastDM = async (obj:{senderName: string}) => {
+export const getLastDM = async (senderName: string) => {
   let result = new Array();
   try {
     await LastDM.collection
     .find({$or:[
-      { 'senderName': obj.senderName },
-      {'receiverName': obj.senderName}]
+      { 'senderName': senderName },
+      {'receiverName': senderName}]
     })
     .sort({ _id: -1 })
     .toArray()
@@ -54,6 +54,7 @@ export const addLastDM = async (obj: {
   senderName: string;
   receiverName: string;
   message: string;
+  roomId: string
 }) => {
     let cur_date = new Date();
     let utc = cur_date.getTime() + cur_date.getTimezoneOffset() * 60 * 1000;
@@ -106,7 +107,7 @@ export const updateLastDM = async (obj: { senderName: string; receiverName: stri
     );
   };
 
-  export const checkLast = async (obj: { senderName: string, receiverName: string }) => {
+  export const checkLast = async (obj: {senderName: string, receiverName: string }) => {
     try {
       const result = await LastDM.collection.findOne({
         $or: [

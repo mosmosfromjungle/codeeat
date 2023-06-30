@@ -23,18 +23,20 @@ export const ConversationList = () => {
   const dispatch = useAppDispatch();
   const userName = useAppSelector((state) => state.user.userName);
   useEffect(() => {
+    console.log('내 아이디 기준으로 방 목록 가져옴. 방 목록 데이터:')
     fetchRoomList(userName)
     .then((data) => {
+      console.log(data)
         setRooms(data);
     });
   }, []);
 
   useEffect(() => {
-    console.log('rooms', rooms); // 🐱
+    console.log('방 목록 불러옴', rooms); // 🐱
   }, [rooms]);
 
 const handleClick = async (room) => {
-  console.log(room)
+  console.log(room, '방 클릭')
   dispatch(setReceiverName(room.receiverName));
   dispatch(setRoomId(room.roomId));
   dispatch(setShowDMRoom(true))

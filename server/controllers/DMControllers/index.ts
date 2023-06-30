@@ -56,7 +56,7 @@ export const DMController = (socket: Socket) => {
       addDM({ senderName: senderName, receiverName: receiverName, message: message });
       updateLastDM({ senderName: senderName, receiverName: receiverName, message: message })
       userMap.get(receiverName)?.emit('message', obj);
-      console.log(userMap.get(receiverName),'에게',obj.message, '라고 보냄')
+      console.log('@DMcontrollers/sendMessage',obj.message, '라고 보냄')
     }
   };
 
@@ -82,8 +82,6 @@ export const addDM = (message: {
   receiverName: string;
   message: string;
 }) => {
-  const notFirst = (checkLast({senderName: message.senderName, receiverName: message.receiverName}))
-  if (!notFirst) {
     let cur_date = new Date();
     let utc = cur_date.getTime() + cur_date.getTimezoneOffset() * 60 * 1000;
     let createdAt = utc + time_diff;
@@ -95,7 +93,6 @@ export const addDM = (message: {
       roomId: 'first'
     });
     updateLastDM(message)
-  }
 };
 
   
