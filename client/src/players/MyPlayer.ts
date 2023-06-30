@@ -38,8 +38,7 @@ export default class MyPlayer extends Player {
 
   setPlayerName(name: string) {
     this.playerName.setText(name)
-    const userId = store.getState().user?.userId
-    phaserEvents.emit(Event.MY_PLAYER_NAME_CHANGE, name, userId)
+    phaserEvents.emit(Event.MY_PLAYER_NAME_CHANGE, name)
     store.dispatch(pushPlayerJoinedMessage(name))  // TODO: 플레이어 이름이 바뀔떄마다 새로 join 한다는 메세지와 관련된 부분인듯
   }
 
