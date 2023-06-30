@@ -18,11 +18,8 @@ import Nancy from '../../images/login/Nancy_login.png'
 // import Zoey from '../../images/login/Zoey_login.png'
 // import Emma from '../../images/login/Emma_login.png'
 
-
 import phaserGame from '../../PhaserGame'
 import Game from '../../scenes/Game'
-
-import { authenticateUser } from '../../apicalls/auth'
 
 
 const GlobalStyle = createGlobalStyle`
@@ -114,9 +111,6 @@ const avatars = [
 ]
 
 export default function WelcomeDialog() {
-  // const [name, setName] = useState<string>('UNKNOWN');
-  // const [avatarIndex, setAvatarIndex] = useState<number>(0)
-
   const dispatch = useAppDispatch()
   const roomJoined = useAppSelector((state) => state.room.roomJoined)
   const username = useAppSelector((state) => state.user.username)
@@ -129,17 +123,21 @@ export default function WelcomeDialog() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    game.myPlayer.setPlayerName(username)
+    game.myPlayer.setPlayerTexture(character)
+    game.network.readyToConnect() 
     game.registerKeys()
     dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
   }
 
   useEffect(() => {
     if (roomJoined) {
+      console.log('room joined, setting my player')
       game.myPlayer.setPlayerName(username)
       game.myPlayer.setPlayerTexture(character)
       game.network.readyToConnect()          
     }
-  })
+  }, [game, game.myPlayer])
 
   return (
     <>
