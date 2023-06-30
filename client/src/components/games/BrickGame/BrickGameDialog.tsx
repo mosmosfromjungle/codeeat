@@ -36,10 +36,12 @@ const WRONG_OPERATION = '해당 자료구조에서 사용되지 않는 연산입
 const COMMON_MESSAGE = (
   <>
     <span style={{ fontSize: '22px' }}>두 캐릭터를 더하려면 </span>
-    <span style={{ fontSize: '30px' }}>sum</span>
+    <span style={{ fontSize: '30px' }}>'sum' </span>
 
-    <span style={{ fontSize: '22px' }}> | 처음으로 돌리려면 </span>
-    <span style={{ fontSize: '30px' }}> reset</span>
+    <span style={{ fontSize: '22px' }}>| 처음으로 돌리려면 </span>
+    <span style={{ fontSize: '30px' }}>'reset' </span>
+
+    <span style={{ fontSize: '22px' }}>입력</span>
   </>
 )
 
@@ -62,6 +64,8 @@ export default function BrickGameDialog() {
   const oppCurrentImages = useAppSelector((state) => state.brickgame.oppPlayerStatus.currentImages)
   const oppSelectedOption = useAppSelector((state) => state.brickgame.oppPlayerStatus.selectedOption)
   const oppCommandArray = useAppSelector((state) => state.brickgame.oppPlayerStatus.commandArray)
+
+  const [problem, setProblem] = useState<string>('같은 동물 2마리만 남겨주세요!');
 
   // My information
   const [players, setPlayers] = useState<PlayersInterface[]>([])
@@ -202,7 +206,11 @@ export default function BrickGameDialog() {
                   {/* 숫자의 합이 <span style={{ fontSize: '36px', color: 'yellow' }}> {n} </span>이 되도록
                   몬스터 배열을 수정해주세요! */}
                   {/* {currentQuiz} */}
-                  같은 동물 <span style={{ fontSize: '36px', color: 'yellow' }}> 2 </span>마리만 남겨주세요!
+
+                  {oppUsername ? 
+                    `${problem}` :
+                    '친구가 들어오면 여기에 문제가 보일거예요!'
+                  }
                 </span>
               </div>
 
