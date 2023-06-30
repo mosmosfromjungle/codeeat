@@ -22,8 +22,8 @@ import TextField from '@mui/material/TextField'
 import { 
   GlobalStyle, Backdrop, Wrapper, BottomWrapper, TopWrapper,
   RoundWrapper, MidWrapper, HelperWrapper, QuizWrapper, OpponentWrapper, MyWrapper, 
-  ImageContainer, ImageText, CustomBracket, CustomInput, OptionWrapper,
-  CustomButton, CustomResetButton, CustomList, CommandArrayWrapper, 
+  ImageContainer, ImageText, MyBracket, CustomInput, OptionWrapper,
+  CustomButton, CustomResetButton, CustomList, CommandArrayWrapper, OppBracket, OppOption, ImageArrayWrapper, 
 } from './BrickGameStyle'
 
 
@@ -49,15 +49,29 @@ export default function BrickGameDialog() {
   const myCurrentImages = useAppSelector((state) => state.brickgame.myPlayerStatus.currentImages)
   const mySelectedOption = useAppSelector((state) => state.brickgame.myPlayerStatus.selectedOption)
   const myCommandArray = useAppSelector((state) => state.brickgame.myPlayerStatus.commandArray)
+  const oppCurrentImages = useAppSelector((state) => state.brickgame.oppPlayerStatus.currentImages)
   const oppSelectedOption = useAppSelector((state) => state.brickgame.oppPlayerStatus.selectedOption)
   const oppCommandArray = useAppSelector((state) => state.brickgame.oppPlayerStatus.commandArray)
   const [players, setPlayers] = useState<PlayersInterface[]>([])
+  // const [me, setMe] = useState<string>()
+  const [myCharacter, setMyCharacter] = useState<string>()
+  const [oppUsername, setOppUsername] = useState<string>()
+  const [oppCharacter, setOppCharacter] = useState<string>()
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
 
   /* FETCH PLAYERS IN ROOM */
   useEffect(() => {
     setPlayers(gamePlayers)
     console.log('game player: ', gamePlayers)
+
+    gamePlayers.map((value, index) => {
+      if (value.name === username) {
+        // setMyCharacter(value.anim)
+      } else {
+        setOppUsername(value.name)
+      }
+    })
+
   }, [gamePlayers])
 
   // Update selected data structure option 
@@ -68,15 +82,23 @@ export default function BrickGameDialog() {
 
   const imgsrc = [img1, img2, img3, img4, img5, img6]
 
-  const [images, setImages] = useState<{ src: any; text: string }[]>([])
+  const [myImages, setMyImages] = useState<{ src: any; text: string }[]>([])
+  const [oppImages, setOppImages] = useState<{ src: any; text: string }[]>([])
   const [command, setCommand] = useState('')
 
   useEffect(() => {
-    setImages(myCurrentImages.map((value, index) => ({
+    setMyImages(myCurrentImages.map((value, index) => ({
+      src: imgsrc[value.imgidx - 1],
+      text: value.text
+    })))
+  }, [myCurrentImages])
+
+  useEffect(() => {
+    setOppImages(oppCurrentImages.map((value, index) => ({
       src: imgsrc[value.imgidx - 1],
       text: value.text
     })));
-  }, [myCurrentImages]);
+  }, [oppCurrentImages]);
 
 
   // const handleKeyDown = (event) => {
@@ -111,28 +133,36 @@ export default function BrickGameDialog() {
             <div style={{ flex: 1, textAlign: 'right' }}>ROUND 5/8</div>
           </RoundWrapper>
           <TopWrapper>
-            <div id='container'>
-              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', fontSize: '32px' }}>
-                Current Players<br />
-                {players.map((player, index) => (
+            <div id='container' style={{ display: 'flex', flexDirection: 'row' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', fontSize: '32px', lineHeight: '1.5', textAlign: 'center', padding: '0 120px' }}>
+                {/* {players.map((player, index) => (
                   <div key={index} style={{ marginLeft: '10px', textAlign: 'center' }}>
-                    <div>{player.name}<br /></div>
+                    <div>player {index + 1}: {player.name}<br /></div>
                   </div>
-                ))}
+                ))} */}
+                {/* 나 : {username} 점수 : 8 Point
+                <br />
+                상대 : {oppUsername} 점수 : 6 Point */}
+                상대 : {oppUsername} <br />
+                점수 : 6 Point
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', fontSize: '32px', lineHeight: '1.5', textAlign: 'center', padding: '0 120px' }}>
+                나 : {username} <br />
+                점수 : 8 Point
               </div>
             </div>
           </TopWrapper>
 
           <MidWrapper>
             <HelperWrapper>
-              {/* HelperWrapper 내용 */}
-              문제에 알맞은 자료구조를 선택하면 추가 점수를 얻을 수 있어요! <br /><br />
+              문제에 <span style={{ color: 'yellow' }}>알맞은 자료구조</span>를 선택해 <span style={{ color: 'yellow' }}>추가 점수</span>를 얻어보세요!
+              <br /><br />
               <div style={{ fontSize: '24px ', textAlign: 'left' }}>
-                List : remove()<br />
-                Set : 중복제거 + remove()<br />
-                Stack : pop<br />
-                Queue : dequeue<br />
-                Deque : pop, popleft<br />
+                <span style={{ color: 'yellow' }}>List</span> : remove()<br />
+                <span style={{ color: 'yellow' }}>Set</span> : remove() + 중복 제거<br />
+                <span style={{ color: 'yellow' }}>Stack</span> : pop<br />
+                <span style={{ color: 'yellow' }}>Queue</span> : dequeue<br />
+                <span style={{ color: 'yellow' }}>Deque</span> : pop, popleft<br />
               </div>
             </HelperWrapper>
 
@@ -141,12 +171,13 @@ export default function BrickGameDialog() {
                 <span style={{ fontSize: '32px', margin: '20px' }}>
                   {/* 숫자의 합이 <span style={{ fontSize: '36px', color: 'yellow' }}> {n} </span>이 되도록
                   몬스터 배열을 수정해주세요! */}
-                  {currentQuiz}
+                  {/* {currentQuiz} */}
+                  같은 동물 <span style={{ fontSize: '36px', color: 'yellow' }}> 2 </span>마리만 남겨주세요!
                 </span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <CustomBracket>&#91;</CustomBracket>
-                {images.map((image, index) => (
+              <ImageArrayWrapper>
+                <MyBracket>&#91;</MyBracket>
+                {myImages.map((image, index) => (
                   <ImageContainer key={index}>
                     <img
                       src={image.src}
@@ -156,73 +187,67 @@ export default function BrickGameDialog() {
                     <ImageText>{image.text}</ImageText>
                   </ImageContainer>
                 ))}
-                <CustomBracket>&#93;</CustomBracket>
-              </div>
+                <MyBracket>&#93;</MyBracket>
+              </ImageArrayWrapper>
             </QuizWrapper>
           </MidWrapper>
 
           <BottomWrapper>
             <OpponentWrapper>
-              <OptionWrapper>
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <CustomBracket>&#91;</CustomBracket>
-                {images.map((image, index) => (
+              <div style={{ color: 'white', fontSize: '28px', textAlign: 'center', lineHeight: '1.5' }}>
+                상대 : {oppUsername}
+              </div>
+              <ImageArrayWrapper>
+                <OppBracket>&#91;</OppBracket>
+                {oppImages.map((image, index) => (
                   <ImageContainer key={index}>
                     <img
                       src={image.src}
                       alt={`Image ${index + 1}`}
                       style={{ width: '60px', height: '60px' }}
                     />
-                    {/* <OppImageText>{image.text}</OppImageText> */}
+                    {/* <ImageText>{image.text}</ImageText> */}
                   </ImageContainer>
                 ))}
-                <CustomBracket>&#93;</CustomBracket>
-              </div>
+                <OppBracket>&#93;</OppBracket>
+              </ImageArrayWrapper>
+              <OptionWrapper>
               {oppSelectedOption === 'list' ? (
                 <CustomList>
                   <span style={{ fontSize: '32px', color: 'yellow' }}>List</span> - 
                   remove(), pop<br />
-                  {COMMON_MESSAGE}
-                  <br />
                 </CustomList>
               ) : oppSelectedOption === 'set' ? (
                 <CustomList>
                   <span style={{ fontSize: '32px', color: 'yellow' }}>Set</span> - 
                   remove(), discard()<br />
-                  {COMMON_MESSAGE}
-                  <br />
                 </CustomList>
               ) : oppSelectedOption === 'stack' ? (
                 <CustomList>
                   <span style={{ fontSize: '32px', color: 'yellow' }}>Stack</span> - 
                   pop<br />
-                  {COMMON_MESSAGE}
-                  <br />
                 </CustomList>
               ) : oppSelectedOption === 'queue' ? (
                 <CustomList>
                   <span style={{ fontSize: '32px', color: 'yellow' }}>Queue</span> - 
                   dequeue<br />
-                  {COMMON_MESSAGE}
-                  <br />
                 </CustomList>
               ) : oppSelectedOption === 'deque' ? (
                 <CustomList>
                   <span style={{ fontSize: '32px', color: 'yellow' }}>Deque</span> - 
                   pop, popleft<br />
-                  {COMMON_MESSAGE}
-                  <br />
                 </CustomList>
               ) : (
-                <div>
-                  <br /><br />
-                  <CustomButton onClick={() => handleOptionClick('list')}>list</CustomButton>
+                <OppOption>
+                  {/* ㄴ<br />  */}
+                  LIST SET STACK QUEUE DEQUE
+                  {/* <CustomButton onClick={() => handleOptionClick('list')}>list</CustomButton>
                   <CustomButton onClick={() => handleOptionClick('set')}>set</CustomButton>
                   <CustomButton onClick={() => handleOptionClick('stack')}>stack</CustomButton>
                   <CustomButton onClick={() => handleOptionClick('queue')}>queue</CustomButton>
-                  <CustomButton onClick={() => handleOptionClick('deque')}>deque</CustomButton>
-                  <br /><br /><br />
-                </div>
+                  <CustomButton onClick={() => handleOptionClick('deque')}>deque</CustomButton> */}
+                  {/* <br /> */}
+                </OppOption>
               )}
               </OptionWrapper>
               <CommandArrayWrapper>
@@ -231,54 +256,50 @@ export default function BrickGameDialog() {
             </OpponentWrapper>
 
             <MyWrapper>
+              <div style={{ color: 'white', fontSize: '28px', textAlign: 'center', lineHeight: '1.5' }}>
+                나 : {username}
+              </div>
               <OptionWrapper>
               {mySelectedOption === 'list' ? (
                 <CustomList>
                   <span style={{ fontSize: '32px', color: 'yellow' }}>List</span> - 
                   remove(), pop<br />
-                  {COMMON_MESSAGE}
-                  <br />
                 </CustomList>
               ) : mySelectedOption === 'set' ? (
                 <CustomList>
                   <span style={{ fontSize: '32px', color: 'yellow' }}>Set</span> - 
                   remove(), discard()<br />
-                  {COMMON_MESSAGE}
-                  <br />
                 </CustomList>
               ) : mySelectedOption === 'stack' ? (
                 <CustomList>
                   <span style={{ fontSize: '32px', color: 'yellow' }}>Stack</span> - 
                   pop<br />
-                  {COMMON_MESSAGE}
-                  <br />
                 </CustomList>
               ) : mySelectedOption === 'queue' ? (
                 <CustomList>
                   <span style={{ fontSize: '32px', color: 'yellow' }}>Queue</span> - 
                   dequeue<br />
-                  {COMMON_MESSAGE}
-                  <br />
                 </CustomList>
               ) : mySelectedOption === 'deque' ? (
                 <CustomList>
                   <span style={{ fontSize: '32px', color: 'yellow' }}>Deque</span> - 
                   pop, popleft<br />
-                  {COMMON_MESSAGE}
-                  <br />
                 </CustomList>
               ) : (
                 <div>
-                  <br /><br />
+                  <br />
                   <CustomButton onClick={() => handleOptionClick('list')}>list</CustomButton>
                   <CustomButton onClick={() => handleOptionClick('set')}>set</CustomButton>
                   <CustomButton onClick={() => handleOptionClick('stack')}>stack</CustomButton>
                   <CustomButton onClick={() => handleOptionClick('queue')}>queue</CustomButton>
                   <CustomButton onClick={() => handleOptionClick('deque')}>deque</CustomButton>
-                  <br /><br /><br />
+                  <br />
                 </div>
               )}
               </OptionWrapper>
+              <OppOption>
+                {COMMON_MESSAGE}
+              </OppOption>
               <CommandArrayWrapper>
                 {myCommandArray}
               </CommandArrayWrapper>

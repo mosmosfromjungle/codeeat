@@ -136,14 +136,6 @@ for (let i = avatars.length - 1; i > 0; i--) {
   ;[avatars[i], avatars[j]] = [avatars[j], avatars[i]]
 }
 
-// check email format
-export function isValidEmailFormat(email) {
-  var rule = /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
-
-  if (rule.test(email)) return false;
-  else return true;          
-}
-
 export default function JoinDialog() {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
@@ -151,7 +143,7 @@ export default function JoinDialog() {
   const [nickname, setNickname] = useState<string>('')
   
   const [emailFieldEmpty, setEmailFieldEmpty] = useState<boolean>(false)
-  const [emailFieldWrongFormat, setEmailFieldWrongFormat] = useState<boolean>(false)
+  
   const [passwordFieldEmpty, setPasswordFieldEmpty] = useState<boolean>(false)
   const [passwordCheckFieldEmpty, setPasswordCheckFieldEmpty] = useState<boolean>(false)
   const [passwordFieldNotMatch, setPasswordFieldNotMatch] = useState<boolean>(false)
@@ -177,7 +169,6 @@ export default function JoinDialog() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     // reset the error message
     setEmailFieldEmpty(false)
-    setEmailFieldWrongFormat(false)
     setPasswordFieldEmpty(false)
     setPasswordCheckFieldEmpty(false)
     setPasswordFieldNotMatch(false)
@@ -187,8 +178,6 @@ export default function JoinDialog() {
 
     if (email === '') {
       setEmailFieldEmpty(true)
-    } else if (isValidEmailFormat(email)) {
-      setEmailFieldWrongFormat(true)
     } else if (password === '') {
       setPasswordFieldEmpty(true)
     } else if (passwordCheck === '') {
@@ -259,14 +248,13 @@ export default function JoinDialog() {
             <TextField
               autoFocus
               fullWidth
-              label="이메일"
+              label="아이디"
               variant="outlined"
               color="secondary"
               margin="dense"
-              error={emailFieldEmpty || emailFieldWrongFormat}
+              error={emailFieldEmpty}
               helperText={
-                (emailFieldEmpty && '이메일을 입력해주세요 !') ||
-                (emailFieldWrongFormat && '이메일 형식을 확인해주세요 !') ||
+                (emailFieldEmpty && '아이디를 입력해주세요 !') ||
                 emailError
               }
               onInput={(e) => {
@@ -352,7 +340,7 @@ export default function JoinDialog() {
         </Content>
         <Bottom>
           <Button variant="contained" size="large" type="submit">
-            가입하기
+            가입
           </Button>
         </Bottom>
       </Wrapper>

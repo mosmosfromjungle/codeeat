@@ -201,9 +201,8 @@ export default class Network {
     this.room.onMessage(Message.DISCONNECT_STREAM, (clientId: string) => {
       this.webRTC?.deleteOnCalledVideoStream(clientId)
     })
+
     this.room.onStateChange((state) => {
-      const playerSize = this.room?.state.players.size;
-      if(playerSize == undefined) return
       const players: any = [];
       this.room?.state.players.forEach((value) => {
         players.push(value);
