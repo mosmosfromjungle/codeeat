@@ -6,22 +6,22 @@ import styled from 'styled-components'
 
 import IconButton from '@mui/material/IconButton'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
+import Button from '@mui/material/Button'
+import ButtonGroup from '@mui/material/ButtonGroup'
 
 import CloseIcon from '@mui/icons-material/Close'
 
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import { IPlayer } from '../../../types/IOfficeState';
-
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import Avatar from '@mui/material/Avatar'
+import Typography from '@mui/material/Typography'
+import Divider from '@mui/material/Divider'
+import { IPlayer } from '../../../types/IOfficeState'
+// import { insertLastDM } from '../apicalls/DM/DM'
 import { setShowUser } from '../stores/ChatStore'
-import { setShowDMList, setShowDMRoom } from '../stores/DMStore'
+import { setReceiverName, setShowDMList, setShowDMRoom, setRoomId } from '../stores/DMStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
 import { sendFriendReq, sendRequest } from '../apicalls/friends'
 
@@ -110,39 +110,39 @@ const ProfileButton = styled.div`
 `
 
 // Todo: change the parameter in body part
-const getUser = async() => {
-  const apiUrl: string = 'http://auth/user/list';
+const getUser = async () => {
+  const apiUrl: string = 'http://auth/user/list'
   await fetch(apiUrl, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-  }).then(res => {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then((res) => {
     if (res.ok) {
-      console.log("Get user list is success.");
+      console.log('Get user list is success.')
     }
     // Todo: need to hanle return codes - 200, 400, 409 ...
   })
-};
+}
 
 // Todo: change the parameter in body part
-const getUserDetail = async(userId: string) => {
-  const apiUrl: string = 'http://auth/user/detaul/' + userId;
+const getUserDetail = async (userId: string) => {
+  const apiUrl: string = 'http://auth/user/detaul/' + userId
   await fetch(apiUrl, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-  }).then(res => {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then((res) => {
     if (res.ok) {
-      console.log("Get user detail is success.");
+      console.log('Get user detail is success.')
     }
     // Todo: need to hanle return codes - 200, 400, 409 ...
   })
-};
+}
 
 function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+  return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
 export default function UserDialog() {
@@ -162,6 +162,7 @@ export default function UserDialog() {
   const [open, setOpen] = React.useState(true)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [addFriendResult, setAddFriendResult] = useState<number>(0) //0: 친구 요청 전, 1: 친구 요청 성공,  2: 이미친구
+  const [message, setMessage] = useState<string>('')
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -181,108 +182,63 @@ export default function UserDialog() {
     scrollToBottom()
   }, [chatMessages, showUser])
 
- 
-
-  // const handleClick = () => {
-  //   setOpen(!open)
-  // }
-
   const sendFriendRequest = (requester: string, recipient: string) => {
-
     const body: sendRequest = {
       requester: requester,
       recipient: recipient,
     }
     sendFriendReq(body)
       .then((response) => {
-        console.log(response.payload)
+        console.log(response)
         if (response.status === 201) {
-          setAddFriendResult(1)
-          console.log('성공')
+          setMessage(response.message)
         }
       })
       .catch((error) => {
-        if (error.response) {
-          const { status, message } = error.response.data
-          setAddFriendResult(2)
-          console.log(message)
-        }
+        setMessage(error.response.data.message)
       })
   }
 
   const openModal = () => {
-    setIsModalOpen(true)
+    setTimeout(() => {
+      setIsModalOpen(true)
+    }, 200)
   }
 
   const closeModal = () => {
     setIsModalOpen(false)
   }
 
-  const Modal = ({ open, handleClose }: { open: any; handleClose: any; }) => {
-    switch (addFriendResult) {
-      case 1:
-        return (
-          <div
-            style={{
-              position: 'fixed',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              backgroundColor: '#222639',
-              borderRadius: '24px',
-              boxShadow: '0px, 10px, 24px, #0000006f',
-              padding: '50px',
-              zIndex: 1000,
-              fontSize: '15px',
-              color: '#eee',
-              textAlign: 'center',
-              fontFamily: 'Font_DungGeun',
-            }}
-          >
-            <h2>친구 요청 완료</h2>
-            <Button
-              variant="contained"
-              onClick={handleClose}
-              style={{ fontWeight: 'bold', margin: 'auto' }}
-            >
-              확인
-            </Button>
-          </div>
-        )
-      case 2:
-        return (
-          <div
-            style={{
-              position: 'fixed',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              backgroundColor: '#222639',
-              borderRadius: '24px',
-              boxShadow: '0px, 10px, 24px, #0000006f',
-              padding: '50px',
-              zIndex: 1000,
-              fontSize: '20px',
-              color: '#eee',
-              textAlign: 'center',
-              fontFamily: 'Font_DungGeun',
-            }}
-          >
-            <h4>이미 친구요청을 보냈어요</h4>
-            <Button
-              variant="contained"
-              onClick={handleClose}
-              style={{ fontWeight: 'bold', margin: 'auto' }}
-            >
-              확인
-            </Button>
-          </div>
-        )
-      default:
-        return null
-    }
+  const Modal = ({ open, handleClose }: { open: any; handleClose: any }) => {
+    return (
+      <div
+        style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          backgroundColor: '#222639',
+          borderRadius: '24px',
+          boxShadow: '0px, 10px, 24px, #0000006f',
+          padding: '50px',
+          zIndex: 1000,
+          fontSize: '15px',
+          color: '#eee',
+          textAlign: 'center',
+          fontFamily: 'Font_DungGeun',
+        }}
+      >
+        <h2>{message}</h2>
+        <Button
+          variant="contained"
+          onClick={handleClose}
+          style={{ fontWeight: 'bold', margin: 'auto' }}
+        >
+          확인
+        </Button>
+      </div>
+    )
   }
-  
 
   return (
     <Backdrop>
@@ -300,15 +256,16 @@ export default function UserDialog() {
             </IconButton>
           </ChatHeader>
           <ChatBox>
-            <ButtonGroup variant="text" aria-label="text button group">
+            {/* <ButtonGroup variant="text" aria-label="text button group">
               <Button>Bronze</Button>
               <Button>Silver</Button>
               <Button>Gold</Button>
               <Button>Platinum</Button>
               <Button>Ruby</Button>
-            </ButtonGroup>
+            </ButtonGroup> */}
             {/* <Form onSubmit={handleSubmit}> */}
             {otherPlayers?.map((player, i: number) => {
+              if (player.name === username) return
               return (
                 <UserList>
                   <User>
@@ -321,7 +278,7 @@ export default function UserDialog() {
                       </ListItemAvatar>
 
                       <Profile>
-                        레벨 {userLevel}
+                        <span style={{ fontSize: '16px' }}>Lv. {userLevel}</span>
                         <br />
                         <br />
                         <strong>{player.name}</strong>
@@ -334,7 +291,7 @@ export default function UserDialog() {
                             openModal()
                           }}
                         >
-                          친구 추가하기
+                          친구추가
                         </Button>
                         {isModalOpen && <Modal open={isModalOpen} handleClose={closeModal} />}
                         <Button
@@ -344,7 +301,7 @@ export default function UserDialog() {
                             dispatch(setShowUser(false))
                           }}
                         >
-                          메세지 보내기
+                          메세지
                         </Button>
                       </ProfileButton>
                     </ListItem>

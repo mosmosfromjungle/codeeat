@@ -150,29 +150,14 @@ export default function FriendDialog() {
   const [open, setOpen] = React.useState(true)
   const [friendList, setFriendList] = useState<IFriends[]>([])
   const [friendRequestList, setFriendRequestList] = useState<IFriends[]>([])
-  // const [requesterId, setRequesterId] = useState<string>('')
-  // const [recipientId, setRecipientId] = useState<string>('')
   const [isOpen, isSetOpen] = useState(false)
-
-
-  // useEffect(() => {
-  //   console.log(friendList)
-  // }, [friendList])
 
   useEffect(() => {
     ;(async () => {
       getFriendList()
         .then((response) => {
           if (!response) return
-          console.log('들어와아아아아아아')
-          console.log(response)
           const { friendsListForDisplay } = response
-          console.log(friendsListForDisplay)
-
-          // for (let i = 0; i < friends.length; i++) {
-          //   console.log(friends[i].recipientId)
-          // }
-
           setFriendList(friendsListForDisplay)
         })
         .catch((error) => {
@@ -186,11 +171,7 @@ export default function FriendDialog() {
       getFriendRequestList()
         .then((response) => {
           if (!response) return
-          console.log('dhkTsi???')
-          console.log(response)
           const { findReceivedRequests } = response
-
-          console.log('receivedRequests: ' + findReceivedRequests)
           setFriendRequestList(findReceivedRequests)
         })
         .catch((error) => {
@@ -211,13 +192,11 @@ export default function FriendDialog() {
     handleAccept(body)
       .then((response) => {
         if (!response) return
-        console.log(response)
         dispatch(setShowFriend(false))
       })
       .catch((error) => {
         if (error.response) {
           const { status, message } = error.response.data
-          // setAddFriendResult(2)
           console.log('message: ' + message)
         }
       })
@@ -275,16 +254,19 @@ export default function FriendDialog() {
             </IconButton>
           </ChatHeader>
           <ChatBox>
-            <ButtonGroup variant="text" aria-label="text button group">
+            {/* <ButtonGroup variant="text" aria-label="text button group">
               <Button>Bronze</Button>
               <Button>Silver</Button>
               <Button>Gold</Button>
               <Button>Platinum</Button>
               <Button>Ruby</Button>
-            </ButtonGroup>
+            </ButtonGroup> */}
 
             <UserList>
               <User>
+                {friendList.length > 0 && (
+                  <span style={{ color: 'white', fontFamily: 'Font_DungGeun' }}>친구 목록</span>
+                )}
                 {friendList.map((value, index) => (
                   <ListItem divider>
                     <ListItemAvatar>
@@ -310,15 +292,22 @@ export default function FriendDialog() {
                       >
                         메세지 보내기
                       </Button>
-                      <Button onClick={() => removeFriendList(value.username, username)}>우리 그만하자</Button>
+                      <Button onClick={() => removeFriendList(value.username, username)}>
+                        우리 그만하자
+                      </Button>
                     </ProfileButton>
                   </ListItem>
                 ))}
               </User>
             </UserList>
-            <hr></hr>
+            {/* <hr></hr> */}
             <UserList>
               <User>
+                {friendRequestList.length > 0 && (
+                  <span style={{ color: 'white', fontFamily: 'Font_DungGeun' }}>
+                    친구 요청 목록
+                  </span>
+                )}
                 {friendRequestList.map((value, index) => (
                   <ListItem divider>
                     <ListItemAvatar>
@@ -336,10 +325,16 @@ export default function FriendDialog() {
 
                     <ProfileButton>
                       {/* <Button>메세지 보내기</Button> */}
-                      <Button onClick={() => receiveReject(value.username, username)} color="primary">
+                      <Button
+                        onClick={() => receiveReject(value.username, username)}
+                        color="primary"
+                      >
                         친구 싫어
                       </Button>
-                      <Button onClick={() => receiveAccept(value.username, username)} color="primary">
+                      <Button
+                        onClick={() => receiveAccept(value.username, username)}
+                        color="primary"
+                      >
                         친구 좋아
                       </Button>
                     </ProfileButton>
