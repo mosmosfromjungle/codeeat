@@ -44,9 +44,9 @@ export class RainGameRoom extends Room<IRainGameRoomState> {
     this.onMessage(Message.RAIN_GAME_START, (client, content) =>
       this.handleRainGameStart(client, content)
     )
-    this.onMessage(Message.RAIN_GAME_WORD, (client, content) =>
-      this.handleRainGameWord(this)
-    )
+    // this.onMessage(Message.RAIN_GAME_WORD, (client, content) =>
+    //   this.handleRainGameWord(this)
+    // )
     this.onMessage(Message.RAIN_GAME_USER, (client, data) => this.handleRainGameUser(client, data))
   }
 
@@ -86,7 +86,8 @@ export class RainGameRoom extends Room<IRainGameRoomState> {
   private handleRainGameStart(client: Client, content: any) {
     console.log('handleRainGameStart')
     this.state.rainGameInProgress = true
-    this.handleRainGameWord(this)
+    this.broadcast(Message.RAIN_GAME_START)
+    // this.handleRainGameWord(this)
   }
 
   // Handle RAIN_GAME_USER message
@@ -100,42 +101,42 @@ export class RainGameRoom extends Room<IRainGameRoomState> {
   }
 
   // Handle RAIN_GAME_WORD message
-  private handleRainGameWord( room: Room) {
-    console.log('handleRainGameWord')
-    try {
+  // private handleRainGameWord( room: Room) {
+  //   console.log('handleRainGameWord')
+  //   try {
 
-      room.clients.forEach((client) => {
-        const keywordRainList = this.MakeWordCommand()
-        this.state.keywordLists.set(client.sessionId, keywordRainList)
-      })
+  //     room.clients.forEach((client) => {
+  //       const keywordRainList = this.MakeWordCommand()
+  //       this.state.keywordLists.set(client.sessionId, keywordRainList)
+  //     })
 
-      // Broadcast the two lists
-      this.broadcast(Message.RAIN_GAME_START, this.state.keywordLists)
+  //     // Broadcast the two lists
+  //     this.broadcast(Message.RAIN_GAME_START, this.state.keywordLists)
     
-    } catch (error) {
-      console.error('Failed to generate keywords:', error)
-    }
-  }
+  //   } catch (error) {
+  //     console.error('Failed to generate keywords:', error)
+  //   }
+  // }
 
-  MakeWordCommand(): MapSchema<IKeywordRain>  {
-    try {
-        console.log('MakeWordCommand')
-        const raingamewords = mongoose.connection.collection('raingamewords')
+  // MakeWordCommand(): MapSchema<IKeywordRain>  {
+  //   try {
+  //       console.log('MakeWordCommand')
+  //       const raingamewords = mongoose.connection.collection('raingamewords')
         
-        let keywordsList: new MapSchema<IKeywordRain>()
+  //       let keywordsList: new MapSchema<IKeywordRain>()
         
-        raingamewords.aggregate([]).toArray().then(allWords => {
-         allWords.forEach((word: any) => {
-          const keywordRain = new MapSchema<KeywordRain>(word)
-          keywordRain.y = 10
-          keywordRain.speed = 1
-          keywordRain.x = Math.floor(Math.random() * (550 - 50 + 1)) + 50
-          keywordsList.set(keywordRain.keyword,keywordRain) 
-        });
-      });
-        return keywordsList;
-      } catch (error) {
-        console.error('Failed to generate keywords:', error)    
-     }
-  }
+  //       raingamewords.aggregate([]).toArray().then(allWords => {
+  //        allWords.forEach((word: any) => {
+  //         const keywordRain = new MapSchema<KeywordRain>(word)
+  //         keywordRain.y = 10
+  //         keywordRain.speed = 1
+  //         keywordRain.x = Math.floor(Math.random() * (550 - 50 + 1)) + 50
+  //         keywordsList.set(keywordRain.keyword,keywordRain) 
+  //       });
+  //     });
+  //       return keywordsList;
+  //     } catch (error) {
+  //       console.error('Failed to generate keywords:', error)    
+  //    }
+  // }
 }

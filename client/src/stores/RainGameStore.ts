@@ -3,19 +3,6 @@ import phaserGame from '../PhaserGame'
 import Game from '../scenes/Game'
 import { Interface } from 'readline'
 
-// Define Interface
-
-export interface KeywordRain {
-    y: number,
-    speed: number,
-    keyword: string,
-    x: number,
-    // flicker: boolean,
-    // blind: boolean,
-    // accel: boolean,
-    // multifly: boolean,
-}
-
 export interface RainGameUser {
   username: string
   character: string

@@ -81,9 +81,9 @@ const RainGameDialog = () => {
 
   const handleStartGame = () => {
     console.log('handleStartGame')
-    if (isReady) {
+    if(isReady){
       bootstrap.gameNetwork.startRainGame()
-    }
+  }
   }
 
   const handleClose = () => {
@@ -99,6 +99,8 @@ const RainGameDialog = () => {
   return (
     <Backdrop>
       <Wrapper>
+        { !inProgress && (
+          <>
         <UserInfo className="myInfo">
           <>
             <div>Username: {username}</div>
@@ -116,7 +118,9 @@ const RainGameDialog = () => {
             <div>No opponent connected</div>
           )}
         </UserInfo>
-        {isReady && <StartButton onClick={handleStartGame}>게임 시작</StartButton>}
+        </>
+        )}
+        {<StartButton onClick={handleStartGame} disabled={!isReady}>게임 시작</StartButton>}
         {inProgress && <RainGame />}
         <IconButton aria-label="close dialog" className="close" onClick={handleClose}>
           <CloseIcon />

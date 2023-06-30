@@ -175,7 +175,7 @@ export default class GameNetwork {
       }
   });
 
-  this.room.onMessage(Message.RAIN_GAME_START, (keywordLists) => {
+  this.room.onMessage(Message.RAIN_GAME_START, () => {
     store.dispatch(setRainGameInProgress(true));
     
     const mySessionId = this.mySessionId;
