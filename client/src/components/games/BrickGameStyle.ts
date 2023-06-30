@@ -1,6 +1,4 @@
 import styled, { createGlobalStyle } from 'styled-components'
-import classroom from '../../images/game/brickGame/classroom.png'
-import playground from '../../images/game/brickGame/playground.png'
 import Button from '@mui/material/Button'
 
 export const GlobalStyle = createGlobalStyle`
@@ -29,7 +27,7 @@ export const Wrapper = styled.div`
   border-radius: 16px;
   padding: 16px;
   color: #eee;
-  background-color: beige;
+  background-color: lightgray;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -83,10 +81,10 @@ export const MidWrapper = styled.div`
 export const HelperWrapper = styled.div`
   width: 30%;
   border-radius: 20px;
-  background-color: lightgray;
-  color: black;
+  background-color: gray;
+  color: white;
   position: relative;
-  display: flex;
+  // display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -94,7 +92,8 @@ export const HelperWrapper = styled.div`
   margin: 0 8px 0 0;
   padding: 32px;
 
-  font-size: 30px;
+  font-size: 26px;
+  line-height: 1.15;
 `
 
 export const QuizWrapper = styled.div`
@@ -121,7 +120,7 @@ export const BottomWrapper = styled.div`
 export const OpponentWrapper = styled.div`
   width: 50%;
   border-radius: 20px;
-  background-color: lightgray;
+  background-color: gray;
   color: gray;
   position: relative;
   display: flex;
@@ -147,16 +146,22 @@ export const MyWrapper = styled.div`
   padding: 32px;
 `
 
+export const ImageArrayWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+`
+
 export const OptionWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 20px;
+  // margin-bottom: 20px;
   font-family: 'CustomFont', sans-serif;
   font-size: 32px;
   color: white;
-  width: 100%;
-  height: 100%;
+  // width: 100%;
+  // height: 100%;
 `
 
 export const CommandArrayWrapper = styled.div`
@@ -166,7 +171,7 @@ export const CommandArrayWrapper = styled.div`
   align-items: center;
   width: 100%;
   height: 100%;
-  background-color: beige;
+  background-color: lightgray;
   border-radius: 16px;
   color: gray;
   position: relative;
@@ -195,12 +200,21 @@ export const ImageText = styled.div`
   text-shadow: 0px 0px 12px rgba(0, 0, 0, 0.9);
 `
 
-export const CustomBracket = styled.div`
+export const MyBracket = styled.div`
+  position: relative;
+  font-family: 'CustomFont', sans-serif;
+  font-size: 32px;
+  margin-top: 60px;
+`
+
+export const OppBracket = styled.div`
   position: relative;
   font-family: 'CustomFont', sans-serif;
   font-size: 32px;
   margin-top: 30px;
+  color: white
 `
+
 export const CustomInput = styled.input`
   font-family: 'CustomFont', sans-serif;
   font-size: 32px;
@@ -218,6 +232,13 @@ export const CustomButton = styled(Button)`
       color: blue;
   }
 `
+
+export const OppOption = styled.div`
+  font-family: 'CustomFont', sans-serif;
+  font-size: 32px;
+  color: white;
+`
+
 export const CustomResetButton = styled(Button)`
   && {
     font-family: 'CustomFont', sans-serif;
@@ -231,7 +252,7 @@ export const CustomList = styled.div`
   font-family: 'CustomFont', sans-serif;
   font-size: 28px;
   color: white;
-  width: 80%;
+  // width: 80%;
   line-height: 1.5;
   text-align: center;
 `
