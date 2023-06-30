@@ -22,7 +22,6 @@ import {
 /* RAIN GAME ROOM SCHEMA */
 
 export class KeywordRain extends Schema implements IKeywordRain{
-  @type('string') owner = '';
   @type('number') y = 10;
   @type('number') speed = 1;
   @type('string') keyword = '';
@@ -31,34 +30,41 @@ export class KeywordRain extends Schema implements IKeywordRain{
   @type('boolean') blind = false;
   @type('boolean') accel = false;
   @type('boolean') multifly = false;
-  @type('boolean') rendered = false;
-
+  
   constructor(keyword: string) {
     super();
     this.keyword = keyword;
   }
 }
 export class RainGameState extends Schema implements IRainGameState {
-  @type('string') owner = '';
-  @type([ "string" ]) item: string[] = [];
   @type('number') point = 0;
   @type('number') heart = 5;
-  @type('number') period = 2000;
-  @type([KeywordRain]) words = new ArraySchema<KeywordRain>();
-  @type([ "string" ]) used: string[] = [];
 }
 
 export class RainGameUser extends Schema implements IRainGameUser{
   @type("string") username = '';
   @type('string') character = '';
-  @type('string') clientId = '';
+  
+  constructor(name: string, character: string) {
+    super()
+    this.username = name
+    this.character = character
+  }
 }
 
 export class RainGameRoomState extends Schema implements IRainGameRoomState {
-  @type([ "string" ]) players: string[] = [];
-  @type("string") host = ''; 
-  @type({ map: RainGameState }) rainGameStates = new MapSchema<RainGameState>()
-  @type({ map: RainGameUser }) rainGameUsers = new MapSchema<RainGameUser>()
+  @type("string") 
+  host = '';
+  @type("boolean")
+  rainGameReady: false
+  @type("boolean")
+  rainGameInProgress: false
+  @type({ map: RainGameState }) 
+  rainGameStates = new MapSchema<RainGameState>()
+  @type({ map: RainGameUser }) 
+  rainGameUsers = new MapSchema<RainGameUser>()
+  @type({ map: KeywordRain}) 
+  keywordLists = new MapSchema<KeywordRain>()
 }
 
 /* BRICK GAME ROOM SCHEMA */

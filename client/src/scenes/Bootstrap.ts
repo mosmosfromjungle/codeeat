@@ -132,7 +132,7 @@ export default class Bootstrap extends Phaser.Scene {
 
   init() {
     this.network = new Network()
-    this.network2 = new Network2()
+    // this.network2 = new Network2()
     this.gameNetwork = new GameNetwork()
   }
 
@@ -145,7 +145,7 @@ export default class Bootstrap extends Phaser.Scene {
     this.network.webRTC?.checkPreviousPermission()
     this.scene.launch('game', {
       network: this.network,
-      network2: this.network2,
+      // network2: this.network2,
     })
 
     // update Redux state

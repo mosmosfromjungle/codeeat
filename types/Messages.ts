@@ -24,6 +24,7 @@ export enum Message {
   RAIN_GAME_USER,
   RAIN_GAME_START,
   RAIN_GAME_WORD, 
+  RAIN_GAME_READY,
  
 
   // ***** Brick Game *****

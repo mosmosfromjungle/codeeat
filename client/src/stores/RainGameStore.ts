@@ -1,231 +1,114 @@
-import { createSlice, PayloadAction, combineReducers } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction} from '@reduxjs/toolkit'
 import phaserGame from '../PhaserGame'
 import Game from '../scenes/Game'
-import { Interface } from "readline";
+import { Interface } from 'readline'
 
 // Define Interface
 
-export interface RainGameUser {
-    username: string,
-    character: string,
-    clientId: string,
-}
-
 export interface KeywordRain {
-    owner: string,
     y: number,
     speed: number,
     keyword: string,
     x: number,
-    flicker: boolean,
-    blind: boolean,
-    accel: boolean,
-    multifly: boolean,
-    rendered: boolean,
+    // flicker: boolean,
+    // blind: boolean,
+    // accel: boolean,
+    // multifly: boolean,
 }
-const initialKeywordRain: KeywordRain = {
-    owner: '',
-    y: 10,
-    speed: 1,
-    keyword: '',
-    x: Math.floor(Math.random() * (550 - 50 + 1)) + 50,
-    flicker: false,
-    blind: false,
-    accel: false,
-    multifly: false,
-    rendered: false,
+
+export interface RainGameUser {
+  username: string
+  character: string
 }
 
 export interface RainGameState {
-    owner : string,
-    item: string[],
-    point: number,
-    heart: number,
-    period: number,
-    words: KeywordRain[],
-    used : string[],
-};
-export interface RainGameStates{
-    states:RainGameState[],
-    users: RainGameUser[],
+  point: number
+  heart: number
+}
+export interface RainGameStates {
+  rainGameReady: boolean
+  rainGameInProgress : boolean
+  myState: RainGameState
+  youState: RainGameState
+  me: RainGameUser
+  you: RainGameUser
 }
 export const initialState: RainGameStates = {
-    states: [],
-    users: [],
-};
+  rainGameReady: false,
+  rainGameInProgress: false,
+  myState: {
+    point: 0,
+    heart: 3,
+  },
+  youState: {
+    point: 0,
+    heart: 3,
+  },
+  me: {
+    username: '',
+    character: '',
+  },
+  you: {
+    username: '',
+    character: '',
+  },
+}
 
 // Define Slice
 export const rainGameSlice = createSlice({
-    
-    name: "raingame",
-    initialState,
-    reducers: {
-        updateKeywords: (state, action: PayloadAction<{ owner: string }>) => {
-            
-            const { owner } = action.payload;
-            const gameStateIndex = state.states.findIndex((rgs) => rgs.owner === owner);
-
-        
-            const lineHeight = 600;
-            const gameState = state.states[gameStateIndex];
-
-            let shouldDecrementHeart = false;
-         
-            for (let i = gameState.words.length - 1; i >= 0; i--) {
-                const keywordRain = gameState.words[i];
-                const updatedKeywordRain = { ...keywordRain, y: keywordRain.y + keywordRain.speed };
-                gameState.words[i] = updatedKeywordRain;
-                console.log(updatedKeywordRain.y)
-
-
-                if (updatedKeywordRain.y > lineHeight) {
-                    gameState.words.splice(i,1);
-                    shouldDecrementHeart = true;
-                }       
-            }
-            
-        if(shouldDecrementHeart) {
-            gameState.heart -= 1;
-        }
+  name: 'raingame',
+  initialState,
+  reducers: {
+    setRainGameReady: (state, action: PayloadAction<boolean>) => {
+      console.log('setRainGameReady')
+      state.rainGameReady = action.payload
     },
-        
-        removeKeyword: (state, action: PayloadAction<{ keyword:string, owner: string }>) => {
-            const { keyword, owner } = action.payload;
-            const gameStateIndex = state.states.findIndex(rgs => rgs.owner === owner);
-
-            if(gameStateIndex === -1) return;
-
-            const gameState = state.states[gameStateIndex];
-            const indexToRemove = gameState.words.findIndex(
-                item => item.keyword === keyword);
-
-            if (indexToRemove !== -1) {
-                const removedItem = gameState.words.splice(indexToRemove, 1)[0];
-                gameState.point += 1;
-
-            if (removedItem.flicker) {
-                gameState.item.push('f');
-            }
-            if (removedItem.blind) {
-                gameState.item.push('b');
-            }
-            if (removedItem.accel) {
-                gameState.item.push('a');
-            }
-            if (removedItem.multifly) {
-                gameState.item.push('m');
-            }
-            }   
-        },
-
-
-        Flicker: (state, action: PayloadAction<{ keyword: string, owner: string }>) => {
-            const { keyword, owner } = action.payload;
-            const gameStateIndex = state.states.findIndex(rgs => rgs.owner === owner);
-            
-            if (gameStateIndex === -1) return; // 주인과 일치하는 게임 상태가 없을 경우 종료
-            
-            const gameState = state.states[gameStateIndex];
-            const itemIndex = gameState.item.findIndex(item => item === keyword);
-            
-            if (itemIndex !== -1) {
-                gameState.item.splice(itemIndex, 1);
-            // Flicker의 추가 효과
-            // 여기에 Flicker의 추가 효과를 구현해주세요.
-            }
-        },
-            
-        Blind: (state, action: PayloadAction<{ keyword: string, owner: string }>) => {
-            const { keyword, owner } = action.payload;
-            const gameStateIndex = state.states.findIndex(rgs => rgs.owner === owner);
-            
-            if (gameStateIndex === -1) return; // 주인과 일치하는 게임 상태가 없을 경우 종료
-            
-            const gameState = state.states[gameStateIndex];
-            const itemIndex = gameState.item.findIndex(item => item === keyword);
-            
-            if (itemIndex !== -1) {
-                gameState.item.splice(itemIndex, 1);
-            // Blind의 추가 효과
-            // 여기에 Blind의 추가 효과를 구현해주세요.
-            }
-        },
-            
-        Accel: (state, action: PayloadAction<{ keyword: string, owner: string }>) => {
-            const { keyword, owner } = action.payload;
-            const gameStateIndex = state.states.findIndex(rgs => rgs.owner === owner);
-            
-            if (gameStateIndex === -1) return; // 주인과 일치하는 게임 상태가 없을 경우 종료
-            
-            const gameState = state.states[gameStateIndex];
-            const itemIndex = gameState.item.findIndex(item => item === keyword);
-            
-            if (itemIndex !== -1) {
-            gameState.item.splice(itemIndex, 1);
-            // Accel의 추가 효과
-            // 여기에 Accel의 추가 효과를 구현해주세요.
-            }
-        },
-            
-        Multiply: (state, action: PayloadAction<{ keyword: string, owner: string }>) => {
-            const { keyword, owner } = action.payload;
-            const gameStateIndex = state.states.findIndex(rgs => rgs.owner === owner);
-            
-            if (gameStateIndex === -1) return; // 주인과 일치하는 게임 상태가 없을 경우 종료
-            
-            const gameState = state.states[gameStateIndex];
-            const itemIndex = gameState.item.findIndex(item => item === keyword);
-            
-            if (itemIndex !== -1) {
-                gameState.item.splice(itemIndex, 1);
-            // Multiply의 추가 효과
-            // 여기에 Multiply의 추가 효과를 구현해주세요.
-            }
-        },
-        
-        setRainGameState: (state, action: PayloadAction<RainGameState>) => {
-            const receivedState = action.payload;
-            const existingStateIndex = state.states.findIndex((rgs) => rgs.owner === receivedState.owner);
-            if (existingStateIndex !== -1) {  
-                // 기존 words 목록을 가져오고, 배열이 아닌 경우 빈 배열로 설정
-                const existingWords = state.states[existingStateIndex].words || [];
-
-                // receivedState.words도 배열인지 확인하고, 배열이 아닌 경우 빈 배열로 설정
-                const newWords = receivedState.words || [];
-    
-                state.states[existingStateIndex].words = [...existingWords, ...newWords];
-
-                state.states[existingStateIndex] = {
-                    ...state.states[existingStateIndex],
-                    ...receivedState,
-                    words: state.states[existingStateIndex].words
-
-                }
-            } else {
-                state.states.push(receivedState);
-            }
-        },
-        setRainGameUser: (state, action: PayloadAction<RainGameUser>) => {
-            const newUserData = action.payload;
-            const existingUserIndex = state.users.findIndex((user) => user.clientId === newUserData.clientId);
-            console.log("6")
-        
-            if (existingUserIndex !== -1) {
-                // 새로운 배열을 만들어서 상태를 변경합니다.
-                state.users = [
-                    ...state.users.slice(0, existingUserIndex),
-                    newUserData,
-                    ...state.users.slice(existingUserIndex + 1),
-                ];
-            } else {
-                state.users.push(newUserData);
-            }
-        },
+    setRainGameInProgress: (state, action: PayloadAction<boolean>) => {
+        console.log('setRainGameInProgress')
+        state.rainGameInProgress = action.payload
+      },
+    setRainGameYou: (state, action: PayloadAction<RainGameUser>) => {
+      console.log('setRainGameYou')
+      const { username, character } = action.payload
+      state.you.username = username
+      state.you.character = character
     },
-});
 
+    setRainGameMe: (state, action: PayloadAction<RainGameUser>) => {
+      console.log('setRainGameMe')
+      const { username, character } = action.payload
+      state.me.username = username
+      state.me.character = character
+    },
+    setRainGameMyState: (state, action: PayloadAction<RainGameState>) => {
+        console.log('setRainGameMyState')
+      const { point, heart } = action.payload
+      ;(state.myState.point = point), (state.myState.heart = heart)
+    },
 
+    setRainGameYouState: (state, action: PayloadAction<RainGameState>) => {
+        console.log('setRainGameYou')
+      const { point, heart } = action.payload
+      ;(state.youState.point = point), (state.youState.heart = heart)
+    },
+    // setRainGameMyWords: (state, action: PayloadAction<KeywordRain>) => {
+    //     state.myWords = action.payload
+    // },
+    // setRainGameYouWords: (state, action: PayloadAction<KeywordRain>) => {
+    //     state.youWords = action.payload
+    // }
+  },
+})
 
-export const { updateKeywords, removeKeyword, setRainGameState, setRainGameUser} = rainGameSlice.actions;
+export const {
+  setRainGameReady,
+  setRainGameInProgress,
+  setRainGameYou,
+  setRainGameMe,
+  setRainGameMyState,
+  setRainGameYouState,
+  // setRainGameMyWords,
+  // setRainGameYouWords
+} = rainGameSlice.actions
 
 export default rainGameSlice.reducer

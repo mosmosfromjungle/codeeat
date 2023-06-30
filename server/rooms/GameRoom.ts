@@ -8,7 +8,6 @@ import PlayerUpdateCommand from './commands/PlayerUpdateCommand'
 import PlayerUpdateNameCommand from './commands/PlayerUpdateNameCommand'
 import GamePlayUpdateCommand from './commands/GamePlayUpdateCommand'
 import { RainGameStartCommand } from './commands/RainGameStartCommand'
-import { MakeWordCommand } from './commands/RainGameMakeWordCommand'
 
 export class GameRoom extends Room<GameState> {
   private dispatcher = new Dispatcher(this)

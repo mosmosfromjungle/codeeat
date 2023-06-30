@@ -78,7 +78,6 @@ mainServer.define(RoomType.BRICK, BrickGameRoom).enableRealtimeListing()
 mainServer.define(RoomType.MOLE, GameRoom).enableRealtimeListing()
 mainServer.define(RoomType.RAIN, RainGameRoom).enableRealtimeListing()
 mainServer.define(RoomType.MOLE, MoleGameRoom).enableRealtimeListing()
-mainServer.define(RoomType.RAIN, GameRoom).enableRealtimeListing()
 mainServer.define(RoomType.FACECHAT, GameRoom).enableRealtimeListing()
 
 /**

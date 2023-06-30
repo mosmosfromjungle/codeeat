@@ -6,14 +6,7 @@ import { Schema, MapSchema, ArraySchema } from '@colyseus/schema'
 
 /* RAIN GAME ROOM SCHEMA */
 
-export interface IRainGameUser extends Schema {
-  username: string;
-  character: string;
-  clientId: string;
-}
-
 export interface IKeywordRain extends Schema {
-  owner: string,
   y: number,
   speed: number,
   keyword: string,
@@ -22,24 +15,25 @@ export interface IKeywordRain extends Schema {
   blind: boolean,
   accel: boolean,
   multifly: boolean,
-  rendered: boolean,
+}
+
+export interface IRainGameUser extends Schema {
+  username: string;
+  character: string;
 }
 
 export interface IRainGameState extends Schema {
-  owner: string,
-  item: string[],
   point: number,
   heart: number,
-  period: number,
-  words: ArraySchema<IKeywordRain>,
-  used: string[],
 }
 
 export interface IRainGameRoomState extends Schema {
-  players: string[],
   host: string,
-  rainGameStates: MapSchema<IRainGameState>
-  rainGameUsers: MapSchema<IRainGameUser>
+  rainGameReady: boolean,
+  rainGameInProgress: boolean,
+  rainGameStates: MapSchema<IRainGameState>,
+  rainGameUsers: MapSchema<IRainGameUser>,
+  keywordLists: MapSchema<IKeywordRain>,
 }
 
 /* BRICK GAME ROOM SCHEMA */

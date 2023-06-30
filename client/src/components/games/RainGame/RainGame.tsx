@@ -1,96 +1,61 @@
 import React, { useEffect, useRef, useState } from 'react'
 import rain_Background from '../../../../public/assets/game/RainGame/blackboard.png'
-import { useSelector, useDispatch } from 'react-redux'
-import { KeywordRain, removeKeyword, updateKeywords, RainGameStates } from '../../../stores/RainGameStore'
-import { RootState } from '../../../stores'
-import flicker from '../../../../public/assets/game/RainGame/flicker.png'
-import blind from '../../../../public/assets/game/RainGame/blind.png'
-import accel from '../../../../public/assets/game/RainGame/accel.png'
-import multiply from '../../../../public/assets/game/RainGame/multify.png'
+import { useAppDispatch ,useAppSelector} from '../../../hooks'
 import Bootstrap from '../../../scenes/Bootstrap'
 import phaserGame from '../../../PhaserGame'
 import PointsAndHearts from './PointsAndHearts'
 import ScoreInfo from './ScoreInfo'
 
 
-const calculateWinner = (myRainGameState, opponentRainGameState, time, clientId) => {
-  if (myRainGameState && opponentRainGameState) {
-    if (time <= 0) {
-      return myRainGameState.owner === clientId
-        ? myRainGameState.point > opponentRainGameState.point
-          ? 'You'
-          : 'Opponent'
-        : opponentRainGameState.point > myRainGameState.point
-        ? 'You'
-        : 'Opponent';
-    } else if (myRainGameState.heart <= 0) {
-      return myRainGameState.owner === clientId ? 'Opponent' : 'You';
-    } else if (opponentRainGameState.heart <= 0) {
-      return myRainGameState.owner === clientId ? 'You' : 'Opponent';
-    }
-  }
-  return null;
-};
-
-const useUpdateKeywords = (dispatch, myRainGameState, opponentRainGameState, time) => {
-  useEffect(() => {
-    const updateKeywordsInterval = setInterval(() => {
-
-      dispatch(updateKeywords({ owner: myRainGameState.owner }))
-      dispatch(updateKeywords({ owner: opponentRainGameState.owner}))
-
-    }, 1000)
-
-    return () => clearInterval(updateKeywordsInterval)
-  }, [])
-}
-
-export function RainGame({clientId }) {
-  const dispatch = useDispatch()
+export function RainGame() {
+  const dispatch = useAppDispatch()
   const keywordInput = useRef<HTMLInputElement>(null)
-  const rainGameState = useSelector((state: RootState) => state.raingame)
-  const rainGameDialogState = useSelector((state: RootState) => state.rainGameDialog)
+  // const myWords = useAppSelector((state) => state.raingame.myWords)
+  // const youWords = useAppSelector((state) => state.raingame.youWords)
+  // const [localMyWords, setLocalMyWords] = useState(myWords);
+  // const [localYouWords, setLocalYouWords] = useState(youWords);
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-  console.log(rainGameState.states)
-  console.log(clientId);
-  const myRainGameState = rainGameState.states.find((rgs) => rgs.owner ===clientId);
-  console.log(myRainGameState)
-  const opponentRainGameState = rainGameState.states.find((rgs) => rgs.owner !== clientId);
-
-
-
   const [time, setTime] = useState(100)
 
-  useUpdateKeywords(dispatch, myRainGameState, opponentRainGameState, time)
+  // const updateWordsPosition = () => {
+  //   console.log('updateWordsPosition')
+
+  //   const updatedMyWords = localMyWords.map(word => ({
+  //     ...word,
+  //     y: word.y + word.speed,
+  //   }));
+    
+  //   const updatedYouWords = localYouWords.map(word => ({
+  //     ...word,
+  //     y: word.y + word.speed,
+  //   }));
+
+  //   setLocalMyWords(updatedMyWords);
+  //   setLocalYouWords(updatedYouWords);
+  // };
+  const info = useAppSelector((state) => state.raingame)
+  console.log("ㄹ조버루뱌ㅐ저ㅜ래ㅑㅂ저래ㅑ버재랴ㅓ")
+  console.log(info)
 
   useEffect(() => {
-    const makingWordInterval = setInterval(() => {
-      bootstrap.gameNetwork.MakingWord();
-    }, 3000);
-    
+    // const updateWordsInterval = setInterval(updateWordsPosition, 100);
+
     const timeInterval = setInterval(() => {
       setTime((prevTime) => Math.max(prevTime - 1, 0))
     }, 1000);
 
-
-
-  
     return () => {
-      clearInterval(makingWordInterval);
       clearInterval(timeInterval);
-  
+      bootstrap.gameNetwork.room.removeAllListeners();
+      // clearInterval(updateWordsInterval);
     };
 
   }, [])
 
-  const winner = calculateWinner(myRainGameState, opponentRainGameState, time, clientId)
-
-  
-
   const keydown = (keyCode) => {
     if (keyCode === 13 && keywordInput.current) {
       const text = keywordInput.current.value
-      dispatch(removeKeyword({ keyword: text, owner: clientId }))
+      // dispatch(removeKeyword({ keyword: text, owner: username }))
       keywordInput.current.value = ''
     }
   }
@@ -124,7 +89,7 @@ export function RainGame({clientId }) {
           height: 'calc(75vh - 6px)',
         }}
       >
-        {/* Left Side (내것) */}
+        {/* Right Side (내것) */}
         <div
           style={{
             width: '40%',
@@ -136,45 +101,25 @@ export function RainGame({clientId }) {
             textAlign: 'center',
           }}
         >
-          {myRainGameState &&
-            myRainGameState.words.map((item: KeywordRain, index: number) => {
-              if (item.y > window.innerHeight * 0.8) {
-                return null
-              }
-              let backgroundImage = ''
-              if (item.flicker) {
-                backgroundImage = `url(${flicker})`
-              } else if (item.blind) {
-                backgroundImage = `url(${blind})`
-              } else if (item.accel) {
-                backgroundImage = `url(${accel})`
-              } else if (item.multifly) {
-                backgroundImage = `url(${multiply})`
-              }
-              return (
-                <h5
-                  key={index}
-                  style={{
-                    position: 'absolute',
-                    fontSize: '1.4vw',
-                    letterSpacing: '0.3vw',
-                    top: `${item.y}px`,
-                    left: `${item.x}px`,
-                    color: '#FFFFFF',
-                    backgroundImage: backgroundImage,
-                    backgroundSize: '150% 150%',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'top',
-                    zIndex: 2,
+          {localMyWords.map((word, index) => (
+            <h5
+              key={index}
+              style={{
+                position: 'absolute',
+                fontSize: '1.4vw',
+                letterSpacing: '0.3vw',
+                top: `${word.y}px`,
+                left: `${word.x + 300}px`,
+                color: '#FFFFFF',
+                zIndex: 2,
                   }}
                 >
-                  {item.keyword}
+                  {word.keyword}
                 </h5>
-              )
-            })}
+            ))}
         </div>
 
-        {/* Right Side (상대편) */}
+        {/* Left Side (상대편) */}
         <div
           style={{
             width: '50vw',
@@ -186,48 +131,27 @@ export function RainGame({clientId }) {
             textAlign: 'center',
           }}
         >
-          {opponentRainGameState &&
-            opponentRainGameState.words.map((item: KeywordRain, index: number) => {
-              console.log("Opponent item y value: ", item.y);
-              if (item.y > window.innerHeight * 0.8) {
-                return null
-              }
-              let backgroundImage = ''
-              if (item.flicker) {
-                backgroundImage = `url(${flicker})`
-              } else if (item.blind) {
-                backgroundImage = `url(${blind})`
-              } else if (item.accel) {
-                backgroundImage = `url(${accel})`
-              } else if (item.multifly) {
-                backgroundImage = `url(${multiply})`
-              }
-              return (
+          {localYouWords.map((word, index) => (
                 <h5
                   key={index}
                   style={{
                     position: 'absolute',
                     fontSize: '1.4vw',
                     letterSpacing: '0.3vw',
-                    top: `${item.y}px`,
-                    left: `${item.x + 300}px`,
+                    top: `${word.y}px`,
+                    left: `${word.x}px`,
                     color: '#FF7F00',
-                    backgroundImage: backgroundImage,
-                    backgroundSize: '150% 150%',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'top',
                     zIndex: 2,
                   }}
                 >
-                  {item.keyword}
+                  {word.keyword}
                 </h5>
-              )
-            })}
+          ))}
         </div>
       </div>
 
       {/* Winner Section */}
-      {winner && (
+      {/* {winner && (
         <div
           style={{
             position: 'absolute',
@@ -240,7 +164,7 @@ export function RainGame({clientId }) {
         >
           {winner} is the winner!
         </div>
-      )}
+      )} */}
 
       {/* Input and Score Section */}
       <div
@@ -265,14 +189,6 @@ export function RainGame({clientId }) {
             >
                 나
             </div>
-          {rainGameState.states && rainGameState.states.length > 0 ? (
-            <ScoreInfo 
-                score={rainGameState.states[0].point} 
-                coin={rainGameState.states[0].heart} 
-            />
-        ) : (
-            <ScoreInfo score={0} coin={0} />
-          )}
         </div>
 
         {/* Input Section - Text Field and Button */}
@@ -295,27 +211,6 @@ export function RainGame({clientId }) {
             입력
           </button>
         </div>
-
-        {/* Right Side - Score and Lives */}
-        <div style={{ flex: 1, textAlign: 'center' }}>
-          <div 
-            style={{ 
-                marginBottom: '6px', 
-                fontWeight: 'bold', 
-                fontSize: '1.5vw', 
-            }}
-        >
-            상대편
-        </div>
-          {rainGameState.states && rainGameState.states.length > 1 ? (
-            <ScoreInfo 
-                score={rainGameState.states[1].point} 
-                coin={rainGameState.states[1].heart} 
-            />
-        ) : (
-            <ScoreInfo score={0} coin={0} />
-        )}
-    </div>
 </div>
 
 {/* Points and Hearts */}
@@ -334,6 +229,7 @@ export function RainGame({clientId }) {
         <PointsAndHearts />
       </div>
     </>
+        
   );
 }
 export default RainGame

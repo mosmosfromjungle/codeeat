@@ -4,18 +4,18 @@ import { IGameState } from '../../../types/IGameState'
 import { Message } from '../../../types/Messages'
 import store from '../stores'
 import { setGameSessionId } from '../stores/UserStore'
-import { 
+import {
   setMoleGameFriendInfo,
   setMoleGameFriendData,
   setMoleGameProblem,
   setMoleGameHost,
- } from '../stores/MoleGameStore'
-import { 
+} from '../stores/MoleGameStore'
+import {
   setBrickGameState,
   setMyPlayerScore,
-  setMyPlayerStatus, 
-  setOppPlayerScore, 
-  setOppPlayerStatus 
+  setMyPlayerStatus,
+  setOppPlayerScore,
+  setOppPlayerStatus,
 } from '../stores/BrickGameStore'
 import {
   setLobbyJoined,
@@ -34,11 +34,7 @@ import {
   pushPlayerJoinedMessage,
   pushPlayerLeftMessage,
 } from '../stores/ChatStore'
-import {
-  setRainGameState,
-  setRainGameUser
-} from '../stores/RainGameStore'
-
+import { setRainGameMe, setRainGameYou, setRainGameMyState, setRainGameYouState, setRainGameReady, setRainGameInProgress } from '../stores/RainGameStore'
 export default class GameNetwork {
   private client: Client
   private lobby?: Room | undefined
@@ -72,7 +68,7 @@ export default class GameNetwork {
     }
     this.lobby = undefined
   }
-  
+
   async joinLobbyRoom(type: RoomType) {
     this.lobby = await this.client.joinOrCreate(type)
     store.dispatch(setLobbyJoined(true))
@@ -111,7 +107,7 @@ export default class GameNetwork {
 
   async createBrickRoom(roomData: IGameRoomData) {
     const { name, description, password, username } = roomData
-    this.room = await this.client.create(RoomType.BRICK, {  
+    this.room = await this.client.create(RoomType.BRICK, {
       name,
       description,
       password,
@@ -130,7 +126,7 @@ export default class GameNetwork {
     })
     this.initialize()
   }
-  
+
   async createRainRoom(roomData: IGameRoomData) {
     const { name, description, password, username } = roomData
     this.room = await this.client.create(RoomType.RAIN, {
@@ -153,23 +149,13 @@ export default class GameNetwork {
     this.initialize()
   }
 
-  async sendMyInfoToServer(username, character) {
-    if (!this.room) return;
-    console.log("2")
-    const clientId = this.room.sessionId; 
-    this.room.send(Message.RAIN_GAME_USER, { clientId, username, character });
-
-    return clientId;
-  }
-
   // set up all network listeners before the game starts
   initialize() {
     if (!this.room) return
-
     this.lobby.leave()
     store.dispatch(setLobbyJoined(false))
     this.mySessionId = this.room.sessionId
-    store.dispatch(setGameSessionId(this.room.sessionId)) 
+    store.dispatch(setGameSessionId(this.room.sessionId))
 
     // when the server sends room data
     this.room.onMessage(Message.SEND_ROOM_DATA, (content) => {
@@ -177,48 +163,62 @@ export default class GameNetwork {
     })
 
     this.room.onMessage(Message.RAIN_GAME_USER, (data) => {
-      const {clientId, username, character } = data;
-      const payload = {
-        username,
-        character,
-        clientId,
-      };
-      console.log("5")
-      store.dispatch(setRainGameUser(payload));
-    });
 
-    this.room.onMessage(Message.RAIN_GAME_START, (content) => {
-      store.dispatch(setRainGameState(content));
-    });
+      
+      for (let key in data) {
+          let user = data[key];
+          if (key === this.mySessionId) {
+              store.dispatch(setRainGameMe(user));
+          } else {
+              store.dispatch(setRainGameYou(user));
+          }
+      }
+  });
+
+  this.room.onMessage(Message.RAIN_GAME_START, (keywordLists) => {
+    store.dispatch(setRainGameInProgress(true));
+    
+    const mySessionId = this.mySessionId;
+    
+    // for (let key in keywordLists) {
+    //     const list = keywordLists[key];
+    //     if (key === mySessionId) {
+    //         store.dispatch(setRainGameMyWords(list));
+    //     } else {
+    //         store.dispatch(setRainGameYouWords(list));
+    //     }
+    // }
+});
+
+    this.room.onMessage(Message.RAIN_GAME_READY, () => {
+      store.dispatch(setRainGameReady(true))
+    })
 
     // when the server sends data of players in this room
     this.room.onMessage(Message.SEND_GAME_PLAYERS, (content) => {
       store.dispatch(setGamePlayers(content))
     })
 
-    this.room.onMessage(Message.RAIN_GAME_WORD, (content)=>{
-      store.dispatch(setRainGameState(content))
-    })
     // ↓ Mole Game
     // method to receive friend info to me in mole game
     this.room.onMessage(Message.RECEIVE_MOLE, (content) => {
-      store.dispatch(setMoleGameFriendInfo(content));
-    });
+      store.dispatch(setMoleGameFriendInfo(content))
+    })
 
     // method to receive friend point to me in mole game
     this.room.onMessage(Message.RECEIVE_YOUR_POINT, (content) => {
-      store.dispatch(setMoleGameFriendData(content));
-    });
+      store.dispatch(setMoleGameFriendData(content))
+    })
 
     // method to receive friend point to me in mole game
     this.room.onMessage(Message.RESPONSE_MOLE, (content) => {
-      store.dispatch(setMoleGameProblem(content));
-    });
+      store.dispatch(setMoleGameProblem(content))
+    })
 
     // method to receive host to me in mole game
     this.room.onMessage(Message.RECEIVE_HOST, (content) => {
-      store.dispatch(setMoleGameHost(content));
-    });
+      store.dispatch(setMoleGameHost(content))
+    })
   }
 
   // method to send player updates to Colyseus server
@@ -243,7 +243,7 @@ export default class GameNetwork {
     this.lobby.leave()
     store.dispatch(setLobbyJoined(false))
     this.mySessionId = this.room.sessionId
-    store.dispatch(setGameSessionId(this.room.sessionId)) 
+    store.dispatch(setGameSessionId(this.room.sessionId))
 
     this.room.onMessage(Message.SEND_ROOM_DATA, (content) => {
       store.dispatch(setJoinedGameRoomData(content))
@@ -275,7 +275,7 @@ export default class GameNetwork {
       }
     })
 
-    // // TODO: 이거 왜 안될까 ㅜㅜ 
+    // // TODO: 이거 왜 안될까 ㅜㅜ
     // this.room.state.brickgames.brickPlayers?.forEach((value: IBrickPlayer, key: string, map: Map<string, IBrickPlayer>) => {
     //   this.brickPlayerListen(value, key)
     // })
@@ -319,7 +319,7 @@ export default class GameNetwork {
     console.log('command: ', command)
     this.room?.send(Message.BRICK_GAME_COMMAND, { command: command })
   }
-  
+
   // ↓ Mole Game
   // method to send my info to friend in mole game
   sendMyInfo(myName: string, myCharacter: string) {
@@ -343,13 +343,19 @@ export default class GameNetwork {
 
   // Rain Game
   startRainGame() {
-    console.log("8")
-    this.room?.send(Message.RAIN_GAME_START);
+    console.log('startRainGame')
+    this.room?.send(Message.RAIN_GAME_START)
   }
 
-  MakingWord(){
-    this.room?.send(Message.RAIN_GAME_WORD);
+  // GetWordsList(username1, username2) {
+  //   console.log('GetWordsList')
+  //   this.room?.send(Message.RAIN_GAME_WORD, { username1, username2 })
+  // }
+
+  sendMyInfoToServer(username: string, character: string) {
+    console.log('sendMyInfoToServer')
+    if (!this.room) return
+
+    this.room.send(Message.RAIN_GAME_USER, { username: username, character: character })
   }
 }
-
-
