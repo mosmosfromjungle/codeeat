@@ -1,7 +1,8 @@
 import express from 'express'
 import {
     loadData,
-    firstdata
+    firstdata,
+    checkLast
 } from '../controllers/LastDMControllers/index';
 
 express().use(express.json());
@@ -9,5 +10,5 @@ express().use(express.json());
 const router = express.Router();
 
 router.post('/roomList', loadData);
-router.post('/newdm', firstdata)
+router.post('/checkIfFirst', checkLast)
 export default router

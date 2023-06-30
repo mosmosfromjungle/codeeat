@@ -28,7 +28,7 @@ export default class DMNetwork {
     return this.socketClient;
   };
 
-  async joinRoom (roomId: string, senderName: string, receiverName: string, callback: any) {
+  joinRoom = (roomId: string, senderName: string, receiverName: string, callback: any) => {
     console.log('JOINROOM-----MyId:',senderName,'acqId:',receiverName) // 🐱
     this.socketClient.emit('join-room', { roomId: roomId, userName: senderName, receiverName: receiverName });
 
@@ -46,11 +46,12 @@ export default class DMNetwork {
   };
 
   sendMessage = (message: object) => {
-    console.log('디엠네트워크 60줄 소켓이벤트 분출 직전 ') // 🐱
+    console.log('디엠네트워크 50줄 소켓이벤트 분출 직전 ') // 🐱
     this.socketClient.emit('message', message)
   }
 
   whoAmI = (userName: string) => {
     this.socketClient.emit('whoAmI', userName);
   };
+
 }

@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { AxiosResponse } from 'axios';
+import phaserGame from '../../PhaserGame';
+import Game from '../../scenes/Game'
 
 export const createRoom = async (param: CreateRoomRequest) => {
   return axios
@@ -16,7 +18,15 @@ export const createRoom = async (param: CreateRoomRequest) => {
 
 export const DMReq = async (body: any) => {
   try{
-    await axios.post(`/lastdm/newdm`, body)
+    await axios.post(`/dm/newdm`, body)
+  } catch(err) {
+    console.error(err)
+  }
+}
+
+export const checkIfFirst = async (body: any) => {
+  try{
+    await axios.post(`/lastdm/checkIfFirst`, body)
   } catch(err) {
     console.error(err)
   }
@@ -61,12 +71,4 @@ export interface RoomListResponse {
 export interface FetchChattingRequest {
   roomId: number;
   cursor: number | null;
-}
-
-export interface ChatDto {
-  id: number | string;
-  message: string;
-  roomId?: number | string;
-  sendUserId?: number | string;
-  createdAt?: Date;
 }

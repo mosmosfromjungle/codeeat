@@ -13,7 +13,6 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import {
   fetchRoomList,
   RoomListResponse,
-  UserResponseDto,
 } from '../../apicalls/DM/DM';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
@@ -41,7 +40,6 @@ const handleClick = async (room) => {
   dispatch(setRoomId(room.roomId));
   dispatch(setShowDMRoom(true))
 }
-
 return (
     <Backdrop>
         <DMwrapper>
@@ -90,6 +88,7 @@ return (
     </Backdrop>
   );
 };
+
 
 const ProfileAvatarImage = styled.img`
   width: 50px;

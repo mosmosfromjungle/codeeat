@@ -84,7 +84,7 @@ export class SkyOffice extends Room<OfficeState> {
       (client, message: { senderName: string; receiverName: string }) => {
         const { senderName, receiverName } = message;
 
-        getDMMessage(senderName, receiverName)
+        getDMMessage({senderName: senderName, receiverName: receiverName})
         .then((DMMessage) => {
           client.send(Message.CHECK_DM, DMMessage);
         })

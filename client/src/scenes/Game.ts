@@ -305,7 +305,6 @@ export default class Game extends Phaser.Scene {
       'adam',
       id,
       newPlayer.name,
-      newPlayer.userid
       )
     this.otherPlayers.add(otherPlayer)
     this.otherPlayerMap.set(id, otherPlayer)

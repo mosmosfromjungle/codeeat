@@ -21,13 +21,13 @@ export default function DMBubbles(props) {
   const newMessage = useAppSelector((state) => state.dm.newMessage);
 
   const [messageList, setMessageList] = useState<any>([]);
-  const _joinRoom = (oldMessages) => {
+  const callback_joinRoom = (oldMessages) => {
     console.log(oldMessages)
       setMessageList(oldMessages);
     };
 // 🐱
   useEffect(() => {
-    socketNetwork.joinRoom(roomId, userName, receiverName, _joinRoom);
+    socketNetwork.joinRoom(roomId, userName, receiverName, callback_joinRoom);
   }, []);
 
   useEffect(() => {

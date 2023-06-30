@@ -6,16 +6,14 @@ const time_diff = 9 * 60 * 60 * 1000;
 /* last dm 가져오기 */
 export const loadData = async (req: Request, res: Response) => {
     const userName = req.body;
-    // console.log(userName)
     if (!userName)
-      return res.status(404).json({
-        status: 404,
-        message: 'not found',
+    return res.status(404).json({
+      status: 404,
+      message: 'not found',
     });
   
     getLastDM(userName)
       .then((result) => {
-        console.log(result)
         res.status(200).json({
           status: 200,
           payload: result,
@@ -60,7 +58,6 @@ export const getLastDM = async (obj:{senderName: string} ) => {
     .toArray()
     .then((elem) => {
       elem.forEach((json) => {
-        console.log(elem)
         result.push(json);
         });
     });
@@ -78,19 +75,24 @@ export const addLastDM = async (obj: {
     let cur_date = new Date();
     let utc = cur_date.getTime() + cur_date.getTimezoneOffset() * 60 * 1000;
     let updatedAt = utc + time_diff;
-    LastDM.collection.insertOne({
-      senderName: obj.senderName,
-      receiverName: obj.receiverName,
-      message: obj.message,
-      updatedAt: updatedAt,
-    });
-    LastDM.collection.insertOne({
-      senderName: obj.receiverName,
-      receiverName: obj.senderName,
-      message: obj.message,
-      updatedAt: updatedAt,
-    });
-  
+    if(obj.senderName == obj.receiverName) return
+    const notfirstDM = await checkLast({senderName:obj.senderName, receiverName:obj.receiverName})
+    if (!notfirstDM) {
+      LastDM.collection.insertOne({
+        senderName: obj.senderName,
+        receiverName: obj.receiverName,
+        message: obj.message,
+        roomId: 'first',
+        updatedAt: updatedAt,
+      });
+      LastDM.collection.insertOne({
+        senderName: obj.receiverName,
+        receiverName: obj.senderName,
+        message: obj.message,
+        roomId: 'first',
+        updatedAt: updatedAt,
+      });
+    }
     return true;
 }
 
@@ -120,3 +122,14 @@ export const updateLastDM = async (obj: { senderName: string; receiverName: stri
       { $set: { roomId: roomId } }
     );
   };
+
+  export const checkLast = async (obj:{senderName: string, receiverName: string}) => {
+    try {
+      const result = LastDM.collection.countDocuments({
+        $and: [{ 'senderName': obj.senderName}, {'receiverName': obj.receiverName }]
+      })
+      return result
+    } catch(err) {
+      console.error(err)
+    }
+  }

@@ -127,16 +127,11 @@ export default function WelcomeDialog() {
     game.myPlayer.setPlayerTexture(character)
     game.network.readyToConnect() 
     dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
-    game.registerKeys()
-    game.network.readyToConnect()
-    dispatch(setUsername(username))
   }
-
+  
   useEffect(() => {
-    if (roomJoined) {
-      game.myPlayer.setPlayerName(username)
-      game.myPlayer.setPlayerTexture(character)
-      game.network.readyToConnect()          
+    if (roomJoined) {    
+      game.registerKeys()
     }
   })
 

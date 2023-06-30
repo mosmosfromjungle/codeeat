@@ -3,7 +3,7 @@ import { Socket } from 'socket.io';
 import { v4 as uuidV4 } from 'uuid';
 import { Request, Response } from 'express';
 import LastDM from '../../models/LastDM';
-import { updateLastDM, updateRoomId } from '../LastDMControllers';
+import { updateLastDM, updateRoomId, checkLast } from '../LastDMControllers';
 import { userMap } from '../..';
 const rooms: Record<string, string[]> = {}
 interface IRoomParams {
@@ -55,7 +55,7 @@ export const DMController = (socket: Socket) => {
   const { roomId, senderName, receiverName, message } = obj;
     if (message) {
       addDM({ senderName: senderName, receiverName: receiverName, message: message });
-        
+      updateLastDM({ senderName: senderName, receiverName: receiverName, message: message })
       userMap.get(receiverName)?.emit('message', obj);
     }
   };
@@ -63,7 +63,7 @@ export const DMController = (socket: Socket) => {
   const readMessage = (message: { roomId: string; userName: string; receiverName: string; }) => {
     const { roomId, userName, receiverName } = message;
   
-    getDMMessage(userName, receiverName)
+    getDMMessage({senderName:userName, receiverName:receiverName})
     .then((dmMessage) => {
       socket.emit('old-messages', dmMessage);
     })
@@ -81,25 +81,30 @@ export const addDM = (message: {
   receiverName: string;
   message: string;
 }) => {
-  let cur_date = new Date();
-  let utc = cur_date.getTime() + cur_date.getTimezoneOffset() * 60 * 1000;
-  let createdAt = utc + time_diff;
-  dm.collection.insertOne({
-    senderName: message.senderName,
-    receiverName: message.receiverName,
-    message: message.message,
-    createdAt: createdAt
-  });
+  const notFirst = (checkLast({senderName: message.senderName, receiverName: message.receiverName}))
+  if (!notFirst) {
+    let cur_date = new Date();
+    let utc = cur_date.getTime() + cur_date.getTimezoneOffset() * 60 * 1000;
+    let createdAt = utc + time_diff;
+    dm.collection.insertOne({
+      senderName: message.senderName,
+      receiverName: message.receiverName,
+      message: message.message,
+      createdAt: createdAt,
+      roomId: 'first'
+    });
+    updateLastDM(message)
+  }
 };
 
   
-export const getDMMessage = async (senderName: string, receiverName: string) => {
+export const getDMMessage = async (obj:{senderName: string, receiverName: string}) => {
     let result = new Array();
     await dm.collection
       .find({
         $or: [
-          { $and: [{ senderName: senderName }, { receiverName: receiverName }] },
-          { $and: [{ senderName: receiverName }, { receiverName: senderName }] },
+          { $and: [{ senderName: obj.senderName }, { receiverName: obj.receiverName }] },
+          { $and: [{ senderName: obj.receiverName }, { receiverName: obj.senderName }] },
         ],
       })
       .limit(100)

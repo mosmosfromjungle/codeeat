@@ -21,9 +21,9 @@ import Divider from '@mui/material/Divider';
 import { IPlayer } from '../../../types/IOfficeState';
 
 import { setShowUser } from '../stores/ChatStore'
-import { setShowDMList, setShowDMRoom } from '../stores/DMStore'
+import { setReceiverName, setShowDMList, setShowDMRoom, setRoomId } from '../stores/DMStore'
+import { DMReq } from '../apicalls/DM/DM';
 import { useAppSelector, useAppDispatch } from '../hooks'
-import { DMReq, createRoom } from '../apicalls/DM/DM';
 
 const Backdrop = styled.div`
   position: fixed;
@@ -151,7 +151,6 @@ export default function UserDialog() {
   const focused = useAppSelector((state) => state.chat.focused)
   const showUser = useAppSelector((state) => state.chat.showUser)
 
-  const receiverName = useAppSelector((state) => state.dm.receiverName)
   const myName = useAppSelector((state) => state.user.userName)
   const character = useAppSelector((state) => state.user.character)
   const userLevel = useAppSelector((state) => state.user.userLevel)
@@ -163,19 +162,16 @@ export default function UserDialog() {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
+  
   async function reqNewDM(name) {
     let body = {
       senderName: myName,
       receiverName: name,
-      message: `${myName}님이 메시지를 보냈습니다`
+      message: "안녕하세요"
     }
-    try{
-      await DMReq(body);
-      console.log('userDialog dmreq') //🐱
-    } catch (error) {
-      console.error(error)
-    }
+    DMReq(body);
   }
+  
   useEffect(() => {
     if (focused) {
       inputRef.current?.focus()
@@ -189,13 +185,6 @@ export default function UserDialog() {
   useEffect(() => {
     scrollToBottom()
   }, [chatMessages, showUser])
-
-  const [open, setOpen] = React.useState(true);
-
-  const handleClick = () => {
-    setOpen(!open);
-  };
-
   return (
     <Backdrop>
         <Wrapper>
@@ -241,12 +230,7 @@ export default function UserDialog() {
                       <Button onClick={(e) => {
                         e.preventDefault();
                         console.log(player?.userid ?? "unknown") // 🐱
-                        console.log(player)
-                        reqNewDM(
-                          player.name
-                        )
-                        dispatch(setShowDMRoom(true));
-                        dispatch(setShowUser(false))
+                        reqNewDM(player)
                         } }>
                         메세지 보내기
                       </Button>
