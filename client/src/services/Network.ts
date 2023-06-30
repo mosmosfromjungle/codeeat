@@ -280,9 +280,9 @@ export default class Network {
     this.webRTC?.deleteVideoStream(id)
   }
   
-  // addChatMessage(content: string) {
-  //   this.room?.send(Message.ADD_CHAT_MESSAGE, { content: content })
-  // }
+  addChatMessage(content: string) {
+    this.room?.send(Message.ADD_CHAT_MESSAGE, { content: content })
+  }
   
   // connectToMoleGame(id: string) {
   //   this.room?.send(Message.CONNECT_TO_MOLEGAME, { moleGameId: id })
