@@ -2,8 +2,8 @@ import { Schema, model, Document, Model } from 'mongoose'
 import { IDM } from '../controllers/DMControllers/types'
 
 const dm = new Schema<IDM>({
-  senderId: { type: String, required: true },
-  receiverId: { type: String, required: true },
+  senderName: { type: String, required: true },
+  receiverName: { type: String, required: true },
   message: { type: String, required: false },
   createdAt: { type: Date, default: Date.now, required: false },
 })

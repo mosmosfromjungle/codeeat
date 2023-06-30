@@ -19,10 +19,12 @@ import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import { IPlayer } from '../../../types/IOfficeState';
+import { insertLastDM } from '../apicalls/DM/DM';
 
 import { setShowUser } from '../stores/ChatStore'
-import { setShowDMList, setShowDMRoom } from '../stores/DMStore'
+import { setReceiverName, setShowDMList, setShowDMRoom, setRoomId } from '../stores/DMStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
+import { checkIfFirst } from '../apicalls/DM/DM';
 
 const Backdrop = styled.div`
   position: fixed;
@@ -150,7 +152,7 @@ export default function UserDialog() {
   const focused = useAppSelector((state) => state.chat.focused)
   const showUser = useAppSelector((state) => state.chat.showUser)
 
-  const username = useAppSelector((state) => state.user.username)
+  const myName = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
   const userLevel = useAppSelector((state) => state.user.userLevel)
   const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`
@@ -160,6 +162,36 @@ export default function UserDialog() {
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+  const checkFirstChat = async (receiverName) => {
+    try {
+      const first = await checkIfFirst({ senderName: myName, receiverName: receiverName});
+      console.log('첫 디엠인지 아닌지 체크, 첫디엠이면 status:200 && undefined')
+      return first?.status
+    } catch(err) {
+      console.error('check first chat error: ',err)
+    }
+  }
+  
+
+  const handleClick = async (player) => {
+    // const firstChatStatus = await checkFirstChat(player.name)
+    // if (firstChatStatus !== undefined && firstChatStatus == 200) {
+    //   dispatch(setReceiverName(player.name))
+    //   dispatch(setShowDMRoom(true))
+    //   dispatch(setShowUser(false)) // 수정 가능
+    // } else {
+      let body = {
+        senderName: myName,
+        receiverName: player.name,
+        message: `${myName} 님이 메시지를 보냈습니다`
+      }
+      console.log(body)
+      insertLastDM(body)
+      dispatch(setReceiverName(player.name))
+      dispatch(setShowDMRoom(true))
+      dispatch(setShowUser(false))
+    // }
   }
 
   useEffect(() => {
@@ -175,13 +207,6 @@ export default function UserDialog() {
   useEffect(() => {
     scrollToBottom()
   }, [chatMessages, showUser])
-
-  const [open, setOpen] = React.useState(true);
-
-  const handleClick = () => {
-    setOpen(!open);
-  };
-
   return (
     <Backdrop>
         <Wrapper>
@@ -206,10 +231,11 @@ export default function UserDialog() {
                 <Button>Ruby</Button>
               </ButtonGroup>
               {otherPlayers?.map((player, i: number) => {
+              if (player.name !== myName) { 
                 return (
-              <UserList>
+              <UserList key={i}>
                 <User>
-                  <ListItem divider key={i}>
+                  <ListItem>
                     <ListItemAvatar>
                       <Avatar src={imgpath} />
                     </ListItemAvatar>
@@ -223,10 +249,10 @@ export default function UserDialog() {
                       <Button>
                         친구 추가하기
                       </Button>
-                      <Button onClick={() => {
-                        // dispatch(setShowDMRoom(true));
-                        dispatch(setShowDMList(true));
-                        dispatch(setShowUser(false))
+                      <Button onClick={(e) => {
+                        e.preventDefault();
+                        console.log(player?.userid ?? "unknown") // 🐱
+                        handleClick(player)
                         } }>
                         메세지 보내기
                       </Button>
@@ -234,7 +260,7 @@ export default function UserDialog() {
                   </ListItem>
                 </User>
               </UserList>)
-              })}
+              }})}
             </ChatBox>
           </Content>
         </Wrapper>

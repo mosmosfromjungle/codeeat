@@ -2,7 +2,7 @@ import Phaser from 'phaser'
 
 // import { debugDraw } from '../utils/debug'
 import Network from '../services/Network'
-import Network2 from '../services/Network2'
+import DMNetwork from '../services/DMNetwork'
 // import GameNetwork from '../services/GameNetwork'
 
 import Item from '../items/Item'
@@ -24,12 +24,12 @@ import { createCharacterAnims } from '../anims/CharacterAnims'
 
 import store from '../stores'
 import { setFocused, setShowChat } from '../stores/ChatStore'
-import { setShowDMList, setShowDM, setShowDMRoom } from '../stores/DMStore'
+import { setShowDMList, setShowDMRoom } from '../stores/DMStore'
 import { NavKeys, Keyboard } from '../../../types/KeyboardState'
 
 export default class Game extends Phaser.Scene {
   network!: Network
-  network2!: Network2
+  dmNetwork!: DMNetwork
   private cursors!: NavKeys
   private keyE!: Phaser.Input.Keyboard.Key
   private keyR!: Phaser.Input.Keyboard.Key
@@ -63,7 +63,7 @@ export default class Game extends Phaser.Scene {
     })
     this.input.keyboard.on('keydown-ESC', (event) => {
       store.dispatch(setShowChat(false))
-      store.dispatch(setShowDM(false))
+      store.dispatch(setShowDMRoom(false))
       // store.dispatch(setShowDMRoom(false))
       store.dispatch(setShowDMList(false))
     })
@@ -77,12 +77,19 @@ export default class Game extends Phaser.Scene {
     this.input.keyboard.enabled = true
   }
 
-  create(data: { network: Network }) {
+  create(data: { network: Network; dmNetwork: DMNetwork }) {
     if (!data.network) {
       throw new Error('server instance missing')
     } else {
       this.network = data.network
     }
+
+    if (!data.dmNetwork) {
+      throw new Error('dm server instance missing')
+    } else {
+      this.dmNetwork = data.dmNetwork
+    }
+
 
     createCharacterAnims(this.anims)
 
@@ -283,7 +290,13 @@ export default class Game extends Phaser.Scene {
 
   // function to add new player to the otherPlayer group
   private handlePlayerJoined(newPlayer: IPlayer, id: string) {
-    const otherPlayer = this.add.otherPlayer(newPlayer.x, newPlayer.y, 'adam', id, newPlayer.name)
+    const otherPlayer = this.add.otherPlayer(
+      newPlayer.x,
+      newPlayer.y,
+      'adam',
+      id,
+      newPlayer.name,
+      )
     this.otherPlayers.add(otherPlayer)
     this.otherPlayerMap.set(id, otherPlayer)
   }

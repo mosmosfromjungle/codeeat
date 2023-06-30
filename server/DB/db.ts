@@ -21,8 +21,8 @@ export async function connectDB() {
   createCollection('user')
   createCollection('friends')
   createCollection('friendrequest')
-  createCollection('lastdm')
   createCollection('dm')
+  createCollection('lastdm')
   createCollection('raingame')
   createCollection('molegame')
 
@@ -45,11 +45,11 @@ export const createCollection = (modelName : string) => {
     case 'friendrequest':
       new FriendRequest();
       break
-    case 'lastdm':
-      new LastDM();
-      break;
     case 'dm':
       new DM();
+      break;
+    case 'lastdm':
+      new LastDM();
       break;
     case 'raingame':
       new KeywordRainModel();

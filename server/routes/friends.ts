@@ -35,5 +35,3 @@ router.use((err, res) => {
     message: `Server Error: ${err}`,
   })
 })
-
-export default router
