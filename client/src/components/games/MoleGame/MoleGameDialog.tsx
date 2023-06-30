@@ -65,15 +65,19 @@ const Content = styled.div`
   display: flex;
 `
 
+const Moles = styled.div`
+  width: 40%;
+`
+
 const MyPoint = styled.div`
-  margin-right: 200px;
   margin-top: 100px;
+  width: 30%;
   text-align: center;
 `
 
 const YourPoint = styled.div`
-  margin-left: 200px;
   margin-top: 100px;
+  width: 30%;
   text-align: center;
 `
 
@@ -730,62 +734,64 @@ export default function MoleGameDialog() {
                 </div>
               </YourPoint>
               
-              <ul className="whack-a-mole clearfix">
-                <li className="mole" onClick={() => handleClick(1)}>
-                  <img id="1" src="/assets/game/molegame/mole.png"></img>
-                  <div id="answer-div-1" className={`answer-text-1 ${activeNumberList.includes(1) ? '' : 'hiding'}`}>
-                    <p id="answer-text-1">{ answerText1 }</p>
-                  </div>
-                </li>
-                <li className="mole" onClick={() => handleClick(2)}>
-                  <img id="2" src="/assets/game/molegame/mole.png"></img>
-                  <div id="answer-div-2" className={`answer-text-2 ${activeNumberList.includes(2) ? '' : 'hiding'}`}>
-                    <p id="answer-text-2">{ answerText2 }</p>
-                  </div>
-                </li>
-                <li className="mole" onClick={() => handleClick(3)}>
-                  <img id="3" src="/assets/game/molegame/mole.png"></img>
-                  <div id="answer-div-3" className={`answer-text-3 ${activeNumberList.includes(3) ? '' : 'hiding'}`}>
-                    <p id="answer-text-3">{ answerText3 }</p>
-                  </div>
-                </li>
-                <li className="mole" onClick={() => handleClick(4)}>
-                  <img id="4" src="/assets/game/molegame/mole.png"></img>
-                  <div id="answer-div-4" className={`answer-text-4 ${activeNumberList.includes(4) ? '' : 'hiding'}`}>
-                    <p id="answer-text-4">{ answerText4 }</p>
-                  </div>
-                </li>
-                <li className="mole" onClick={() => handleClick(5)}>
-                  <img id="5" src="/assets/game/molegame/mole.png"></img>
-                  <div id="answer-div-5" className={`answer-text-5 ${activeNumberList.includes(5) ? '' : 'hiding'}`}>
-                    <p id="answer-text-5">{ answerText5 }</p>
-                  </div>
-                </li>
-                <li className="mole" onClick={() => handleClick(6)}>
-                  <img id="6" src="/assets/game/molegame/mole.png"></img>
-                  <div id="answer-div-6" className={`answer-text-6 ${activeNumberList.includes(6) ? '' : 'hiding'}`}>
-                    <p id="answer-text-6">{ answerText6 }</p>
-                  </div>
-                </li>
-                <li className="mole" onClick={() => handleClick(7)}>
-                  <img id="7" src="/assets/game/molegame/mole.png"></img>
-                  <div id="answer-div-7" className={`answer-text-7 ${activeNumberList.includes(7) ? '' : 'hiding'}`}>
-                    <p id="answer-text-7">{ answerText7 }</p>
-                  </div>
-                </li>
-                <li className="mole" onClick={() => handleClick(8)}>
-                  <img id="8" src="/assets/game/molegame/mole.png"></img>
-                  <div id="answer-div-8" className={`answer-text-8 ${activeNumberList.includes(8) ? '' : 'hiding'}`}>
-                    <p id="answer-text-8">{ answerText8 }</p>
-                  </div>
-                </li>
-                <li className="mole" onClick={() => handleClick(9)}>
-                  <img id="9" src="/assets/game/molegame/mole.png"></img>
-                  <div id="answer-div-9" className={`answer-text-9 ${activeNumberList.includes(9) ? '' : 'hiding'}`}>
-                    <p id="answer-text-9">{ answerText9 }</p>
-                  </div>
-                </li>
-              </ul>
+              <Moles>
+                <ul className="whack-a-mole clearfix">
+                  <li className="mole" onClick={() => handleClick(1)}>
+                    <img id="1" src="/assets/game/molegame/mole.png"></img>
+                    <div id="answer-div-1" className={`answer-text-1 ${activeNumberList.includes(1) ? '' : 'hiding'}`}>
+                      <p id="answer-text-1">{ answerText1 }</p>
+                    </div>
+                  </li>
+                  <li className="mole" onClick={() => handleClick(2)}>
+                    <img id="2" src="/assets/game/molegame/mole.png"></img>
+                    <div id="answer-div-2" className={`answer-text-2 ${activeNumberList.includes(2) ? '' : 'hiding'}`}>
+                      <p id="answer-text-2">{ answerText2 }</p>
+                    </div>
+                  </li>
+                  <li className="mole" onClick={() => handleClick(3)}>
+                    <img id="3" src="/assets/game/molegame/mole.png"></img>
+                    <div id="answer-div-3" className={`answer-text-3 ${activeNumberList.includes(3) ? '' : 'hiding'}`}>
+                      <p id="answer-text-3">{ answerText3 }</p>
+                    </div>
+                  </li>
+                  <li className="mole" onClick={() => handleClick(4)}>
+                    <img id="4" src="/assets/game/molegame/mole.png"></img>
+                    <div id="answer-div-4" className={`answer-text-4 ${activeNumberList.includes(4) ? '' : 'hiding'}`}>
+                      <p id="answer-text-4">{ answerText4 }</p>
+                    </div>
+                  </li>
+                  <li className="mole" onClick={() => handleClick(5)}>
+                    <img id="5" src="/assets/game/molegame/mole.png"></img>
+                    <div id="answer-div-5" className={`answer-text-5 ${activeNumberList.includes(5) ? '' : 'hiding'}`}>
+                      <p id="answer-text-5">{ answerText5 }</p>
+                    </div>
+                  </li>
+                  <li className="mole" onClick={() => handleClick(6)}>
+                    <img id="6" src="/assets/game/molegame/mole.png"></img>
+                    <div id="answer-div-6" className={`answer-text-6 ${activeNumberList.includes(6) ? '' : 'hiding'}`}>
+                      <p id="answer-text-6">{ answerText6 }</p>
+                    </div>
+                  </li>
+                  <li className="mole" onClick={() => handleClick(7)}>
+                    <img id="7" src="/assets/game/molegame/mole.png"></img>
+                    <div id="answer-div-7" className={`answer-text-7 ${activeNumberList.includes(7) ? '' : 'hiding'}`}>
+                      <p id="answer-text-7">{ answerText7 }</p>
+                    </div>
+                  </li>
+                  <li className="mole" onClick={() => handleClick(8)}>
+                    <img id="8" src="/assets/game/molegame/mole.png"></img>
+                    <div id="answer-div-8" className={`answer-text-8 ${activeNumberList.includes(8) ? '' : 'hiding'}`}>
+                      <p id="answer-text-8">{ answerText8 }</p>
+                    </div>
+                  </li>
+                  <li className="mole" onClick={() => handleClick(9)}>
+                    <img id="9" src="/assets/game/molegame/mole.png"></img>
+                    <div id="answer-div-9" className={`answer-text-9 ${activeNumberList.includes(9) ? '' : 'hiding'}`}>
+                      <p id="answer-text-9">{ answerText9 }</p>
+                    </div>
+                  </li>
+                </ul>
+              </Moles>
 
               <MyPoint>
                 <div className="point-wrap">
