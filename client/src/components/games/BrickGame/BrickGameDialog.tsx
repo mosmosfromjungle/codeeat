@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
 
-import { useAppSelector, useAppDispatch } from '../../hooks'
-import { closeBrickGameDialog } from '../../stores/BrickGameStore'
-import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore'
-import { PlayersInterface } from '../../stores/RoomStore'
+import { useAppSelector, useAppDispatch } from '../../../hooks'
+import { closeBrickGameDialog } from '../../../stores/BrickGameStore'
+import { DIALOG_STATUS, setDialogStatus } from '../../../stores/UserStore'
+import { PlayersInterface } from '../../../stores/RoomStore'
 
-import phaserGame from '../../PhaserGame'
-import Bootstrap from '../../scenes/Bootstrap'
-import Game from '../../scenes/Game'
+import phaserGame from '../../../PhaserGame'
+import Bootstrap from '../../../scenes/Bootstrap'
+import Game from '../../../scenes/Game'
 
 import img1 from '/assets/game/brickGame/52-2.png'
 import img2 from '/assets/game/brickGame/25-2.png'
