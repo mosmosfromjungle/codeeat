@@ -3,6 +3,7 @@ import rain_Background from '../../../../public/assets/game/RainGame/blackboard.
 import { useAppDispatch, useAppSelector } from '../../../hooks'
 import Bootstrap from '../../../scenes/Bootstrap'
 import phaserGame from '../../../PhaserGame'
+import { setRainGameMyState, setRainGameYouState} from '../../../stores/RainGameStore'
 
 interface KeywordRain {
   y: number
@@ -153,64 +154,20 @@ export function RainGame() {
       )
     }, 30)
 
-    //     const myinterval = setInterval(() => {
-    //       if(currentWordIndex < words.length) {
-    //       const keyword = words[currentWordIndex];
-    //       setMyGame(myGame => [...myGame,{
-    //         y: keyword.y,
-    //         speed: keyword.speed,
-    //         x: keyword.x,
-    //         keyword: keyword.keyword
-    //       }]);
-    //       currentWordIndex++;
-    //     }
-    //   }, 2000);
-
-    //   const youinterval = setInterval(() => {
-    //     if(currentWordIndex < words.length) {
-    //     const keyword = words[currentWordIndex];
-    //     setYouGame(youGame => [...youGame,{
-    //       y: keyword.y,
-    //       speed: keyword.speed,
-    //       x: keyword.x,
-    //       keyword: keyword.keyword
-    //     }]);
-    //     currentWordIndex++;
-    //   }
-    // }, 2000);
-
-    //   const interval2 = setInterval(() => {
-    //     setMyGame((game) =>
-    //         game.map((item) => {
-    //             const newY = item.y + item.speed;
-    //             if (newY > lineHeight && item.y <= lineHeight) {
-
-    //             }
-    //             return { ...item, y: newY }
-    //         })
-    //     );
-    // }, 50);
-
     const timeInterval = setInterval(() => {
       setTime((prevTime) => Math.max(prevTime - 1, 0))
     }, 1000)
 
     return () => {
       clearInterval(timeInterval)
-      // clearInterval(myinterval)
-      // clearInterval(youinterval)
-      // clearInterval(interval2)
+
       clearInterval(createWordsInterval)
       clearInterval(updateMyWordsInterval)
       clearInterval(updateYouWordsInterval)
       bootstrap.gameNetwork.room.removeAllListeners()
-      // clearInterval(updateWordsInterval);
+
     }
   }, [])
-
-  // const removeNode = (keywordToRemove: string) => {
-  //   setGame((game) => game.filter((item) => item.keyword !== keywordToRemove));
-  // };
 
   const keydown = (keyCode: number) => {
     if (keyCode === 13 && keywordInput.current) {
@@ -223,35 +180,6 @@ export function RainGame() {
       keywordInput.current.value = ''
     }
   }
-
-  //   const removeNode = (keywordToRemove: string) => {
-  //     setGame((game) => game.filter((item) => item.keyword !== keywordToRemove));
-  //     setKeywordList((keywords) =>
-  //         keywords.filter((keyword) => keyword !== keywordToRemove)
-  //     );
-  // };
-
-  // const keydown = (keyCode: number) => {
-  //   if (keyCode === 13 && keywordInput.current) {
-  //       const text = keywordInput.current.value;
-  //       if (keywordList.includes(text)) {
-  //           removeNode(text);
-  //           setPoint(point + 1);
-  //           setKeywordList((prevKeywords) =>
-  //               prevKeywords.filter(keyword => keyword !== text)
-  //           );
-  //       }
-  //       keywordInput.current.value = "";
-  //     }
-  //   };
-
-  // const keydown = (keyCode) => {
-  //   if (keyCode === 13 && keywordInput.current) {
-  //     const text = keywordInput.current.value
-  //     // dispatch(removeKeyword({ keyword: text, owner: username }))
-  //     keywordInput.current.value = ''
-  //   }
-  // }
 
   return (
     <>
