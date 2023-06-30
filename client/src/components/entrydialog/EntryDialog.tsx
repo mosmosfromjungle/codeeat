@@ -34,7 +34,7 @@ const Title = styled.span`
   text-align: center;
   font-family: Font_DungGeun;
 `
-const SubTitle = styled.span`
+const SubTitle = styled.div`
   font-size: 30px;
   color: #eee;
   font-family: Font_DungGeun;
