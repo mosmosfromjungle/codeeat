@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import {
-  setReceiverId,
   setReceiverName,
   setRoomId,
   setShowDMList,
@@ -61,6 +60,7 @@ return (
               <ListTag
                 key={room._id}
                 onClick={() => {
+                  setShowDMList(false)
                   handleClick(room);
                 }}
               >

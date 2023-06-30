@@ -14,7 +14,7 @@ const Backdrop = styled.div`
   position: fixed;
   display: flex;
   gap: 10px;
-  bottom: 16px;
+  bottom: 70px;
   right: 16px;
   align-items: flex-end;
 `
@@ -25,7 +25,7 @@ const DMwrapper = styled(Box)`
   background: #2c2c2c;
   border: 25px solid #00000029;
   padding: 10px 10px;
-  border-radius: 0px 0px 10px 10px;
+  border-radius: 0px 0px 5px 5px;
 
   Button {
     font-size: 17px;
@@ -39,7 +39,7 @@ export function DMRoom() {
   return (
     <Backdrop>
         <DMwrapper>
-          <DMHeader/>
+        <DMHeader/>
           <DMBubbles newMessage={newMessage}/>
           <DMBottom setNewMessage={setNewMessage}/>
         </DMwrapper>

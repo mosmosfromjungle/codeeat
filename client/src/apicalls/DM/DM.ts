@@ -26,7 +26,8 @@ export const DMReq = async (body: any) => {
 
 export const checkIfFirst = async (body: any) => {
   try{
-    await axios.post(`/lastdm/checkIfFirst`, body)
+    const response = axios.post(`/lastdm/checkIfFirst`, body)
+    return response;
   } catch(err) {
     console.error(err)
   }

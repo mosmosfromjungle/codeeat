@@ -123,13 +123,17 @@ export const updateLastDM = async (obj: { senderName: string; receiverName: stri
     );
   };
 
-  export const checkLast = async (obj:{senderName: string, receiverName: string}) => {
+  export const checkLast = async (obj: { senderName: string, receiverName: string }) => {
     try {
-      const result = LastDM.collection.countDocuments({
-        $and: [{ 'senderName': obj.senderName}, {'receiverName': obj.receiverName }]
-      })
-      return result
-    } catch(err) {
-      console.error(err)
+      const result = await LastDM.collection.findOne({
+        $or: [
+          { $and: [{ 'senderName': obj.senderName }, { 'receiverName': obj.receiverName }] },
+          { $and: [{ 'senderName': obj.receiverName }, { 'receiverName': obj.senderName }] }
+        ]
+      });
+      return result;
+    } catch (err) {
+      console.error(err);
+      throw err;
     }
-  }
+  };

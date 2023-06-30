@@ -5,9 +5,16 @@ import { Message } from '../../../types/Messages'
 import { setNewMessage } from '../stores/DMStore';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
+interface OldMessage{
+  _id: string
+  createdAt: number
+  message: string
+  senderName: string
+  receiverName: string
+}
 export default class DMNetwork {
   private socketClient: Socket;
-  public oldMessages: any[];
+  public oldMessages: OldMessage[];
   constructor() {
     const socketUrl = `http://localhost:8888/`
     this.socketClient = io(socketUrl, {
@@ -28,20 +35,16 @@ export default class DMNetwork {
     return this.socketClient;
   };
 
-  joinRoom = (roomId: string, senderName: string, receiverName: string, callback: any) => {
-    console.log('JOINROOM-----MyId:',senderName,'acqId:',receiverName) // 🐱
+  joinRoom = (roomId: string, senderName: string, receiverName: string) => {
     this.socketClient.emit('join-room', { roomId: roomId, userName: senderName, receiverName: receiverName });
-
+    console.log(' 여기 ---')
     this.socketClient.on('old-messages', (data) => {
-      console.log('old messages')
-      const userName = store.getState().user.userName || cookies.get('userName');
       this.oldMessages = [];
       data.forEach((element: any) => {
         if (element.senderName) {
           this.oldMessages.push(element);
         }
       });
-      callback(this.oldMessages);
     });
   };
 

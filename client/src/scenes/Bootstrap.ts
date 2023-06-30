@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 import Network from '../services/Network'
-import Network2 from '../services/Network2'
+import DMNetwork from '../services/DMNetwork'
 import store from '../stores'
 import { setRoomJoined } from '../stores/RoomStore'
 import { BackgroundMode } from '../../../types/BackgroundMode'
@@ -9,7 +9,7 @@ import GameNetwork from '../services/GameNetwork'
 export default class Bootstrap extends Phaser.Scene {
   private preloadComplete = false
   network!: Network
-  network2!: Network2
+  dmNetwork!: DMNetwork
   gameNetwork!: GameNetwork
 
   constructor() {
@@ -132,7 +132,7 @@ export default class Bootstrap extends Phaser.Scene {
 
   init() {
     this.network = new Network()
-    this.network2 = new Network2()
+    this.dmNetwork = new DMNetwork()
     this.gameNetwork = new GameNetwork()
   }
 
@@ -145,7 +145,7 @@ export default class Bootstrap extends Phaser.Scene {
     this.network.webRTC?.checkPreviousPermission()
     this.scene.launch('game', {
       network: this.network,
-      network2: this.network2,
+      dmNetwork: this.dmNetwork,
     })
 
     // update Redux state

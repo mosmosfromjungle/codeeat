@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ChatFeed } from 'react-chat-ui';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import styled from 'styled-components';
-import DMNetwork from '../../services/Network2';
+import DMNetwork from '../../services/DMNetwork';
 import Game from '../../scenes/Game';
 import phaserGame from '../../PhaserGame';
 
@@ -14,7 +14,7 @@ const Wrapper = styled.div`
 export default function DMBubbles(props) {
   const dispatch = useAppDispatch();
   const game = phaserGame.scene.keys.game as Game;
-  const socketNetwork = game.network2;
+  const socketNetwork = game.dmNetwork;
   const roomId = useAppSelector((state) => state.dm.roomId);
   const receiverName = useAppSelector((state) => state.dm.receiverName);
   const userName = useAppSelector((state) => state.user.userName);
@@ -23,14 +23,14 @@ export default function DMBubbles(props) {
   const [messageList, setMessageList] = useState<any>([]);
   const callback_joinRoom = (oldMessages) => {
     console.log(oldMessages)
-      setMessageList(oldMessages);
-    };
-// 🐱
+  };
+  // 🐱
   useEffect(() => {
-    socketNetwork.joinRoom(roomId, userName, receiverName, callback_joinRoom);
-  }, []);
+    setMessageList(socketNetwork.oldMessages);
+  }, [socketNetwork.oldMessages]);
 
   useEffect(() => {
+    if (!props.newMessage || props.newMessage?.message.length === 0) return;
 
     const body = {
       roomId: roomId,
@@ -43,7 +43,7 @@ export default function DMBubbles(props) {
     setMessageList((messageList) => [...messageList, props.newMessage]);
 
     // 내가 쓴 메세지 서버에 전송
-    game.network2.sendMessage(body);
+    game.dmNetwork.sendMessage(body);
   }, [props.newMessage?.message]);
 
   useEffect(() => {

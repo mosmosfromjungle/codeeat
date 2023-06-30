@@ -12,7 +12,7 @@ interface IRoomParams {
   receiverName: string;
 }
 const time_diff = 9 * 60 * 60 * 1000;
-const createRoom = () => {
+export const createRoom = () => {
     const roomId = uuidV4();
     rooms[roomId] = [];
     console.log('chatroom[', roomId, '] created')
@@ -30,7 +30,6 @@ export const DMController = (socket: Socket) => {
       socket.join(roomId);
     } else {
       roomId = createRoom();
-      rooms[roomId].push(userName);
       updateRoomId({ roomId: roomId, senderName: userName, receiverName: receiverName })
       rooms[roomId].push(userName);
     }

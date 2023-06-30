@@ -82,7 +82,7 @@ export default function HelperButtonGroup() {
                 ) : (
                   dispatch(setShowChat(true)),
                   dispatch(setFocused(true)),
-                  // dispatch(setShowDMRoom(false)),
+                  dispatch(setShowDMRoom(false)),
                   dispatch(setShowDMList(false)),
                   dispatch(setShowUser(false)),
                   dispatch(setShowLogout(false)),
@@ -101,11 +101,10 @@ export default function HelperButtonGroup() {
             <FabWrapper>
               <Fab
                 onClick={() => showDMList ? (
-                  // dispatch(setShowDMRoom(false)),
+                  dispatch(setShowDMRoom(false)),
                   dispatch(setShowDMList(false)),
                   dispatch(setFocused(false))
                 ) : (
-                  // dispatch(setShowDMRoom(true)),
                   dispatch(setShowDMList(true)),
                   dispatch(setFocused(true)),
                   dispatch(setShowChat(false)),

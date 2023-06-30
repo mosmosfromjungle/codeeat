@@ -2,7 +2,7 @@ import Phaser from 'phaser'
 
 // import { debugDraw } from '../utils/debug'
 import Network from '../services/Network'
-import Network2 from '../services/Network2'
+import DMNetwork from '../services/DMNetwork'
 // import GameNetwork from '../services/GameNetwork'
 
 import Item from '../items/Item'
@@ -29,7 +29,7 @@ import { NavKeys, Keyboard } from '../../../types/KeyboardState'
 
 export default class Game extends Phaser.Scene {
   network!: Network
-  network2!: Network2
+  dmNetwork!: DMNetwork
   private cursors!: NavKeys
   private keyE!: Phaser.Input.Keyboard.Key
   private keyR!: Phaser.Input.Keyboard.Key
@@ -93,12 +93,19 @@ export default class Game extends Phaser.Scene {
     this.input.keyboard.enabled = true
   }
 
-  create(data: { network: Network; network2: Network2 }) {
+  create(data: { network: Network; dmNetwork: DMNetwork }) {
     if (!data.network) {
       throw new Error('server instance missing')
     } else {
       this.network = data.network
     }
+
+    if (!data.dmNetwork) {
+      throw new Error('dm server instance missing')
+    } else {
+      this.dmNetwork = data.dmNetwork
+    }
+
 
     createCharacterAnims(this.anims)
 
