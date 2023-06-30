@@ -56,15 +56,17 @@ export const DMController = (socket: Socket) => {
       addDM({ senderName: senderName, receiverName: receiverName, message: message });
       updateLastDM({ senderName: senderName, receiverName: receiverName, message: message })
       userMap.get(receiverName)?.emit('message', obj);
+      console.log(userMap.get(receiverName),'에게',obj.message, '라고 보냄')
     }
   };
 
   const readMessage = (message: { roomId: string; userName: string; receiverName: string; }) => {
     const { roomId, userName, receiverName } = message;
   
-    getDMMessage({senderName:userName, receiverName:receiverName})
+    getDMMessage(userName,receiverName)
     .then((dmMessage) => {
       socket.emit('old-messages', dmMessage);
+      
     })
     .catch((error) => {
       console.error('readMessage', error);
@@ -97,13 +99,13 @@ export const addDM = (message: {
 };
 
   
-export const getDMMessage = async (obj:{senderName: string, receiverName: string}) => {
+export const getDMMessage = async (senderName: string, receiverName: string) => {
     let result = new Array();
     await dm.collection
       .find({
         $or: [
-          { $and: [{ senderName: obj.senderName }, { receiverName: obj.receiverName }] },
-          { $and: [{ senderName: obj.receiverName }, { receiverName: obj.senderName }] },
+          { $and: [{ senderName: senderName }, { receiverName: receiverName }] },
+          { $and: [{ senderName: receiverName }, { receiverName: senderName }] },
         ],
       })
       .limit(100)

@@ -27,6 +27,7 @@ export default class DMNetwork {
       console.error(err)
     })
     this.socketClient.on('message', (data) => {
+      console.log(data,'라고 받음')
       store.dispatch(setNewMessage(data))
     })
   }
@@ -35,7 +36,7 @@ export default class DMNetwork {
     return this.socketClient;
   };
 
-  joinRoom = (roomId: string, senderName: string, receiverName: string) => {
+  joinRoom = (roomId: string, senderName: string, receiverName: string, callback:any) => {
     this.socketClient.emit('join-room', { roomId: roomId, userName: senderName, receiverName: receiverName });
     console.log(' 여기 ---')
     this.socketClient.on('old-messages', (data) => {
@@ -46,6 +47,7 @@ export default class DMNetwork {
         }
       });
     });
+    callback(this.oldMessages)
   };
 
   sendMessage = (message: object) => {

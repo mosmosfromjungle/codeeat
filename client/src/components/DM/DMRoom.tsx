@@ -6,8 +6,6 @@ import { useState } from 'react'
 import { ConversationList } from './DMList';
 import { DMHeader } from './DMHeader';
 import DMBubbles from './DMContents';
-import { setNewMessage } from '../../stores/DMStore';
-import { ChatBubble } from 'react-chat-ui';
 import DMBottom from './DMBottom';
 
 const Backdrop = styled.div`
@@ -15,17 +13,16 @@ const Backdrop = styled.div`
   display: flex;
   gap: 10px;
   bottom: 70px;
-  right: 16px;
+  right: 17px;
   align-items: flex-end;
 `
 const DMwrapper = styled(Box)`
-  height: 580px;
-  width: 360px;
-  overflow: auto;
-  background: #2c2c2c;
-  border: 25px solid #00000029;
-  padding: 10px 10px;
-  border-radius: 0px 0px 5px 5px;
+  height: 593px;
+  width: 385px;
+  background: #F6F6F6;
+  border: 10px solid #FFFFF5;
+  padding: 1px 1px;
+  border-radius: 20px 20px 10px 10px;
 
   Button {
     font-size: 17px;

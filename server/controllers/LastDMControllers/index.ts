@@ -11,7 +11,7 @@ export const loadData = async (req: Request, res: Response) => {
       status: 404,
       message: 'not found',
     });
-  
+    console.log(userName)
     getLastDM(userName)
       .then((result) => {
         res.status(200).json({
@@ -27,27 +27,9 @@ export const loadData = async (req: Request, res: Response) => {
         });
       });
   };
-export const firstdata = async (req: Request, res: Response) => {
-  const user = req.body
-  console.log(user) // 🐱
-  await addLastDM({
-    senderName: user.senderName,
-    receiverName: user.receiverName,
-    message: user.message,
-  })
-  return res.status(200).json({
-    status: 200,
-    payload: {
-      senderName: user.senderName,
-      receiverName: user.receiverName,
-    },
-  })
-}
 
-
-export const getLastDM = async (obj:{senderName: string} ) => {
+export const getLastDM = async (obj:{senderName: string}) => {
   let result = new Array();
-  console.log(obj)
   try {
     await LastDM.collection
     .find({$or:[
@@ -57,6 +39,7 @@ export const getLastDM = async (obj:{senderName: string} ) => {
     .sort({ _id: -1 })
     .toArray()
     .then((elem) => {
+      console.log(elem)
       elem.forEach((json) => {
         result.push(json);
         });

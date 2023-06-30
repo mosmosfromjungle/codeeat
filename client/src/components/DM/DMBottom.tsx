@@ -63,7 +63,7 @@ export default function DMBottom(props) {
         InputProps={{style: {fontFamily: 'Font-Dungeun', color: 'black'},
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton color="primary" sx={{ p: '10px' }} onClick={handleSubmit} edge="end">
+              <IconButton color="primary" sx={{ p: '15px' }} onClick={handleSubmit} edge="end">
                 <SendIcon />
               </IconButton>
             </InputAdornment>
@@ -75,7 +75,7 @@ export default function DMBottom(props) {
 }
 const DMbottom = styled.div`
   background: white;
-  font-size: 28px;
+  font-size: 35px;
   font-weight: bold;
   display: flex;
   height: 70px;

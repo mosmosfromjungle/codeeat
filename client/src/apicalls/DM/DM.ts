@@ -3,27 +3,6 @@ import { AxiosResponse } from 'axios';
 import phaserGame from '../../PhaserGame';
 import Game from '../../scenes/Game'
 
-export const createRoom = async (param: CreateRoomRequest) => {
-  return axios
-    .post(`/dm/room/create`, param)
-    .then((response) => {
-      console.log('대화방생성',response.data)
-      const { data } = response.data;
-      return data as ApiResponse<CreateRoomResponse>;
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-};
-
-export const DMReq = async (body: any) => {
-  try{
-    await axios.post(`/dm/newdm`, body)
-  } catch(err) {
-    console.error(err)
-  }
-}
-
 export const checkIfFirst = async (body: any) => {
   try{
     const response = axios.post(`/lastdm/checkIfFirst`, body)
@@ -42,6 +21,14 @@ export const fetchRoomList = async (userName: string): Promise<any> => {
     console.error(error);
   }
 };
+export const insertLastDM = async (body: {senderName: string; receiverName: string; message: string}) => {
+  try {
+    const response = await axios.post(`/lastdm/injectLastDM`, body);
+    return response.data;
+  } catch(err) {
+    console.error(err)
+  }
+}
 
 interface Response<T> {
   data: T;

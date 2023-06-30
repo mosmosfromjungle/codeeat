@@ -8,8 +8,3 @@ export interface ILastDM {
   roomId?: string
   updatedAt: Date | null
 }
-
-export interface UserResponseDto {
-  userId: string
-  userName: string
-}

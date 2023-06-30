@@ -19,14 +19,12 @@ import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import { IPlayer } from '../../../types/IOfficeState';
+import { insertLastDM } from '../apicalls/DM/DM';
 
-import Game from '../scenes/Game';
-import phaserGame from '../PhaserGame';
-import { checkIfFirst } from '../apicalls/DM/DM';
 import { setShowUser } from '../stores/ChatStore'
 import { setReceiverName, setShowDMList, setShowDMRoom, setRoomId } from '../stores/DMStore'
-import { DMReq } from '../apicalls/DM/DM';
 import { useAppSelector, useAppDispatch } from '../hooks'
+import { checkIfFirst } from '../apicalls/DM/DM';
 
 const Backdrop = styled.div`
   position: fixed;
@@ -153,9 +151,7 @@ export default function UserDialog() {
   const chatMessages = useAppSelector((state) => state.chat.chatMessages)
   const focused = useAppSelector((state) => state.chat.focused)
   const showUser = useAppSelector((state) => state.chat.showUser)
-  const game = phaserGame.scene.keys.game as Game
 
-  const DMNetwork = game.dmNetwork
   const myName = useAppSelector((state) => state.user.userName)
   const character = useAppSelector((state) => state.user.character)
   const userLevel = useAppSelector((state) => state.user.userLevel)
@@ -167,10 +163,35 @@ export default function UserDialog() {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
-  const handleClick = (receiverName) => {
-    DMNetwork.joinRoom('start', myName, receiverName)
+  const checkFirstChat = async (receiverName) => {
+    try {
+      const first = await checkIfFirst({ senderName: myName, receiverName: receiverName});
+      return first?.status
+    } catch(err) {
+      console.error('check first chat error: ',err)
+    }
   }
   
+
+  const handleClick = async (player) => {
+    const firstChatStatus = await checkFirstChat(player.name)
+    if (firstChatStatus !== undefined && firstChatStatus == 200) {
+      dispatch(setReceiverName(player.name))
+      dispatch(setShowDMRoom(true))
+      dispatch(setShowUser(false)) // 수정 가능
+    } else {
+      let body = {
+        senderName: myName,
+        receiverName: player.name,
+        message: `${myName} 님이 메시지를 보냈습니다`
+      }
+      insertLastDM(body)
+      dispatch(setReceiverName(player.name))
+      dispatch(setShowDMRoom(true))
+      dispatch(setShowUser(false))
+    }
+  }
+
   useEffect(() => {
     if (focused) {
       inputRef.current?.focus()
@@ -228,8 +249,8 @@ export default function UserDialog() {
                       </Button>
                       <Button onClick={(e) => {
                         e.preventDefault();
-                        console.log(player?.name) // 🐱
-                        handleClick(player.name)
+                        console.log(player?.userid ?? "unknown") // 🐱
+                        handleClick(player)
                         } }>
                         메세지 보내기
                       </Button>

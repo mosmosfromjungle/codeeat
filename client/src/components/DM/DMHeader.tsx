@@ -41,6 +41,6 @@ const Title = styled.div`
   font-size: 20px;
   font-weight: bold;
   top: 10px;
-  left: 150px;
+  left: 10px;
   font-family: Font_DungGeun;
 `

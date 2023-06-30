@@ -48,7 +48,7 @@ export default function HelperButtonGroup() {
   const focused = useAppSelector((state) => state.chat.focused)
   const showChat = useAppSelector((state) => state.chat.showChat)
   const showDMList = useAppSelector((state) => state.dm.showDMList)
-  // const showDMRoom = useAppSelector((state) => state.dm.showDMRoom)
+  const showDMRoom = useAppSelector((state) => state.dm.showDMRoom)
   const showUser = useAppSelector((state) => state.chat.showUser)
   const showLogout = useAppSelector((state) => state.user.showLogout)
   const showVersion = useAppSelector((state) => state.user.showVersion)
@@ -100,7 +100,7 @@ export default function HelperButtonGroup() {
           {roomJoined && (
             <FabWrapper>
               <Fab
-                onClick={() => showDMList ? (
+                onClick={() => showDMList || showDMRoom ? (
                   dispatch(setShowDMRoom(false)),
                   dispatch(setShowDMList(false)),
                   dispatch(setFocused(false))

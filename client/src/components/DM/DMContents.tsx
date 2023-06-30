@@ -21,13 +21,13 @@ export default function DMBubbles(props) {
   const newMessage = useAppSelector((state) => state.dm.newMessage);
 
   const [messageList, setMessageList] = useState<any>([]);
-  const callback_joinRoom = (oldMessages) => {
-    console.log(oldMessages)
-  };
-  // 🐱
+  const _joinRoom = (oldMessages) => {
+      setMessageList(oldMessages);
+    };
+// 🐱
   useEffect(() => {
-    setMessageList(socketNetwork.oldMessages);
-  }, [socketNetwork.oldMessages]);
+    socketNetwork.joinRoom(roomId, userName, receiverName, _joinRoom);
+  }, []);
 
   useEffect(() => {
     if (!props.newMessage || props.newMessage?.message.length === 0) return;
@@ -60,8 +60,8 @@ export default function DMBubbles(props) {
           bubbleStyles={{
             text: {
               fontFamily: 'Font-Dungeun',
-              fontSize: 10,
-              color: 'white',
+              fontSize: 20,
+              color: 'black',
             },
             chatbubble: {
               borderRadius: 8,

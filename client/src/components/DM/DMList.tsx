@@ -60,7 +60,7 @@ return (
               <ListTag
                 key={room._id}
                 onClick={() => {
-                  setShowDMList(false)
+                  dispatch(setShowDMList(false))
                   handleClick(room);
                 }}
               >
