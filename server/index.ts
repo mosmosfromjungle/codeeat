@@ -15,6 +15,7 @@ import { SkyOffice } from './rooms/SkyOffice'
 import { GameRoom } from './rooms/GameRoom'
 import { BrickGameRoom } from './rooms/BrickGameRoom'
 import { RainGameRoom} from './rooms/RainGameRoom'
+import { MoleGameRoom } from './rooms/MoleGameRoom'
 import { DMController } from './controllers/DMControllers'
 import { Socket } from 'socket.io'
 
@@ -27,6 +28,9 @@ const app = express()
 const allowedOrigins = [
   'http://localhost:5173',
   'http://127.0.0.1:5173',
+  'http://43.200.172.83:5173',
+  'http://43.200.172.83',
+  'http://3.35.25.114:5173',
 ];
 
 const options: cors.CorsOptions = {
@@ -37,6 +41,7 @@ const options: cors.CorsOptions = {
     'Accept',
     'X-Access-Token',
     'authorization',
+    'Access-Control-Allow-Origin',
     '*',
   ],
   credentials: true,
@@ -72,6 +77,8 @@ mainServer.define(RoomType.FACECHATLOBBY, LobbyRoom)
 mainServer.define(RoomType.BRICK, BrickGameRoom).enableRealtimeListing()
 mainServer.define(RoomType.MOLE, GameRoom).enableRealtimeListing()
 mainServer.define(RoomType.RAIN, RainGameRoom).enableRealtimeListing()
+mainServer.define(RoomType.MOLE, MoleGameRoom).enableRealtimeListing()
+mainServer.define(RoomType.RAIN, GameRoom).enableRealtimeListing()
 mainServer.define(RoomType.FACECHAT, GameRoom).enableRealtimeListing()
 
 /**

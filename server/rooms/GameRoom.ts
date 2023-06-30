@@ -9,10 +9,6 @@ import PlayerUpdateNameCommand from './commands/PlayerUpdateNameCommand'
 import GamePlayUpdateCommand from './commands/GamePlayUpdateCommand'
 import { RainGameStartCommand } from './commands/RainGameStartCommand'
 import { MakeWordCommand } from './commands/RainGameMakeWordCommand'
-import {
-  MoleGameGetUserInfo,
-  MoleGameAddPoint,
-} from './commands/MoleGameUpdateArrayCommand'
 
 export class GameRoom extends Room<GameState> {
   private dispatcher = new Dispatcher(this)
@@ -69,6 +65,11 @@ export class GameRoom extends Room<GameState> {
         })
       }
     )
+    this.onMessage(Message.RAIN_GAME_START, (client) => {
+      this.dispatcher.dispatch(new RainGameStartCommand(), { client });
+      this.dispatcher.dispatch(new MakeWordCommand(), { room: this });
+      this.broadcast(Message.RAIN_GAME_START, Array.from(this.state.rainGameStates).reduce((obj, [key, value]) => (obj[key]= value, obj), {}));
+    });
 
     // this.onMessage(Message.RAIN_GAME_START, (client, content) => {
     //   this.dispatcher.dispatch(new RainGameStartCommand(), { client });
@@ -115,42 +116,6 @@ export class GameRoom extends Room<GameState> {
     this.onMessage(Message.READY_TO_CONNECT, (client) => {
       const player = this.state.players.get(client.sessionId)
       if (player) player.readyToConnect = true
-    })
-    // // TODO: 각각의 게임에 필요한 정보에 맞춰 수정 필요 
-    // this.onMessage(Message.UPDATE_GAME_PLAY,
-    //   (client, message: { x: number; y: number; anim: string }) => {
-    //     this.dispatcher.dispatch(new GamePlayUpdateCommand(), {
-    //       client,
-    //       anim: message.anim,
-    //     })
-    //   }
-    // )
-
-    // // when a player is ready to connect, call the PlayerReadyToConnectCommand
-    // this.onMessage(Message.READY_TO_CONNECT, (client) => {
-    //   const player = this.state.players.get(client.sessionId)
-    //   if (player) player.readyToConnect = true
-    // })
-
-    // ↓ Mole Game
-    this.onMessage(Message.SEND_MOLE, (client, message: { name: string, character: string }) => {
-      this.dispatcher.dispatch(new MoleGameGetUserInfo(), {
-        client,
-        name: message.name,
-        character: message.character,
-        point: ''
-      })
-      this.broadcast(Message.RECEIVE_MOLE, { name: message.name, character: message.character }, { except: client });
-    })
-
-    this.onMessage(Message.SEND_MY_POINT, (client, message: { point: string }) => {
-      this.dispatcher.dispatch(new MoleGameAddPoint(), {
-        client,
-        name: '',
-        character: '',
-        point: message.point,
-      })
-      this.broadcast(Message.RECEIVE_YOUR_POINT, { point: message.point }, { except: client });
     })
   }
 

@@ -6,7 +6,9 @@ import store from '../stores'
 import { setGameSessionId } from '../stores/UserStore'
 import { 
   setMoleGameFriendInfo,
-  setMoleGameFriendData
+  setMoleGameFriendData,
+  setMoleGameProblem,
+  setMoleGameHost,
  } from '../stores/MoleGameStore'
 import { 
   setBrickGameState,
@@ -197,6 +199,26 @@ export default class GameNetwork {
     this.room.onMessage(Message.RAIN_GAME_WORD, (content)=>{
       store.dispatch(setRainGameState(content))
     })
+    // ↓ Mole Game
+    // method to receive friend info to me in mole game
+    this.room.onMessage(Message.RECEIVE_MOLE, (content) => {
+      store.dispatch(setMoleGameFriendInfo(content));
+    });
+
+    // method to receive friend point to me in mole game
+    this.room.onMessage(Message.RECEIVE_YOUR_POINT, (content) => {
+      store.dispatch(setMoleGameFriendData(content));
+    });
+
+    // method to receive friend point to me in mole game
+    this.room.onMessage(Message.RESPONSE_MOLE, (content) => {
+      store.dispatch(setMoleGameProblem(content));
+    });
+
+    // method to receive host to me in mole game
+    this.room.onMessage(Message.RECEIVE_HOST, (content) => {
+      store.dispatch(setMoleGameHost(content));
+    });
   }
 
   // method to send player updates to Colyseus server
@@ -308,11 +330,23 @@ export default class GameNetwork {
   sendMyPoint(myPoint: string) {
     this.room?.send(Message.SEND_MY_POINT, { point: myPoint })
   }
+
+  // method to send my point to friend in mole game
+  startGame(problem: string) {
+    this.room?.send(Message.REQUEST_MOLE, { problem: problem })
+  }
+
+  // method to send host in mole game
+  changeHost(host: string) {
+    this.room?.send(Message.SEND_HOST, { host: host })
+  }
+
   // Rain Game
   startRainGame() {
     console.log("8")
     this.room?.send(Message.RAIN_GAME_START);
   }
+
   MakingWord(){
     this.room?.send(Message.RAIN_GAME_WORD);
   }
