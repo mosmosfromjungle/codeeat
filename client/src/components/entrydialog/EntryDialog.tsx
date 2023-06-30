@@ -8,6 +8,7 @@ import Snackbar from '@mui/material/Snackbar'
 import { useAppSelector, useAppDispatch } from '../../hooks'
 import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore'
 
+import './Entry.css'
 
 const Backdrop = styled.div`
   position: absolute;
@@ -21,6 +22,7 @@ const Backdrop = styled.div`
   font-family: Font_DungGeun;
 `
 const Wrapper = styled.div`
+  text-align: center;
   background: #222639;
   border-radius: 24px;
   padding: 200px 120px 80px 120px;
@@ -32,6 +34,16 @@ const Title = styled.span`
   text-align: center;
   font-family: Font_DungGeun;
 `
+const SubTitle = styled.span`
+  font-size: 30px;
+  color: #eee;
+  font-family: Font_DungGeun;
+
+  span {
+    color: #fbb666;
+    font-weight: bold;
+  }
+`
 const ImageContent = styled.div`
   display: flex;
   gap: 30px;
@@ -42,7 +54,6 @@ const ImageContent = styled.div`
   img {
     border-radius: 8px;
     height: 90px;
-    // margin: 0px 0px 20px 0px;
   }
 `
 const Content = styled.div`
@@ -78,6 +89,29 @@ const ProgressBar = styled(LinearProgress)`
   width: 360px;
 `
 
+// ↓ It's for character animation
+let characters;
+let currentCharacterIndex = 0;
+
+function jumpCharacter() {
+  const currentCharacter = characters[currentCharacterIndex];
+  currentCharacter.classList.add('active');
+  currentCharacter.style.animation = 'jump-animation 1s ease-in-out';
+
+  setTimeout(() => {
+    currentCharacter.classList.remove('active');
+    currentCharacter.style.animation = '';
+
+    currentCharacterIndex = (currentCharacterIndex + 1) % characters.length;
+    jumpCharacter();
+  }, 1000);
+}
+
+window.onload = function() {
+  characters = document.querySelectorAll('.character');
+
+  jumpCharacter();
+};
 
 export default function EntryDialog() {
   const [showSnackbar, setShowSnackbar] = useState(false)
@@ -92,7 +126,6 @@ export default function EntryDialog() {
       setShowSnackbar(true);
     }
   }
-
 
   const gotoJoinPage = () => {
     if (lobbyJoined) {
@@ -134,12 +167,15 @@ export default function EntryDialog() {
       <Backdrop>
         <Wrapper>
           <>
-            <Title>CodeEAT</Title>
-            <ImageContent>
-              <img src="/assets/character/single/Adam_idle_anim_24.png"></img>
-              <img src="/assets/character/single/Ash_idle_anim_24.png"></img>
-              <img src="/assets/character/single/Lucy_idle_anim_24.png"></img>
-              <img src="/assets/character/single/Nancy_idle_anim_24.png"></img>
+            <Title>CodeEat</Title>
+            <SubTitle>
+              키즈들의 코딩공간, <span>코드잇</span>
+            </SubTitle>
+            <ImageContent className="character-animation">
+              <img className="character" src="/assets/character/single/Adam_idle_anim_24.png" alt="Adam"></img>
+              <img className="character" src="/assets/character/single/Ash_idle_anim_24.png" alt="Ash"></img>
+              <img className="character" src="/assets/character/single/Lucy_idle_anim_24.png" alt="Lucy"></img>
+              <img className="character" src="/assets/character/single/Nancy_idle_anim_24.png" alt="Nancy"></img>
             </ImageContent>
             <Content>
               <Button variant="contained" onClick={gotoLoginPage}>

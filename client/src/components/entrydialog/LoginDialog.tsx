@@ -250,7 +250,7 @@ export default function LoginDialog() {
           </Content>
           <Bottom>
             <Button variant="contained" size="large" type="submit">
-              로그인하기
+              로그인
             </Button>
           </Bottom>
         </Wrapper>
