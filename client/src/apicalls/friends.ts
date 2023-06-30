@@ -19,16 +19,15 @@ export const getFriendList = async (): Promise<any> => {
     const { data } = response
     if (response.status == 200) {
       // console.log('getFriendList 성공')
-      return data.payload
+      return data
     }
 }
 
 export const getFriendRequestList = async (): Promise<any> => {
+
     const response = await axios.get('/friends/request/list')
     const { data } = response
     if (response.status == 200) {
-      // console.log('getFriendRequestList 성공')
-      // console.log(data)
       return data
     }
 }
@@ -45,8 +44,6 @@ export const sendFriendReq = async (body: sendRequest): Promise<any> => {
           
         }
         if (response.status === 201) {
-          // console.log(response)
-
           return response.data
         }
     } catch (error) {
@@ -64,7 +61,6 @@ export const handleAccept = async (body: AcceptRequest): Promise<any> => {
       })
       console.log(response)
       if (response.status === 200) {
-        // console.log(response)
         return response.data
 
       }
@@ -83,7 +79,6 @@ export const handleReject = async (body: RejectRequest): Promise<any> => {
       })
       console.log(response)
       if (response.status === 200) {
-        // console.log(response)
         return response.data
 
       }
@@ -101,10 +96,7 @@ export const handleRemove = async (body: RejectRequest): Promise<any> => {
         'Content-type': 'application/json',
       },
     })
-    // console.log(response)
     if (response.status === 200) {
-      // console.log('잘들어온경???')
-      // console.log(response)
       return response.data
     }
   } catch (error) {

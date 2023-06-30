@@ -13,29 +13,39 @@ interface CustomRequest extends Request {
 export const sendFriendRequest = async (req: Request, res: Response) => {
     const { requester, recipient } = req.body;
 
-    const foundRequester = await User.findOne({ username: requester })
-    if (!foundRequester) return res.status(409).json({ message: 'Requester not found' })
-    const foundRecipient = await User.findOne({ username: recipient })
-    if (!foundRecipient) return res.status(410).json({ message: 'Recipient not found' })
+    // const foundRequester = await User.findOne({ username: requester })
+    // if (!foundRequester) return res.status(409).json({ message: 'Requester not found' })
+    // const foundRecipient = await User.findOne({ username: recipient })
+    // if (!foundRecipient) return res.status(410).json({ message: 'Recipient not found' })
 
     const existingFriendship = await Friends.findOne({
-        $or: [
-          { requesterId: foundRequester.userId, recipientId: foundRecipient.userId },
-          { requesterId: foundRecipient.userId, recipientId: foundRequester.userId },
-        ],
-    });
+      $or: [
+        { 'requester.username': requester, 'recipient.username': recipient },
+        { 'requester.username': recipient, 'recipient.username': requester },
+      ],
+    })
     if (existingFriendship) return res.status(410).json({ message: 'Already friends '})
   
     try {
-      const existingRequest = await FriendRequest.findOne({ requesterId: foundRequester.userId, recipientId: foundRecipient.userId });
+      const existingRequest = await FriendRequest.findOne({ 'requester.username': requester, 'recipient.username': recipient });
       if (existingRequest) {
         return res.status(400).json({ message: 'Friend request already exists' });
       }
+
+      const foundRequester = await User.findOne({ username: requester })
+      if (!foundRequester) return res.status(409).json({ message: 'Requester not found' })
+      const foundRecipient = await User.findOne({ username: recipient })
+      if (!foundRecipient) return res.status(410).json({ message: 'Recipient not found' })
   
       const newRequest: IFriendRequestDocument = new FriendRequest({
-        requesterId: foundRequester.userId,
-        recipientId: foundRecipient.userId,
-        character: foundRequester.userProfile?.character,
+        requester: {
+          username: requester,
+          userObj: foundRequester._id
+        },
+        recipient: {
+          username: recipient,
+          userObj: foundRecipient._id
+        },
         createdAt: new Date(),
       });
   
@@ -46,14 +56,8 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
         status: 201,
         message: 'Friend request sent successfully',
         payload: newRequest,
-      
-      });
+        })
       }
-      // return res.status(201).json({ 
-      //   message: 'Friend request sent successfully',
-      //   payload: newRequest,
-      
-      // });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Failed to send friend request' });
@@ -62,71 +66,68 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
 
 /* 친구 요청 취소 */
 export const cancelFriendRequest = async (req: Request, res: Response) => {
-    const { requester, recipient } = req.body;
-  
-    const foundRequester = await User.findOne({ userId: requester });
-    const foundRecipient = await User.findOne({ userId: recipient });
-    if (!foundRequester || !foundRecipient) {
-      return res.status(409).json({ message: 'Requester or recipient not found' });
+  const { requester, recipient } = req.body
+
+  const foundRequester = await User.findOne({ userId: requester })
+  const foundRecipient = await User.findOne({ userId: recipient })
+  if (!foundRequester || !foundRecipient) {
+    return res.status(409).json({ message: 'Requester or recipient not found' })
+  }
+
+  try {
+    const request = await FriendRequest.findOneAndDelete({
+      requesterId: foundRequester.userId,
+      recipientId: foundRecipient.userId,
+    })
+
+    if (!request) {
+      return res.status(404).json({ message: 'Friend request not found' })
     }
-  
-    try {
-      const request = await FriendRequest.findOneAndDelete({
-        requesterId: foundRequester.userId,
-        recipientId: foundRecipient.userId,
-      });
-  
-      if (!request) {
-        return res.status(404).json({ message: 'Friend request not found' });
-      }
-  
-      res.status(200).json({ message: 'Friend request cancelled successfully' });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Failed to cancel friend request' });
-    }
-};
+
+    res.status(200).json({ message: 'Friend request cancelled successfully' })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Failed to cancel friend request' })
+  }
+}
 
 /* 친구 요청 수락 */
 export const acceptFriendRequest = async (req: Request, res: Response) => {
     const { requester, recipient } = req.body;
   
-    const foundRequester = await User.findOne({ userId: requester })
-    const foundRecipient = await User.findOne({ userId: recipient })
+    const foundRequester = await User.findOne({ username: requester })
+    const foundRecipient = await User.findOne({ username: recipient })
     if (!foundRequester || !foundRecipient) return res.status(409).json({ message: 'Recipient or recipient not found' })
 
     const existingFriendship = await Friends.findOne({
         $or: [
-          { requesterId: foundRequester.userId, recipientId: foundRecipient.userId },
-          { requesterId: foundRecipient.userId, recipientId: foundRequester.userId },
+          { 'requester.username': requester, 'recipient.username': recipient },
+          { 'requester.username': recipient, 'recipient.username': requester },
         ],
     });
     if (existingFriendship) return res.status(410).json({ message: 'Already friends '})
   
     try {
-      const request = await FriendRequest.findOne({ requesterId: foundRequester.userId, recipientId: foundRecipient.userId });
+      const request = await FriendRequest.findOne({ 'requester.username': foundRequester.username, 'recipient.username': foundRecipient.username });
       if (!request) {
         return res.status(404).json({ message: 'Friend request not found' });
       }
   
       const newFriendship: IFriendsDocument = new Friends({
-        requesterId: foundRequester.userId,
-        recipientId: foundRecipient.userId,
-        character: foundRequester.userProfile?.character,
+        requester: {
+          username: requester,
+          userObj: foundRequester._id,
+        },
+        recipient: {
+          username: recipient,
+          userObj: foundRecipient._id,
+        },
         createdAt: new Date(),
-      });
+      })
   
       await newFriendship.save();
-      await FriendRequest.deleteOne({ requesterId: foundRequester.userId, recipientId: foundRecipient.userId });
+      await FriendRequest.deleteOne({ 'requester.username': foundRequester.username, 'recipient.username': foundRecipient.username });
 
-      // if (newFriendship) {
-      //   return res.status(200).json({
-      //   status: 200,
-      //   message: 'Friend request accepted',
-      //   payload: newFriendship,
-      
-      // });
-      // }
       res.status(200).json({ message: 'Friend request accepted' });
     } catch (error) {
       console.error(error);
@@ -138,34 +139,25 @@ export const acceptFriendRequest = async (req: Request, res: Response) => {
 export const rejectFriendRequest = async (req: Request, res: Response) => {
     const { requester, recipient } = req.body;
 
-    const foundRequester = await User.findOne({ userId: requester })
-    const foundRecipient = await User.findOne({ userId: recipient })
+    const foundRequester = await User.findOne({ username: requester })
+    const foundRecipient = await User.findOne({ username: recipient })
     if (!foundRequester || !foundRecipient) return res.status(409).json({ message: 'Recipient or recipient not found' })
 
     const existingFriendship = await Friends.findOne({
         $or: [
-          { requesterId: foundRequester.userId, recipientId: foundRecipient.userId },
-          { requesterId: foundRecipient.userId, recipientId: foundRequester.userId },
+          { 'requester.username': requester, 'recipient.username': recipient },
+          { 'requester.username': recipient, 'recipient.username': requester },
         ],
     });
     if (existingFriendship) return res.status(410).json({ message: 'Already friends '})
   
     try {
-      const request = await FriendRequest.findOne({ requesterId: foundRequester.userId, recipientId: foundRecipient.userId });
+      const request = await FriendRequest.findOne({ 'requester.username': foundRequester.username, 'recipient.username': foundRecipient.username });
       if (!request) {
         return res.status(404).json({ message: 'Friend request not found' });
       }
   
-      await FriendRequest.deleteOne({ requesterId: foundRequester.userId, recipientId: foundRecipient.userId });
-
-      // if (request) {
-      //   return res.status(200).json({
-      //   status: 200,
-      //   message: 'Friend request rejected',
-      //   payload: request,
-      
-      // });
-      // }
+      await FriendRequest.deleteOne({ 'requester.username': foundRequester.username, 'recipient.username': foundRecipient.username });
       res.status(200).json({ message: 'Friend request rejected' });
     } catch (error) {
       console.error(error);
@@ -180,16 +172,33 @@ export const getFriendsList = async (req: CustomRequest, res: Response) => {
   const foundUser = await User.collection.findOne({ userId: decoded.userId })
   if (!foundUser) return res.status(409).json({ message: 'User not found' })
 
+
   try {
-    const friendsList = await Friends.find({ $or: [{ requesterId: foundUser.userId }, { recipientId: foundUser.userId }, { character: foundUser.userProfile.character, }] });
-    // res.status(200).json({ friends: friendsList });
-    return res.status(200).json({
-      status: 200,
-      payload: {
-        friends: friendsList,
-        // character: foundUser.userProfile.character,
+    const friendsList = await Friends.find({
+      $or: [
+        { 'requester.username': foundUser.username },
+        { 'recipient.username': foundUser.username },
+      ],
+    })
+      .populate('requester.userObj')
+      .populate('recipient.userObj')
+
+    // Then, map the result to create a new list which contains the details of the other player
+    const friendsListForDisplay = friendsList.map((friend) => {
+      if (friend.requester!.username === foundUser.username) {
+        return {
+          username: friend.recipient!.userObj.username,
+          character: friend.recipient!.userObj.userProfile.character,
+        }
+      } else {
+        return {
+          username: friend.requester!.userObj.username,
+          character: friend.requester!.userObj.userProfile.character,
+        }
       }
-    });
+    })
+
+    res.status(200).json({ friendsListForDisplay })
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Failed to get friends list' });
@@ -201,33 +210,37 @@ export const getFriendRequests = async (req: CustomRequest, res: Response) => {
     const decoded = req.decoded
   
     const foundUser = await User.collection.findOne({ userId: decoded.userId })
+    
     if (!foundUser) {
       return res.status(409).json({ message: 'User not found' });
     }
   
     try {
-      const sentRequests = await FriendRequest.find({ requesterId: foundUser.userId });
-      const receivedRequests = await FriendRequest.find({ recipientId: foundUser.userId });
-      // const sentRea
-  
-      // return res.status(200).json({
-      //   status: 200,
-      //   payload: { sentRequests, receivedRequests }
-      // });
-      res.status(200).json({ sentRequests, receivedRequests });
+
+      const sentRequests = await FriendRequest.find({ 'requester.username': foundUser.username }).populate('requester.userObj')
+      const receivedRequests = await FriendRequest.find({ 'recipient.username': foundUser.username }).populate('requester.userObj')
+      // const findSentRequests = receivedRequests.map((request) => ({
+      //   username: request.recipient!.userObj.username,
+      //   character: request.recipient!.userObj.userProfile.character,
+      // }))
+      const findReceivedRequests = receivedRequests.map((request) => ({
+        username: request.requester!.userObj.username,
+        character: request.requester!.userObj.userProfile.character,
+      }))
+
+      res.status(200).json({ findReceivedRequests })
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Failed to get friend requests' });
     }
 };
-  
 
 /* 친구 삭제 */
 export const removeFriend = async (req: Request, res: Response) => {
     const { requester, recipient } = req.body;
   
-    const foundRequester = await User.findOne({ userId: requester });
-    const foundRecipient = await User.findOne({ userId: recipient });
+    const foundRequester = await User.findOne({ username: requester });
+    const foundRecipient = await User.findOne({ username: recipient });
     if (!foundRequester || !foundRecipient) {
       return res.status(409).json({ message: 'Requester or recipient not found' });
     }
@@ -235,10 +248,12 @@ export const removeFriend = async (req: Request, res: Response) => {
     try {
       const existingFriendship = await Friends.findOne({
         $or: [
+          { 'requester.username': requester, 'recipient.username': recipient },
+          { 'requester.username': recipient, 'recipient.username': requester },
           { requesterId: foundRequester.userId, recipientId: foundRecipient.userId },
           { requesterId: foundRecipient.userId, recipientId: foundRequester.userId },
         ],
-      });
+      })
   
       if (!existingFriendship) {
         return res.status(404).json({ message: 'Friendship not found' });

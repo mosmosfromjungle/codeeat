@@ -156,14 +156,10 @@ export default function UserDialog() {
   const character = useAppSelector((state) => state.user.character)
   const userLevel = useAppSelector((state) => state.user.userLevel)
   const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`
-  const players = useAppSelector((state) => state.room.players)
+  const players = useAppSelector((state) => state.room.mainPlayers)
   const [otherPlayers, setOtherPlayers] = useState<IPlayer[]>()
   const dispatch = useAppDispatch()
   const [open, setOpen] = React.useState(true)
-  const [requester, setRequester] = useState<string>('')
-  const [recipient, setRecipient] = useState<string>('')
-  const [requesterId, setRequesterId] = useState<string>('')
-  const [recipientId, setRecipientId] = useState<string>('')
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [addFriendResult, setAddFriendResult] = useState<number>(0) //0: 친구 요청 전, 1: 친구 요청 성공,  2: 이미친구
 
@@ -196,20 +192,13 @@ export default function UserDialog() {
     const body: sendRequest = {
       requester: requester,
       recipient: recipient,
-      // character: 
     }
     sendFriendReq(body)
       .then((response) => {
         console.log(response.payload)
         if (response.status === 201) {
-          const { requesterId, recipientId } = response.payload
-          // console.log(requesterId)
-          // console.log(recipientId)
-          setRequesterId(requesterId)
-          setRecipientId(recipientId)
           setAddFriendResult(1)
           console.log('성공')
-          // setIsOpen(false)
         }
       })
       .catch((error) => {
@@ -258,18 +247,6 @@ export default function UserDialog() {
             >
               확인
             </Button>
-            {/* <button
-              onClick={handleClose}
-              style={{
-                backgroundColor: '#222639',
-                color: '#eee',
-                fontSize: '20px',
-                borderRadius: '24px',
-                boxShadow: '0px, 10px, 24px, #0000006f',
-              }}
-            >
-              확인
-            </button> */}
           </div>
         )
       case 2:
@@ -299,18 +276,6 @@ export default function UserDialog() {
             >
               확인
             </Button>
-            {/* <button
-              onClick={handleClose}
-              style={{
-                backgroundColor: '#222639',
-                color: '#eee',
-                fontSize: '20px',
-                borderRadius: '24px',
-                boxShadow: '0px, 10px, 24px, #0000006f',
-              }}
-            >
-              확인
-            </button> */}
           </div>
         )
       default:

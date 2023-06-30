@@ -164,14 +164,16 @@ export default function FriendDialog() {
       getFriendList()
         .then((response) => {
           if (!response) return
-          const { friends } = response
-          // console.log(friends)
+          console.log('들어와아아아아아아')
+          console.log(response)
+          const { friendsListForDisplay } = response
+          console.log(friendsListForDisplay)
 
           // for (let i = 0; i < friends.length; i++) {
           //   console.log(friends[i].recipientId)
           // }
 
-          setFriendList(friends)
+          setFriendList(friendsListForDisplay)
         })
         .catch((error) => {
           console.error(error)
@@ -184,12 +186,12 @@ export default function FriendDialog() {
       getFriendRequestList()
         .then((response) => {
           if (!response) return
-          // console.log('dhkTsi???')
-          const { receivedRequests, sentRequests } = response
-          // console.log(sentRequests)
-          // console.log(receivedRequests)
+          console.log('dhkTsi???')
+          console.log(response)
+          const { findReceivedRequests } = response
 
-          setFriendRequestList(receivedRequests)
+          console.log('receivedRequests: ' + findReceivedRequests)
+          setFriendRequestList(findReceivedRequests)
         })
         .catch((error) => {
           console.error(error)
@@ -201,23 +203,12 @@ export default function FriendDialog() {
     isSetOpen(false)
   }
 
-  // 요청 목록 리스트에 쌓인 requesterId, recipientId를 handleAccept에 body로 넘겨주면 알아서 api uri 호출 후 처리해 주지 않을까? 처리해서 받아온 거를 setRequesterId로 넣어주면 될듯? 그럼 일단 get으로 요청 목록 리스트를 가져와야겠네.
-  // recipientId: string, requesterId: string
-  const receiveAccept = (value) => {
+  const receiveAccept = (requester: string, recipient: string) => {
     const body: AcceptRequest = {
-      requester: value.requesterId,
-      recipient: value.recipientId,
+      requester: requester,
+      recipient: recipient,
     }
     handleAccept(body)
-      // .then((response) => {
-      //   if (response.status === 200) {
-      //     const { requesterId, recipientId } = response.payload
-      //     setRequesterId(requesterId)
-      //     setRecipientId(recipientId)
-      //     console.log('handleAccept 성공')
-      //     dispatch(setShowFriend(false))
-      //   }
-      // })
       .then((response) => {
         if (!response) return
         console.log(response)
@@ -232,25 +223,14 @@ export default function FriendDialog() {
       })
   }
 
-  const receiveReject = (value) => {
+  const receiveReject = (requester: string, recipient: string) => {
     const body: RejectRequest = {
-      requester: value.requesterId,
-      recipient: value.recipientId,
+      requester: requester,
+      recipient: recipient,
     }
     handleReject(body)
-      // .then((response) => {
-      //   console.log(response)
-      //   if (response.status === 200) {
-      //     const { requesterId, recipientId } = response.payload
-      //     setRequesterId(requesterId)
-      //     setRecipientId(recipientId)
-      //     console.log('handleReject 성공')
-      //     dispatch(setShowFriend(false))
-      //   }
-      // })
       .then((response) => {
         if (!response) return
-        // console.log(response)
         dispatch(setShowFriend(false))
       })
       .catch((error) => {
@@ -261,29 +241,19 @@ export default function FriendDialog() {
       })
   }
 
-  const removeFriendList = (value) => {
+  const removeFriendList = (requester: string, recipient: string) => {
     const body: RemoveRequest = {
-      requester: value.requesterId,
-      recipient: value.recipientId,
+      requester: requester,
+      recipient: recipient,
     }
     handleRemove(body)
-      // .then((response) => {
-      //   if (response.status === 200) {
-      //     const { requesterId, recipientId } = response.payload
-      //     setRequesterId(requesterId)
-      //     setRecipientId(recipientId)
-      //     dispatch(setShowFriend(false))
-      //   }
-      // })
       .then((response) => {
         if (!response) return
-        // console.log(response)
         dispatch(setShowFriend(false))
       })
       .catch((error) => {
         if (error.response) {
           const { status, message } = error.response.data
-          // setAddFriendResult(2)
           console.log('message: ' + message)
         }
       })
@@ -326,7 +296,7 @@ export default function FriendDialog() {
 
                     <Profile>
                       <div>
-                        <p key={index}>{value.requesterId}</p>
+                        <p key={index}>{value.username}</p>
                       </div>
                     </Profile>
 
@@ -340,7 +310,7 @@ export default function FriendDialog() {
                       >
                         메세지 보내기
                       </Button>
-                      <Button onClick={() => removeFriendList(value)}>우리 그만하자</Button>
+                      <Button onClick={() => removeFriendList(value.username, username)}>우리 그만하자</Button>
                     </ProfileButton>
                   </ListItem>
                 ))}
@@ -360,16 +330,16 @@ export default function FriendDialog() {
 
                     <Profile>
                       <div>
-                        <p key={index}>{value.requesterId}</p>
+                        <p key={index}>{value.username}</p>
                       </div>
                     </Profile>
 
                     <ProfileButton>
                       {/* <Button>메세지 보내기</Button> */}
-                      <Button onClick={() => receiveReject(value)} color="primary">
+                      <Button onClick={() => receiveReject(value.username, username)} color="primary">
                         친구 싫어
                       </Button>
-                      <Button onClick={() => receiveAccept(value)} color="primary">
+                      <Button onClick={() => receiveAccept(value.username, username)} color="primary">
                         친구 좋아
                       </Button>
                     </ProfileButton>
