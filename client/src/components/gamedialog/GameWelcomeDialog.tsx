@@ -130,28 +130,6 @@ export default function GameWelcomeDialog() {
         </Left>
         <Right>
             <h1 style={{ fontSize: '24px' }}>{username} 님</h1>
-          {/* {!videoConnected && (
-            <Warning>
-              <Alert variant="outlined" severity="warning">
-                <AlertTitle> 🤣아차! </AlertTitle>
-                비디오와 마이크가 연결되지 않았어요 <br></br>
-                <strong>연결하면 친구들과 대화할 수 있어요!</strong>
-              </Alert>
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={() => {
-                  game.gameNetwork.webRTC?.getUserMedia()
-                }}>
-                비디오, 마이크 연결하기
-              </Button>
-            </Warning>
-          )}
-          {videoConnected && (
-            <Warning>
-              <Alert variant="outlined"> 마이크도 쓸 수 있어요!</Alert>
-            </Warning>
-          )} */}
         </Right>
       </Content>
       <Bottom>

@@ -8,8 +8,6 @@ export enum Message {
   DISCONNECT_STREAM,
   STOP_SCREEN_SHARE,
   ADD_CHAT_MESSAGE,
-  SEND_DM,
-  CHECK_DM,
   
   // Server
   SEND_ROOM_DATA,

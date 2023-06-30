@@ -3,16 +3,15 @@ import styled from 'styled-components';
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import {
-  setReceiverId,
   setReceiverName,
   setRoomId,
   setShowDMList,
+  setShowDMRoom
 } from '../../stores/DMStore';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import {
   fetchRoomList,
   RoomListResponse,
-  UserResponseDto,
 } from '../../apicalls/DM/DM';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
@@ -20,27 +19,28 @@ import DefaultAvatar from '../../images/logo.png'
 
 /* DM목록을 불러온다.  */
 export const ConversationList = () => {
-  const [rooms, setRooms] = useState<Array<RoomListResponse>>([]);
-
+  const [rooms, setRooms] = useState<RoomListResponse[]>([]);
   const dispatch = useAppDispatch();
-  const userId = useAppSelector((state) => state.user.userId);
-  
+  const username = useAppSelector((state) => state.user.username);
   useEffect(() => {
-    fetchRoomList(userId)
+    console.log('내 아이디 기준으로 방 목록 가져옴. 방 목록 데이터:')
+    fetchRoomList(username)
     .then((data) => {
       console.log(data)
-      if(Array.isArray(data)){
         setRooms(data);
-      }
     });
   }, []);
 
-const handleClick = async (room: RoomListResponse) => {
-    room.receiverInfo.userId && dispatch(setReceiverId(room.receiverInfo.userId));
-    room.receiverInfo.username && dispatch(setReceiverName(room.receiverInfo.username));
-    dispatch(setRoomId(room.roomId));
-}
+  useEffect(() => {
+    console.log('방 목록 불러옴', rooms); // 🐱
+  }, [rooms]);
 
+const handleClick = async (room) => {
+  console.log(room, '방 클릭')
+  dispatch(setReceiverName(room.receiverName));
+  dispatch(setRoomId(room.roomId));
+  dispatch(setShowDMRoom(true))
+}
 return (
     <Backdrop>
         <DMwrapper>
@@ -61,22 +61,20 @@ return (
             return (
               <ListTag
                 key={room._id}
-                onClick={async () => {
+                onClick={() => {
+                  dispatch(setShowDMList(false))
                   handleClick(room);
                 }}
               >
                 <ProfileAvatarImage
                   src={DefaultAvatar}
-                  alt={room.receiverInfo.username}
-                  width="10"
+                  alt={room.receiverName}
                 />
                 <UserNamewithLastMessage>
-                  <UserName>{room.receiverInfo.username}</UserName>
-                  <LastMessageWithBadge>
+                  <UserName>{room.receiverName}</UserName>
                     <LastMessage>
                       {room.message}
                     </LastMessage>
-                  </LastMessageWithBadge>
                 </UserNamewithLastMessage>
               </ListTag>
             );
@@ -93,49 +91,46 @@ return (
   );
 };
 
+
 const ProfileAvatarImage = styled.img`
-  width: 75px;
-  height: 75px;
+  width: 50px;
+  height: 50px;
   border-radius: 100%;
 `;
 
 const ListTag = styled.li`
-  width: 320px;
+  width: 335px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
   cursor: pointer;
   padding: 5px;
+  margin-bottom: 10px;
 `;
 const UserNamewithLastMessage = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  color: white;
   justify-content: space-between;
-  padding: 0px 0px 0px 30px;
-  border-bottom: none;
+  padding: 0px 0px 0px 25px;
+  border-bottom: 1px solid gray;
   cursor: pointer;
+  font-size: 10px;
+  height: 60px;
+  font-family: Font_DungGeun;
 `;
 const UserName = styled.div`
   display: block;
-  font-size: 1.17em;
+  font-size: 15px;
   margin: 0px 0px 10px 0px;
   font-weight: bold;
-  color: blue;
-`;
-
-const LastMessageWithBadge = styled.div`
-  display: flex;
-  justify-content: space-between;
-  font-size: 1em;
-  margin: 0px 0px 10px 0px;
-  width: 200px;
-  height: 20px;
+  color: #33FF99;
 `;
 const LastMessage = styled.div`
   display: block;
-  font-size: 1em;
+  font-size: 1.5em;
   margin: 0px 0px 10px 0px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -147,7 +142,7 @@ const Backdrop = styled.div`
 position: fixed;
 display: flex;
 gap: 10px;
-bottom: 80px;
+bottom: 75px;
 right: 16px;
 align-items: flex-end;
 `

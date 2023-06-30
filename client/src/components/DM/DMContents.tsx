@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { ChatFeed, Message } from 'react-chat-ui';
+import { ChatFeed } from 'react-chat-ui';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import styled from 'styled-components';
-import { io, Socket } from 'socket.io-client';
-import DMNetwork from '../../services/Network2';
+import DMNetwork from '../../services/DMNetwork';
 import Game from '../../scenes/Game';
 import phaserGame from '../../PhaserGame';
-// import {DMSlice} from 'src/stores/DMboxStore';
-import { color } from '@mui/system';
-import { setNewMessage } from '../../stores/DMStore';
+
 const Wrapper = styled.div`
   height: 450px;
   width: 370px;
@@ -17,31 +14,29 @@ const Wrapper = styled.div`
 export default function DMBubbles(props) {
   const dispatch = useAppDispatch();
   const game = phaserGame.scene.keys.game as Game;
-  const socketNetwork = game.network2;
-  // 채팅 시작 시 저장되어 있던 채팅 리스트 보여줌
+  const socketNetwork = game.dmNetwork;
   const roomId = useAppSelector((state) => state.dm.roomId);
-  const receiverId = useAppSelector((state) => state.dm.receiverId);
-  const senderId = useAppSelector((state) => state.user.userId);
+  const receiverName = useAppSelector((state) => state.dm.receiverName);
+  const username = useAppSelector((state) => state.user.username);
   const newMessage = useAppSelector((state) => state.dm.newMessage);
 
   const [messageList, setMessageList] = useState<any>([]);
-
-  const callbackForJoinRoom = (oldMessages) => {
-    setMessageList(oldMessages);
-  };
+  const _joinRoom = (oldMessages) => {
+      setMessageList(oldMessages);
+    };
+// 🐱
   useEffect(() => {
-    console.log('마운트');
-    socketNetwork.joinRoom(roomId, senderId, receiverId, callbackForJoinRoom);
+    console.log('채팅방 들어감, roomId:' , roomId)
+    socketNetwork.joinRoom(roomId, username, receiverName, _joinRoom);
   }, []);
 
   useEffect(() => {
     if (!props.newMessage || props.newMessage?.message.length === 0) return;
 
     const body = {
-      // id : 0,
       roomId: roomId,
-      senderId: senderId,
-      receiverId: receiverId,
+      username: username,
+      receiverName: receiverName,
       message: props.newMessage.message,
     };
 
@@ -49,7 +44,7 @@ export default function DMBubbles(props) {
     setMessageList((messageList) => [...messageList, props.newMessage]);
 
     // 내가 쓴 메세지 서버에 전송
-    game.network2.sendMessage(body);
+    game.dmNetwork.sendMessage(body);
   }, [props.newMessage?.message]);
 
   useEffect(() => {
@@ -61,13 +56,14 @@ export default function DMBubbles(props) {
       <Wrapper>
         <ChatFeed
           maxHeight={450}
-          messages={messageList || []} 
+          messages={messageList || []}
           bubblesCentered={false}
           bubbleStyles={{
             text: {
-              fontFamily: 'Ycomputer-Regular',
-              fontSize: 16,
-              color: 'black',
+              fontFamily: 'Font-Dungeun',
+              fontSize: 20,
+              color: 'white',
+              fontWeight: 'bold'
             },
             chatbubble: {
               borderRadius: 8,
@@ -75,14 +71,14 @@ export default function DMBubbles(props) {
               maxWidth: 200,
               width: 'fit-content',
               marginTop: 2,
-              marginRight: 7,
+              marginRight: 15,
               marginBottom: 1,
-              marginLeft: 7,
+              marginLeft: 15,
               wordBreak: 'break-all',
-              backgroundColor: 'white',
+              backgroundColor: '#147814',
             },
             userBubble: {
-              backgroundColor: 'blue',
+              backgroundColor: '#3ED0C8',
             },
           }}
         />
