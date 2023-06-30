@@ -9,7 +9,7 @@ export const logout = () => {
     cookies.remove('refreshToken', { path: '/' });
     // cookies.remove('accessToken', { path: '/' });
     // cookies.remove('userId', { path: '/' });
-    // cookies.remove('userName', { path: '/' });
+    // cookies.remove('username', { path: '/' });
     // cookies.remove('character', { path: '/' });
     // TODO: Add API calls for deleting refreshToken (in case of token extortion)
 

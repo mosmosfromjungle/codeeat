@@ -117,9 +117,9 @@ export const io = require('socket.io')(socketServer, {
 
 io.on('connection', (socket: Socket) => {
   console.log('접속', socket.id);
-  socket.on('whoAmI', (userName) => {
-    console.log('닉네임', userName);
-    userMap.set(userName, socket);
+  socket.on('whoAmI', (username) => {
+    console.log('닉네임', username);
+    userMap.set(username, socket);
   });
   DMController(socket);
   socket.on('disconnect', () => {

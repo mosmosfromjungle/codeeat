@@ -3,7 +3,7 @@ export type Token = string;
 export interface IUserInfo {
     userId?: string;
     hashedPassword?: string;
-    userName?: string;
+    username?: string;
     userProfile?: IUserProfile;
     refreshToken?: Token | null;
     createdAt?: Date | null;

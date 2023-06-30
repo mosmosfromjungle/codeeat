@@ -138,10 +138,10 @@ export default function LoginDialog() {
               .catch((error) => console.error(error))
               dispatch(setDialogStatus(DIALOG_STATUS.WELCOME))
               dispatch(setUserId(payload.userId))
-              dispatch(setUsername(payload.userName))
+              dispatch(setUsername(payload.username))
               dispatch(setCharacter(payload.character))
               dispatch(setUserLevel(payload.userLevel))
-              bootstrap.dmNetwork.whoAmI(payload.userName)
+              bootstrap.dmNetwork.whoAmI(payload.username)
               
             setTimeout(() => {
               dispatch(setDialogStatus(DIALOG_STATUS.WELCOME));

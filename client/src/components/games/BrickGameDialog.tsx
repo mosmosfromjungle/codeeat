@@ -43,7 +43,7 @@ const COMMON_MESSAGE = (
 
 export default function BrickGameDialog() {
   const dispatch = useAppDispatch()
-  const userName = useAppSelector((state) => state.user.userName)
+  const username = useAppSelector((state) => state.user.username)
   const gamePlayers = useAppSelector((state) => state.room.gamePlayers)
   const currentQuiz  = useAppSelector((state) => state.brickgame.brickGameState.currentQuiz)
   const myCurrentImages = useAppSelector((state) => state.brickgame.myPlayerStatus.currentImages)

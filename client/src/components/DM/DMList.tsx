@@ -21,10 +21,10 @@ import DefaultAvatar from '../../images/logo.png'
 export const ConversationList = () => {
   const [rooms, setRooms] = useState<RoomListResponse[]>([]);
   const dispatch = useAppDispatch();
-  const userName = useAppSelector((state) => state.user.userName);
+  const username = useAppSelector((state) => state.user.username);
   useEffect(() => {
     console.log('내 아이디 기준으로 방 목록 가져옴. 방 목록 데이터:')
-    fetchRoomList(userName)
+    fetchRoomList(username)
     .then((data) => {
       console.log(data)
         setRooms(data);

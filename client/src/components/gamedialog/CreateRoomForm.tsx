@@ -37,7 +37,7 @@ export const CreateRoomForm = () => {
   const [nameFieldEmpty, setNameFieldEmpty] = useState(false)
   const [descriptionFieldEmpty, setDescriptionFieldEmpty] = useState(false)
   const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)
-  const userName = useAppSelector((state) => state.user.userName)
+  const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)

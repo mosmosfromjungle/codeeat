@@ -13,9 +13,9 @@ export const checkIfFirst = async (body: any) => {
 }
 
 // 현재 채팅방 목록을 가져옴
-export const fetchRoomList = async (userName: string): Promise<any> => {
+export const fetchRoomList = async (username: string): Promise<any> => {
   try {
-    const response = await axios.post(`/lastdm/roomList`, {senderName : userName} );
+    const response = await axios.post(`/lastdm/roomList`, {senderName : username} );
     return response.data.payload;
   } catch (error) {
     console.error(error);
@@ -36,18 +36,6 @@ interface Response<T> {
   msg?: string;
 }
 export type ApiResponse<T> = AxiosResponse<Response<T>>;
-
-export interface UserResponseDto {
-  userId: string;
-  userName: string;
-}
-export interface CreateRoomRequest {
-  myId?: string;
-}
-export interface CreateRoomResponse {
-  roomId: number;
-  lastChat: string;
-}
 export interface RoomListResponse {
   _id: string;
   senderName: string;

@@ -8,7 +8,7 @@ import { userMap } from '../..';
 const rooms: Record<string, string[]> = {}
 interface IRoomParams {
   roomId: string;
-  userName: string;
+  username: string;
   receiverName: string;
 }
 const time_diff = 9 * 60 * 60 * 1000;
@@ -20,29 +20,29 @@ export const createRoom = () => {
 }
 
 export const DMController = (socket: Socket) => {
-  const joinRoom = (host: { roomId: string; userName: string; receiverName: string }) => {
+  const joinRoom = (host: { roomId: string; username: string; receiverName: string }) => {
     let { roomId } = host;
-    const { userName, receiverName } = host;
+    const { username, receiverName } = host;
   
     if (rooms[roomId]) {
       console.log('대화방 유저 입장') // 🐱
-      rooms[roomId].push(userName);
+      rooms[roomId].push(username);
       socket.join(roomId);
     } else {
       roomId = createRoom();
-      updateRoomId({ roomId: roomId, senderName: userName, receiverName: receiverName })
-      rooms[roomId].push(userName);
+      updateRoomId({ roomId: roomId, senderName: username, receiverName: receiverName })
+      rooms[roomId].push(username);
     }
-    readMessage({ roomId, userName, receiverName });
+    readMessage({ roomId, username, receiverName });
     socket.on('disconnect', () => {
       console.log(' 유저 퇴장 ')
-      leaveRoom({ roomId, userName: userName, receiverName })
+      leaveRoom({ roomId, username: username, receiverName })
     })
   };
 
-  const leaveRoom = ({ roomId, userName: userName, receiverName: receiverName}: IRoomParams) => {
-    rooms[roomId] = rooms[roomId].filter((id) => id !== userName)
-    socket.to(roomId).emit('player-disconnected:', userName)
+  const leaveRoom = ({ roomId, username: username, receiverName: receiverName}: IRoomParams) => {
+    rooms[roomId] = rooms[roomId].filter((id) => id !== username)
+    socket.to(roomId).emit('player-disconnected:', username)
   }
 
   const sendMessage = (obj: {
@@ -60,10 +60,10 @@ export const DMController = (socket: Socket) => {
     }
   };
 
-  const readMessage = (message: { roomId: string; userName: string; receiverName: string; }) => {
-    const { roomId, userName, receiverName } = message;
+  const readMessage = (message: { roomId: string; username: string; receiverName: string; }) => {
+    const { roomId, username, receiverName } = message;
   
-    getDMMessage(userName,receiverName)
+    getDMMessage(username,receiverName)
     .then((dmMessage) => {
       socket.emit('old-messages', dmMessage);
       

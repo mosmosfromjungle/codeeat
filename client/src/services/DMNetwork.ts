@@ -37,7 +37,7 @@ export default class DMNetwork {
   };
 
   joinRoom = (roomId: string, senderName: string, receiverName: string, callback:any) => {
-    this.socketClient.emit('join-room', { roomId: roomId, userName: senderName, receiverName: receiverName });
+    this.socketClient.emit('join-room', { roomId: roomId, username: senderName, receiverName: receiverName });
     console.log(' 여기 ---')
     this.socketClient.on('old-messages', (data) => {
       this.oldMessages = [];
@@ -55,8 +55,8 @@ export default class DMNetwork {
     this.socketClient.emit('message', message)
   }
 
-  whoAmI = (userName: string) => {
-    this.socketClient.emit('whoAmI', userName);
+  whoAmI = (username: string) => {
+    this.socketClient.emit('whoAmI', username);
   };
 
 }

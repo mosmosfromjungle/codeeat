@@ -152,7 +152,7 @@ export default function UserDialog() {
   const focused = useAppSelector((state) => state.chat.focused)
   const showUser = useAppSelector((state) => state.chat.showUser)
 
-  const myName = useAppSelector((state) => state.user.userName)
+  const myName = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
   const userLevel = useAppSelector((state) => state.user.userLevel)
   const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`

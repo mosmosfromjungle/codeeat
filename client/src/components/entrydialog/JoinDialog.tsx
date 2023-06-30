@@ -190,7 +190,7 @@ export default function JoinDialog() {
       const body: JoinRequest = {
         userId: email,
         password: password,
-        userName: nickname,
+        username: nickname,
         character: avatars[avatarIndex].name,
       }
       join(body).then((response) => {

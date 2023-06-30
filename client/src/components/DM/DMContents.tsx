@@ -17,7 +17,7 @@ export default function DMBubbles(props) {
   const socketNetwork = game.dmNetwork;
   const roomId = useAppSelector((state) => state.dm.roomId);
   const receiverName = useAppSelector((state) => state.dm.receiverName);
-  const userName = useAppSelector((state) => state.user.userName);
+  const username = useAppSelector((state) => state.user.username);
   const newMessage = useAppSelector((state) => state.dm.newMessage);
 
   const [messageList, setMessageList] = useState<any>([]);
@@ -27,7 +27,7 @@ export default function DMBubbles(props) {
 // 🐱
   useEffect(() => {
     console.log('채팅방 들어감, roomId:' , roomId)
-    socketNetwork.joinRoom(roomId, userName, receiverName, _joinRoom);
+    socketNetwork.joinRoom(roomId, username, receiverName, _joinRoom);
   }, []);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export default function DMBubbles(props) {
 
     const body = {
       roomId: roomId,
-      userName: userName,
+      username: username,
       receiverName: receiverName,
       message: props.newMessage.message,
     };

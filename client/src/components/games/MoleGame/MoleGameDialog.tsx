@@ -86,7 +86,7 @@ export default function MoleGameDialog() {
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
 
   // My information
-  const userName = useAppSelector((state) => state.user.userName);
+  const username = useAppSelector((state) => state.user.username);
   const character = useAppSelector((state) => state.user.character);
   const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`;
 
@@ -578,7 +578,7 @@ export default function MoleGameDialog() {
   let winner = '';
 
   if ( total > friendTotal ) {
-    winner = userName;
+    winner = username;
   } else if ( total < friendTotal) {
     if (friendname === '') {
       winner = username;
@@ -721,7 +721,7 @@ export default function MoleGameDialog() {
                   </span>
                   <img src={ imgpath } width="50px" id="my-character"></img>
                   <p id="point-text-name">
-                    [{userName}]<br/><br/>
+                    [{username}]<br/><br/>
                   </p>
                   <p id="point-text">
                     My Point<br/><br/>

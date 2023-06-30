@@ -113,7 +113,7 @@ const avatars = [
 export default function WelcomeDialog() {
   const dispatch = useAppDispatch()
   const roomJoined = useAppSelector((state) => state.room.roomJoined)
-  const username = useAppSelector((state) => state.user.userName)
+  const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
   const videoConnected = useAppSelector((state) => state.user.videoConnected)
 
