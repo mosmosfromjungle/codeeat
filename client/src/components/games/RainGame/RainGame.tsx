@@ -24,10 +24,11 @@ export function RainGame() {
   const lineHeight = canvasHeight - 500;
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
   const [time, setTime] = useState(100)
-  const [game, setGame] = useState<KeywordRain[]>([]);
   const [point, setPoint] = useState<number>(0);
   const host = useAppSelector((state) => state.raingame.host);
   const username = useAppSelector((state) => state.user.username);
+  const [myGame, setMyGame] = useState<KeywordRain[]>([]);
+  const [youGame, setYouGame] = useState<KeywordRain[]>([]);
 
 
     const Awords = [
@@ -102,30 +103,89 @@ export function RainGame() {
   useEffect(() => {
     let currentWordIndex = 0;
     const words = username === host ? Awords : Bwords;
-    const interval1 = setInterval(() => {
-      if(currentWordIndex < words.length) {
-      const keyword = words[currentWordIndex];
-      setGame(game => [...game,{
-        y: keyword.y,
-        speed: keyword.speed,
-        x: keyword.x,
-        keyword: keyword.keyword
-      }]);
-      currentWordIndex++;
-    }
-  }, 2000);
+    const youWords = username === host ? Bwords : Awords;
 
-  const interval2 = setInterval(() => {
-    setGame((game) =>
-        game.map((item) => {
-            const newY = item.y + item.speed;
-            if (newY > lineHeight && item.y <= lineHeight) {
+    const createWordsInterval = setInterval(() => {
+      if (currentWordIndex < words.length) {
+        const myKeyword = words[currentWordIndex];
+        const youKeyword = youWords[currentWordIndex];
+
+        setMyGame(myGame => [...myGame, {
+          y: myKeyword.y,
+          speed: myKeyword.speed,
+          x: myKeyword.x,
+          keyword: myKeyword.keyword
+      }]);
+
+      setYouGame(youGame => [...youGame, {
+          y: youKeyword.y,
+          speed: youKeyword.speed,
+          x: youKeyword.x,
+          keyword: youKeyword.keyword
+      }]);
+
+      currentWordIndex++;
+      }
+    }, 2000);
+
+    // 내 단어 위치 업데이트
+    const updateMyWordsInterval = setInterval(() => {
+      setMyGame((game) =>
+          game.map((item) => {
+              const newY = item.y + item.speed;
+              return { ...item, y: newY }
+          })
+      );
+  }, 30);
+
+  // 상대방 단어 위치 업데이트
+  const updateYouWordsInterval = setInterval(() => {
+      setYouGame((game) =>
+          game.map((item) => {
+              const newY = item.y + item.speed;
+              return { ...item, y: newY }
+          })
+      );
+  }, 30);
+    
+//     const myinterval = setInterval(() => {
+//       if(currentWordIndex < words.length) {
+//       const keyword = words[currentWordIndex];
+//       setMyGame(myGame => [...myGame,{
+//         y: keyword.y,
+//         speed: keyword.speed,
+//         x: keyword.x,
+//         keyword: keyword.keyword
+//       }]);
+//       currentWordIndex++;
+//     }
+//   }, 2000);
+
+//   const youinterval = setInterval(() => {
+//     if(currentWordIndex < words.length) {
+//     const keyword = words[currentWordIndex];
+//     setYouGame(youGame => [...youGame,{
+//       y: keyword.y,
+//       speed: keyword.speed,
+//       x: keyword.x,
+//       keyword: keyword.keyword
+//     }]);
+//     currentWordIndex++;
+//   }
+// }, 2000);
+
+
+//   const interval2 = setInterval(() => {
+//     setMyGame((game) =>
+//         game.map((item) => {
+//             const newY = item.y + item.speed;
+//             if (newY > lineHeight && item.y <= lineHeight) {
               
-            }
-            return { ...item, y: newY }
-        })
-    );
-}, 50);
+//             }
+//             return { ...item, y: newY }
+//         })
+//     );
+// }, 50);
 
   const timeInterval = setInterval(() => {
       setTime((prevTime) => Math.max(prevTime - 1, 0))
@@ -133,24 +193,32 @@ export function RainGame() {
 
     return () => {
       clearInterval(timeInterval);
-      clearInterval(interval1)
-      clearInterval(interval2)
+      // clearInterval(myinterval)
+      // clearInterval(youinterval)
+      // clearInterval(interval2)
+      clearInterval(createWordsInterval);
+      clearInterval(updateMyWordsInterval);
+      clearInterval(updateYouWordsInterval);
       bootstrap.gameNetwork.room.removeAllListeners();
       // clearInterval(updateWordsInterval);
     };
 
   }, [])
 
-  const removeNode = (keywordToRemove: string) => {
-    setGame((game) => game.filter((item) => item.keyword !== keywordToRemove));
-  };
+  // const removeNode = (keywordToRemove: string) => {
+  //   setGame((game) => game.filter((item) => item.keyword !== keywordToRemove));
+  // };
   
   const keydown = (keyCode: number) => {
     if (keyCode === 13 && keywordInput.current) {
-      const text = keywordInput.current.value;
-        removeNode(text);
-        setPoint((prevPoint) => prevPoint + 1);  
+      const inputKeyword = keywordInput.current.value;
+      const isMyWord = myGame.some(word => word.keyword === inputKeyword)
+      if (isMyWord){
+      setMyGame(prevGame => prevGame.filter(word => word.keyword !== inputKeyword));
+      setPoint((prevPoint) => prevPoint + 1);  
+       }
       keywordInput.current.value = "";
+     
     }
   };
 
@@ -212,35 +280,6 @@ export function RainGame() {
           height: 'calc(75vh - 6px)',
         }}
       >
-        {/* Right Side (내것) */}
-        <div
-          style={{
-            width: '40%',
-            backgroundImage: `url(${rain_Background})`,
-            backgroundSize: '100%',
-            backgroundRepeat: 'no-repeat',
-            position: 'relative',
-            overflow: 'hidden',
-            textAlign: 'center',
-          }}
-        >
-          {game.map((word, index) => (
-            <h5
-              key={index}
-              style={{
-                position: 'absolute',
-                fontSize: '1.4vw',
-                letterSpacing: '0.3vw',
-                top: `${word.y}px`,
-                left: `${word.x + 300}px`,
-                color: '#FFFFFF',
-                zIndex: 2,
-                  }}
-                >
-                  {word.keyword}
-                </h5>
-            ))}
-        </div>
 
         {/* Left Side (상대편) */}
         <div
@@ -254,7 +293,7 @@ export function RainGame() {
             textAlign: 'center',
           }}
         >
-          {game.map((word, index) => (
+          {youGame.map((word, index) => (
                 <h5
                   key={index}
                   style={{
@@ -271,23 +310,41 @@ export function RainGame() {
                 </h5>
           ))}
         </div>
-      </div>
 
-      {/* Winner Section */}
-      {/* {winner && (
+
+        {/* Right Side (내것) */}
         <div
           style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            fontSize: 30,
-            color: 'red',
+            width: '40%',
+            backgroundImage: `url(${rain_Background})`,
+            backgroundSize: '100%',
+            backgroundRepeat: 'no-repeat',
+            position: 'relative',
+            overflow: 'hidden',
+            textAlign: 'center',
           }}
         >
-          {winner} is the winner!
+          {myGame.map((word, index) => (
+            <h5
+              key={index}
+              style={{
+                position: 'absolute',
+                fontSize: '1.4vw',
+                letterSpacing: '0.3vw',
+                top: `${word.y}px`,
+                left: `${word.x + 250}px`,
+                color: '#FFFFFF',
+                zIndex: 2,
+                  }}
+                >
+                  {word.keyword}
+                </h5>
+            ))}
         </div>
-      )} */}
+
+        
+      </div>
+
 
       {/* Input and Score Section */}
       <div
