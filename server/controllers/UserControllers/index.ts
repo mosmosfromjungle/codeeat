@@ -73,12 +73,12 @@ export const signUp = async (req: Request, res: Response) => {
         })
     }
     
-    /* 이메일 아이디 중복확인 */
+    /* 아이디 아이디 중복확인 */
     const foundUser = await User.findOne({ userId: user.userId })
     if (foundUser) {
         return res.status(409).json({
             status: 409,
-            message: '이미 사용중인 이메일입니다.'
+            message: '이미 사용중인 아이디입니다.'
         })
     }
 
