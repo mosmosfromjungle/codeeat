@@ -7,6 +7,7 @@ import { RoomType } from '../types/Rooms'
 import authRouter from './routes/auth';
 import lastdmRouter from './routes/lastdm'
 import dmRouter from './routes/dm'
+import friendsRouter from './routes/friends'
 import molegameRouter from './routes/molegame';
 // import socialRoutes from "@colyseus/social/express"
 
@@ -92,6 +93,7 @@ app.use('/colyseus', monitor())
 
 /* API Routes */
 app.use('/auth', authRouter);
+app.use('/friends', friendsRouter);
 app.use('/dm', dmRouter)
 app.use('/lastdm', lastdmRouter);
 app.use('/molegame', molegameRouter);
