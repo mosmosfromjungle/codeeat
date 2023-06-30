@@ -160,7 +160,7 @@ export const join = async (body: JoinRequest): Promise<any> => {
 export interface JoinRequest {
   userId: string
   password: string
-  userName: string
+  username: string
   character: string
 }
 
