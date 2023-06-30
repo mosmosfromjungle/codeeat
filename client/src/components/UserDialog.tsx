@@ -154,7 +154,7 @@ export default function UserDialog() {
   const character = useAppSelector((state) => state.user.character)
   const userLevel = useAppSelector((state) => state.user.userLevel)
   const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`
-  const players = useAppSelector((state) => state.room.players)
+  const players = useAppSelector((state) => state.room.mainPlayers)
   const [otherPlayers, setOtherPlayers] = useState<IPlayer[]>();
   const dispatch = useAppDispatch()
 

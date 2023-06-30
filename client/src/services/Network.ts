@@ -201,6 +201,14 @@ export default class Network {
     this.room.onMessage(Message.DISCONNECT_STREAM, (clientId: string) => {
       this.webRTC?.deleteOnCalledVideoStream(clientId)
     })
+
+    this.room.onStateChange((state) => {
+      const players: any = [];
+      this.room?.state.players.forEach((value) => {
+        players.push(value);
+      });
+      store.dispatch(setRoomPlayers(players));
+    });
   }
 
   // method to register event listener and call back function when a item user added
