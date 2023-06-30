@@ -152,6 +152,10 @@ export default function BrickGameDialog() {
     bootstrap.gameNetwork.brickGameCommand(command);
   }
 
+  const handleSubmit = () => {
+    // Todo: 정답, 실패 판별하는 코드
+  }
+
   let oppLifeElements = [];
   let myLifeElements = [];
 
@@ -390,13 +394,14 @@ export default function BrickGameDialog() {
                 onKeyDown={handleKeyDown} // 키 다운 이벤트 핸들러 추가
                 style={{ margin: '10px' }}
               /> */}
-
-              <br/>
               
+              <div style={{ color: 'white', textAlign: 'right', padding: '10px' }}>
+                잘못 제출하면 목숨이 줄어들어요!
+              </div>
               <Answer>
                 <Left>
                   <TextField
-                    label="명령어 입력하기"
+                    label="명령어 입력 후 엔터"
                     variant="outlined"
                     value={command}
                     onChange={(event) => setCommand(event.target.value)}
@@ -416,9 +421,9 @@ export default function BrickGameDialog() {
                 <Right>
                   <Button 
                       fullWidth
-                      onClick={() => handleEnter()}
+                      onClick={() => handleSubmit()}
                       style={{ height: '50px' }}>
-                    입력
+                    제출
                   </Button>
                 </Right>
               </Answer>
