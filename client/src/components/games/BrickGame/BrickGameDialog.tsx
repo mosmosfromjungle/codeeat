@@ -21,6 +21,7 @@ import ball from '/assets/game/BrickGame/ball.png'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import TextField from '@mui/material/TextField'
+import Button from '@mui/material/Button'
 
 import { 
   GlobalStyle, Backdrop, Wrapper, BottomWrapper, 
@@ -28,6 +29,7 @@ import {
   OppInfo, MyInfo,
   ImageContainer, ImageText, MyBracket, CustomInput, OptionWrapper,
   CustomButton, CustomResetButton, CustomList, CommandArrayWrapper, OppBracket, OppOption, ImageArrayWrapper, 
+  Answer, Left, Right
 } from './BrickGameStyle'
 
 import './BrickGame.css'
@@ -66,6 +68,7 @@ export default function BrickGameDialog() {
   const oppCommandArray = useAppSelector((state) => state.brickgame.oppPlayerStatus.commandArray)
 
   const [problem, setProblem] = useState<string>('같은 동물 2마리만 남겨주세요!');
+  const [round, setRound] = useState<number>(0)
 
   // My information
   const [players, setPlayers] = useState<PlayersInterface[]>([])
@@ -144,6 +147,11 @@ export default function BrickGameDialog() {
     }
   }
 
+  const handleEnter = () => {
+    setCommand('');
+    bootstrap.gameNetwork.brickGameCommand(command);
+  }
+
   let oppLifeElements = [];
   let myLifeElements = [];
 
@@ -183,7 +191,7 @@ export default function BrickGameDialog() {
                 문제에 맞는 적절한 자료구조와 명령어를 입력하여 포켓몬들을 구출해주세요 !
               </div>
             </div>
-            <div style={{ flex: 1, textAlign: 'right' }}>ROUND 5/8</div>
+            <div style={{ flex: 1, textAlign: 'right' }}>ROUND {round}/5</div>
           </RoundWrapper>
 
           <MidWrapper>
@@ -240,7 +248,7 @@ export default function BrickGameDialog() {
               <ScoreWrapper>
                 <div style={{ flex: 1, color: 'white', fontSize: '25px', lineHeight: '1.5' }}>
                   <OppInfo>
-                    [{ oppUsername }]
+                    [{ oppUsername.toUpperCase() }]
                     <img src={ imgpath } width="40px" id="my-character"></img>
                   </OppInfo>
                 </div>
@@ -308,7 +316,7 @@ export default function BrickGameDialog() {
               <ScoreWrapper>
                 <div style={{ flex: 1, color: 'white', fontSize: '25px', lineHeight: '1.5' }}>
                   <MyInfo>
-                    [{ username }]
+                    [{ username.toUpperCase() }]
                     <img src={ imgpath } width="40px" id="my-character"></img>
                   </MyInfo>
                 </div>
@@ -385,24 +393,35 @@ export default function BrickGameDialog() {
 
               <br/>
               
-              <TextField
-                label="명령어 입력하기"
-                variant="outlined"
-                value={command}
-                onChange={(event) => setCommand(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter') {
-                    setCommand('');
-                    bootstrap.gameNetwork.brickGameCommand(command);
-                  }
-                }}
-                fullWidth
-                InputProps={{
-                  // 친구가 들어오기 전에는 입력할 수 없도록
-                  readOnly: oppUsername === '',
-                  style: { fontSize: '20px', height: '50px' },
-                }}
-              />
+              <Answer>
+                <Left>
+                  <TextField
+                    label="명령어 입력하기"
+                    variant="outlined"
+                    value={command}
+                    onChange={(event) => setCommand(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter') {
+                        handleEnter();
+                      }
+                    }}
+                    fullWidth
+                    InputProps={{
+                      // 친구가 들어오기 전에는 입력할 수 없도록
+                      readOnly: oppUsername === '',
+                      style: { fontSize: '20px', height: '50px' },
+                    }}
+                  />
+                </Left>
+                <Right>
+                  <Button 
+                      fullWidth
+                      onClick={() => handleEnter()}
+                      style={{ height: '50px' }}>
+                    입력
+                  </Button>
+                </Right>
+              </Answer>
             </MyWrapper>
           </BottomWrapper>
         </Wrapper>

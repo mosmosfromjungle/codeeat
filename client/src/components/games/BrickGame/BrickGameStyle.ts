@@ -270,3 +270,33 @@ export const CustomList = styled.div`
   color: white;
   text-align: center;
 `
+
+export const Answer = styled.div`
+  display: flex;
+  flex-direction: row;
+  position: relative;
+`
+
+export const Left = styled.div`
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
+
+export const Right = styled.div`
+  width: 20%;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-left: 20px;
+  background-color: white;
+
+  Button {
+    font-size: 20px;
+    font-family: 'CustomFont', sans-serif;
+  }
+`
