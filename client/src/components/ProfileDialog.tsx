@@ -137,9 +137,9 @@ export default function ProfileDialog() {
       getMyProfile()
         .then((response) => {
           if (!response) return;
-          const { contactGit, contactEmail, profileMessage } = response
-          setGrade(contactGit)
-          setSchool(contactEmail)
+          const { grade, school, profileMessage } = response
+          setGrade(grade)
+          setSchool(school)
           setMessage(profileMessage)
         })
         .catch((error) => {
@@ -172,18 +172,18 @@ export default function ProfileDialog() {
       setmessageFieldEmpty(true)
     } else {
       const body: UpdateRequest = {
-        username: username,
-        character: character,
-        contactGit: grade,
-        contactEmail: school,
+        // username: username,
+        // character: character,
+        grade: grade,
+        school: school,
         profileMessage: message,
       }
       updateMyProfile(body)
         .then((response) => {
           if (response.status === 200) {
-            const { contactGit, contactEmail, profileMessage } = response.payload
-            setGrade(contactGit)
-            setSchool(contactEmail)
+            const { grade, school, profileMessage } = response.payload
+            setGrade(grade)
+            setSchool(school)
             setMessage(profileMessage)
             console.log('성공')
             setIsOpen(false)
