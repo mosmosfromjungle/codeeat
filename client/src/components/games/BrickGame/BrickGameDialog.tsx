@@ -85,25 +85,18 @@ export default function BrickGameDialog() {
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
 
   /* FETCH PLAYERS IN ROOM */
-  useEffect(() => {
-    setPlayers(gamePlayers)
-    console.log('game player: ', gamePlayers)
-
-    gamePlayers.map((value, index) => {
-      if (value.name === username) {
-        // setMyCharacter(value.anim)
-      } else {
-        setOppUsername(value.name)
-      }
-    })
-
-  }, [gamePlayers])
-
-  // Update selected data structure option 
   // useEffect(() => {
-  //   setCurrentOption(mySelectedOption)
-  //   console.log('selected option: ', currentOption)
-  // }, [mySelectedOption])
+  //   setPlayers(gamePlayers)
+  //   console.log('game player: ', gamePlayers)
+
+  //   gamePlayers.map((value, index) => {
+  //     if (value.name === username) {
+  //       // setMyCharacter(value.anim)
+  //     } else {
+  //       setOppUsername(value.name)
+  //     }
+  //   })
+  // }, [gamePlayers])
 
   const imgsrc = [img1, img2, img3, img4, img5, img6]
 
@@ -125,17 +118,6 @@ export default function BrickGameDialog() {
     })));
   }, [oppCurrentImages]);
 
-
-  // const handleKeyDown = (event) => {
-  //   if (event.key === 'Enter') {
-  //     bootstrap.gameNetwork.brickGameCommand(command)
-  //   }
-  // }
-
-  const handleOptionClick = (option) => {
-    bootstrap.gameNetwork.brickGameCommand(option)
-  }
-
   const handleClose = () => {
     try {
       const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
@@ -147,13 +129,18 @@ export default function BrickGameDialog() {
     }
   }
 
+  const handleOptionClick = (option) => {
+    bootstrap.gameNetwork.brickGameCommand(option)
+  }
+
   const handleEnter = () => {
-    setCommand('');
     bootstrap.gameNetwork.brickGameCommand(command);
+    setCommand('');
   }
 
   const handleSubmit = () => {
-    // Todo: 정답, 실패 판별하는 코드
+    bootstrap.gameNetwork.brickGameCommand('submit');
+    setCommand('');
   }
 
   let oppLifeElements = [];

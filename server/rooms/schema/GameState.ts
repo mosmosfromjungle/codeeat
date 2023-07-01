@@ -69,11 +69,6 @@ export class RainGameRoomState extends Schema implements IRainGameRoomState {
 
 /* BRICK GAME ROOM SCHEMA */
 
-export class BrickPlayerScore extends Schema implements IBrickPlayerScore {
-  @type(['number']) pointArray = new ArraySchema<number>()
-  @type('number') totalPoint = 0
-}
-
 export class ImageContainer extends Schema implements IImageContainer {
   @type('number') imgidx = 0
   @type('string') text = ''
@@ -86,24 +81,30 @@ export class ImageContainer extends Schema implements IImageContainer {
 }
 
 export class BrickPlayerStatus extends Schema implements IBrickPlayerStatus {
-  // @type([ImageContainer]) currentImages = new Array<ImageContainer>()
   @type([ImageContainer]) currentImages = new ArraySchema<ImageContainer>()
   @type('string') selectedOption = DATA_STRUCTURE.NONE
   @type(['string']) commandArray = new ArraySchema<string>()
 }
 
+export class BrickPlayerScore extends Schema implements IBrickPlayerScore {
+  @type(['number']) pointArray = new ArraySchema<number>()
+  @type('number') totalPoint = 0
+  @type('number') chance = 3
+}
+
 export class BrickPlayer extends Schema implements IBrickPlayer {
-  // @type('string') name: string
   @type(BrickPlayerScore) playerScore = new BrickPlayerScore()
   @type(BrickPlayerStatus) playerStatus = new BrickPlayerStatus()
 }
 
 export class BrickGameState extends Schema implements IBrickGameState {
   @type({ map: BrickPlayer }) brickPlayers = new MapSchema<BrickPlayer>()
-  @type('string') currentQuiz = QUIZ_TYPE.NONE
-  @type([ImageContainer]) originalImages = new ArraySchema<ImageContainer>()
+  @type('string') problemType = QUIZ_TYPE.NONE
+  @type([ImageContainer]) problemImages = new ArraySchema<ImageContainer>()
+  @type('number') problemId = 0
   @type('boolean') gameInProgress = false
   @type('boolean') gameStarting = false
+  @type('number') currnetRound = 0
 }
 
 /* GAME ROOM SCHEMA */
@@ -121,8 +122,5 @@ export class GamePlayer extends Schema implements IGamePlayer {
 export class GameState extends Schema implements IGameState {
   @type({ map: GamePlayer }) players = new MapSchema<GamePlayer>()
   @type('string') host = ''
-  // molegames
-  // @type({ map: RainGameState }) rainGameStates = new MapSchema<RainGameState>()
-  // @type({ map: RainGameUser }) rainGameUsers = new MapSchema<RainGameUser>()
   @type(BrickGameState) brickgames = new BrickGameState()
 }

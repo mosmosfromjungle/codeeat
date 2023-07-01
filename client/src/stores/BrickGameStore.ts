@@ -62,6 +62,8 @@ export const brickGameSlice = createSlice({
     myPlayerStatus,
     oppPlayerScore,
     oppPlayerStatus,
+    oppName: '',
+    oppCharacter: '',
   },
   reducers: {
     openBrickGameDialog: (state) => {
@@ -93,6 +95,10 @@ export const brickGameSlice = createSlice({
     setOppPlayerStatus: (state, action: PayloadAction<PlayerStatusInterface>) => {
       state.oppPlayerStatus = action.payload
     },
+    setOppInfo: (state, action: PayloadAction<{ name: string, character: string }>) => {
+      state.oppName = action.payload.name
+      state.oppCharacter = action.payload.character
+    }
   },
 })
 
@@ -103,7 +109,8 @@ export const {
   setMyPlayerScore,
   setMyPlayerStatus,
   setOppPlayerScore,
-  setOppPlayerStatus
+  setOppPlayerStatus,
+  setOppInfo,
 } = brickGameSlice.actions
 
 export default brickGameSlice.reducer
