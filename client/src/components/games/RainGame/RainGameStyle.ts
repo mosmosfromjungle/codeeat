@@ -11,7 +11,7 @@ export const Backdrop = styled.div`
 export const Wrapper = styled.div`
     width: 100%;
     height: 100%;
-    background: #222639;
+    background: #9C8F8B;
     border-radius: 16px;
     padding: 16px;
     color: #eee;
@@ -95,9 +95,12 @@ export const TimerArea = styled.div`
 export const GameArea = styled.div`
     display: flex;
     position: relative;
-    height: 100vh;
+    height: 85%;
+
+    box-shadow: 0px 0px 5px #0000006f;
     background: no-repeat center/cover url('/assets/game/RainGame/blackboard_crop.png');
     background-size: 100% 100%;
+    border-radius: 20px;
 `
 
 export const Left = styled.div`
@@ -112,4 +115,32 @@ export const Right = styled.div`
     position: relative;
     overflow: hidden;
     textAlign: center;
+`
+
+export const PointArea = styled.div`
+    height: 15%;
+    display: flex;
+    position: relative;
+    font-size: 25px;
+    font-family: Font_DungGeun;
+`
+
+export const FriendPoint = styled.div`
+    margin: 10px;
+    width: 40%;
+    text-align: center;
+`
+
+export const InputArea = styled.div`
+    display: flex;
+    position: relative;
+    margin: 20px;
+    width: 20%;
+    text-align: center;
+`
+
+export const MyPoint = styled.div`
+    margin: 10px;
+    width: 40%;
+    text-align: center;
 `

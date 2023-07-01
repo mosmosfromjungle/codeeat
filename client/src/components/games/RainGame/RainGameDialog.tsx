@@ -8,15 +8,15 @@ import { closeRainGameDialog } from '../../../stores/RainGameDialogStore'
 import phaserGame from '../../../PhaserGame'
 import Bootstrap from '../../../scenes/Bootstrap'
 
-function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
 import { 
   Backdrop, Wrapper, StartButton, CharacterArea, NameArea, 
   WaitWrapper, FriendInfo, MyInfo, Position, Comment, 
 
 } from './RainGameStyle'
+
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 const RainGameDialog = () => {
   const dispatch = useAppDispatch()

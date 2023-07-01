@@ -1,15 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react'
-import rain_Background from '../../../../public/assets/game/RainGame/blackboard.png'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
 import Bootstrap from '../../../scenes/Bootstrap'
 import phaserGame from '../../../PhaserGame'
 import { setRainGameMyState, setRainGameYouState} from '../../../stores/RainGameStore'
 
+import TextField from '@mui/material/TextField'
+
 import { 
-  Backdrop, Wrapper, StartButton, CharacterArea, NameArea, 
-  WaitWrapper, FriendInfo, MyInfo, Position, Comment, 
-  TimerArea, GameArea, Left, Right, 
+  CharacterArea, NameArea, Position, 
+  TimerArea, GameArea, Left, Right, PointArea, FriendPoint, MyPoint, InputArea,
 } from './RainGameStyle'
+
+import eraser from '/assets/game/RainGame/eraser.png'
 
 interface KeywordRain {
   y: number
@@ -22,6 +24,10 @@ interface KeywordRain {
   // multifly: boolean,
 }
 
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 export function RainGame() {
   const dispatch = useAppDispatch()
   const keywordInput = useRef<HTMLInputElement>(null)
@@ -31,13 +37,21 @@ export function RainGame() {
   const [time, setTime] = useState(100)
   const [point, setPoint] = useState<number>(0)
   const host = useAppSelector((state) => state.raingame.host)
+
+  // My information
   const username = useAppSelector((state) => state.user.username)
+  const character = useAppSelector((state) => state.user.character)
+  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`;
+  
+  // Friend information
+  const you = useAppSelector((state) => state.raingame.you)
+  const friendimgpath = `/assets/character/single/${capitalizeFirstLetter(you.character)}_idle_anim_19.png`;
+
   const [myGame, setMyGame] = useState<KeywordRain[]>([])
   const [youGame, setYouGame] = useState<KeywordRain[]>([])
   const myState = useAppSelector((state) => state.raingame.myState)
   const youState = useAppSelector((state) => state.raingame.youState)
   const me = useAppSelector((state) => state.raingame.me)
-  const you = useAppSelector((state) => state.raingame.you)
 
   const Awords = [
     { y: 0, speed: 1, keyword: 'abs', x: 331 },
@@ -187,6 +201,25 @@ export function RainGame() {
     }
   }
 
+  // 친구 목숨, 내 목숨 표시
+
+  let friendLifeElements = [];
+  let myLifeElements = [];
+
+  for (let i = 0; i < youState.heart; i++) {
+    friendLifeElements.push(
+      <img src={ eraser } width="50px" style={{ margin: '5px' }}></img>
+    );
+  }
+
+  for (let i = 0; i < myState.heart; i++) {
+    myLifeElements.push(
+      <img src={ eraser } width="50px" style={{ margin: '5px' }}></img>
+    );
+  }
+
+  const [command, setCommand] = useState('')
+
   return (
     <>
       <GameArea>
@@ -233,55 +266,45 @@ export function RainGame() {
               </h5>
             ))}
         </Right>
-
-        {/* <div style={{ flex: 1, textAlign: 'center' }}>
-          <input
-            ref={keywordInput}
-            placeholder="text"
-            onKeyPress={(e) => keydown(e.charCode)}
-            style={{ marginRight: '1vw', fontSize: '1vw' }}
-          />
-          <button
-            onClick={() => keydown(13)}
-            style={{
-              fontSize: '1vw',
-              marginBottom: '3vw',
-              padding: '0.5vw 1vw',
-              fontWeight: 'bold',
-            }}
-          >
-            입력
-          </button>
-        </div>
-
-        <div
-          style={{
-            display: 'flex',
-            fontSize: '1vw',
-            position: 'absolute',
-            bottom: '0',
-            left: '0',
-            right: '0',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '0 20px',
-          }}
-        >
-          <div style={{ textAlign: 'left' }}>
-            <div style={{ fontSize: '1.2vw', fontWeight: 'bold' }}>{you.character}</div>
-            <div style={{ marginBottom: '4px' }}>이름: {you.username}</div>
-            <div>점수: {youState.point}</div>
-            <div>하트: {youState.heart}</div>
-          </div>
-
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: '1.2vw', fontWeight: 'bold' }}>{me.character}</div>
-            <div style={{ marginBottom: '4px' }}>이름: {me.username}</div>
-            <div>점수: {myState.point}</div>
-            <div>하트: {myState.heart}</div>
-          </div>
-        </div> */}
       </GameArea>
+
+      <PointArea>
+        <FriendPoint style={{ width: '40%', display: 'flex', position: 'relative' }}>
+          <CharacterArea style={{ width: '30%' }}>
+            <img src={ friendimgpath } width="60px" id="friend-character"></img>
+          </CharacterArea>
+          <NameArea style={{ width: '30%', marginTop: '30px' }}>
+            친구 [{you.username.toUpperCase()}] <br/>
+            { friendLifeElements }
+          </NameArea>
+        </FriendPoint>
+
+        <InputArea style={{ width: '20%', marginTop: '20px', fontSize: '90px' }}>
+          <Position>
+            { youState.point }:{ myState.point }
+          </Position>
+        </InputArea>
+
+        <MyPoint style={{ display: 'flex', position: 'relative' }}>
+          <div style={{ width: '40%', marginTop: '30px' }}>
+            <TextField
+                label="명령어 입력 후 엔터"
+                variant="outlined"
+                inputRef={keywordInput}
+                onKeyPress={(e) => keydown(e.charCode)}
+                fullWidth
+                style={{ fontSize: '20px' }}
+            />
+          </div>
+          <NameArea style={{ width: '80%', marginTop: '30px' }}>
+            나 [{ username.toUpperCase() }]<br/>
+            { myLifeElements }
+          </NameArea>
+          <CharacterArea style={{ width: '10%' }}>
+            <img src={ imgpath } width="60px" id="my-character"></img>
+          </CharacterArea>
+        </MyPoint>
+      </PointArea>
     </>
   )
 }
