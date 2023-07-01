@@ -62,12 +62,13 @@ export interface IBrickPlayer extends Schema {
 
 export interface IBrickGameState extends Schema {
   brickPlayers: MapSchema<IBrickPlayer>
+  problemId: number
   problemType: QUIZ_TYPE
   problemImages: ArraySchema<IImageContainer>
-  problemId: number
   gameInProgress: boolean
   gameStarting: boolean
   currnetRound: number
+  hasRoundWinner: boolean
 }
 
 

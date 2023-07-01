@@ -99,12 +99,13 @@ export class BrickPlayer extends Schema implements IBrickPlayer {
 
 export class BrickGameState extends Schema implements IBrickGameState {
   @type({ map: BrickPlayer }) brickPlayers = new MapSchema<BrickPlayer>()
+  @type('number') problemId = 0
   @type('string') problemType = QUIZ_TYPE.NONE
   @type([ImageContainer]) problemImages = new ArraySchema<ImageContainer>()
-  @type('number') problemId = 0
   @type('boolean') gameInProgress = false
   @type('boolean') gameStarting = false
   @type('number') currnetRound = 0
+  @type('boolean') hasRoundWinner = false
 }
 
 /* GAME ROOM SCHEMA */

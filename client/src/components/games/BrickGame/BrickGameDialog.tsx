@@ -59,7 +59,7 @@ export default function BrickGameDialog() {
   const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`;
 
   const gamePlayers = useAppSelector((state) => state.room.gamePlayers)
-  const currentQuiz  = useAppSelector((state) => state.brickgame.brickGameState.currentQuiz)
+  const problemType  = useAppSelector((state) => state.brickgame.brickGameState.problemType)
   const myCurrentImages = useAppSelector((state) => state.brickgame.myPlayerStatus.currentImages)
   const mySelectedOption = useAppSelector((state) => state.brickgame.myPlayerStatus.selectedOption)
   const myCommandArray = useAppSelector((state) => state.brickgame.myPlayerStatus.commandArray)
@@ -204,7 +204,7 @@ export default function BrickGameDialog() {
                 <span style={{ fontSize: '32px', margin: '20px' }}>
                   {/* 숫자의 합이 <span style={{ fontSize: '36px', color: 'yellow' }}> {n} </span>이 되도록
                   몬스터 배열을 수정해주세요! */}
-                  {/* {currentQuiz} */}
+                  {/* {problemType} */}
 
                   {oppUsername ? 
                     `${problem}` :
