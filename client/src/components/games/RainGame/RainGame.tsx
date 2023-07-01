@@ -5,6 +5,12 @@ import Bootstrap from '../../../scenes/Bootstrap'
 import phaserGame from '../../../PhaserGame'
 import { setRainGameMyState, setRainGameYouState} from '../../../stores/RainGameStore'
 
+import { 
+  Backdrop, Wrapper, StartButton, CharacterArea, NameArea, 
+  WaitWrapper, FriendInfo, MyInfo, Position, Comment, 
+  TimerArea, GameArea, Left, Right, 
+} from './RainGameStyle'
+
 interface KeywordRain {
   y: number
   speed: number
@@ -183,45 +189,14 @@ export function RainGame() {
 
   return (
     <>
-      {/* Time Section */}
-      <div
-        id="timer"
-        style={{
-          position: 'absolute',
-          top: '10px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          fontSize: '20px',
-          zIndex: 1,
-          backgroundColor: 'rgba(0,0,0,0.5)',
-          padding: '10px',
-          borderRadius: '5px',
-          color: '#fff',
-        }}
-      >
-        {String(time).padStart(3, '0')}
-      </div>
+      <GameArea>
+        <TimerArea>
+          <div id="timer">
+            {String(time).padStart(3, '0')}
+          </div>
+        </TimerArea>
 
-      {/* Game Section */}
-      <div
-        style={{
-          display: 'flex',
-          position: 'relative',
-          height: 'calc(75vh - 6px)',
-        }}
-      >
-        {/* Left Side (상대편) */}
-        <div
-          style={{
-            width: '50vw',
-            backgroundImage: `url(${rain_Background})`,
-            backgroundSize: '100%',
-            backgroundRepeat: 'no-repeat',
-            position: 'relative',
-            overflow: 'hidden',
-            textAlign: 'center',
-          }}
-        >
+        <Left>
           {youGame.map((word, index) => (
             <h5
               key={index}
@@ -238,90 +213,75 @@ export function RainGame() {
               {word.keyword}
             </h5>
           ))}
+        </Left>
+
+        <Right>
+            {myGame.map((word, index) => (
+              <h5
+                key={index}
+                style={{
+                  position: 'absolute',
+                  fontSize: '1.4vw',
+                  letterSpacing: '0.3vw',
+                  top: `${word.y}px`,
+                  left: `${word.x + 250}px`,
+                  color: '#FFFFFF',
+                  zIndex: 2,
+                }}
+              >
+                {word.keyword}
+              </h5>
+            ))}
+        </Right>
+
+        {/* <div style={{ flex: 1, textAlign: 'center' }}>
+          <input
+            ref={keywordInput}
+            placeholder="text"
+            onKeyPress={(e) => keydown(e.charCode)}
+            style={{ marginRight: '1vw', fontSize: '1vw' }}
+          />
+          <button
+            onClick={() => keydown(13)}
+            style={{
+              fontSize: '1vw',
+              marginBottom: '3vw',
+              padding: '0.5vw 1vw',
+              fontWeight: 'bold',
+            }}
+          >
+            입력
+          </button>
         </div>
 
-        {/* Right Side (내것) */}
         <div
           style={{
-            width: '40%',
-            backgroundImage: `url(${rain_Background})`,
-            backgroundSize: '100%',
-            backgroundRepeat: 'no-repeat',
-            position: 'relative',
-            overflow: 'hidden',
-            textAlign: 'center',
-          }}
-        >
-          {myGame.map((word, index) => (
-            <h5
-              key={index}
-              style={{
-                position: 'absolute',
-                fontSize: '1.4vw',
-                letterSpacing: '0.3vw',
-                top: `${word.y}px`,
-                left: `${word.x + 250}px`,
-                color: '#FFFFFF',
-                zIndex: 2,
-              }}
-            >
-              {word.keyword}
-            </h5>
-          ))}
-        </div>
-      </div>
-
-      {/* Input Section - Text Field and Button */}
-      <div style={{ flex: 1, textAlign: 'center' }}>
-        <input
-          ref={keywordInput}
-          placeholder="text"
-          onKeyPress={(e) => keydown(e.charCode)}
-          style={{ marginRight: '1vw', fontSize: '1vw' }}
-        />
-        <button
-          onClick={() => keydown(13)}
-          style={{
+            display: 'flex',
             fontSize: '1vw',
-            marginBottom: '3vw',
-            padding: '0.5vw 1vw',
-            fontWeight: 'bold',
+            position: 'absolute',
+            bottom: '0',
+            left: '0',
+            right: '0',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '0 20px',
           }}
         >
-          입력
-        </button>
-      </div>
+          <div style={{ textAlign: 'left' }}>
+            <div style={{ fontSize: '1.2vw', fontWeight: 'bold' }}>{you.character}</div>
+            <div style={{ marginBottom: '4px' }}>이름: {you.username}</div>
+            <div>점수: {youState.point}</div>
+            <div>하트: {youState.heart}</div>
+          </div>
 
-      {/* Points and Hearts */}
-      <div
-        style={{
-          display: 'flex',
-          fontSize: '1vw',
-          position: 'absolute',
-          bottom: '0',
-          left: '0',
-          right: '0',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: '0 20px',
-        }}
-      >
-        {/* Left Side - Opponent's Info */}
-        <div style={{ textAlign: 'left' }}>
-          <div style={{ fontSize: '1.2vw', fontWeight: 'bold' }}>{you.character}</div>
-          <div style={{ marginBottom: '4px' }}>이름: {you.username}</div>
-          <div>점수: {youState.point}</div>
-          <div>하트: {youState.heart}</div>
-        </div>
-
-        {/* Right Side - My Info */}
-        <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: '1.2vw', fontWeight: 'bold' }}>{me.character}</div>
-          <div style={{ marginBottom: '4px' }}>이름: {me.username}</div>
-          <div>점수: {myState.point}</div>
-          <div>하트: {myState.heart}</div>
-        </div>
-      </div>
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontSize: '1.2vw', fontWeight: 'bold' }}>{me.character}</div>
+            <div style={{ marginBottom: '4px' }}>이름: {me.username}</div>
+            <div>점수: {myState.point}</div>
+            <div>하트: {myState.heart}</div>
+          </div>
+        </div> */}
+      </GameArea>
     </>
   )
 }

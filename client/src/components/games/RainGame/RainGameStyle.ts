@@ -21,9 +21,9 @@ export const Wrapper = styled.div`
     min-width: max-content;
 
     .close {
-    position: absolute;
-    top: 0px;
-    right: 0px;
+        position: absolute;
+        top: 0px;
+        right: 0px;
     }
 `
 
@@ -77,4 +77,39 @@ export const Comment = styled.div`
     text-align: center;
     font-size: 30px;
     font-family: Font_DungGeun;
+`
+
+export const TimerArea = styled.div`
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    trans-form: translateX(-50%);
+    font-size: 20px;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 5px;
+    color: #fff;
+`
+
+export const GameArea = styled.div`
+    display: flex;
+    position: relative;
+    height: 100vh;
+    background: no-repeat center/cover url('/assets/game/RainGame/blackboard_crop.png');
+    background-size: 100% 100%;
+`
+
+export const Left = styled.div`
+    width: 50%;
+    position: relative;
+    overflow: hidden;
+    textAlign: center;
+`
+
+export const Right = styled.div`
+    width: 50%;
+    position: relative;
+    overflow: hidden;
+    textAlign: center;
 `
