@@ -3,7 +3,7 @@ import rain_Background from '../../../../public/assets/game/RainGame/blackboard.
 import { useAppDispatch, useAppSelector } from '../../../hooks'
 import Bootstrap from '../../../scenes/Bootstrap'
 import phaserGame from '../../../PhaserGame'
-import { setRainGameMyState, setRainGameYouState} from '../../../stores/RainGameStore'
+import { setRainGameMyState, setRainGameYouState } from '../../../stores/RainGameStore'
 
 interface KeywordRain {
   y: number
@@ -17,22 +17,21 @@ interface KeywordRain {
 }
 
 export function RainGame() {
+  const canvasHeight = 50
+  const lineHeight = canvasHeight + 550
   const dispatch = useAppDispatch()
   const keywordInput = useRef<HTMLInputElement>(null)
-  const canvasHeight = 1000
-  const lineHeight = canvasHeight - 500
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
   const [time, setTime] = useState(100)
-  const [point, setPoint] = useState<number>(0)
+
   const host = useAppSelector((state) => state.raingame.host)
   const username = useAppSelector((state) => state.user.username)
   const [myGame, setMyGame] = useState<KeywordRain[]>([])
   const [youGame, setYouGame] = useState<KeywordRain[]>([])
-  const myState = useAppSelector((state) => state.raingame.myState)
+  const [myState, setMyState] = useState({ heart: 3, point: 0 })
   const youState = useAppSelector((state) => state.raingame.youState)
   const me = useAppSelector((state) => state.raingame.me)
   const you = useAppSelector((state) => state.raingame.you)
-
   const Awords = [
     { y: 0, speed: 1, keyword: 'abs', x: 331 },
     { y: 0, speed: 1.5, keyword: 'print', x: 253 },
@@ -139,10 +138,32 @@ export function RainGame() {
       setMyGame((game) =>
         game.map((item) => {
           const newY = item.y + item.speed
+
+          if (newY >= lineHeight) {
+            setMyState((prevState) => ({ ...prevState, heart: prevState.heart - 1 }))
+          }
           return { ...item, y: newY }
         })
       )
     }, 30)
+
+    const checkHeartInterval = setInterval(() => {
+      setMyGame((prevGame) => {
+        let heartDecreased = false
+        const filteredGame = prevGame.filter((word) => {
+          if (word.y >= lineHeight) {
+            heartDecreased = true
+            return false
+          }
+          return true
+        })
+
+        if (heartDecreased) {
+          setMyState((prevState) => ({ ...prevState, heart: prevState.heart - 1 }))
+        }
+        return filteredGame
+      })
+    }, 100)
 
     // 상대방 단어 위치 업데이트
     const updateYouWordsInterval = setInterval(() => {
@@ -160,12 +181,11 @@ export function RainGame() {
 
     return () => {
       clearInterval(timeInterval)
-
       clearInterval(createWordsInterval)
       clearInterval(updateMyWordsInterval)
       clearInterval(updateYouWordsInterval)
+      clearInterval(checkHeartInterval)
       bootstrap.gameNetwork.room.removeAllListeners()
-
     }
   }, [])
 
@@ -175,7 +195,7 @@ export function RainGame() {
       const isMyWord = myGame.some((word) => word.keyword === inputKeyword)
       if (isMyWord) {
         setMyGame((prevGame) => prevGame.filter((word) => word.keyword !== inputKeyword))
-        setPoint((prevPoint) => prevPoint + 1)
+        setMyState((prevState) => ({ ...prevState, point: prevState.point + 1 }))
       }
       keywordInput.current.value = ''
     }
@@ -183,6 +203,41 @@ export function RainGame() {
 
   return (
     <>
+      {/* canvasHeight 선 */}
+      <div
+        style={{
+          position: 'absolute',
+          top: `${canvasHeight}px`,
+          left: '0',
+          width: '100%',
+          height: '2px',
+          backgroundColor: 'red',
+        }}
+      ></div>
+      {/* 중앙분리선 */}
+      <div
+        style={{
+          position: 'absolute',
+          backgroundColor: 'yellow',
+          height: '546px',
+          top: '53px',
+          left: '50%',
+          width: '2px',
+          transform: 'translateX(-50%)',
+        }}
+      ></div>
+
+      {/* lineHeight 선 */}
+      <div
+        style={{
+          position: 'absolute',
+          top: `${lineHeight}px`,
+          left: '0',
+          width: '100%',
+          height: '2px',
+          backgroundColor: 'blue',
+        }}
+      ></div>
       {/* Time Section */}
       <div
         id="timer"
@@ -196,7 +251,8 @@ export function RainGame() {
           backgroundColor: 'rgba(0,0,0,0.5)',
           padding: '10px',
           borderRadius: '5px',
-          color: '#fff',
+          color: time <= 15 ? 'red' : '#fff',
+          animation: time <= 15 ? 'blink 1s linear infinite' : 'none',
         }}
       >
         {String(time).padStart(3, '0')}
@@ -207,15 +263,16 @@ export function RainGame() {
         style={{
           display: 'flex',
           position: 'relative',
-          height: 'calc(75vh - 6px)',
+          height: '77vh',
+          justifyContent: 'space-around',
         }}
       >
         {/* Left Side (상대편) */}
         <div
           style={{
-            width: '50vw',
+            width: '40vw',
             backgroundImage: `url(${rain_Background})`,
-            backgroundSize: '100%',
+            backgroundSize: 'cover',
             backgroundRepeat: 'no-repeat',
             position: 'relative',
             overflow: 'hidden',
@@ -243,9 +300,9 @@ export function RainGame() {
         {/* Right Side (내것) */}
         <div
           style={{
-            width: '40%',
+            width: '40vw',
             backgroundImage: `url(${rain_Background})`,
-            backgroundSize: '100%',
+            backgroundSize: 'cover',
             backgroundRepeat: 'no-repeat',
             position: 'relative',
             overflow: 'hidden',
@@ -260,7 +317,7 @@ export function RainGame() {
                 fontSize: '1.4vw',
                 letterSpacing: '0.3vw',
                 top: `${word.y}px`,
-                left: `${word.x + 250}px`,
+                left: `${word.x}px`,
                 color: '#FFFFFF',
                 zIndex: 2,
               }}
@@ -272,7 +329,16 @@ export function RainGame() {
       </div>
 
       {/* Input Section - Text Field and Button */}
-      <div style={{ flex: 1, textAlign: 'center' }}>
+      <div
+        style={{
+          textAlign: 'center',
+          position: 'absolute',
+          bottom: `${canvasHeight - 15}px`,
+          transform: 'translateX(-50%)',
+          left: '75%',
+          zIndex: 2,
+        }}
+      >
         <input
           ref={keywordInput}
           placeholder="text"
@@ -292,34 +358,87 @@ export function RainGame() {
         </button>
       </div>
 
-      {/* Points and Hearts */}
+      {/* Opponent's Info */}
       <div
         style={{
           display: 'flex',
-          fontSize: '1vw',
+          justifyContent: 'flex-start',
           position: 'absolute',
-          bottom: '0',
-          left: '0',
-          right: '0',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+          width: '50%',
           padding: '0 20px',
+          bottom: '50px',
         }}
       >
         {/* Left Side - Opponent's Info */}
         <div style={{ textAlign: 'left' }}>
+          <div style={{ marginBottom: '30%', fontSize: '20px', fontWeight: 'bold' }}>
+            {' '}
+            {you.username}
+          </div>
           <div style={{ fontSize: '1.2vw', fontWeight: 'bold' }}>{you.character}</div>
-          <div style={{ marginBottom: '4px' }}>이름: {you.username}</div>
-          <div>점수: {youState.point}</div>
-          <div>하트: {youState.heart}</div>
         </div>
+      </div>
 
+      {/* My Info */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          position: 'absolute',
+          width: '50%',
+          padding: '0 20px',
+          bottom: '50px',
+          right: '0',
+        }}
+      >
         {/* Right Side - My Info */}
         <div style={{ textAlign: 'right' }}>
+          <div style={{ marginBottom: '30%', fontSize: '20px', fontWeight: 'bold' }}>
+            {' '}
+            {me.username}
+          </div>
           <div style={{ fontSize: '1.2vw', fontWeight: 'bold' }}>{me.character}</div>
-          <div style={{ marginBottom: '4px' }}>이름: {me.username}</div>
-          <div>점수: {myState.point}</div>
-          <div>하트: {myState.heart}</div>
+        </div>
+      </div>
+
+      {/* Points and Hearts */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '40px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          textAlign: 'center',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          zIndex: 2,
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            marginBottom: '10px',
+            justifyContent: 'center',
+          }}
+        >
+          <div style={{ width: '50px', textAlign: 'right', fontSize: '20px', fontWeight: 'bold' }}>
+            {youState.heart}
+          </div>
+          <div style={{ margin: '0 20px' }}>목숨</div>
+          <div style={{ width: '50px', textAlign: 'left', fontSize: '20px', fontWeight: 'bold' }}>
+            {myState.heart}
+          </div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: '50px', textAlign: 'right', fontSize: '20px', fontWeight: 'bold' }}>
+            {youState.point}
+          </div>
+          <div style={{ margin: '0 20px' }}>점수</div>
+          <div style={{ width: '50px', textAlign: 'left', fontSize: '20px', fontWeight: 'bold' }}>
+            {myState.point}
+          </div>
         </div>
       </div>
     </>

@@ -123,7 +123,7 @@ const RainGameDialog = () => {
         </UserInfo>
         </>
         )}
-        {<StartButton onClick={handleStartGame} disabled={!isReady || !isHost}>게임 시작</StartButton>}
+        { !inProgress && <StartButton onClick={handleStartGame} disabled={!isReady || !isHost}>게임 시작</StartButton>}
         {inProgress && <RainGame />}
         <IconButton aria-label="close dialog" className="close" onClick={handleClose}>
           <CloseIcon />
