@@ -44,6 +44,8 @@ export enum Message {
   RESPONSE_MOLE,
   SEND_HOST,
   RECEIVE_HOST,
+  SEND_LIFE,
+  RECEIVE_LIFE,
 
   // ***** NOT USED *****
   // CONNECT_TO_MOLEGAME,

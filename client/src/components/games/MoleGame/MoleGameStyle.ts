@@ -5,6 +5,7 @@ export const Backdrop = styled.div`
   top: 0;
   left: 0;
   width: 100%;
+  height: 100%;
   overflow: hidden;
   padding: 16px 16px 16px 16px;
 `
@@ -82,24 +83,26 @@ export const TipArea = styled.div`
 `
 
 export const YourPoint = styled.div`
-  width: 50%;
+  width: 30%;
   text-align: center;
 `
 
 export const MyPoint = styled.div`
-  width: 50%;
+  width: 30%;
   text-align: center;
 `
 
 export const Moles = styled.div`
-  width: 50%;
-  margin: 0 auto;
+  width: 40%;
+  margin: auto auto;
   list-style: none;
-  width: 900px;
+  width: 620px;
   border-radius: 20px;
 `
 
 export const IsHost = styled.div`
+  margin-top: 50px;
+  height: 10%;
   font-size: 35px;
   font-weight: bold;
   color: #f2ecff;
