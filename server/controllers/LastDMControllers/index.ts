@@ -122,3 +122,21 @@ export const updateLastDM = async (obj: { senderName: string; receiverName: stri
       throw err;
     }
   };
+
+  export const deleteLastDM = async (body:{ senderName: string, receiverName: string, message: string }) => {
+    try {
+      await LastDM.collection.deleteMany({
+        $and: [
+          {
+            $or: [
+              { $and: [{ senderName: body.senderName }, { receiverName: body.receiverName }] },
+              { $and: [{ senderName: body.receiverName }, { receiverName: body.senderName }] }
+            ]
+          },
+          { message: ' ' }
+        ]
+      })
+    } catch (err) {
+      console.error(err)
+    }
+  }

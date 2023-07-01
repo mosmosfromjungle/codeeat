@@ -3,7 +3,7 @@ import { Socket } from 'socket.io';
 import { v4 as uuidV4 } from 'uuid';
 import { Request, Response } from 'express';
 import LastDM from '../../models/LastDM';
-import { updateLastDM, updateRoomId,addLastDM } from '../LastDMControllers';
+import { updateLastDM, updateRoomId,addLastDM, deleteLastDM } from '../LastDMControllers';
 import { userMap } from '../..';
 const rooms: Record<string, string[]> = {}
 interface IRoomParams {
@@ -37,8 +37,10 @@ export const DMController = (socket: Socket) => {
         rooms[roomId].push(username);
       })  
       } else {
+        addLastDM({senderName: username, receiverName: receiverName, message: ' ', roomId})
         updateRoomId({ roomId: roomId, senderName: username, receiverName: receiverName })
         .then(() => {
+          deleteLastDM({senderName: username, receiverName: receiverName, message: ' '})
           rooms[roomId].push(username);
         })
       }
