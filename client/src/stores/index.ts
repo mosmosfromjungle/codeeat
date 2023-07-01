@@ -9,7 +9,6 @@ import rainGameDialogReducer from './RainGameDialogStore'
 import rainGameReducer from './RainGameStore'
 import dmReducer from './DMStore'
 import faceChatReducer from './FaceChatStore'
-
 enableMapSet()
 
 const rootReducer = {
