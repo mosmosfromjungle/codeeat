@@ -22,8 +22,9 @@ export const Wrapper = styled.div`
 
     .close {
         position: absolute;
-        top: 0px;
-        right: 0px;
+        top: 10px;
+        right: 10px;
+        z-index: 1;
     }
 `
 
@@ -81,14 +82,14 @@ export const Comment = styled.div`
 
 export const TimerArea = styled.div`
     position: absolute;
-    top: 10px;
-    left: 50%;
+    top: 20px;
+    left: 46%;
     trans-form: translateX(-50%);
-    font-size: 20px;
+    font-size: 35px;
     z-index: 1;
     background-color: rgba(0, 0, 0, 0.5);
-    padding: 10px;
-    border-radius: 5px;
+    padding: 15px;
+    border-radius: 10px;
     color: #fff;
 `
 

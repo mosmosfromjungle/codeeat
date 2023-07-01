@@ -176,7 +176,7 @@ export function RainGame() {
 
     const timeInterval = setInterval(() => {
       setTime((prevTime) => Math.max(prevTime - 1, 0))
-    }, 10000000)
+    }, 1000)
 
     return () => {
       clearInterval(timeInterval)
@@ -218,15 +218,27 @@ export function RainGame() {
     );
   }
 
-  const [command, setCommand] = useState('')
-
   return (
     <>
       <GameArea>
         <TimerArea>
-          <div id="timer">
-            {String(time).padStart(3, '0')}
-          </div>
+          { time < 16 ?
+            (
+              <>
+                <div id="timer" style={{ color: 'red' }}>
+                  {String(time).padStart(3, '0')}
+                </div>
+              </>
+            )
+          :
+            (
+              <>
+                <div id="timer">
+                  {String(time).padStart(3, '0')}
+                </div>
+              </>
+            )
+          }
         </TimerArea>
 
         <Left>
@@ -286,7 +298,7 @@ export function RainGame() {
         </InputArea>
 
         <MyPoint style={{ display: 'flex', position: 'relative' }}>
-          <div style={{ width: '40%', marginTop: '30px' }}>
+          <div style={{ width: '30%', marginTop: '30px' }}>
             <TextField
                 label="명령어 입력 후 엔터"
                 variant="outlined"
@@ -296,11 +308,11 @@ export function RainGame() {
                 style={{ fontSize: '20px' }}
             />
           </div>
-          <NameArea style={{ width: '80%', marginTop: '30px' }}>
+          <NameArea style={{ width: '70%', marginTop: '30px' }}>
             나 [{ username.toUpperCase() }]<br/>
             { myLifeElements }
           </NameArea>
-          <CharacterArea style={{ width: '10%' }}>
+          <CharacterArea style={{ width: '20%' }}>
             <img src={ imgpath } width="60px" id="my-character"></img>
           </CharacterArea>
         </MyPoint>
