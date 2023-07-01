@@ -36,7 +36,11 @@ export const RoundArea = styled.div`
 `
 
 export const Header = styled.div`
-  margin-top: 20px;
+  margin: 20px;
+  color: #f2ecff;
+  text-align: center;
+  line-height: 1.5;
+  font-size: 30px;
 `
 
 export const Comment = styled.div`
@@ -44,6 +48,17 @@ export const Comment = styled.div`
   right: 10px;
   font-size: 20px;
   font-family: Font_DungGeun;
+`
+
+export const Problem = styled.div`
+  color: white;
+  border-width: 5px;
+  border-color: white;
+  border-style: dashed;
+  text-align: center;
+  width: 50%;
+  height: 100px;
+  margin: 10px auto 10px auto;
 `
 
 export const ProblemText = styled.div`
@@ -56,20 +71,32 @@ export const Content = styled.div`
   display: flex;
 `
 
-export const Moles = styled.div`
-  width: 40%;
-`
-
-export const MyPoint = styled.div`
-  margin-top: 100px;
-  width: 30%;
+export const TipArea = styled.div`
+  width: 90%;
+  height: 15%;
+  color: white;
   text-align: center;
+  margin: 10px auto 10px auto;
+  font-size: 20px;
+  font-family: Font_DungGeun;
 `
 
 export const YourPoint = styled.div`
-  margin-top: 100px;
-  width: 30%;
+  width: 50%;
   text-align: center;
+`
+
+export const MyPoint = styled.div`
+  width: 50%;
+  text-align: center;
+`
+
+export const Moles = styled.div`
+  width: 50%;
+  margin: 0 auto;
+  list-style: none;
+  width: 900px;
+  border-radius: 20px;
 `
 
 export const IsHost = styled.div`
@@ -80,17 +107,24 @@ export const IsHost = styled.div`
 `
 
 export const CharacterArea = styled.div`
-  
+  height: 20%;
 `
 
 export const NameArea = styled.div`
+  height: 15%;
   font-size: 35px;
   font-weight: bold;
   color: #f2ecff;
   font-family: Font_DungGeun;
 `
 
+export const LifeArea = styled.div `
+  height: 15%;
+  margin: 20px;
+`
+
 export const PointArea = styled.div`
+  height: 15%;
   font-size: 20px;
   font-weight: bold;
   color: #f2ecff;

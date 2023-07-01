@@ -14,24 +14,24 @@ button {
   cursor : url(/assets/game/molegame/cursor_1.png) 20 30
 }
 
-h1 {
+/* h1 {
   color: #f2ecff;
   text-align: center;
   line-height: 1.5;
   font-size: 25px;
-}
+} */
 
 .main{
   position: relative;
   width: 100%;
 }
 
-.whack-a-mole {
+/* .whack-a-mole {
   margin: 0 auto;
   list-style: none;
   width: 700px;
   border-radius: 20px;
-}
+} */
 
 .mole{
   float: left;
@@ -137,11 +137,11 @@ li {
   100% { font-size: 20px; }
 }
 
-.point-wrap{
+/* .point-wrap{
   float: left;
   width: 100%;
   overflow: hiddlen;
-}
+} */
 
 .btn-wrap{
   float: right;
@@ -185,7 +185,7 @@ li {
 }
 
 .start-game {
-  animation: blink-effect 1s step-end infinite;
+  animation: blink-effect 3s step-end infinite;
 }
 
 /* .friend-comment {
@@ -218,7 +218,7 @@ li {
   animation: point 0.3s;
 }
 
-.ending {
+/* .ending {
   display:none;
   position: absolute;
   border-radius: 20px;
@@ -231,16 +231,16 @@ li {
   margin: 0 auto;
   background: #3d3f43;
   z-index: 2;
-}
+} */
 
-#ending-box {
+/* #ending-box {
   margin: 50px 0 0 0;
   font-size: 20px;
   line-height: 1.8;
   color: #f2ecff;
-}
+} */
 
-#ending-box .last {
+/* #ending-box .last {
   color: #fbb666;
 }
 
@@ -266,9 +266,9 @@ li {
 
 .finalEnding{
   display: block;
-}
+} */
 
-.problem{
+/* .problem{
   color: white;
   border-width: 5px;
   border-color: white;
@@ -277,7 +277,7 @@ li {
   width: 800px;
   height: 100px;
   margin: 10px auto 10px auto;
-}
+} */
 
 .hidden {
   display: none;

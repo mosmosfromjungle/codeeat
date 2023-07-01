@@ -12,10 +12,12 @@ import CorrectBGM from '/assets/audios/mole_correct.mp3';
 import WrongBGM from '/assets/audios/mole_wrong.mp3';
 import FinishBGM from '/assets/audios/mole_finish.mp3';
 
+import potato from '/assets/game/molegame/potato.png';
+
 import { 
   Backdrop, Wrapper, RoundArea, Header, 
-  Comment, ProblemText, Content, 
-  Moles, MyPoint, YourPoint, IsHost, CharacterArea, NameArea, PointArea, 
+  Comment, Problem, ProblemText, TipArea, Content, 
+  Moles, MyPoint, YourPoint, IsHost, CharacterArea, NameArea, LifeArea, PointArea, 
 } from './MoleGameStyle'
 import './MoleGame.css'
 
@@ -70,12 +72,15 @@ export default function MoleGameDialog() {
   const [activeNumber, setActiveNumber] = useState(0);
   const [activeNumberList, setActiveNumberList] = useState([0, 0, 0]);
 
-  const [hideEnding, setHideEnding] = React.useState(true);
+  // const [hideEnding, setHideEnding] = React.useState(true);
   const [canClick, setCanClick] = useState(true);
   const [startGame, setStartGame] = useState(false);
   
   const [point, setPoint] = useState(0);
   const [turn, setTurn] = useState(0);
+
+  const [myLife, setMyLife] = useState(3);
+  const [friendLife, setFriendLife] = useState(3);
   
   const [moleCatch, setMoleCatch] = useState(0);
 
@@ -110,16 +115,16 @@ export default function MoleGameDialog() {
   // 1. Load problems
 
   const problems = [
-    ['Q01. 파이썬에서 리스트에 들어있는 모든 수를 합하는 함수는?', ['sum', 'len', 'map']],
-    ['Q02. 파이썬에서 리스트의 개수를 구하는 함수는?', ['len', 'abs', 'map']],
-    ['Q03. 파이썬에서 새로운 정렬된 리스트를 반환하는 함수는?', ['sorted', 'len', 'map']],
-    ['Q04. 파이썬에서 리스트 자체를 정렬시켜버리는 것은?', ['sort', 'len', 'map']],
-    ['Q05. 파이썬에서 내림차순 정렬을 위해 사용하는 옵션은?', ['reverse', 'len', 'map']],
-    ['Q06. 파이썬에서 숫자의 절댓값을 리턴하는 함수는?', ['abs', 'len', 'map']],
-    ['Q07. 파이썬에서 문자열로 구성된 표현식을 입력으로 받아 해당 문자열을 실행한 결괏값을 리턴하는 함수는?', ['eval', 'len', 'map']],
-    ['Q08. 파이썬에서 문자의 유니코드 숫자 값을 리턴하는 함수는?', ['ord', 'len', 'map']],
-    ['Q09. 파이썬에서 유니코드 숫자값을 입력받아 그 코드에 해당하는 문자를 리턴하는 함수는?', ['char', 'len', 'map']],
-    ['Q10. 파이썬에서 for문과 함께 자주 사용하는 함수로, 입력받은 숫자에 해당하는 범위 값을 반복 가능한 객체로 만들어 리턴하는 함수는?', ['range', 'len', 'map']]  
+    ['파이썬에서 리스트에 들어있는 모든 수를 합하는 함수는?', ['sum', 'len', 'map']],
+    ['파이썬에서 리스트의 개수를 구하는 함수는?', ['len', 'abs', 'map']],
+    ['파이썬에서 새로운 정렬된 리스트를 반환하는 함수는?', ['sorted', 'len', 'map']],
+    ['파이썬에서 리스트 자체를 정렬시켜버리는 것은?', ['sort', 'len', 'map']],
+    ['파이썬에서 내림차순 정렬을 위해 사용하는 옵션은?', ['reverse', 'len', 'map']],
+    ['파이썬에서 숫자의 절댓값을 리턴하는 함수는?', ['abs', 'len', 'map']],
+    ['파이썬에서 문자열로 구성된 표현식을 입력으로 받아 해당 문자열을 실행한 결괏값을 리턴하는 함수는?', ['eval', 'len', 'map']],
+    ['파이썬에서 문자의 유니코드 숫자 값을 리턴하는 함수는?', ['ord', 'len', 'map']],
+    ['파이썬에서 유니코드 숫자값을 입력받아 그 코드에 해당하는 문자를 리턴하는 함수는?', ['char', 'len', 'map']],
+    ['파이썬에서 for문과 함께 자주 사용하는 함수로, 입력받은 숫자에 해당하는 범위 값을 반복 가능한 객체로 만들어 리턴하는 함수는?', ['range', 'len', 'map']]  
   ];
 
   // 2. Bling the Text
@@ -182,7 +187,7 @@ export default function MoleGameDialog() {
         
         setStartGame(false);
 
-        modalEvent();
+        setDisableStartButton(true);
 
         const FinishAudio = new Audio(FinishBGM);
         FinishAudio.play();
@@ -414,7 +419,7 @@ export default function MoleGameDialog() {
       setTurn(turn + 1);
 
     } else {
-      modalEvent();
+      setDisableStartButton(true);
       
       setTurn(0);
 
@@ -509,15 +514,15 @@ export default function MoleGameDialog() {
   let total = (point / 10) * 100;
   let friendTotal = (friendPoint / 10) * 100;
 
-  const modalEvent = () => {
-    setHideEnding(false);
-    setDisableStartButton(true);
-  }
+  // const modalEvent = () => {
+  //   setHideEnding(false);
+  //   setDisableStartButton(true);
+  // }
 
-  const hideModal = () => {
-    setHideEnding(true);
-    setDisableStartButton(false);
-  }
+  // const hideModal = () => {
+  //   setHideEnding(true);
+  //   setDisableStartButton(false);
+  // }
 
   // 7. Check the winner
   let winner = '';
@@ -538,37 +543,37 @@ export default function MoleGameDialog() {
     }
   }
 
-  const Modal = () => {
-    return(
-      <div id="ending" className="ending finalEnding">
-        <p id="ending-box">
-          <p id="ending-box-title">Game Over !</p>
-          <p>
-            <span>Your score is &nbsp;</span>
-            <span className='last'>{ total }</span>
-          </p>
-          <p>
-            <span>Friend score is &nbsp;</span>
-            <span className='last'>{ friendTotal }</span>
-          </p>
-          <p>
-            <span>The winner is &nbsp;</span>
-            <span className='winner'>{ winner }</span>
-          </p>
+  // const Modal = () => {
+  //   return(
+  //     <div id="ending" className="ending finalEnding">
+  //       <p id="ending-box">
+  //         <p id="ending-box-title">Game Over !</p>
+  //         <p>
+  //           <span>Your score is &nbsp;</span>
+  //           <span className='last'>{ total }</span>
+  //         </p>
+  //         <p>
+  //           <span>Friend score is &nbsp;</span>
+  //           <span className='last'>{ friendTotal }</span>
+  //         </p>
+  //         <p>
+  //           <span>The winner is &nbsp;</span>
+  //           <span className='winner'>{ winner }</span>
+  //         </p>
 
-          <div className="btn-wrap">
-            <button type="button" 
-                    className="restart-btn" 
-                    style={{ color: "#f9f871" }}
-                    onClick={() => hideModal()}
-                    onMouseEnter={ handleMouseOver }>
-              CLOSE
-            </button>
-          </div>
-        </p>
-      </div>
-    )
-  }
+  //         <div className="btn-wrap">
+  //           <button type="button" 
+  //                   className="restart-btn" 
+  //                   style={{ color: "#f9f871" }}
+  //                   onClick={() => hideModal()}
+  //                   onMouseEnter={ handleMouseOver }>
+  //             CLOSE
+  //           </button>
+  //         </div>
+  //       </p>
+  //     </div>
+  //   )
+  // }
 
   const handleMouseOver = () => {
     const ButtonAudio = new Audio(ButtonBGM);
@@ -625,6 +630,21 @@ export default function MoleGameDialog() {
       catchMole();
     }
   }, [problem]);
+
+  let friendLifeElements = [];
+  let myLifeElements = [];
+
+  for (let i = 0; i < friendLife; i++) {
+    friendLifeElements.push(
+      <img src={ potato } width="60px"></img>
+    );
+  }
+
+  for (let i = 0; i < myLife; i++) {
+    myLifeElements.push(
+      <img src={ potato } width="60px"></img>
+    );
+  }
   
   return (
     <Backdrop>
@@ -641,48 +661,53 @@ export default function MoleGameDialog() {
           Round {turn}/10
         </RoundArea>
 
-        { hideEnding === false ? <Modal /> : '' }
+        {/* { hideEnding === false ? <Modal /> : '' } */}
 
         <body>
           <Header>
-              <h1 className="title" style={{ color:titleColor }}>Welcome! Whack-A-Mole</h1> 
+              <div className="title" style={{ color:titleColor }}>Welcome! Whack-A-Mole</div> 
           </Header>
 
           <Comment>
             <p className={`friend-comment ${friendname ? '' : 'start-game'}`}>
               {friendname ? '친구가 들어왔어요,' : '친구가 아직 들어오지 않았어요 !'}<br />
-              {friendname ? '방장은 Start 버튼을 눌러주세요 !' : ''}
+              {friendname ? '방장은 Start 버튼을 눌러주세요 !' : '친구가 들어와야 게임이 시작돼요.'}
             </p>
           </Comment>
 
           <div className="main">
-            <div id="problem" className="problem">
+            <Problem>
               <ProblemText>
                 { problemText1 }
               </ProblemText>
-            </div>
+            </Problem>
+
+            <TipArea>
+              틀린 답을 외치는 두더지를 잡으면 목숨이 깎여요!<br/>
+              💡 TIP: 두더지를 빨리 잡으려고 하는 것보다, 문제를 잘 읽고 푸는 게 더 중요할 거예요.
+            </TipArea>
 
             <Content>
               <YourPoint>
-                <div className="point-wrap">
-                  <IsHost>
-                    { ( friendname && (friendname === host)) ? '방장' : ''}<br/><br/>
-                  </IsHost>
-                  <CharacterArea>
-                    <img src={ friendimgpath } width="50px" id="friend-character" className={ friendname ? "" : "hidden" }></img>
-                  </CharacterArea>
-                  <NameArea>
-                    [{friendname.toUpperCase()}]<br/><br/>
-                  </NameArea>
-                  <PointArea>
-                    친구 점수<br/><br/>
-                    <span id="friend-point-current">{ friendPoint ? friendPoint : '0' }</span>/10
-                  </PointArea>
-                </div>
+                <IsHost>
+                  { ( friendname && (friendname === host)) ? '방장' : ''}<br/><br/>
+                </IsHost>
+                <CharacterArea>
+                  <img src={ friendimgpath } width="50px" id="friend-character" className={ friendname ? "" : "hidden" }></img>
+                </CharacterArea>
+                <NameArea>
+                  [{friendname.toUpperCase()}]<br/><br/>
+                </NameArea>
+                <LifeArea>
+                  { friendLifeElements }
+                </LifeArea>
+                <PointArea>
+                  <span id="friend-point-current">{ friendPoint ? friendPoint : '0' }</span>/10
+                </PointArea>
               </YourPoint>
               
               <Moles>
-                <ul className="whack-a-mole clearfix">
+                <ul>
                   <li className="mole" onClick={() => handleClick(1)}>
                     <img id="1" src="/assets/game/molegame/mole.png"></img>
                     <div id="answer-div-1" className={`answer-text-1 ${activeNumberList.includes(1) ? '' : 'hiding'}`}>
@@ -741,19 +766,21 @@ export default function MoleGameDialog() {
               </Moles>
 
               <MyPoint>
-                <div className="point-wrap">
-                  <span id="is-host">
-                    { ( friendname && (username === host)) ? '방장' : ''}<br/><br/>
-                  </span>
+                <IsHost>
+                  { ( friendname && (username === host)) ? '방장' : ''}<br/><br/>
+                </IsHost>
+                <CharacterArea>
                   <img src={ imgpath } width="50px" id="my-character"></img>
-                  <p id="point-text-name">
-                    [{username.toUpperCase()}]<br/><br/>
-                  </p>
-                  <p id="point-text">
-                    My Point<br/><br/>
-                    <span id="point-current">{ point }</span>/10
-                  </p>
-                </div>
+                </CharacterArea>
+                <NameArea>
+                  [{username.toUpperCase()}]<br/><br/>
+                </NameArea>
+                <LifeArea>
+                  { myLifeElements }
+                </LifeArea>
+                <PointArea>
+                  <span id="point-current">{ point }</span>/10
+                </PointArea>
               </MyPoint>
             </Content>
 
