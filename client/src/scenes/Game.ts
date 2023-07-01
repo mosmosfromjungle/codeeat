@@ -125,16 +125,17 @@ export default class Game extends Phaser.Scene {
 
     // debugDraw(groundLayer, this)
 
- 
+    /*
       // ***새롭게 16px 캐릭터로 변경하기 위한 코드***
-    //   this.myPlayer = this.add.myPlayer(
-    //   Phaser.Math.RND.between(400, 900),
-    //   'noah',
-    //   this.network.mySessionId,
-    //   // userId,
-    //   // userProfile
-    //   // 로건 케빈 엠마
-    // );
+      this.myPlayer = this.add.myPlayer(
+      Phaser.Math.RND.between(400, 900),
+      'kevin',
+      this.network.mySessionId,
+      // userId,
+      // userProfile
+      // 로건 케빈 엠마
+    );
+    */
 
     this.myPlayer = this.add.myPlayer(705, 900, 'noah', this.network.mySessionId)
     // this.myPlayer = this.add.myPlayer(705, 500, 'adam', this.network.mySessionId) // TODO: 캐릭터 시작 위치 수정 가능 -> 서버와 통일해야함
