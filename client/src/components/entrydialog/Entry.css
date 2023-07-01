@@ -1,0 +1,27 @@
+.character-animation {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 100px;
+}
+
+.character-animation .character {
+  opacity: 1;
+  transition: opacity 0.1s ease-in-out;
+}
+
+.character-animation .character.active {
+  opacity: 1;
+}
+
+@keyframes jump-animation {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-30%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}

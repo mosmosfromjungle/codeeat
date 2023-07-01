@@ -73,12 +73,12 @@ export const signUp = async (req: Request, res: Response) => {
         })
     }
     
-    /* 이메일 아이디 중복확인 */
+    /* 아이디 아이디 중복확인 */
     const foundUser = await User.findOne({ userId: user.userId })
     if (foundUser) {
         return res.status(409).json({
             status: 409,
-            message: '이미 사용중인 이메일입니다.'
+            message: '이미 사용중인 아이디입니다.'
         })
     }
 
@@ -244,13 +244,14 @@ export const updateProfile = async (req: CustomRequest, res: Response) => {
         message: '유저 데이터 조회 실패'
     })
 
-    const existingUsername = await User.findOne({ username: newUserData.username })
-    if (existingUsername) {
-        return res.status(410).json({
-            status: 410,
-            message: '이미 사용중인 닉네임입니다.'
-        })
-    }
+    // 프로필 수정시에는 username을 변경하지 않기 때문에 오류가 발생하여 주석처리 했습니다.
+    // const existingUsername = await User.findOne({ username: newUserData.username })
+    // if (existingUsername) {
+    //     return res.status(410).json({
+    //         status: 410,
+    //         message: '이미 사용중인 닉네임입니다.'
+    //     })
+    // }
 
     foundUser.username = newUserData.username
     foundUser.userProfile!.character = newUserData.character

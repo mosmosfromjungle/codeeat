@@ -66,13 +66,13 @@ const Content = styled.div`
 `
 
 const MyPoint = styled.div`
-  margin-left: 200px;
+  margin-right: 200px;
   margin-top: 100px;
   text-align: center;
 `
 
 const YourPoint = styled.div`
-  margin-right: 200px;
+  margin-left: 200px;
   margin-top: 100px;
   text-align: center;
 `
@@ -714,21 +714,21 @@ export default function MoleGameDialog() {
             </div>
 
             <Content>
-              <MyPoint>
+              <YourPoint>
                 <div className="point-wrap">
                   <span id="is-host">
-                    { ( friendname && (username === host)) ? '방장' : ''}<br/><br/>
+                    { ( friendname && (friendname === host)) ? '방장' : ''}<br/><br/>
                   </span>
-                  <img src={ imgpath } width="50px" id="my-character"></img>
+                  <img src={ friendimgpath } width="50px" id="friend-character" className={ friendname ? "" : "hidden" }></img>
                   <p id="point-text-name">
-                    [{username}]<br/><br/>
+                    [{friendname}]<br/><br/>
                   </p>
                   <p id="point-text">
-                    My Point<br/><br/>
-                    <span id="point-current">{ point }</span>/10
+                    Friend Point<br/><br/>
+                    <span id="friend-point-current">{ friendPoint ? friendPoint : '0' }</span>/10
                   </p>
                 </div>
-              </MyPoint>
+              </YourPoint>
               
               <ul className="whack-a-mole clearfix">
                 <li className="mole" onClick={() => handleClick(1)}>
@@ -787,21 +787,21 @@ export default function MoleGameDialog() {
                 </li>
               </ul>
 
-              <YourPoint>
+              <MyPoint>
                 <div className="point-wrap">
                   <span id="is-host">
-                    { ( friendname && (friendname === host)) ? '방장' : ''}<br/><br/>
+                    { ( friendname && (username === host)) ? '방장' : ''}<br/><br/>
                   </span>
-                  <img src={ friendimgpath } width="50px" id="friend-character" className={ friendname ? "" : "hidden" }></img>
+                  <img src={ imgpath } width="50px" id="my-character"></img>
                   <p id="point-text-name">
-                    [{friendname}]<br/><br/>
+                    [{username}]<br/><br/>
                   </p>
                   <p id="point-text">
-                    Friend Point<br/><br/>
-                    <span id="friend-point-current">{ friendPoint ? friendPoint : '0' }</span>/10
+                    My Point<br/><br/>
+                    <span id="point-current">{ point }</span>/10
                   </p>
                 </div>
-              </YourPoint>
+              </MyPoint>
             </Content>
 
             <div id="start-button-div" className="point-box clearfix hidden">

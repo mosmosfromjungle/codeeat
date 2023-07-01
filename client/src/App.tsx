@@ -15,7 +15,7 @@ import WelcomeDialog from './components/entrydialog/WelcomeDialog'
 import GameLobbyDialog from './components/gamedialog/GameLobbyDialog'
 import GameWelcomeDialog from './components/gamedialog/GameWelcomeDialog'
 import MoleGameDialog from './components/games/MoleGame/MoleGameDialog'
-import BrickGameDialog from './components/games/BrickGameDialog'
+import BrickGameDialog from './components/games/BrickGame/BrickGameDialog'
 import RainGameDialog from './components/games/RainGameDialog'
 import FaceChatDialog from './components/games/FaceChatDialog'
 
@@ -25,6 +25,7 @@ import ChatDialog from './components/ChatDialog'
 import { ConversationList } from './components/DM/DMList'
 import { DMRoom } from './components/DM/DMRoom'
 import UserDialog from './components/UserDialog'
+import FriendDialog from './components/FriendDialog'
 import LogoutDialog from './components/LogoutDialog'
 import VersionDialog from './components/helperdialog/VersionDialog'
 import MobileVirtualJoystick from './components/helperdialog/MobileVirtualJoystick'
@@ -42,7 +43,8 @@ import { authenticateUser } from './apicalls/auth';
 // const cookies = new Cookies();
 
 // TODO: Production 서버에 옮겨가면 해당 부분 수정 필요 
-axios.defaults.baseURL = 'http://43.200.172.83:2567'
+// axios.defaults.baseURL = 'http://43.200.172.83:2567'
+axios.defaults.baseURL = 'http://localhost:2567'
 console.log('axios.defaults.baseURL ', axios.defaults.baseURL);
 
 const Backdrop = styled.div`
@@ -65,6 +67,7 @@ function App() {
   const showDMList = useAppSelector((state) => state.dm.showDMList)
   const showDMRoom = useAppSelector((state) => state.dm.showDMRoom)
   const showUser = useAppSelector((state) => state.chat.showUser)
+  const showFriend = useAppSelector((state) => state.chat.showFriend)
   const showLogout = useAppSelector((state) => state.user.showLogout)
   const showVersion = useAppSelector((state) => state.user.showVersion)
   const videoConnected = useAppSelector((state) => state.user.videoConnected)
@@ -104,6 +107,7 @@ function App() {
         {showDMList && <ConversationList />}
         {showDMRoom && <DMRoom />}
         {showUser && <UserDialog />}
+        {showFriend && <FriendDialog />}
         {showLogout && <LogoutDialog />}
         {showProfile && <ProfileDialog />}
         {showVersion && <VersionDialog />}

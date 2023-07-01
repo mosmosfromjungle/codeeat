@@ -5,7 +5,7 @@ import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 
 import { useAppSelector, useAppDispatch } from '../../hooks'
-import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore'
+import { DIALOG_STATUS, setCharacter, setDialogStatus, setUsername } from '../../stores/UserStore'
 
 import Adam from '../../images/login/Adam_login.png'
 import Ash from '../../images/login/Ash_login.png'
@@ -126,18 +126,14 @@ export default function WelcomeDialog() {
     game.myPlayer.setPlayerName(username)
     game.myPlayer.setPlayerTexture(character)
     game.network.readyToConnect() 
-    game.registerKeys()
     dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
   }
-
+  
   useEffect(() => {
-    if (roomJoined) {
-      console.log('room joined, setting my player')
-      game.myPlayer.setPlayerName(username)
-      game.myPlayer.setPlayerTexture(character)
-      game.network.readyToConnect()          
+    if (roomJoined) {    
+      game.registerKeys()
     }
-  }, [game, game.myPlayer])
+  })
 
   return (
     <>

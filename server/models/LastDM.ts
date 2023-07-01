@@ -3,16 +3,10 @@ import { Schema, model, Document, Model } from 'mongoose';
 import { ILastDM } from '../controllers/LastDMControllers/type';
 
 const lastdm = new Schema<ILastDM>({
-  senderInfo: {
-    userId: String,
-    username: String,
-  },
-  receiverInfo: {
-    userId: String,
-    username: String,
-  },
+  senderName: { type: String, required: true },
+  receiverName:{ type: String, required: true },
   message: { type: String, required: false },
-  roomId: { type: String, required: true },
+  roomId: { type: String, required: false },
   updatedAt: { type: Date, default: Date.now, required: false },
 });
 

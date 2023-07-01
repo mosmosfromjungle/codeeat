@@ -43,3 +43,8 @@ export interface IOfficeState extends Schema {
   // rainGameStates : MapSchema<IRainGameState>
   chatMessages: ArraySchema<IChatMessage>
 }
+
+export interface IDMState extends Schema {
+  users: MapSchema<IPlayer[]>
+  roomId: string
+}
