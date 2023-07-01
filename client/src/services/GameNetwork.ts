@@ -9,7 +9,8 @@ import {
   setMoleGameFriendData,
   setMoleGameProblem,
   setMoleGameHost,
-} from '../stores/MoleGameStore'
+  setMoleGameLife,
+ } from '../stores/MoleGameStore'
 import {
   setBrickGameState,
   setMyPlayerScore,
@@ -219,8 +220,13 @@ export default class GameNetwork {
 
     // method to receive host to me in mole game
     this.room.onMessage(Message.RECEIVE_HOST, (content) => {
-      store.dispatch(setMoleGameHost(content))
-    })
+      store.dispatch(setMoleGameHost(content));
+    });
+
+    // method to receive life to friend in mole game
+    this.room.onMessage(Message.RECEIVE_LIFE, (content) => {
+      store.dispatch(setMoleGameLife(content));
+    });
   }
 
   // method to send player updates to Colyseus server
@@ -341,6 +347,11 @@ export default class GameNetwork {
   // method to send host in mole game
   changeHost(host: string) {
     this.room?.send(Message.SEND_HOST, { host: host })
+  }
+
+  // method to send life count in mole game
+  removeLife(life: string) {
+    this.room?.send(Message.SEND_LIFE, { life: life })
   }
 
   // Rain Game

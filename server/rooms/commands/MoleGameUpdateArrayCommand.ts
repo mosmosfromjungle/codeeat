@@ -9,6 +9,7 @@ type Payload = {
   point: string
   problem: string
   host: string
+  life: string
 }
 
 export class MoleGameGetUserInfo extends Command<IOfficeState, Payload> {
@@ -32,5 +33,11 @@ export class MoleGameProblems extends Command<IOfficeState, Payload> {
 export class MoleGameChangeHost extends Command<IOfficeState, Payload> {
   execute(data: Payload) {
     const { client, host } = data
+  }
+}
+
+export class MoleGameChangeLife extends Command<IOfficeState, Payload> {
+  execute(data: Payload) {
+    const { client, life } = data
   }
 }
