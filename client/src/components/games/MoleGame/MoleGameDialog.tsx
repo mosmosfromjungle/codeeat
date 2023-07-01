@@ -12,74 +12,15 @@ import CorrectBGM from '/assets/audios/mole_correct.mp3';
 import WrongBGM from '/assets/audios/mole_wrong.mp3';
 import FinishBGM from '/assets/audios/mole_finish.mp3';
 
+import { 
+  Backdrop, Wrapper, RoundArea, Header, 
+  Comment, ProblemText, Content, 
+  Moles, MyPoint, YourPoint, IsHost, CharacterArea, NameArea, PointArea, 
+} from './MoleGameStyle'
 import './MoleGame.css'
+
 import phaserGame from '../../../PhaserGame'
 import Bootstrap from '../../../scenes/Bootstrap'
-
-const Backdrop = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  overflow: hidden;
-  padding: 16px 16px 16px 16px;
-`
-
-const Wrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  background: black;
-  border-radius: 16px;
-  padding: 20px;
-  color: #eee;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0px 0px 5px #0000006f;
-
-  .close {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-  }
-`
-
-const Header = styled.div`
-  margin-top: 20px;
-`
-
-const Comment = styled.div`
-  float: right;
-  right: 10px;
-  font-size: 20px;
-  font-family: Font_DungGeun;
-`
-
-const ProblemText = styled.div`
-  margin-top: 10px;
-  font-size: 25px;
-  font-family: Font_DungGeun;
-`
-
-const Content = styled.div`
-  display: flex;
-`
-
-const Moles = styled.div`
-  width: 40%;
-`
-
-const MyPoint = styled.div`
-  margin-top: 100px;
-  width: 30%;
-  text-align: center;
-`
-
-const YourPoint = styled.div`
-  margin-top: 100px;
-  width: 30%;
-  text-align: center;
-`
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -601,7 +542,7 @@ export default function MoleGameDialog() {
     return(
       <div id="ending" className="ending finalEnding">
         <p id="ending-box">
-          <p id="ending-box-title">🎮🎮 Game Over ! 🎲🎲</p>
+          <p id="ending-box-title">Game Over !</p>
           <p>
             <span>Your score is &nbsp;</span>
             <span className='last'>{ total }</span>
@@ -696,6 +637,10 @@ export default function MoleGameDialog() {
           <CloseIcon />
         </IconButton>
 
+        <RoundArea>
+          Round {turn}/10
+        </RoundArea>
+
         { hideEnding === false ? <Modal /> : '' }
 
         <body>
@@ -720,17 +665,19 @@ export default function MoleGameDialog() {
             <Content>
               <YourPoint>
                 <div className="point-wrap">
-                  <span id="is-host">
+                  <IsHost>
                     { ( friendname && (friendname === host)) ? '방장' : ''}<br/><br/>
-                  </span>
-                  <img src={ friendimgpath } width="50px" id="friend-character" className={ friendname ? "" : "hidden" }></img>
-                  <p id="point-text-name">
-                    [{friendname}]<br/><br/>
-                  </p>
-                  <p id="point-text">
-                    Friend Point<br/><br/>
+                  </IsHost>
+                  <CharacterArea>
+                    <img src={ friendimgpath } width="50px" id="friend-character" className={ friendname ? "" : "hidden" }></img>
+                  </CharacterArea>
+                  <NameArea>
+                    [{friendname.toUpperCase()}]<br/><br/>
+                  </NameArea>
+                  <PointArea>
+                    친구 점수<br/><br/>
                     <span id="friend-point-current">{ friendPoint ? friendPoint : '0' }</span>/10
-                  </p>
+                  </PointArea>
                 </div>
               </YourPoint>
               
@@ -800,7 +747,7 @@ export default function MoleGameDialog() {
                   </span>
                   <img src={ imgpath } width="50px" id="my-character"></img>
                   <p id="point-text-name">
-                    [{username}]<br/><br/>
+                    [{username.toUpperCase()}]<br/><br/>
                   </p>
                   <p id="point-text">
                     My Point<br/><br/>

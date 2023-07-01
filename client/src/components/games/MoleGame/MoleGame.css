@@ -29,15 +29,15 @@ h1 {
 .whack-a-mole {
   margin: 0 auto;
   list-style: none;
-  width:650px;
+  width: 700px;
   border-radius: 20px;
 }
 
 .mole{
   float: left;
-  width: 190px;
-  height: 190px;
-  margin: 5px;
+  width: 30%;
+  height: 30%;
+  margin: 1%;
   overflow: hidden;
   cursor : url('/assets/game/molegame/cursor_1.png'), pointer;
   border-radius: 20px;
@@ -188,25 +188,25 @@ li {
   animation: blink-effect 1s step-end infinite;
 }
 
-.friend-comment {
+/* .friend-comment {
   float: right;
   margin-right: 20px;
   font-size: 20px;
   font-family: Font_DungGeun;
-}
+} */
 
-#point-text {
+/* #point-text {
   font-size: 20px;
   font-weight: bold;
   color: #f2ecff;
-}
+} */
 
-#is-host, #point-text-name {
+/* #is-host {
   font-size: 35px;
   font-weight: bold;
   color: #f2ecff;
   font-family: Font_DungGeun;
-}
+} */
 
 #friend-point-current, #point-current {
   font-size: 20px;
