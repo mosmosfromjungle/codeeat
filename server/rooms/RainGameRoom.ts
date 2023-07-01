@@ -89,7 +89,6 @@ export class RainGameRoom extends Room<IRainGameRoomState> {
 
   // Handle RAIN_GAME_USER message
   private handleRainGameUser(client: Client, data: any) {
-    console.log('handleRainGameUser')
     const { username, character } = data
 
     this.state.rainGameUsers.set(client.sessionId, new RainGameUser(username, character))

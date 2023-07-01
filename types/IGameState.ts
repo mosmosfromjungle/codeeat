@@ -36,11 +36,6 @@ export interface IRainGameRoomState extends Schema {
 
 /* BRICK GAME ROOM SCHEMA */
 
-export interface IBrickPlayerScore extends Schema {
-  pointArray: ArraySchema<number>
-  totalPoint: number
-}
-
 export interface IImageContainer extends Schema {
   imgidx: number
   text: string
@@ -52,18 +47,26 @@ export interface IBrickPlayerStatus extends Schema {
   commandArray: ArraySchema<string>
 }
 
+export interface IBrickPlayerScore extends Schema {
+  pointArray: ArraySchema<number>
+  totalPoint: number
+  chance: number
+}
+
 export interface IBrickPlayer extends Schema {
-  // name: string
   playerScore: IBrickPlayerScore
   playerStatus: IBrickPlayerStatus
 }
 
 export interface IBrickGameState extends Schema {
   brickPlayers: MapSchema<IBrickPlayer>
-  currentQuiz: QUIZ_TYPE
-  originalImages: ArraySchema<IImageContainer>
+  problemId: number
+  problemType: QUIZ_TYPE
+  problemImages: ArraySchema<IImageContainer>
   gameInProgress: boolean
   gameStarting: boolean
+  currnetRound: number
+  hasRoundWinner: boolean
 }
 
 /* GAME ROOM SCHEMA */
@@ -75,10 +78,7 @@ export interface IGamePlayer extends Schema {
 
 export interface IGameState extends Schema {
   players: MapSchema<IGamePlayer>
-  host: string // username of the player that created the room
-  // molegames:
-  // raingames: MapSchema<IRainGameState>
-  // rainGameUsers: MapSchema<IRainGameUser>
+  host: string  // username of the player that created the room
   brickgames: IBrickGameState
 }
 
@@ -94,10 +94,8 @@ export enum DATA_STRUCTURE {
 }
 
 export enum QUIZ_TYPE {
-  NONE = '',
-  WAIT = '이번 문제는!?',
-  SAME2 = '같은 동물 2마리만 남겨주세요',
-  SAME3 = '같은 동물 3마리만 남겨주세요',
-  DIFF2 = '서로 다른 2종류의 동물만 남겨주세요',
-  DIFF3 = '서로 다른 3종류의 동물만 남겨주세요',
+  NONE = 'none',
+  SAME2 = 'same2',
+  SAME3 = 'same3',
+  DIFF3 = 'diff3',
 }

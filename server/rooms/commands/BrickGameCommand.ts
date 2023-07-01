@@ -19,14 +19,6 @@ export default class BrickGameCommand extends Command<IGameState, Payload> {
 
     const playerStatus = player.playerStatus
 
-    if (command === 'restore') {
-      playerStatus.currentImages.splice(0, playerStatus.currentImages.length, ...this.state.brickgames.originalImages)
-    } 
-    if (command === 'reset') {
-      playerStatus.selectedOption = DATA_STRUCTURE.NONE
-      playerStatus.currentImages.splice(0, playerStatus.currentImages.length, ...this.state.brickgames.originalImages)
-      playerStatus.commandArray.clear
-    }
     if (command === 'remove') {
       playerStatus.currentImages.splice(index!, 1)
       playerStatus.commandArray.push(commandText + ' ')
@@ -54,15 +46,3 @@ export default class BrickGameCommand extends Command<IGameState, Payload> {
     }
   }
 }
-
-        // case DATA_STRUCTURE.LIST:
-
-        // case DATA_STRUCTURE.SET:
-
-        // case DATA_STRUCTURE.STACK:
-
-        // case DATA_STRUCTURE.QUEUE:
-
-        // case DATA_STRUCTURE.DEQUE:
-
-        // default:

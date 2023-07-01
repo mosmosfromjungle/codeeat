@@ -6,6 +6,24 @@ import phaserGame from '../../../PhaserGame'
 import { Client } from 'colyseus.js'
 import { Message } from '../../../../../types/Messages'
 
+import TextField from '@mui/material/TextField'
+
+import { 
+  CharacterArea, NameArea, Position, 
+  TimerArea, GameArea, Left, Right, PointArea, FriendPoint, MyPoint, InputArea,
+} from './RainGameStyle'
+
+import eraser from '/assets/game/RainGame/eraser.png'
+
+import TextField from '@mui/material/TextField'
+
+import { 
+  CharacterArea, NameArea, Position, 
+  TimerArea, GameArea, Left, Right, PointArea, FriendPoint, MyPoint, InputArea,
+} from './RainGameStyle'
+
+import eraser from '/assets/game/RainGame/eraser.png'
+
 interface KeywordRain {
   y: number
   speed: number
@@ -15,6 +33,10 @@ interface KeywordRain {
   // blind: boolean,
   // accel: boolean,
   // multifly: boolean,
+}
+
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 const MessageContext = createContext('');
@@ -32,7 +54,16 @@ export function RainGame() {
 
 
   const host = useAppSelector((state) => state.raingame.host)
+
+  // My information
   const username = useAppSelector((state) => state.user.username)
+  const character = useAppSelector((state) => state.user.character)
+  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`;
+  
+  // Friend information
+  const you = useAppSelector((state) => state.raingame.you)
+  const friendimgpath = `/assets/character/single/${capitalizeFirstLetter(you.character)}_idle_anim_19.png`;
+
   const [myGame, setMyGame] = useState<KeywordRain[]>([])
   const [youGame, setYouGame] = useState<KeywordRain[]>([])
   const [myState, setMyState] = useState({ heart: 3, point: 0 })
@@ -219,84 +250,47 @@ export function RainGame() {
     }
   }
 
+  // 친구 목숨, 내 목숨 표시
+
+  let friendLifeElements = [];
+  let myLifeElements = [];
+
+  for (let i = 0; i < youState.heart; i++) {
+    friendLifeElements.push(
+      <img src={ eraser } width="50px" style={{ margin: '5px' }}></img>
+    );
+  }
+
+  for (let i = 0; i < myState.heart; i++) {
+    myLifeElements.push(
+      <img src={ eraser } width="50px" style={{ margin: '5px' }}></img>
+    );
+  }
+
   return (
     <>
-      {/* canvasHeight 선 */}
-      <div
-        style={{
-          position: 'absolute',
-          top: `${canvasHeight}px`,
-          left: '0',
-          width: '100%',
-          height: '2px',
-          backgroundColor: 'red',
-        }}
-      ></div>
-      {/* 중앙분리선 */}
-      <div
-        style={{
-          position: 'absolute',
-          backgroundColor: 'yellow',
-          height: '546px',
-          top: '53px',
-          left: '50%',
-          width: '2px',
-          transform: 'translateX(-50%)',
-        }}
-      ></div>
+      <GameArea>
+        <TimerArea>
+          { time < 16 ?
+            (
+              <>
+                <div id="timer" style={{ color: 'red' }}>
+                  {String(time).padStart(3, '0')}
+                </div>
+              </>
+            )
+          :
+            (
+              <>
+                <div id="timer">
+                  {String(time).padStart(3, '0')}
+                </div>
+              </>
+            )
+          }
+        </TimerArea>
 
-      {/* lineHeight 선 */}
-      <div
-        style={{
-          position: 'absolute',
-          top: `${lineHeight}px`,
-          left: '0',
-          width: '100%',
-          height: '2px',
-          backgroundColor: 'blue',
-        }}
-      ></div>
-      {/* Time Section */}
-      <div
-        id="timer"
-        style={{
-          position: 'absolute',
-          top: '10px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          fontSize: '20px',
-          zIndex: 1,
-          backgroundColor: 'rgba(0,0,0,0.5)',
-          padding: '10px',
-          borderRadius: '5px',
-          color: time <= 15 ? 'red' : '#fff',
-          animation: time <= 15 ? 'blink 1s linear infinite' : 'none',
-        }}
-      >
-        {String(time).padStart(3, '0')}
-      </div>
-
-      {/* Game Section */}
-      <div
-        style={{
-          display: 'flex',
-          position: 'relative',
-          height: '77vh',
-          justifyContent: 'space-around',
-        }}
-      >
-        {/* Left Side (상대편) */}
-        <div
-          style={{
-            width: '40vw',
-            backgroundImage: `url(${rain_Background})`,
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            position: 'relative',
-            overflow: 'hidden',
-            textAlign: 'center',
-          }}
-        >
+        <Left>
           {youGame.map((word, index) => (
             <h5
               key={index}
@@ -313,152 +307,65 @@ export function RainGame() {
               {word.keyword}
             </h5>
           ))}
-        </div>
+        </Left>
 
-        {/* Right Side (내것) */}
-        <div
-          style={{
-            width: '40vw',
-            backgroundImage: `url(${rain_Background})`,
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            position: 'relative',
-            overflow: 'hidden',
-            textAlign: 'center',
-          }}
-        >
-          {myGame.map((word, index) => (
-            <h5
-              key={index}
-              style={{
-                position: 'absolute',
-                fontSize: '1.4vw',
-                letterSpacing: '0.3vw',
-                top: `${word.y}px`,
-                left: `${word.x}px`,
-                color: '#FFFFFF',
-                zIndex: 2,
-              }}
-            >
-              {word.keyword}
-            </h5>
-          ))}
-        </div>
-      </div>
+        <Right>
+            {myGame.map((word, index) => (
+              <h5
+                key={index}
+                style={{
+                  position: 'absolute',
+                  fontSize: '1.4vw',
+                  letterSpacing: '0.3vw',
+                  top: `${word.y}px`,
+                  left: `${word.x + 250}px`,
+                  color: '#FFFFFF',
+                  zIndex: 2,
+                }}
+              >
+                {word.keyword}
+              </h5>
+            ))}
+        </Right>
+      </GameArea>
 
-      {/* Input Section - Text Field and Button */}
-      <div
-        style={{
-          textAlign: 'center',
-          position: 'absolute',
-          bottom: `${canvasHeight - 15}px`,
-          transform: 'translateX(-50%)',
-          left: '75%',
-          zIndex: 2,
-        }}
-      >
-        <input
-          ref={keywordInput}
-          placeholder="text"
-          onKeyPress={(e) => keydown(e.charCode)}
-          style={{ marginRight: '1vw', fontSize: '1vw' }}
-        />
-        <button
-          onClick={() => keydown(13)}
-          style={{
-            fontSize: '1vw',
-            marginBottom: '3vw',
-            padding: '0.5vw 1vw',
-            fontWeight: 'bold',
-          }}
-        >
-          입력
-        </button>
-      </div>
+      <PointArea>
+        <FriendPoint style={{ width: '40%', display: 'flex', position: 'relative' }}>
+          <CharacterArea style={{ width: '30%' }}>
+            <img src={ friendimgpath } width="60px" id="friend-character"></img>
+          </CharacterArea>
+          <NameArea style={{ width: '30%', marginTop: '30px' }}>
+            친구 [{you.username.toUpperCase()}] <br/>
+            { friendLifeElements }
+          </NameArea>
+        </FriendPoint>
 
-      {/* Opponent's Info */}
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          position: 'absolute',
-          width: '50%',
-          padding: '0 20px',
-          bottom: '50px',
-        }}
-      >
-        {/* Left Side - Opponent's Info */}
-        <div style={{ textAlign: 'left' }}>
-          <div style={{ marginBottom: '30%', fontSize: '20px', fontWeight: 'bold' }}>
-            {' '}
-            {you.username}
-          </div>
-          <div style={{ fontSize: '1.2vw', fontWeight: 'bold' }}>{you.character}</div>
-        </div>
-      </div>
+        <InputArea style={{ width: '20%', marginTop: '20px', fontSize: '90px' }}>
+          <Position>
+            { youState.point }:{ myState.point }
+          </Position>
+        </InputArea>
 
-      {/* My Info */}
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          position: 'absolute',
-          width: '50%',
-          padding: '0 20px',
-          bottom: '50px',
-          right: '0',
-        }}
-      >
-        {/* Right Side - My Info */}
-        <div style={{ textAlign: 'right' }}>
-          <div style={{ marginBottom: '30%', fontSize: '20px', fontWeight: 'bold' }}>
-            {' '}
-            {me.username}
+        <MyPoint style={{ display: 'flex', position: 'relative' }}>
+          <div style={{ width: '30%', marginTop: '30px' }}>
+            <TextField
+                label="명령어 입력 후 엔터"
+                variant="outlined"
+                inputRef={keywordInput}
+                onKeyPress={(e) => keydown(e.charCode)}
+                fullWidth
+                style={{ fontSize: '20px' }}
+            />
           </div>
-          <div style={{ fontSize: '1.2vw', fontWeight: 'bold' }}>{me.character}</div>
-        </div>
-      </div>
-
-      {/* Points and Hearts */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '40px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          textAlign: 'center',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          zIndex: 2,
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            marginBottom: '10px',
-            justifyContent: 'center',
-          }}
-        >
-          <div style={{ width: '50px', textAlign: 'right', fontSize: '20px', fontWeight: 'bold' }}>
-            {youState.heart}
-          </div>
-          <div style={{ margin: '0 20px' }}>목숨</div>
-          <div style={{ width: '50px', textAlign: 'left', fontSize: '20px', fontWeight: 'bold' }}>
-            {myState.heart}
-          </div>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ width: '50px', textAlign: 'right', fontSize: '20px', fontWeight: 'bold' }}>
-            {youState.point}
-          </div>
-          <div style={{ margin: '0 20px' }}>점수</div>
-          <div style={{ width: '50px', textAlign: 'left', fontSize: '20px', fontWeight: 'bold' }}>
-            {myState.point}
-          </div>
-        </div>
-      </div>
+          <NameArea style={{ width: '70%', marginTop: '30px' }}>
+            나 [{ username.toUpperCase() }]<br/>
+            { myLifeElements }
+          </NameArea>
+          <CharacterArea style={{ width: '20%' }}>
+            <img src={ imgpath } width="60px" id="my-character"></img>
+          </CharacterArea>
+        </MyPoint>
+      </PointArea>
     </>
   )
 }

@@ -56,48 +56,33 @@ export const rainGameSlice = createSlice({
     },
 
     setRainGameReady: (state, action: PayloadAction<boolean>) => {
-      state.rainGameReady = action.payload;
+      state.rainGameReady = action.payload
     },
 
     setRainGameInProgress: (state, action: PayloadAction<boolean>) => {
-        state.rainGameInProgress = action.payload;
+        state.rainGameInProgress = action.payload
       },
 
     setRainGameYou: (state, action: PayloadAction<RainGameUser>) => {
-      const { username, character } = action.payload;
-      state.you.username = username;
-      state.you.character = character;
+      const { username, character } = action.payload
+      state.you.username = username
+      state.you.character = character
     },
 
     setRainGameMe: (state, action: PayloadAction<RainGameUser>) => {
-      const { username, character } = action.payload;
-      state.me.username = username;
-      state.me.character = character;
+      const { username, character } = action.payload
+      state.me.username = username
+      state.me.character = character
     },
 
     setRainGameMyState: (state, action: PayloadAction<RainGameState>) => {
-      const { point, heart } = action.payload;
-      (state.myState.point = point), (state.myState.heart = heart)
+      const { point, heart } = action.payload
+      ;(state.myState.point = point), (state.myState.heart = heart)
     },
 
     setRainGameYouState: (state, action: PayloadAction<RainGameState>) => {
-      const { point, heart } = action.payload;
-      (state.youState.point = point), (state.youState.heart = heart)
-    },
-
-    removeHeart: (state) => {
-      state.youState.heart -= 1;
-    },
-
-    addPoint: (state) => {
-      state.youState.point += 1;
-    },
-    
-    deleteWord: (
-      state,
-      action: PayloadAction<{ words: string }>
-    ) => {
-      state.words = action.payload.words;
+      const { point, heart } = action.payload
+      ;(state.youState.point = point), (state.youState.heart = heart)
     },
   },
 })
@@ -110,9 +95,6 @@ export const {
   setRainGameMe,
   setRainGameMyState,
   setRainGameYouState,
-  removeHeart,
-  addPoint,
-  deleteWord
 } = rainGameSlice.actions
 
 export default rainGameSlice.reducer
