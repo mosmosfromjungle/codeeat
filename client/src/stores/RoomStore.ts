@@ -6,14 +6,6 @@ interface RoomInterface extends RoomAvailable {
   name?: string
 }
 
-export interface PlayersInterface {
-  name: string
-  // texture: string
-}
-
-/**
- * Colyseus' real time room list always includes the public lobby so we have to remove it manually.
- */
 const isCustomRoom = (room: RoomInterface) => {
   return room.name === RoomType.CUSTOM
 }
@@ -47,7 +39,6 @@ export const roomSlice = createSlice({
     gameRoomName: '',
     gameRoomDescription: '',
     mainPlayers: new Array<IPlayer>(),
-    gamePlayers: new Array<PlayersInterface>(),
     availableRooms: {
       generalRooms: new Array<RoomAvailable>(),
       brickRooms: new Array<RoomAvailable>(),
@@ -82,8 +73,8 @@ export const roomSlice = createSlice({
       state.gameRoomName = action.payload.name
       state.gameRoomDescription = action.payload.description
     },
-    setGamePlayers: (state, action: PayloadAction<PlayersInterface[]>) => {
-      state.gamePlayers = action.payload
+    setMainPlayers: (state, action: PayloadAction<IPlayer[]>) => {
+      state.mainPlayers = action.payload;
     },
     setAvailableRooms: (state, action: PayloadAction<RoomAvailable[]>) => {
       state.availableRooms.generalRooms = action.payload.filter((room) => isCustomRoom(room))
@@ -101,7 +92,6 @@ export const roomSlice = createSlice({
       state.availableRooms.faceChatRooms = action.payload.filter((room) => isFaceChatRoom(room))
     },
     addAvailableRooms: (state, action: PayloadAction<{ roomId: string; room: RoomAvailable }>) => {
-      // if (!isCustomRoom(action.payload.room)) return
       if (isCustomRoom(action.payload.room)) {
         const roomIndex = state.availableRooms.generalRooms.findIndex(
           (room) => room.roomId === action.payload.roomId
@@ -162,9 +152,6 @@ export const roomSlice = createSlice({
       state.availableRooms.rainRooms = []
       state.availableRooms.faceChatRooms = []
     },
-    setRoomPlayers: (state, action: PayloadAction<IPlayer[]>) => {
-      state.mainPlayers = action.payload;
-    },
   },
 })
 
@@ -174,7 +161,7 @@ export const {
   setGameJoined,
   setJoinedRoomData,
   setJoinedGameRoomData,
-  setGamePlayers,
+  setMainPlayers,
   setAvailableRooms,
   setAvailableBrickRooms,
   setAvailableMoleRooms,
@@ -183,7 +170,6 @@ export const {
   addAvailableRooms,
   removeAvailableRooms,
   clearAvailabelGameRooms,
-  setRoomPlayers,
 } = roomSlice.actions
 
 export default roomSlice.reducer

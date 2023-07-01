@@ -6,15 +6,15 @@ import phaserGame from '../PhaserGame'
 import Game from '../scenes/Game'
 
 export interface BrickGameStateInterface {
-  currentQuiz: QUIZ_TYPE
-  originalImages: ArraySchema<IImageContainer>
+  problemType: QUIZ_TYPE
+  problemImages: ArraySchema<IImageContainer>
   gameInProgress: boolean
   gameStarting: boolean
 }
 
 const brickGameState: BrickGameStateInterface = {
-  currentQuiz: QUIZ_TYPE.NONE,
-  originalImages: new ArraySchema<IImageContainer>(),
+  problemType: QUIZ_TYPE.NONE,
+  problemImages: new ArraySchema<IImageContainer>(),
   gameInProgress: false,
   gameStarting: false,
 }
@@ -62,6 +62,8 @@ export const brickGameSlice = createSlice({
     myPlayerStatus,
     oppPlayerScore,
     oppPlayerStatus,
+    oppName: '',
+    oppCharacter: '',
   },
   reducers: {
     openBrickGameDialog: (state) => {
@@ -76,8 +78,8 @@ export const brickGameSlice = createSlice({
       state.brickGameOpen = false
     },
     setBrickGameState: (state, action: PayloadAction<BrickGameStateInterface>) => {
-      state.brickGameState.currentQuiz = action.payload.currentQuiz
-      state.brickGameState.originalImages = action.payload.originalImages
+      state.brickGameState.problemType = action.payload.problemType
+      state.brickGameState.problemImages = action.payload.problemImages
       state.brickGameState.gameInProgress = action.payload.gameInProgress
       state.brickGameState.gameStarting = action.payload.gameStarting
     },
@@ -93,6 +95,10 @@ export const brickGameSlice = createSlice({
     setOppPlayerStatus: (state, action: PayloadAction<PlayerStatusInterface>) => {
       state.oppPlayerStatus = action.payload
     },
+    setOppInfo: (state, action: PayloadAction<{ name: string, character: string }>) => {
+      state.oppName = action.payload.name
+      state.oppCharacter = action.payload.character
+    }
   },
 })
 
@@ -103,7 +109,8 @@ export const {
   setMyPlayerScore,
   setMyPlayerStatus,
   setOppPlayerScore,
-  setOppPlayerStatus
+  setOppPlayerStatus,
+  setOppInfo,
 } = brickGameSlice.actions
 
 export default brickGameSlice.reducer
