@@ -129,7 +129,7 @@ export default function FriendDialog() {
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
   const userLevel = useAppSelector((state) => state.user.userLevel)
-  const imgpath = `../../public/assets/character/single/${character}_idle_anim_19.png`
+  const imgpath = `../../public/assets/character/single/${character}.png`
 
   const dispatch = useAppDispatch()
 
@@ -272,7 +272,7 @@ export default function FriendDialog() {
                     <ListItemAvatar>
                       {/* <Avatar src={imgpath} /> */}
                       <Avatar
-                        src={`../../public/assets/character/single/${value.character}_idle_anim_19.png`}
+                        src={`../../public/assets/character/single/${value.character}.png`}
                       />
                     </ListItemAvatar>
 
@@ -313,7 +313,7 @@ export default function FriendDialog() {
                     <ListItemAvatar>
                       {/* <Avatar src={imgpath} /> */}
                       <Avatar
-                        src={`../../public/assets/character/single/${value.character}_idle_anim_19.png`}
+                        src={`../../public/assets/character/single/${value.character}.png`}
                       />
                     </ListItemAvatar>
 

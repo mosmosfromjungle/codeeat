@@ -51,6 +51,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       .setFontSize(12)
       .setColor('#000000')
       .setOrigin(0.5)
+      // .setResolution(10..
+    
     this.playerContainer.add(this.playerName)
 
     this.scene.physics.world.enable(this.playerContainer)

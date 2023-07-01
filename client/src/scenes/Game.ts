@@ -125,21 +125,19 @@ export default class Game extends Phaser.Scene {
 
     // debugDraw(groundLayer, this)
 
-    /*
+ 
       // ***새롭게 16px 캐릭터로 변경하기 위한 코드***
-      this.myPlayer = this.add.myPlayer(
-      Phaser.Math.RND.between(400, 900),
-      Phaser.Math.RND.between(400, 900),
-      'kevin',
-      this.network.mySessionId,
-      // userId,
-      // userProfile
-      // 로건 케빈 엠마
-    );
-    */
+    //   this.myPlayer = this.add.myPlayer(
+    //   Phaser.Math.RND.between(400, 900),
+    //   'noah',
+    //   this.network.mySessionId,
+    //   // userId,
+    //   // userProfile
+    //   // 로건 케빈 엠마
+    // );
 
-    // this.myPlayer = this.add.myPlayer(400, 900, 'kevin', this.network.mySessionId)
-    this.myPlayer = this.add.myPlayer(705, 500, 'adam', this.network.mySessionId) // TODO: 캐릭터 시작 위치 수정 가능 -> 서버와 통일해야함
+    this.myPlayer = this.add.myPlayer(705, 900, 'noah', this.network.mySessionId)
+    // this.myPlayer = this.add.myPlayer(705, 500, 'adam', this.network.mySessionId) // TODO: 캐릭터 시작 위치 수정 가능 -> 서버와 통일해야함
     this.playerSelector = new PlayerSelector(this, 0, 0, 32, 32)  // TODO: 아이템과 상호작용할 수 있는 면적 
     console.log('game scene created')
     console.log('set my player initial setting ', this.myPlayer)
@@ -293,7 +291,7 @@ export default class Game extends Phaser.Scene {
     const otherPlayer = this.add.otherPlayer(
       newPlayer.x,
       newPlayer.y,
-      'adam',
+      'noah',
       id,
       newPlayer.name,
       )

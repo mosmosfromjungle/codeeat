@@ -43,7 +43,7 @@ export default function ProfileButton() {
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
   const userLevel = useAppSelector((state) => state.user.userLevel)
-  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`
+  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}.png`
 
   const dispatch = useAppDispatch()
 

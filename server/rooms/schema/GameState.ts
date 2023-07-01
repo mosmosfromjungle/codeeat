@@ -110,7 +110,7 @@ export class BrickGameState extends Schema implements IBrickGameState {
 
 export class GamePlayer extends Schema implements IGamePlayer {
   @type('string') name = ''
-  @type('string') anim = 'adam_idle_down'
+  @type('string') anim = 'noah_idle_down'
 
   constructor(name: string) {
     super()

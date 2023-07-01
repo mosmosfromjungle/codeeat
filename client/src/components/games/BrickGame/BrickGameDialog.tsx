@@ -56,7 +56,7 @@ export default function BrickGameDialog() {
 
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character);
-  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`;
+  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}.png`;
 
   const gamePlayers = useAppSelector((state) => state.room.gamePlayers)
   const currentQuiz  = useAppSelector((state) => state.brickgame.brickGameState.currentQuiz)

@@ -155,12 +155,14 @@ export default function EntryDialog() {
         autoHideDuration={3000}
         onClose={() => {
           setShowSnackbar(false)
-        }}>
+        }}
+      >
         <Alert
           severity="error"
           variant="outlined"
           // overwrites the dark theme on render
-          style={{ background: '#fdeded', color: '#7d4747' }}>
+          style={{ background: '#fdeded', color: '#7d4747' }}
+        >
           Trying to connect to server, please try again!
         </Alert>
       </Snackbar>
@@ -172,10 +174,10 @@ export default function EntryDialog() {
               키즈들의 코딩공간, <span>코드잇</span>
             </SubTitle>
             <ImageContent className="character-animation">
-              <img className="character" src="/assets/character/single/Adam_idle_anim_24.png" alt="Adam"></img>
-              <img className="character" src="/assets/character/single/Ash_idle_anim_24.png" alt="Ash"></img>
-              <img className="character" src="/assets/character/single/Lucy_idle_anim_24.png" alt="Lucy"></img>
-              <img className="character" src="/assets/character/single/Nancy_idle_anim_24.png" alt="Nancy"></img>
+              <img className="character" src="/assets/character/single/Jiji.png" alt="Jiji"></img>
+              <img className="character" src="/assets/character/single/Noah.png" alt="Noah"></img>
+              <img className="character" src="/assets/character/single/Ryan.png" alt="Ryan"></img>
+              <img className="character" src="/assets/character/single/John.png" alt="John"></img>
             </ImageContent>
             <Content>
               <Button variant="contained" onClick={gotoLoginPage}>
@@ -189,7 +191,7 @@ export default function EntryDialog() {
         </Wrapper>
         {!lobbyJoined && (
           <ProgressBarWrapper>
-          <h3>서버와 연결중 ...</h3>
+            <h3>서버와 연결중 ...</h3>
             <ProgressBar color="secondary" />
           </ProgressBarWrapper>
         )}
