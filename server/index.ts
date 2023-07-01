@@ -15,6 +15,7 @@ import { connectDB } from './DB/db'
 import { SkyOffice } from './rooms/SkyOffice'
 import { GameRoom } from './rooms/GameRoom'
 import { BrickGameRoom } from './rooms/BrickGameRoom'
+import { RainGameRoom} from './rooms/RainGameRoom'
 import { MoleGameRoom } from './rooms/MoleGameRoom'
 import { DMController } from './controllers/DMControllers'
 import { Socket } from 'socket.io'
@@ -76,8 +77,9 @@ mainServer.define(RoomType.RAINLOBBY, LobbyRoom)
 mainServer.define(RoomType.FACECHATLOBBY, LobbyRoom)
 
 mainServer.define(RoomType.BRICK, BrickGameRoom).enableRealtimeListing()
+mainServer.define(RoomType.MOLE, GameRoom).enableRealtimeListing()
+mainServer.define(RoomType.RAIN, RainGameRoom).enableRealtimeListing()
 mainServer.define(RoomType.MOLE, MoleGameRoom).enableRealtimeListing()
-mainServer.define(RoomType.RAIN, GameRoom).enableRealtimeListing()
 mainServer.define(RoomType.FACECHAT, GameRoom).enableRealtimeListing()
 
 /**

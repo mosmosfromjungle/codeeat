@@ -13,7 +13,7 @@ const mongoose = require('mongoose')
 
 export async function connectDB() {
   mongoose.set('strictQuery', false)
-  mongoose.connect(config.db.host, {
+  mongoose.connect(config.db.host, { 
     dbName: 'mosmos',
     useNewUrlParser: true,
   })
