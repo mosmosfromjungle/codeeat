@@ -147,7 +147,12 @@ export class BrickGameRoom extends Room<IGameState> {
     } else if (lowercaseCommand === 'restore') {
       this.dispatcher.dispatch(new BrickGameCommand(), { client, command: 'restore', commandText: command })
     } else if (lowercaseCommand === 'reset') {
-      this.dispatcher.dispatch(new BrickGameCommand(), { client, command: 'reset', commandText: command })
+      playerStatus.selectedOption = DATA_STRUCTURE.NONE
+      playerStatus.currentImages.splice(0, playerStatus.currentImages.length)
+      this.state.brickgames.problemImages.forEach((image) => {
+        playerStatus.currentImages.push(image);
+      })
+      playerStatus.commandArray.clear()
     } else {
       switch (playerStatus.selectedOption) {
         case DATA_STRUCTURE.LIST:
@@ -167,7 +172,7 @@ export class BrickGameRoom extends Room<IGameState> {
           } else {
             this.sendError(client, COMMAND_ERROR)
           }
-          break;
+          break
         case DATA_STRUCTURE.SET:
           if (lowercaseCommand.startsWith('remove') || lowercaseCommand.startsWith('discard')) {
             const match = command.match(/remove\((\d+)\)/) || command.match(/discard\((\d+)\)/);
@@ -183,21 +188,21 @@ export class BrickGameRoom extends Room<IGameState> {
           } else {
             this.sendError(client, COMMAND_ERROR)
           }
-          break;
+          break
         case DATA_STRUCTURE.STACK:
           if (lowercaseCommand === 'pop') {
             this.dispatcher.dispatch(new BrickGameCommand(), { client, command: 'remove', commandText: command, index: playerStatus.currentImages.length - 1 })
           } else {
             this.sendError(client, COMMAND_ERROR)
           }
-          break;
+          break
         case DATA_STRUCTURE.QUEUE:
           if (lowercaseCommand === 'dequeue') {
             this.dispatcher.dispatch(new BrickGameCommand(), { client, command: 'remove', commandText: command, index: 0 })
           } else {
             this.sendError(client, COMMAND_ERROR)
           }
-          break;
+          break
         case DATA_STRUCTURE.DEQUE:
           if (lowercaseCommand === 'popleft') {
             this.dispatcher.dispatch(new BrickGameCommand(), { client, command: 'remove', commandText: command, index: 0 })
@@ -206,7 +211,7 @@ export class BrickGameRoom extends Room<IGameState> {
           } else {
             this.sendError(client, COMMAND_ERROR)
           }
-          break;
+          break
         default:
           if (lowercaseCommand === DATA_STRUCTURE.LIST) {
             this.dispatcher.dispatch(new BrickGameCommand(), { client, command: DATA_STRUCTURE.LIST, commandText: command })
@@ -221,7 +226,7 @@ export class BrickGameRoom extends Room<IGameState> {
           } else {
             this.sendError(client, OPTION_ERROR)
           }
-          break;
+          break
       }
     }
     this.broadcastPlayerUpdate(client)
@@ -301,7 +306,9 @@ export class BrickGameRoom extends Room<IGameState> {
       })
     )
     this.state.brickgames.brickPlayers.forEach((value) => {
-      value.playerStatus.currentImages = this.state.brickgames.problemImages
+      this.state.brickgames.problemImages.forEach((elem) => {
+        value.playerStatus.currentImages.push(elem)  
+      })
     })
   }
 

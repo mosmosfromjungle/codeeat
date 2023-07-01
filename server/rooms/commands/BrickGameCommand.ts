@@ -19,17 +19,6 @@ export default class BrickGameCommand extends Command<IGameState, Payload> {
 
     const playerStatus = player.playerStatus
 
-    if (command === 'reset') {
-      try {playerStatus.selectedOption = DATA_STRUCTURE.NONE
-      playerStatus.currentImages.splice(0, playerStatus.currentImages.length)
-      console.log('current images: ', playerStatus.currentImages)
-      // TODO: 배열 덮어쓰기 잘 안되는 중 
-      this.room.state.brickgames.problemImages.forEach((image) => {
-        playerStatus.currentImages.push(image)
-      })
-      console.log('current images after: ', playerStatus.currentImages)
-      playerStatus.commandArray.clear()} catch (error) { console.error(error)}
-    }
     if (command === 'remove') {
       playerStatus.currentImages.splice(index!, 1)
       playerStatus.commandArray.push(commandText + ' ')
@@ -57,15 +46,3 @@ export default class BrickGameCommand extends Command<IGameState, Payload> {
     }
   }
 }
-
-        // case DATA_STRUCTURE.LIST:
-
-        // case DATA_STRUCTURE.SET:
-
-        // case DATA_STRUCTURE.STACK:
-
-        // case DATA_STRUCTURE.QUEUE:
-
-        // case DATA_STRUCTURE.DEQUE:
-
-        // default:
