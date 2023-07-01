@@ -156,7 +156,7 @@ export function RainGame() {
 
     const timeInterval = setInterval(() => {
       setTime((prevTime) => Math.max(prevTime - 1, 0))
-    }, 1000)
+    }, 10000000)
 
     return () => {
       clearInterval(timeInterval)

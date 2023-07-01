@@ -15,7 +15,7 @@ function capitalizeFirstLetter(string) {
 
 import { 
   Backdrop, Wrapper, StartButton, CharacterArea, NameArea, 
-  WaitWrapper, FriendInfo, MyInfo, Position, 
+  WaitWrapper, FriendInfo, MyInfo, Position, Comment, 
 
 } from './RainGameStyle'
 
@@ -70,15 +70,29 @@ const RainGameDialog = () => {
           { !inProgress && (
             <>
               <FriendInfo>
-                <Position>
-                  친구
-                </Position>
-                <CharacterArea>
-                  <img src={ friendimgpath } width="50px" id="friend-character"></img>
-                </CharacterArea>
-                <NameArea>
-                  [{you.username.toUpperCase()}]<br/><br/>
-                </NameArea>
+                { you.username === '' ?
+                  (
+                    <>
+                      <Position>
+                        친구
+                      </Position>
+                    </>
+                  )
+                :
+                  (
+                    <>
+                      <Position>
+                        친구
+                      </Position>
+                      <CharacterArea>
+                        <img src={ friendimgpath } width="50px" id="friend-character"></img>
+                      </CharacterArea>
+                      <NameArea>
+                        [{you.username.toUpperCase()}]<br/><br/>
+                      </NameArea>
+                    </>
+                  )
+                }
               </FriendInfo>
 
               <MyInfo>
@@ -96,7 +110,27 @@ const RainGameDialog = () => {
           )}
         </WaitWrapper>
 
-        {<StartButton onClick={handleStartGame} disabled={!isReady || !isHost}>게임 시작</StartButton>}
+        <Comment>
+          { you.username === '' ?
+            (
+              <>
+                아직 친구가 들어오지 않았어요 ! <br/>
+                친구가 들어와야 게임을 시작할 수 있어요.
+              </>
+            )
+          :
+            (
+              <>
+                친구가 들어왔어요, <br/>
+                방장은 시작 버튼을 눌러주세요 !
+              </>
+            )
+          }
+        </Comment>
+
+        <StartButton onClick={handleStartGame} disabled={!isReady || !isHost}>
+          게임 시작
+        </StartButton>
         
         {inProgress && <RainGame />}
       </Wrapper>

@@ -38,10 +38,6 @@ export const StartButton = styled.button`
     font-size: 18px;
     font-weight: bold;
     transition: opacity 0.3s;
-
-    &:hover {
-    opacity: 0;
-    }
 `
 
 export const FriendInfo = styled.div`
@@ -75,4 +71,10 @@ export const CharacterArea = styled.div`
 
 export const NameArea = styled.div`
     height: 30%;
+`
+
+export const Comment = styled.div`
+    text-align: center;
+    font-size: 30px;
+    font-family: Font_DungGeun;
 `
