@@ -16,6 +16,7 @@ export const moleGameSlice = createSlice({
     friendPoint: '',
     host: '',
     problem: '',
+    
   },
   reducers: {
     openMoleGameDialog: (state) => {

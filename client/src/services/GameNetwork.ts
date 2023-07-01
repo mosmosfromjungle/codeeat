@@ -34,7 +34,18 @@ import {
   pushPlayerJoinedMessage,
   pushPlayerLeftMessage,
 } from '../stores/ChatStore'
-import { setRainGameMe, setRainGameYou, setRainGameMyState,setRainGameHost, setRainGameYouState, setRainGameReady, setRainGameInProgress } from '../stores/RainGameStore'
+import {
+  setRainGameMe,
+  setRainGameYou,
+  setRainGameMyState,
+  setRainGameHost,
+  setRainGameYouState,
+  setRainGameReady,
+  setRainGameInProgress,
+  removeHeart,
+  addPoint,
+  deleteWord,
+} from '../stores/RainGameStore'
 export default class GameNetwork {
   private client: Client
   private lobby?: Room | undefined
@@ -100,9 +111,9 @@ export default class GameNetwork {
     this.room = await this.client.joinById(roomId, { password, username })
     if (this.room.name === RoomType.BRICK) {
       this.brick_game_init()
-    } else if(this.room.name === RoomType.RAIN){
+    } else if (this.room.name === RoomType.RAIN) {
       this.rain_game_init()
-    }else {
+    } else {
       this.initialize()
     }
   }
@@ -162,38 +173,6 @@ export default class GameNetwork {
     // when the server sends room data
     this.room.onMessage(Message.SEND_ROOM_DATA, (content) => {
       store.dispatch(setJoinedGameRoomData(content))
-    })
-
-    this.room.onMessage(Message.RAIN_GAME_USER, (data) => {
-
-      
-      for (let key in data) {
-          let user = data[key];
-          if (key === this.mySessionId) {
-              store.dispatch(setRainGameMe(user));
-          } else {
-              store.dispatch(setRainGameYou(user));
-          }
-      }
-  });
-
-  this.room.onMessage(Message.RAIN_GAME_START, () => {
-    store.dispatch(setRainGameInProgress(true));
-    
-    const mySessionId = this.mySessionId;
-    
-    // for (let key in keywordLists) {
-    //     const list = keywordLists[key];
-    //     if (key === mySessionId) {
-    //         store.dispatch(setRainGameMyWords(list));
-    //     } else {
-    //         store.dispatch(setRainGameYouWords(list));
-    //     }
-    // }
-});
-
-    this.room.onMessage(Message.RAIN_GAME_READY, () => {
-      store.dispatch(setRainGameReady(true))
     })
 
     // when the server sends data of players in this room
@@ -343,24 +322,7 @@ export default class GameNetwork {
     this.room?.send(Message.SEND_HOST, { host: host })
   }
 
-  // Rain Game
-  startRainGame() {
-    console.log('startRainGame')
-    this.room?.send(Message.RAIN_GAME_START)
-  }
-
-  // GetWordsList(username1, username2) {
-  //   console.log('GetWordsList')
-  //   this.room?.send(Message.RAIN_GAME_WORD, { username1, username2 })
-  // }
-
-  sendMyInfoToServer(username: string, character: string) {
-    console.log('sendMyInfoToServer')
-    if (!this.room) return
-
-    this.room.send(Message.RAIN_GAME_USER, { username: username, character: character })
-  }
-
+  // Rain Game initializer
   rain_game_init() {
     if (!this.room) return
     this.lobby.leave()
@@ -371,34 +333,30 @@ export default class GameNetwork {
     // when the server sends room data
     this.room.onMessage(Message.SEND_ROOM_DATA, (content) => {
       const roomData = {
-        id : content.id,
+        id: content.id,
         name: content.name,
-        description: content.description
+        description: content.description,
       }
       store.dispatch(setJoinedGameRoomData(roomData))
       store.dispatch(setRainGameHost(content.host))
     })
 
     this.room.onMessage(Message.RAIN_GAME_USER, (data) => {
-
-      
       for (let key in data) {
-          let user = data[key];
-          if (key === this.mySessionId) {
-              store.dispatch(setRainGameMe(user));
-          } else {
-              store.dispatch(setRainGameYou(user));
-          }
+        let user = data[key]
+        if (key === this.mySessionId) {
+          store.dispatch(setRainGameMe(user))
+        } else {
+          store.dispatch(setRainGameYou(user))
+        }
       }
-  });
+    })
 
-  this.room.onMessage(Message.RAIN_GAME_START, () => {
-    store.dispatch(setRainGameInProgress(true));
-    
-    const mySessionId = this.mySessionId;
-    
-  
-});
+    this.room.onMessage(Message.RAIN_GAME_START, () => {
+      store.dispatch(setRainGameInProgress(true))
+
+      const mySessionId = this.mySessionId
+    })
 
     this.room.onMessage(Message.RAIN_GAME_READY, () => {
       store.dispatch(setRainGameReady(true))
@@ -408,5 +366,39 @@ export default class GameNetwork {
     this.room.onMessage(Message.SEND_GAME_PLAYERS, (content) => {
       store.dispatch(setGamePlayers(content))
     })
+
+    this.room.onMessage(Message.RAIN_GAME_HEART, (content) => {
+      store.dispatch(removeHeart())
+    })
+
+    this.room.onMessage(Message.RAIN_GAME_POINT, (content) => {
+      store.dispatch(addPoint())
+    })
+
+    this.room.onMessage(Message.RAIN_GAME_WORD2, (content) => {
+      console.log('받았다')
+      store.dispatch(deleteWord(content))
+    })
+  }
+  sendMyInfoToServer(username: string, character: string) {
+    if (!this.room) return
+    this.room.send(Message.RAIN_GAME_USER, { username: username, character: character })
+  }
+
+  startRainGame() {
+    this.room?.send(Message.RAIN_GAME_START)
+  }
+
+  decreaseHeart() {
+    this.room?.send(Message.RAIN_GAME_HEART)
+  }
+
+  increasePoint() {
+    this.room?.send(Message.RAIN_GAME_POINT)
+  }
+
+  removeWord(words: string) {
+    console.log('removeword')
+    this.room?.send(Message.RAIN_GAME_WORD, { words: words })
   }
 }

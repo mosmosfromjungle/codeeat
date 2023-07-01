@@ -1,39 +1,37 @@
 import { Schema, MapSchema, ArraySchema } from '@colyseus/schema'
 
-
 /* MOLE GAME ROOM SCHEMA */
-
 
 /* RAIN GAME ROOM SCHEMA */
 
 export interface IKeywordRain extends Schema {
-  y: number,
-  speed: number,
-  keyword: string,
-  x: number,
-  flicker: boolean,
-  blind: boolean,
-  accel: boolean,
-  multifly: boolean,
+  y: number
+  speed: number
+  keyword: string
+  x: number
+  flicker: boolean
+  blind: boolean
+  accel: boolean
+  multifly: boolean
 }
 
 export interface IRainGameUser extends Schema {
-  username: string;
-  character: string;
+  username: string
+  character: string
 }
 
 export interface IRainGameState extends Schema {
-  point: number,
-  heart: number,
+  point: number
+  heart: number
 }
 
 export interface IRainGameRoomState extends Schema {
-  host: string,
-  rainGameReady: boolean,
-  rainGameInProgress: boolean,
-  rainGameStates: MapSchema<IRainGameState>,
-  rainGameUsers: MapSchema<IRainGameUser>,
-  keywordLists: MapSchema<IKeywordRain>,
+  host: string
+  rainGameReady: boolean
+  rainGameInProgress: boolean
+  rainGameStates: MapSchema<IRainGameState>
+  rainGameUsers: MapSchema<IRainGameUser>
+  keywordLists: MapSchema<IKeywordRain>
 }
 
 /* BRICK GAME ROOM SCHEMA */
@@ -68,7 +66,6 @@ export interface IBrickGameState extends Schema {
   gameStarting: boolean
 }
 
-
 /* GAME ROOM SCHEMA */
 
 export interface IGamePlayer extends Schema {
@@ -78,13 +75,12 @@ export interface IGamePlayer extends Schema {
 
 export interface IGameState extends Schema {
   players: MapSchema<IGamePlayer>
-  host: string  // username of the player that created the room
-  // molegames: 
+  host: string // username of the player that created the room
+  // molegames:
   // raingames: MapSchema<IRainGameState>
   // rainGameUsers: MapSchema<IRainGameUser>
   brickgames: IBrickGameState
 }
-
 
 /* ENUMS */
 

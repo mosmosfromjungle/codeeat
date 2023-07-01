@@ -3,17 +3,9 @@ import { Room, Client, ServerError } from 'colyseus'
 import { Dispatcher } from '@colyseus/command'
 import { Message } from '../../types/Messages'
 import { IGameRoomData } from '../../types/Rooms'
-import {
-  KeywordRain,
-  RainGameState,
-  RainGameUser,
-  RainGameRoomState,
-} from './schema/GameState'
+import { KeywordRain, RainGameState, RainGameUser, RainGameRoomState } from './schema/GameState'
 import { RainGameStartCommand } from './commands/RainGameStartCommand'
-import {
-  IRainGameRoomState,
-  IKeywordRain,
-} from '../../types/IGameState'
+import { IRainGameRoomState, IKeywordRain } from '../../types/IGameState'
 import mongoose from 'mongoose'
 import MapSchema from '@colyseus/schema'
 
@@ -44,9 +36,12 @@ export class RainGameRoom extends Room<IRainGameRoomState> {
     this.onMessage(Message.RAIN_GAME_START, (client, content) =>
       this.handleRainGameStart(client, content)
     )
-    // this.onMessage(Message.RAIN_GAME_WORD, (client, content) =>
-    //   this.handleRainGameWord(this)
-    // )
+
+    this.onMessage(Message.RAIN_GAME_WORD, (client, content: { words: string }) => {
+      console.log('Server onMessage')
+      this.broadcast(Message.RAIN_GAME_WORD2, { words: content.words })
+    })
+
     this.onMessage(Message.RAIN_GAME_USER, (client, data) => this.handleRainGameUser(client, data))
   }
 
@@ -69,11 +64,10 @@ export class RainGameRoom extends Room<IRainGameRoomState> {
       id: this.roomId,
       name: this.name,
       description: this.description,
-      host: this.state.host
-
+      host: this.state.host,
     })
 
-    if(this.clients.length === 2){
+    if (this.clients.length === 2) {
       this.state.rainGameReady = true
       this.broadcast(Message.RAIN_GAME_READY)
     }
@@ -98,7 +92,7 @@ export class RainGameRoom extends Room<IRainGameRoomState> {
     console.log('handleRainGameUser')
     const { username, character } = data
 
-    this.state.rainGameUsers.set(client.sessionId, new RainGameUser(username,character))
+    this.state.rainGameUsers.set(client.sessionId, new RainGameUser(username, character))
 
     this.broadcast(Message.RAIN_GAME_USER, this.state.rainGameUsers)
   }
@@ -115,7 +109,7 @@ export class RainGameRoom extends Room<IRainGameRoomState> {
 
   //     // Broadcast the two lists
   //     this.broadcast(Message.RAIN_GAME_START, this.state.keywordLists)
-    
+
   //   } catch (error) {
   //     console.error('Failed to generate keywords:', error)
   //   }
@@ -125,21 +119,21 @@ export class RainGameRoom extends Room<IRainGameRoomState> {
   //   try {
   //       console.log('MakeWordCommand')
   //       const raingamewords = mongoose.connection.collection('raingamewords')
-        
+
   //       let keywordsList: new MapSchema<IKeywordRain>()
-        
+
   //       raingamewords.aggregate([]).toArray().then(allWords => {
   //        allWords.forEach((word: any) => {
   //         const keywordRain = new MapSchema<KeywordRain>(word)
   //         keywordRain.y = 10
   //         keywordRain.speed = 1
   //         keywordRain.x = Math.floor(Math.random() * (550 - 50 + 1)) + 50
-  //         keywordsList.set(keywordRain.keyword,keywordRain) 
+  //         keywordsList.set(keywordRain.keyword,keywordRain)
   //       });
   //     });
   //       return keywordsList;
   //     } catch (error) {
-  //       console.error('Failed to generate keywords:', error)    
+  //       console.error('Failed to generate keywords:', error)
   //    }
   // }
 }

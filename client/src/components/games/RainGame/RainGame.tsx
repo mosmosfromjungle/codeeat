@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, createContext } from 'react'
 import rain_Background from '../../../../public/assets/game/RainGame/blackboard.png'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
 import Bootstrap from '../../../scenes/Bootstrap'
 import phaserGame from '../../../PhaserGame'
-import { setRainGameMyState, setRainGameYouState } from '../../../stores/RainGameStore'
+import { Client } from 'colyseus.js'
+import { Message } from '../../../../../types/Messages'
 
 interface KeywordRain {
   y: number
@@ -16,20 +17,26 @@ interface KeywordRain {
   // multifly: boolean,
 }
 
+const MessageContext = createContext('');
+
 export function RainGame() {
+
   const canvasHeight = 50
   const lineHeight = canvasHeight + 550
   const dispatch = useAppDispatch()
   const keywordInput = useRef<HTMLInputElement>(null)
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
   const [time, setTime] = useState(100)
+  const [message, setMessage] = useState('');
+  const words = useAppSelector((state) => state.raingame.words)
+
 
   const host = useAppSelector((state) => state.raingame.host)
   const username = useAppSelector((state) => state.user.username)
   const [myGame, setMyGame] = useState<KeywordRain[]>([])
   const [youGame, setYouGame] = useState<KeywordRain[]>([])
   const [myState, setMyState] = useState({ heart: 3, point: 0 })
-  const youState = useAppSelector((state) => state.raingame.youState)
+  const [youState, setYouState] = useState({ heart: 3, point: 0})
   const me = useAppSelector((state) => state.raingame.me)
   const you = useAppSelector((state) => state.raingame.you)
   const Awords = [
@@ -96,10 +103,19 @@ export function RainGame() {
     { y: 0, speed: 1.4, keyword: 'kite', x: 317 },
     { y: 0, speed: 1.5, keyword: 'jazz', x: 217 },
   ]
-  if (username === host) {
-  }
 
   useEffect(() => {
+        
+        const isYouWord = youGame.some((word) => word.keyword === words)
+        if (isYouWord) {
+          setYouGame((prevGame) => prevGame.filter((word) => word.keyword !== words))
+          setYouState((prevState) => ({ ...prevState, point: prevState.point + 1 }))
+        }
+  }, [words])
+
+
+  useEffect(() => {
+ 
     let currentWordIndex = 0
     const words = username === host ? Awords : Bwords
     const youWords = username === host ? Bwords : Awords
@@ -185,7 +201,7 @@ export function RainGame() {
       clearInterval(updateMyWordsInterval)
       clearInterval(updateYouWordsInterval)
       clearInterval(checkHeartInterval)
-      bootstrap.gameNetwork.room.removeAllListeners()
+      // bootstrap.gameNetwork.room.removeAllListeners()
     }
   }, [])
 
@@ -196,6 +212,8 @@ export function RainGame() {
       if (isMyWord) {
         setMyGame((prevGame) => prevGame.filter((word) => word.keyword !== inputKeyword))
         setMyState((prevState) => ({ ...prevState, point: prevState.point + 1 }))
+
+        bootstrap.gameNetwork.removeWord(inputKeyword)
       }
       keywordInput.current.value = ''
     }
