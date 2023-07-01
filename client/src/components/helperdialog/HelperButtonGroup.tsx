@@ -124,8 +124,9 @@ export default function HelperButtonGroup() {
           {roomJoined && (
             <FabWrapper>
               <Fab
-                onClick={() => showUser ? (
-                  dispatch(setShowUser(false))
+                onClick={() => showUser || showDMRoom ? (
+                  dispatch(setShowUser(false)),
+                  dispatch(setShowDMRoom(false))
                 ) : (
                   dispatch(setShowUser(true)),
                   dispatch(setShowChat(false)),

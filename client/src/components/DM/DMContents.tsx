@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { ChatFeed } from 'react-chat-ui';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import styled from 'styled-components';
-import DMNetwork from '../../services/DMNetwork';
 import Game from '../../scenes/Game';
 import phaserGame from '../../PhaserGame';
 
@@ -24,7 +23,7 @@ export default function DMBubbles(props) {
   const _joinRoom = (oldMessages) => {
       setMessageList(oldMessages);
     };
-// 🐱
+
   useEffect(() => {
     console.log('채팅방 들어감, roomId:' , roomId)
     socketNetwork.joinRoom(roomId, username, receiverName, _joinRoom);
@@ -35,15 +34,13 @@ export default function DMBubbles(props) {
 
     const body = {
       roomId: roomId,
-      username: username,
+      senderName: username,
       receiverName: receiverName,
       message: props.newMessage.message,
     };
 
-    // 내가 쓴 메세지 채팅 리스트에 추가
     setMessageList((messageList) => [...messageList, props.newMessage]);
 
-    // 내가 쓴 메세지 서버에 전송
     game.dmNetwork.sendMessage(body);
   }, [props.newMessage?.message]);
 

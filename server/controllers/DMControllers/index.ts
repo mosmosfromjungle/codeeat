@@ -3,7 +3,7 @@ import { Socket } from 'socket.io';
 import { v4 as uuidV4 } from 'uuid';
 import { Request, Response } from 'express';
 import LastDM from '../../models/LastDM';
-import { updateLastDM, updateRoomId, checkLast } from '../LastDMControllers';
+import { updateLastDM, updateRoomId,addLastDM } from '../LastDMControllers';
 import { userMap } from '../..';
 const rooms: Record<string, string[]> = {}
 interface IRoomParams {
@@ -30,20 +30,21 @@ export const DMController = (socket: Socket) => {
       socket.join(roomId);
     } else {
       roomId = createRoom();
+      if (roomId == 'start'){
+      console.log('횟수 세는용')
       updateRoomId({ roomId: roomId, senderName: username, receiverName: receiverName })
-      rooms[roomId].push(username);
+      .then(() => {
+        rooms[roomId].push(username);
+      })  
+      } else {
+        updateRoomId({ roomId: roomId, senderName: username, receiverName: receiverName })
+        .then(() => {
+          rooms[roomId].push(username);
+        })
+      }
     }
     readMessage({ roomId, username, receiverName });
-    socket.on('disconnect', () => {
-      console.log(' 유저 퇴장 ')
-      leaveRoom({ roomId, username: username, receiverName })
-    })
   };
-
-  const leaveRoom = ({ roomId, username: username, receiverName: receiverName}: IRoomParams) => {
-    rooms[roomId] = rooms[roomId].filter((id) => id !== username)
-    socket.to(roomId).emit('player-disconnected:', username)
-  }
 
   const sendMessage = (obj: {
     roomId: string;
@@ -56,7 +57,7 @@ export const DMController = (socket: Socket) => {
       addDM({ senderName: senderName, receiverName: receiverName, message: message });
       updateLastDM({ senderName: senderName, receiverName: receiverName, message: message })
       userMap.get(receiverName)?.emit('message', obj);
-      console.log('@DMcontrollers/sendMessage',obj.message, '라고 보냄')
+      console.log('@DMcontrollers/sendMessage -',senderName,'가',receiverName,'에게',obj.message, '라고 보냄')
     }
   };
 
@@ -90,9 +91,7 @@ export const addDM = (message: {
       receiverName: message.receiverName,
       message: message.message,
       createdAt: createdAt,
-      roomId: 'first'
     });
-    updateLastDM(message)
 };
 
   
@@ -113,7 +112,5 @@ export const getDMMessage = async (senderName: string, receiverName: string) => 
           result.push(json);
         });
       });
-    LastDM.collection.find();
-    console.log('dm컨트롤러 114번줄- dm컬렉션에서 이전 dm들 모아서 배열로 리턴 하기 바로직전',result)
     return result;
   };

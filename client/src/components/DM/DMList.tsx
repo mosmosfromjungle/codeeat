@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import {
+  setNewMessage,
   setReceiverName,
   setRoomId,
   setShowDMList,
@@ -23,22 +24,20 @@ export const ConversationList = () => {
   const dispatch = useAppDispatch();
   const username = useAppSelector((state) => state.user.username);
   useEffect(() => {
-    console.log('내 아이디 기준으로 방 목록 가져옴. 방 목록 데이터:')
     fetchRoomList(username)
     .then((data) => {
-      console.log(data)
         setRooms(data);
     });
   }, []);
 
   useEffect(() => {
-    console.log('방 목록 불러옴', rooms); // 🐱
+    console.log('방 목록 불러옴', rooms);
   }, [rooms]);
 
-const handleClick = async (room) => {
-  console.log(room, '방 클릭')
+const handleClick = (room) => {
   dispatch(setReceiverName(room.receiverName));
   dispatch(setRoomId(room.roomId));
+  console.log('룸아이디설정',room.roomId)
   dispatch(setShowDMRoom(true))
 }
 return (

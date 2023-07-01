@@ -11,7 +11,6 @@ export const loadData = async (req: Request, res: Response) => {
         message: 'not found',
       });
     }
-    console.log(body.senderName)
     getLastDM(body.senderName)
       .then((result) => {
         res.status(200).json({
@@ -32,14 +31,10 @@ export const getLastDM = async (senderName: string) => {
   let result = new Array();
   try {
     await LastDM.collection
-    .find({$or:[
-      { 'senderName': senderName },
-      {'receiverName': senderName}]
-    })
+    .find({ senderName: senderName })
     .sort({ _id: -1 })
     .toArray()
     .then((elem) => {
-      console.log(elem)
       elem.forEach((json) => {
         result.push(json);
         });
@@ -54,14 +49,13 @@ export const addLastDM = async (obj: {
   senderName: string;
   receiverName: string;
   message: string;
-  roomId: string
+  roomId: string;
 }) => {
+  console.log('add Last DM - s: ', obj.senderName, 'r:', obj.receiverName)
     let cur_date = new Date();
     let utc = cur_date.getTime() + cur_date.getTimezoneOffset() * 60 * 1000;
     let updatedAt = utc + time_diff;
-    if(obj.senderName == obj.receiverName) return
-    const notfirstDM = await checkLast({senderName:obj.senderName, receiverName:obj.receiverName})
-    if (!notfirstDM) {
+    if(obj.senderName == obj.receiverName) return false
       LastDM.collection.insertOne({
         senderName: obj.senderName,
         receiverName: obj.receiverName,
@@ -76,7 +70,6 @@ export const addLastDM = async (obj: {
         roomId: 'first',
         updatedAt: updatedAt,
       });
-    }
     return true;
 }
 
@@ -85,12 +78,14 @@ export const updateLastDM = async (obj: { senderName: string; receiverName: stri
     let cur_date = new Date();
     let utc = cur_date.getTime() + cur_date.getTimezoneOffset() * 60 * 1000;
     let updatedAt = utc + time_diff;
-    await LastDM.collection.findOneAndUpdate(
-      { $and: [{ 'senderName': senderName }, { 'receiverName': receiverName }] },
+    await LastDM.collection
+    .findOneAndUpdate(
+      { $and: [{ senderName: senderName }, { receiverName: receiverName }] },
       { $set: { message: message, updatedAt: updatedAt } }
     );
-    await LastDM.collection.findOneAndUpdate(
-      { $and: [{ 'senderName': receiverName }, { 'receiverName': senderName }] },
+    await LastDM.collection
+    .findOneAndUpdate(
+      { $and: [{ senderName: receiverName }, { receiverName: senderName }] },
       { $set: { message: message, updatedAt: updatedAt } }
     );
   };
@@ -98,24 +93,30 @@ export const updateLastDM = async (obj: { senderName: string; receiverName: stri
     const { senderName, receiverName, roomId } = obj;
   
     LastDM.collection.findOneAndUpdate(
-      { $and: [{ 'senderName': senderName }, { 'receiverName': receiverName }] },
+      { $and: [{ senderName: senderName }, { receiverName: receiverName }] },
       { $set: { roomId: roomId } }
     );
     LastDM.collection.findOneAndUpdate(
-      { $and: [{ 'senderName': receiverName }, { 'receiverName': senderName }] },
+      { $and: [{ senderName: receiverName }, { receiverName: senderName }] },
       { $set: { roomId: roomId } }
     );
   };
 
-  export const checkLast = async (obj: {senderName: string, receiverName: string }) => {
+  export const checkLast = async (body:{senderName: string, receiverName: string}) => {
     try {
-      const result = await LastDM.collection.findOne({
+      const result = await LastDM.collection.countDocuments({
         $or: [
-          { $and: [{ 'senderName': obj.senderName }, { 'receiverName': obj.receiverName }] },
-          { $and: [{ 'senderName': obj.receiverName }, { 'receiverName': obj.senderName }] }
+          { $and: [{ senderName: body.senderName }, { receiverName: body.receiverName }] },
+          { $and: [{ senderName: body.receiverName }, { receiverName: body.senderName }] }
         ]
       });
-      return result;
+      if (!result) {
+        LastDM.collection.insertOne({
+          senderName: body.senderName,
+          receiverName: body.receiverName,
+          message: ''
+        })
+      }
     } catch (err) {
       console.error(err);
       throw err;
