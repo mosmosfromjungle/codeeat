@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import Button from '@mui/material/Button'
@@ -13,6 +13,7 @@ import { setFocused, setShowChat, setShowUser } from '../stores/ChatStore'
 import { setShowDMList, setShowDMRoom } from '../stores/DMStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
 import ExperienceBar from '../components/ExperienceBar'
+import { getMyProfile } from '../apicalls/auth'
 
 const Backdrop = styled.div`
   position: fixed;
@@ -53,6 +54,8 @@ export default function ProfileButton() {
   const character = useAppSelector((state) => state.user.character)
   const userLevel = useAppSelector((state) => state.user.userLevel)
   const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`
+  const [currentExp, setCurrentExp] = useState<number>()
+  const [requiredExp, setRequiredExp] = useState<number>()
 
   const dispatch = useAppDispatch()
 
@@ -69,6 +72,21 @@ export default function ProfileButton() {
   useEffect(() => {
     scrollToBottom()
   }, [chatMessages, showProfile])
+
+  useEffect(() => {
+    ;(async () => {
+      getMyProfile()
+        .then((response) => {
+          if (!response) return
+          const { currentExp, requiredExp } = response
+          setCurrentExp(currentExp)
+          setRequiredExp(requiredExp)
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    })()
+  }, [])
 
   return (
     <Backdrop>
@@ -96,7 +114,7 @@ export default function ProfileButton() {
                 <strong>{username}</strong>
               </Profile>
             </ListItem>
-            <ExperienceBar currentExperience={120} experienceToNextLevel={200} />
+            <ExperienceBar currentExperience={currentExp} experienceToNextLevel={requiredExp} />
           </ProfileButtonWrapper>
         </Button>
       )}

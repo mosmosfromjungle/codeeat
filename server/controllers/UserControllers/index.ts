@@ -213,7 +213,6 @@ export const login = async (req: Request, res: Response) => {
 export const myProfile = async (req: CustomRequest, res: Response) => {
     const decoded = req.decoded
     const foundUser = await User.collection.findOne({ userId: decoded.userId })
-    
     if (foundUser) {
         return res.status(200).json({
             status: 200,
@@ -230,6 +229,7 @@ export const myProfile = async (req: CustomRequest, res: Response) => {
             }
         })
     }
+    
 
     return res.status(404).json({
         status: 404,
