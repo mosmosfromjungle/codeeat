@@ -1,17 +1,18 @@
 import React, { useRef, useEffect } from 'react'
 import styled from 'styled-components'
 
-import Button from '@mui/material/Button';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import Avatar from '@mui/material/Avatar'
+import Typography from '@mui/material/Typography'
 
 import { setShowLogout, setShowProfile, DIALOG_STATUS } from '../stores/UserStore'
 import { setFocused, setShowChat, setShowUser } from '../stores/ChatStore'
-import { setShowDMList, setShowDMRoom } from '../stores/DMStore';
+import { setShowDMList, setShowDMRoom } from '../stores/DMStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
+import ExperienceBar from '../components/ExperienceBar'
 
 const Backdrop = styled.div`
   position: fixed;
@@ -28,8 +29,16 @@ const Profile = styled.div`
   font-family: Font_DungGeun;
 `
 
+const ProfileButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+`
+
 function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+  return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
 export default function ProfileButton() {
@@ -65,26 +74,30 @@ export default function ProfileButton() {
     <Backdrop>
       {roomJoined && dialogStatus === DIALOG_STATUS.IN_MAIN && (
         <Button
-          onClick={() => showProfile ? (
-            dispatch(setShowProfile(false))
-          ) : (
-            dispatch(setShowProfile(true)),
-            dispatch(setShowLogout(false)),
-            dispatch(setShowChat(false)),
-            dispatch(setShowDMList(false)),
-            dispatch(setShowUser(false)),
-            dispatch(setShowLogout(false))
-          )}
+          onClick={() =>
+            showProfile
+              ? dispatch(setShowProfile(false))
+              : (dispatch(setShowProfile(true)),
+                dispatch(setShowLogout(false)),
+                dispatch(setShowChat(false)),
+                dispatch(setShowDMList(false)),
+                dispatch(setShowUser(false)),
+                dispatch(setShowLogout(false)))
+          }
         >
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar src={imgpath} />
-            </ListItemAvatar>
-            <Profile>
-              레벨 {userLevel}<br/>
-              <strong>{username}</strong>
-            </Profile>
-          </ListItem>
+          <ProfileButtonWrapper>
+            <ListItem>
+              <ListItemAvatar>
+                <Avatar src={imgpath} />
+              </ListItemAvatar>
+              <Profile>
+                레벨 {userLevel}
+                <br />
+                <strong>{username}</strong>
+              </Profile>
+            </ListItem>
+            <ExperienceBar currentExperience={120} experienceToNextLevel={200} />
+          </ProfileButtonWrapper>
         </Button>
       )}
     </Backdrop>
