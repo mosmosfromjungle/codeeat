@@ -8,22 +8,15 @@ const user = new Schema<IUserInfo>({
     userProfile: {
         character: { type: String, required: true },
         userLevel: { type: String, required: true },
-        contactGit: { type: String, required: false },
-        contactEmail: { type: String, required: false },
+        currentExp: { type: Number, required: true },
+        requiredExp: { type: Number, required: true },
+        grade: { type: String, required: false },
+        school: { type: String, required: false },
         profileMessage: { type: String, required: false },
     },
     refreshToken: { type: String, required: false },
     createdAt: { type: Date, default: Date.now, required: false },
 })
-
-// TODO: 비밀번호 변경이 있을 때에만 해싱을 해주는 코드 추가 
-// user.pre('save', (next) => {
-//     const user = this;
-
-//     if (user.isModified('password')) {
-        
-//     }
-// })
 
 const User = model<IUserDocument>('user', user);
 
