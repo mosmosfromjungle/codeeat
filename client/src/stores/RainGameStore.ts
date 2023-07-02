@@ -45,7 +45,7 @@ export const initialState: RainGameStates = {
     character: '',
   },
   words: '',
-  heart: false
+  dheart: false
 }
 
 // Define Slice

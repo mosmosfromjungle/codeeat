@@ -35,7 +35,6 @@ import {
   setRainGameYou, 
   setRainGameYouWord,
   setRainGameHost, 
-  setRainGameYouHeart, 
   setRainGameReady, 
   setRainGameInProgress,
   setRainStateMe,

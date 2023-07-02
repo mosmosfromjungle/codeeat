@@ -224,6 +224,8 @@ export function RainGame() {
         setMyGame((prevGame) => prevGame.filter((word) => word.keyword !== inputKeyword))
         console.log("입력 단어 전송:",inputKeyword)
         bootstrap.gameNetwork.removeWord(inputKeyword,sessionId,initialState )
+      } else{
+        /* for 지원 : 입력이 틀렸을 때 로직 넣는 곳 */  
       }
       keywordInput.current.value = ''
     }
