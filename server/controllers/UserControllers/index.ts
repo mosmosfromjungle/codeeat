@@ -378,7 +378,8 @@ export const authenticateUser = async (req: CustomRequest, res: Response) => {
 
 /* 닉네임 기반 유저 정보 조회 */
 export const userProfile = async (req: Request, res: Response) => {
-    const foundUser = await User.collection.findOne({ userId: req.params.username })
+    const foundUser = await User.collection.findOne({ username: req.params.username })
+    console.log("인덱스에 들어와랏" + foundUser)
     
     if (foundUser) {
         return res.status(200).json({

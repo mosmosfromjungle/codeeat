@@ -127,6 +127,40 @@ export const getMyProfile = async (): Promise<any> => {
     return null;
 };
 
+export const getUserProfile = async (username): Promise<any> => {
+  console.log('유저네임 들어오냐?' + username)
+  const response = await axios.get(`/auth/profile/${username}`)
+  console.log('response들어오냐?' + response)
+  const { data } = response
+  console.log(data)
+  if (response.status == 200) {
+    return data.payload
+  }
+
+  if (response.status === 401) {
+    const refreshToken = cookies.get('refreshToken')
+
+    if (refreshToken) {
+      const issuedResponse = await refreshAccessToken({
+        refreshToken: refreshToken,
+      })
+
+      if (!issuedResponse) {
+        logout()
+        return
+      }
+
+      const response2 = await axios.get('/auth/myprofile')
+      const { data } = response2
+      if (response2.status == 200) {
+        return data.payload
+      }
+    }
+  }
+
+  return null
+}
+
 export const updateMyProfile = async (body: UpdateRequest): Promise<any> => {
     try {
         const response = await axios.patch('/auth/update', body, {
