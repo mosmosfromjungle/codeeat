@@ -196,9 +196,9 @@ export interface LoginRequest {
 }
 
 export interface UpdateRequest {
-  username: string
-  character: string
-  contactGit: string
-  contactEmail: string
+  // username: string
+  // character: string
+  grade: string
+  school: string
   profileMessage: string
 }
