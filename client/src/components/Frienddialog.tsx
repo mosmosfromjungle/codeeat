@@ -17,7 +17,6 @@ import ListItemText from '@mui/material/ListItemText'
 import ListItemAvatar from '@mui/material/ListItemAvatar'
 import Avatar from '@mui/material/Avatar'
 import Typography from '@mui/material/Typography'
-import TextField from '@mui/material/TextField'
 import Divider from '@mui/material/Divider'
 
 import { setShowDMList, setShowDMRoom } from '../stores/DMStore'
@@ -102,16 +101,6 @@ const UserList = styled.div`
 const User = styled.div`
   margin: 10px 10px 10px 10px;
 `
-
-const TextDiv = styled.div`
-  width: 100%;
-  margin-bottom: 10px;
-`
-
-const AvatarProfile = styled.div`
-  // display: flex;
-`
-
 
 const Profile = styled.div`
   color: white;

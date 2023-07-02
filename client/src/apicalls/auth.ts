@@ -128,9 +128,7 @@ export const getMyProfile = async (): Promise<any> => {
 };
 
 export const getUserProfile = async (username): Promise<any> => {
-  console.log('유저네임 들어오냐?' + username)
   const response = await axios.get(`/auth/profile/${username}`)
-  console.log('response들어오냐?' + response)
   const { data } = response
   console.log(data)
   if (response.status == 200) {
