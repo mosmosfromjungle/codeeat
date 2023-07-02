@@ -47,7 +47,6 @@ export class MoleGameRoom extends Room<GameState> {
           y: message.y,
           anim: message.anim,
         })
-        this.broadcastPlayersData(this)
       }
     )
 
@@ -57,7 +56,6 @@ export class MoleGameRoom extends Room<GameState> {
         client,
         name: message.name,
       })
-      this.broadcastPlayersData(this)
     })
 
     // ↓ Mole Game
@@ -115,7 +113,7 @@ export class MoleGameRoom extends Room<GameState> {
     })
 
     this.onMessage(Message.SEND_LIFE, (client, message: { life: string }) => {
-      this.dispatcher.dispatch(new MoleGameChangeHost(), {
+      this.dispatcher.dispatch(new MoleGameChangeLife(), {
         client,
         name: '',
         character: '',
@@ -146,29 +144,16 @@ export class MoleGameRoom extends Room<GameState> {
       name: this.name,
       description: this.description,
     })
-
-    this.broadcastPlayersData(this)
   }
 
   onLeave(client: Client, consented: boolean) {
     if (this.state.players.has(client.sessionId)) {
       this.state.players.delete(client.sessionId)
     }
-    
-    this.broadcastPlayersData(this)
   }
 
   onDispose() {
     console.log('Mole game room', this.roomId, 'disposing ...')
     this.dispatcher.stop()
-  }
-
-  broadcastPlayersData(room: MoleGameRoom) {
-    const players = Array.from(room.state.players.values())
-      .map((player: GamePlayer) => ({
-        name: player.name,
-        anim: player.anim,
-      }))
-    room.broadcast(Message.SEND_GAME_PLAYERS, players)
   }
 }
