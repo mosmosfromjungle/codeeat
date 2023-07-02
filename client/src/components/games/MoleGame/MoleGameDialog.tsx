@@ -12,7 +12,7 @@ import CorrectBGM from '/assets/audios/mole_correct.mp3';
 import WrongBGM from '/assets/audios/mole_wrong.mp3';
 import FinishBGM from '/assets/audios/mole_finish.mp3';
 
-import potato from '/assets/game/molegame/potato.png';
+import hammer from '/assets/game/molegame/hammer.png';
 
 import { 
   Backdrop, Wrapper, RoundArea, Header, 
@@ -120,13 +120,13 @@ export default function MoleGameDialog() {
 
   for (let i = 0; i < parseInt(friendLife); i++) {
     friendLifeElements.push(
-      <img key={ i } src={ potato } width="60px"></img>
+      <img key={ i } src={ hammer } width="60px" style={{ margin: '5px' }}></img>
     );
   }
 
   for (let i = 0; i < myLife; i++) {
     myLifeElements.push(
-      <img key={ i } src={ potato } width="60px"></img>
+      <img key={ i } src={ hammer } width="60px" style={{ margin: '5px' }}></img>
     );
   }
 

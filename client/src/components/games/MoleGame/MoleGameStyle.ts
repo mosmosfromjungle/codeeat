@@ -128,7 +128,7 @@ export const LifeArea = styled.div `
 
 export const PointArea = styled.div`
   height: 15%;
-  font-size: 20px;
+  font-size: 25px;
   font-weight: bold;
   color: #f2ecff;
 `
