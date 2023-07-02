@@ -1,31 +1,22 @@
-/*
-  Icon: mui 라이브러리 사용 (https://mui.com/material-ui/material-icons/)
-*/
 import React, { useRef, useState, useEffect } from 'react'
 import styled from 'styled-components'
 
 import IconButton from '@mui/material/IconButton'
-import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import ButtonGroup from '@mui/material/ButtonGroup'
-
 import CloseIcon from '@mui/icons-material/Close'
+import ListItem from '@mui/material/ListItem'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import Avatar from '@mui/material/Avatar'
+import { PersonAddAltOutlined, MailOutlineRounded } from '@mui/icons-material'
+import { Content, Header, HeaderTitle } from '../GlobalStyle'
 
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import { IPlayer } from '../../../types/IOfficeState';
-import { insertLastDM } from '../apicalls/DM/DM';
-
-import { setShowUser } from '../stores/ChatStore'
-import { setReceiverName, setShowDMList, setShowDMRoom, setRoomId } from '../stores/DMStore'
-import { useAppSelector, useAppDispatch } from '../hooks'
-import { checkIfFirst } from '../apicalls/DM/DM';
-import { sendFriendReq, sendRequest } from '../apicalls/friends'
+import { IPlayer } from '../../../../types/IOfficeState'
+import { insertLastDM } from '../../apicalls/DM/DM'
+import { HELPER_STATUS, setHelperStatus } from '../../stores/UserStore'
+import { setReceiverName, setShowDMList, setShowDMRoom, setRoomId } from '../../stores/DMStore'
+import { useAppSelector, useAppDispatch } from '../../hooks'
+import { checkIfFirst } from '../../apicalls/DM/DM'
+import { sendFriendReq, sendRequest } from '../../apicalls/friends'
 
 const Backdrop = styled.div`
   position: fixed;
@@ -35,79 +26,49 @@ const Backdrop = styled.div`
   right: 16px;
   align-items: flex-end;
 `
-
 const Wrapper = styled.div`
   height: 100%;
   margin-top: auto;
 `
-const Form = styled.form``
-
-const Content = styled.div`
-  margin: 70px auto;
-`
-
-const ChatHeader = styled.div`
-  position: relative;
-  height: 40px;
-  background: #000000a7;
-  border-radius: 10px 10px 0px 0px;
-
-  .close {
-    position: absolute;
-    top: 0;
-    right: 0;
-  }
-`
-
-const Title = styled.div`
-  position: absolute;
-  color: white;
-  font-size: 20px;
-  font-weight: bold;
-  top: 10px;
-  left: 150px;
-  font-family: Font_DungGeun;
-`
-
-const ChatBox = styled(Box)`
-  height: 580px;
-  width: 360px;
+const Body = styled.div`
+  flex: 1;
+  height: calc(100% - 76px);
   overflow: auto;
-  background: #2c2c2c;
-  border: 1px solid #00000029;
-  padding: 10px 10px;
-  border-radius: 0px 0px 10px 10px;
-
-  Button {
-    font-size: 17px;
-    font-family: Font_DungGeun;
+  padding: 10px 0 0 20px;
+  display: flex;
+  flex-direction: column;
+  
+  .listitem && {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: space-between;
   }
 `
-
-const UserList = styled.div`
-  Button {
-    width: 100%;
-  }
+const NameWrapper = styled.div`
+  margin-right: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 `
-
-const User = styled.div`
-  margin: 10px 10px 10px 10px;
-`
-
-const Profile = styled.div`
-  color: white;
-  width: 170px;
-  font-size: 20px;
+const NameProfile = styled.div`
+  color: black;
   font-family: Font_DungGeun;
 `
-
+const Level = styled.div`
+  font-size: 20px;
+  line-height: 1;
+`
+const Username = styled.div`
+  font-size: 24px;
+  line-height: 1;
+  margin: 4px 0 0 0;
+`
 const ProfileButton = styled.div`
+  margin-left: auto;  
+  display: flex;
+  flex-direction: row;
   Button {
-    width: 120px;
-    color: white;
-    margin-left: 20px;
-    font-size: 15px;
-    font-family: Font_DungGeun;
+    color: black;
   }
 `
 
@@ -147,28 +108,25 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
-export default function UserDialog() {
+export default function UsersDialog() {
+  const dispatch = useAppDispatch()
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const chatMessages = useAppSelector((state) => state.chat.chatMessages)
   const focused = useAppSelector((state) => state.chat.focused)
-  const showUser = useAppSelector((state) => state.chat.showUser)
-
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
-  const userLevel = useAppSelector((state) => state.user.userLevel)
+  const helperStatus = useAppSelector((state) => state.user.helperStatus)
   const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`
   const players = useAppSelector((state) => state.room.mainPlayers)
   const [otherPlayers, setOtherPlayers] = useState<IPlayer[]>()
-  const dispatch = useAppDispatch()
-  const [open, setOpen] = React.useState(true)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-  const [addFriendResult, setAddFriendResult] = useState<number>(0) //0: 친구 요청 전, 1: 친구 요청 성공,  2: 이미친구
   const [message, setMessage] = useState<string>('')
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
+
   const checkFirstChat = async (receiverName) => {
     try {
       const first = await checkIfFirst({ senderName: username, receiverName: receiverName});
@@ -178,7 +136,6 @@ export default function UserDialog() {
       console.error('check first chat error: ',err)
     }
   }
-  
 
   const handleClick = async (player) => {
     // const firstChatStatus = await checkFirstChat(player.name)
@@ -196,7 +153,7 @@ export default function UserDialog() {
       insertLastDM(body)
       dispatch(setReceiverName(player.name))
       dispatch(setShowDMRoom(true))
-      dispatch(setShowUser(false))
+      dispatch(setHelperStatus(HELPER_STATUS.NONE))
     // }
   }
 
@@ -212,7 +169,7 @@ export default function UserDialog() {
 
   useEffect(() => {
     scrollToBottom()
-  }, [chatMessages, showUser])
+  }, [chatMessages, helperStatus])
 
   const sendFriendRequest = (requester: string, recipient: string) => {
     const body: sendRequest = {
@@ -274,81 +231,63 @@ export default function UserDialog() {
 
   return (
     <Backdrop>
+      {isModalOpen && <Modal open={isModalOpen} handleClose={closeModal} />}
       <Wrapper>
         <Content>
-          <ChatHeader>
-            <Title>{players.length} 명 접속중</Title>
+          <Header>
+            <HeaderTitle>
+              <span  style={{ color: 'green', fontSize: '24px' }}> {players.length} </span>
+               명 접속중
+            </HeaderTitle>
             <IconButton
               aria-label="close dialog"
               className="close"
-              onClick={() => dispatch(setShowUser(false))}
+              onClick={() => dispatch(setHelperStatus(HELPER_STATUS.NONE))}
               size="small"
             >
               <CloseIcon />
             </IconButton>
-          </ChatHeader>
-          <ChatBox>
-            {/* <ButtonGroup variant="text" aria-label="text button group">
-              <Button>Bronze</Button>
-              <Button>Silver</Button>
-              <Button>Gold</Button>
-              <Button>Platinum</Button>
-              <Button>Ruby</Button>
-            </ButtonGroup> */}
-            {/* <Form onSubmit={handleSubmit}> */}
+          </Header>
+          <Body>
             {otherPlayers?.map((player, i: number) => {
               if (player.name === username) return
               return (
-                <UserList>
-                  <User>
-                    <ListItem divider key={i}>
-                      <ListItemAvatar>
-                        <Avatar src={imgpath} />
-                        {/* <Avatar
-                          src={`../../public/assets/character/single/${player.character}_idle_anim_19.png`}
-                        /> */}
-                      </ListItemAvatar>
-
-                      <Profile>
-                        <span style={{ fontSize: '16px' }}>Lv. {userLevel}</span>
-                        <br />
-                        <br />
-                        <strong>{player.name}</strong>
-                      </Profile>
-
-                      <ProfileButton>
-                        <Button
-                          onClick={() => {
-                            sendFriendRequest(username, player.name)
-                            openModal()
-                          }}
-                        >
-                          친구추가
-                        </Button>
-                        {isModalOpen && <Modal open={isModalOpen} handleClose={closeModal} />}
-                        <Button
-                          onClick={(e) => {
-                            // dispatch(setShowDMRoom(true));
-                            // 준택코드
-                            dispatch(setShowDMList(true))
-                            dispatch(setShowUser(false))
-
-                            // 재혁코드
-                            e.preventDefault();
-                            console.log(player?.userid ?? "unknown") // 🐱
-                            handleClick(player)
-                          }}
-                        >
-                          메세지
-                        </Button>
-                      </ProfileButton>
-                    </ListItem>
-                  </User>
-                </UserList>
+                <ListItem divider key={i} style={{ padding: '16px'}}>
+                  <NameWrapper>
+                    <ListItemAvatar>
+                      <Avatar src={imgpath} />
+                      {/* <img src={imgpath} /> */}
+                    </ListItemAvatar>
+                    <NameProfile>
+                      {/* <Level>Lv. {userLevel}</Level> */}
+                      <Username>{player.name}</Username>
+                    </NameProfile>
+                  </NameWrapper>
+                  <ProfileButton>
+                    <Button onClick={() => {
+                        sendFriendRequest(username, player.name)
+                        openModal()
+                    }}>
+                      <PersonAddAltOutlined fontSize='large' />
+                    </Button>
+                    <Button onClick={(e) => {
+                        // dispatch(setShowDMRoom(true));
+                        // 준택코드
+                        dispatch(setShowDMList(true))
+                        dispatch(setHelperStatus(HELPER_STATUS.NONE))
+                        // 재혁코드
+                        e.preventDefault();
+                        console.log(player?.name ?? "unknown") // 🐱
+                        handleClick(player)
+                      }}
+                    >
+                      <MailOutlineRounded fontSize='large' />
+                    </Button>
+                  </ProfileButton>
+                </ListItem>
               )
             })}
-            {/* </Form> */}
-          </ChatBox>
+          </Body>
         </Content>
       </Wrapper>
     </Backdrop>
