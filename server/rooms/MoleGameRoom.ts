@@ -112,7 +112,7 @@ export class MoleGameRoom extends Room<GameState> {
       this.broadcast(Message.RECEIVE_HOST, { host: message.host });
     })
 
-    this.onMessage(Message.SEND_LIFE, (client, message: { life: string }) => {
+    this.onMessage(Message.SEND_MY_LIFE, (client, message: { life: string }) => {
       this.dispatcher.dispatch(new MoleGameChangeLife(), {
         client,
         name: '',
@@ -120,9 +120,9 @@ export class MoleGameRoom extends Room<GameState> {
         point: '',
         problem: '',
         host: '',
-        life: message.life
+        life: message.life,
       })
-      this.broadcast(Message.RECEIVE_LIFE, { life: message.life }, { except: client });
+      this.broadcast(Message.RECEIVE_YOUR_LIFE, { life: message.life }, { except: client });
     })
   }
 

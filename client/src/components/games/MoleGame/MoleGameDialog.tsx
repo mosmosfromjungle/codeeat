@@ -77,10 +77,18 @@ export default function MoleGameDialog() {
   const [startGame, setStartGame] = useState(false);
   
   const [myLife, setMyLife] = useState(3);
-  const [point, setPoint] = useState(0);
+  const [myPoint, setMyPoint] = useState(0);
   const [turn, setTurn] = useState(0);
   
   const [moleCatch, setMoleCatch] = useState(0);
+
+  // If friend get point, display event
+  const friendPoint = useAppSelector((state) => state.molegame.friendPoint);
+
+  // If friend click wrong, display event
+  const friendLife = useAppSelector((state) => state.molegame.friendLife);
+
+  const problem = useAppSelector((state) => state.molegame.problem);
 
   let randomNumber1 = 0;
   let randomNumber2 = 0;
@@ -89,12 +97,6 @@ export default function MoleGameDialog() {
   let moleNumber1 = 0;
   let moleNumber2 = 0;
   let moleNumber3 = 0;
-
-  // If friend get point, display event
-  let friendPoint = useAppSelector((state) => state.molegame.friendPoint);
-
-  // If friend click wrong, display event
-  let friendLife = parseInt(useAppSelector((state) => state.molegame.friendlife));
 
   useEffect(() => {
     // Point and Character event
@@ -116,18 +118,15 @@ export default function MoleGameDialog() {
   let friendLifeElements = [];
   let myLifeElements = [];
 
-  console.log("friendLife: "+friendLife);
-  console.log("myLife: "+myLife);
-
-  for (let i = 0; i < friendLife; i++) {
+  for (let i = 0; i < parseInt(friendLife); i++) {
     friendLifeElements.push(
-      <img src={ potato } width="60px"></img>
+      <img key={ i } src={ potato } width="60px"></img>
     );
   }
 
   for (let i = 0; i < myLife; i++) {
     myLifeElements.push(
-      <img src={ potato } width="60px"></img>
+      <img key={ i } src={ potato } width="60px"></img>
     );
   }
 
@@ -200,7 +199,7 @@ export default function MoleGameDialog() {
         clearTimeout(moleCatch);
   
         setTurn(0);
-        setPoint(0);
+        setMyPoint(0);
         setMyLife(3);
         
         moleHide();
@@ -214,8 +213,6 @@ export default function MoleGameDialog() {
       }
     }
   }, [friendname, host]);
-
-  const problem = useAppSelector((state) => state.molegame.problem);
 
   // startMole 함수는 방장만 들어올 수 있음
   const startMole = () => {
@@ -493,10 +490,9 @@ export default function MoleGameDialog() {
         const getPoint = document.getElementById('point-current');
         getPoint.classList.add('get-point');
 
-        setPoint(point + 1);
-        
-        // 상대방에게 내 점수를 보내주어야 함
-        bootstrap.gameNetwork.sendMyPoint(point + 1);
+        // Point + 1
+        setMyPoint(myPoint + 1);
+        bootstrap.gameNetwork.sendMyPoint(myPoint.toString());
 
         setTimeout(function() {
           const removePoint = document.getElementById('point-current');
@@ -504,14 +500,14 @@ export default function MoleGameDialog() {
         }, 1000);
 
         // Character Jump Event
-        const character = document.getElementById(`my-character`);
+        const character = document.getElementById('my-character');
         character.classList.add('jump-animation');
   
         setTimeout(function() {
           character.classList.remove('jump-animation');
         }, 1000);
         
-        // 다음 문제로 넘어가라고 요청
+        // Problem + 1
         bootstrap.gameNetwork.startGame(turn.toString());
 
       // Wrong Answer
@@ -519,12 +515,9 @@ export default function MoleGameDialog() {
         const WrongAudio = new Audio(WrongBGM);
         WrongAudio.play();
 
+        // Life - 1
         setMyLife(myLife - 1);
-
-        // 그리고 친구 화면에서도 내 감자 깎아야 함
-        bootstrap.gameNetwork.removeLife(myLife.toString());
-
-        //jiwon
+        bootstrap.gameNetwork.sendMyLife(myLife.toString());
 
         const number = document.getElementById(`${num}`);
         number.classList.add('click-wrong');
@@ -538,7 +531,7 @@ export default function MoleGameDialog() {
 
   // 6. Score Modal
 
-  let total = (point / 10) * 100;
+  let total = (myPoint / 10) * 100;
   let friendTotal = (friendPoint / 10) * 100;
 
   // const modalEvent = () => {
@@ -613,7 +606,7 @@ export default function MoleGameDialog() {
     // Clear the game
     clearTimeout(moleCatch);
     setTurn(0);
-    setPoint(0);
+    setMyPoint(0);
     setMyLife(3);
     
     moleHide();
@@ -621,18 +614,20 @@ export default function MoleGameDialog() {
     setStartGame(false);
 
     try {
-      // 상대방에게 나 나간다고 알려줌
-      // 만약 내가 방장이었다면, 방장 이임 해주어야 함
+      // 1. 내 정보 초기화, 내가 방장이었다면 방장 이임
       bootstrap.gameNetwork.sendMyInfo('', '');
 
-      // 그리고 나갈 때 problem 초기화
+      // 2. 문제 Problem 초기화
       bootstrap.gameNetwork.startGame('-1');
 
-      // 내 점수도 초기화
-      bootstrap.gameNetwork.sendMyPoint('0');
+      // 3. 점수 Point 초기화
+      bootstrap.gameNetwork.sendMyPoint('-1');
 
-      // 내 목숨 초기화
-      bootstrap.gameNetwork.removeLife('4');
+      // 4. 목숨 Life 초기화
+      bootstrap.gameNetwork.sendMyLife('4');
+
+      // 5. 내가 다시 들어올 경우 대비, 상대편 정보 초기화
+      bootstrap.gameNetwork.clearFriendInfo();
 
       bootstrap.gameNetwork.leaveGameRoom()
 
@@ -644,6 +639,13 @@ export default function MoleGameDialog() {
     }
   }
 
+  console.log("=========================");
+  console.log("myPoint: "+myPoint);
+  console.log("friendPoint: "+friendPoint);
+  console.log("myLife: "+myLife);
+  console.log("friendLife: "+friendLife);
+  console.log("problem: "+problem);
+
   // Start game !
   useEffect(() => {
     if (problem === '' || problem === '0') {
@@ -653,7 +655,7 @@ export default function MoleGameDialog() {
       setStartGame(true);
 
       setStartButtonColor('#3d3f43');
-      setPoint(0);
+      setMyPoint(0);
       setMyLife(3);
 
       setTimeout(showingMole, 1000);
@@ -796,7 +798,7 @@ export default function MoleGameDialog() {
                   { myLifeElements }
                 </LifeArea>
                 <PointArea>
-                  <span id="point-current">{ point }</span>/10
+                  <span id="point-current">{ myPoint }</span>/10
                 </PointArea>
               </MyPoint>
             </Content>
