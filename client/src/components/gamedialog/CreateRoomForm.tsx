@@ -110,6 +110,7 @@ export const CreateRoomForm = () => {
         onChange={handleChange('password')}
         color="secondary"
         InputProps={{
+          autoComplete: "new-password",
           endAdornment: (
             <InputAdornment position="end">
               <IconButton
