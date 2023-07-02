@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react'
-import rain_Background from '../../../../public/assets/game/RainGame/blackboard.png'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
 import Bootstrap from '../../../scenes/Bootstrap'
 import phaserGame from '../../../PhaserGame'
@@ -9,6 +8,7 @@ import {
   TimerArea, GameArea, Left, Right, PointArea, FriendPoint, MyPoint, InputArea,
 } from './RainGameStyle'
 import eraser from '/assets/game/RainGame/eraser.png'
+import debounce from 'lodash/debounce';
 
 interface KeywordRain {
   y: number
@@ -165,6 +165,11 @@ export function RainGame() {
       }
     }, 2000)
 
+    // 데바운싱 적용
+    const debouncedDecreaseHeart = debounce(() => {
+      bootstrap.gameNetwork.decreaseHeart(sessionId);
+    }, 300);
+
     // 내 단어 위치 업데이트
     const updateMyWordsInterval = setInterval(() => {
       setMyGame((game) =>
@@ -173,7 +178,7 @@ export function RainGame() {
 
           if (newY >= lineHeight && !dheart) {
             console.log("하트 관련 상태변경 송신")
-            bootstrap.gameNetwork.decreaseHeart(sessionId);
+            debouncedDecreaseHeart();
             setDheart(true)
           } else{
           newGame.push({ ...item, y: newY });
