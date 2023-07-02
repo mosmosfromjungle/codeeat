@@ -21,6 +21,7 @@ import {
   setMoleGameProblem,
   setMoleGameHost,
   setMoleGameLife,
+  clearMoleGameFriendInfo,
  } from '../stores/MoleGameStore'
 import {
   setBrickGameState,
@@ -241,8 +242,13 @@ export default class GameNetwork {
     });
 
     // method to receive life to friend in mole game
-    this.room.onMessage(Message.RECEIVE_LIFE, (content) => {
+    this.room.onMessage(Message.RECEIVE_YOUR_LIFE, (content) => {
       store.dispatch(setMoleGameLife(content));
+    });
+  
+    // method to clear friend info in mole game
+    this.room.onMessage(Message.CLEAR_FRIEND, () => {
+      store.dispatch(clearMoleGameFriendInfo());
     });
   }
 
@@ -268,8 +274,13 @@ export default class GameNetwork {
   }
   
   // method to send life count in mole game
-  removeLife(life: string) {
-    this.room?.send(Message.SEND_LIFE, { life: life })
+  sendMyLife(myLife: string) {
+    this.room?.send(Message.SEND_MY_LIFE, { life: myLife })
+  }
+  
+  // method to clear friend info in mole game
+  clearFriendInfo() {
+    this.room?.send(Message.CLEAR_FRIEND)
   }
 
   /* RAIN GAME */
