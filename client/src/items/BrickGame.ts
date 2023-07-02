@@ -56,7 +56,10 @@ export default class BrickGame extends Item {
     const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
     bootstrap.gameNetwork.joinLobbyRoom(RoomType.BRICKLOBBY)
     store.dispatch(openBrickGameDialog())
-    store.dispatch(setDialogStatus(DIALOG_STATUS.GAME_LOBBY))
     // network.connectToBrickGame(this.id)  // TODO: 서버에 해당 클라이언트가 몇번 아이디의 해당 아이템에 연결했는지 정보 전달 -> 나중에 아이템 별로 연결하고자 할 때 살려야 함 
+
+    setTimeout(() => {
+      store.dispatch(setDialogStatus(DIALOG_STATUS.GAME_LOBBY))
+    }, 200)
   }
 }

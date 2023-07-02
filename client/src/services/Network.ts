@@ -13,7 +13,7 @@ import {
   setAvailableRooms,
   addAvailableRooms,
   removeAvailableRooms,
-  setRoomPlayers,
+  setMainPlayers,
 } from '../stores/RoomStore'
 import {
   pushChatMessage,
@@ -207,7 +207,7 @@ export default class Network {
       this.room?.state.players.forEach((value) => {
         players.push(value);
       });
-      store.dispatch(setRoomPlayers(players));
+      store.dispatch(setMainPlayers(players));
     });
   }
 

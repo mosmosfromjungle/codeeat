@@ -12,70 +12,17 @@ import CorrectBGM from '/assets/audios/mole_correct.mp3';
 import WrongBGM from '/assets/audios/mole_wrong.mp3';
 import FinishBGM from '/assets/audios/mole_finish.mp3';
 
+import potato from '/assets/game/molegame/potato.png';
+
+import { 
+  Backdrop, Wrapper, RoundArea, Header, 
+  Comment, Problem, ProblemText, TipArea, Content, 
+  Moles, MyPoint, YourPoint, IsHost, CharacterArea, NameArea, LifeArea, PointArea, 
+} from './MoleGameStyle'
 import './MoleGame.css'
+
 import phaserGame from '../../../PhaserGame'
 import Bootstrap from '../../../scenes/Bootstrap'
-
-const Backdrop = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  overflow: hidden;
-  padding: 16px 16px 16px 16px;
-`
-
-const Wrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  background: black;
-  border-radius: 16px;
-  padding: 20px;
-  color: #eee;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0px 0px 5px #0000006f;
-
-  .close {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-  }
-`
-
-const Header = styled.div`
-  margin-top: 20px;
-`
-
-const Comment = styled.div`
-  float: right;
-  right: 10px;
-  font-size: 20px;
-  font-family: Font_DungGeun;
-`
-
-const ProblemText = styled.div`
-  margin-top: 10px;
-  font-size: 25px;
-  font-family: Font_DungGeun;
-`
-
-const Content = styled.div`
-  display: flex;
-`
-
-const MyPoint = styled.div`
-  margin-right: 200px;
-  margin-top: 100px;
-  text-align: center;
-`
-
-const YourPoint = styled.div`
-  margin-left: 200px;
-  margin-top: 100px;
-  text-align: center;
-`
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -125,10 +72,11 @@ export default function MoleGameDialog() {
   const [activeNumber, setActiveNumber] = useState(0);
   const [activeNumberList, setActiveNumberList] = useState([0, 0, 0]);
 
-  const [hideEnding, setHideEnding] = React.useState(true);
+  // const [hideEnding, setHideEnding] = React.useState(true);
   const [canClick, setCanClick] = useState(true);
   const [startGame, setStartGame] = useState(false);
   
+  const [myLife, setMyLife] = useState(3);
   const [point, setPoint] = useState(0);
   const [turn, setTurn] = useState(0);
   
@@ -144,6 +92,9 @@ export default function MoleGameDialog() {
 
   // If friend get point, display event
   let friendPoint = useAppSelector((state) => state.molegame.friendPoint);
+
+  // If friend click wrong, display event
+  let friendLife = parseInt(useAppSelector((state) => state.molegame.friendlife));
 
   useEffect(() => {
     // Point and Character event
@@ -162,19 +113,37 @@ export default function MoleGameDialog() {
     }, 1000);
   }, [friendPoint]);
 
+  let friendLifeElements = [];
+  let myLifeElements = [];
+
+  console.log("friendLife: "+friendLife);
+  console.log("myLife: "+myLife);
+
+  for (let i = 0; i < friendLife; i++) {
+    friendLifeElements.push(
+      <img src={ potato } width="60px"></img>
+    );
+  }
+
+  for (let i = 0; i < myLife; i++) {
+    myLifeElements.push(
+      <img src={ potato } width="60px"></img>
+    );
+  }
+
   // 1. Load problems
 
   const problems = [
-    ['Q01. 파이썬에서 리스트에 들어있는 모든 수를 합하는 함수는?', ['sum', 'len', 'map']],
-    ['Q02. 파이썬에서 리스트의 개수를 구하는 함수는?', ['len', 'abs', 'map']],
-    ['Q03. 파이썬에서 새로운 정렬된 리스트를 반환하는 함수는?', ['sorted', 'len', 'map']],
-    ['Q04. 파이썬에서 리스트 자체를 정렬시켜버리는 것은?', ['sort', 'len', 'map']],
-    ['Q05. 파이썬에서 내림차순 정렬을 위해 사용하는 옵션은?', ['reverse', 'len', 'map']],
-    ['Q06. 파이썬에서 숫자의 절댓값을 리턴하는 함수는?', ['abs', 'len', 'map']],
-    ['Q07. 파이썬에서 문자열로 구성된 표현식을 입력으로 받아 해당 문자열을 실행한 결괏값을 리턴하는 함수는?', ['eval', 'len', 'map']],
-    ['Q08. 파이썬에서 문자의 유니코드 숫자 값을 리턴하는 함수는?', ['ord', 'len', 'map']],
-    ['Q09. 파이썬에서 유니코드 숫자값을 입력받아 그 코드에 해당하는 문자를 리턴하는 함수는?', ['char', 'len', 'map']],
-    ['Q10. 파이썬에서 for문과 함께 자주 사용하는 함수로, 입력받은 숫자에 해당하는 범위 값을 반복 가능한 객체로 만들어 리턴하는 함수는?', ['range', 'len', 'map']]  
+    ['파이썬에서 리스트에 들어있는 모든 수를 합하는 함수는?', ['sum', 'len', 'map']],
+    ['파이썬에서 리스트의 개수를 구하는 함수는?', ['len', 'abs', 'map']],
+    ['파이썬에서 새로운 정렬된 리스트를 반환하는 함수는?', ['sorted', 'len', 'map']],
+    ['파이썬에서 리스트 자체를 정렬시켜버리는 것은?', ['sort', 'len', 'map']],
+    ['파이썬에서 내림차순 정렬을 위해 사용하는 옵션은?', ['reverse', 'len', 'map']],
+    ['파이썬에서 숫자의 절댓값을 리턴하는 함수는?', ['abs', 'len', 'map']],
+    ['파이썬에서 문자열로 구성된 표현식을 입력으로 받아 해당 문자열을 실행한 결괏값을 리턴하는 함수는?', ['eval', 'len', 'map']],
+    ['파이썬에서 문자의 유니코드 숫자 값을 리턴하는 함수는?', ['ord', 'len', 'map']],
+    ['파이썬에서 유니코드 숫자값을 입력받아 그 코드에 해당하는 문자를 리턴하는 함수는?', ['char', 'len', 'map']],
+    ['파이썬에서 for문과 함께 자주 사용하는 함수로, 입력받은 숫자에 해당하는 범위 값을 반복 가능한 객체로 만들어 리턴하는 함수는?', ['range', 'len', 'map']]  
   ];
 
   // 2. Bling the Text
@@ -232,12 +201,13 @@ export default function MoleGameDialog() {
   
         setTurn(0);
         setPoint(0);
+        setMyLife(3);
         
         moleHide();
         
         setStartGame(false);
 
-        modalEvent();
+        setDisableStartButton(true);
 
         const FinishAudio = new Audio(FinishBGM);
         FinishAudio.play();
@@ -469,7 +439,7 @@ export default function MoleGameDialog() {
       setTurn(turn + 1);
 
     } else {
-      modalEvent();
+      setDisableStartButton(true);
       
       setTurn(0);
 
@@ -549,6 +519,13 @@ export default function MoleGameDialog() {
         const WrongAudio = new Audio(WrongBGM);
         WrongAudio.play();
 
+        setMyLife(myLife - 1);
+
+        // 그리고 친구 화면에서도 내 감자 깎아야 함
+        bootstrap.gameNetwork.removeLife(myLife.toString());
+
+        //jiwon
+
         const number = document.getElementById(`${num}`);
         number.classList.add('click-wrong');
 
@@ -564,15 +541,15 @@ export default function MoleGameDialog() {
   let total = (point / 10) * 100;
   let friendTotal = (friendPoint / 10) * 100;
 
-  const modalEvent = () => {
-    setHideEnding(false);
-    setDisableStartButton(true);
-  }
+  // const modalEvent = () => {
+  //   setHideEnding(false);
+  //   setDisableStartButton(true);
+  // }
 
-  const hideModal = () => {
-    setHideEnding(true);
-    setDisableStartButton(false);
-  }
+  // const hideModal = () => {
+  //   setHideEnding(true);
+  //   setDisableStartButton(false);
+  // }
 
   // 7. Check the winner
   let winner = '';
@@ -593,37 +570,37 @@ export default function MoleGameDialog() {
     }
   }
 
-  const Modal = () => {
-    return(
-      <div id="ending" className="ending finalEnding">
-        <p id="ending-box">
-          <p id="ending-box-title">🎮🎮 Game Over ! 🎲🎲</p>
-          <p>
-            <span>Your score is &nbsp;</span>
-            <span className='last'>{ total }</span>
-          </p>
-          <p>
-            <span>Friend score is &nbsp;</span>
-            <span className='last'>{ friendTotal }</span>
-          </p>
-          <p>
-            <span>The winner is &nbsp;</span>
-            <span className='winner'>{ winner }</span>
-          </p>
+  // const Modal = () => {
+  //   return(
+  //     <div id="ending" className="ending finalEnding">
+  //       <p id="ending-box">
+  //         <p id="ending-box-title">Game Over !</p>
+  //         <p>
+  //           <span>Your score is &nbsp;</span>
+  //           <span className='last'>{ total }</span>
+  //         </p>
+  //         <p>
+  //           <span>Friend score is &nbsp;</span>
+  //           <span className='last'>{ friendTotal }</span>
+  //         </p>
+  //         <p>
+  //           <span>The winner is &nbsp;</span>
+  //           <span className='winner'>{ winner }</span>
+  //         </p>
 
-          <div className="btn-wrap">
-            <button type="button" 
-                    className="restart-btn" 
-                    style={{ color: "#f9f871" }}
-                    onClick={() => hideModal()}
-                    onMouseEnter={ handleMouseOver }>
-              CLOSE
-            </button>
-          </div>
-        </p>
-      </div>
-    )
-  }
+  //         <div className="btn-wrap">
+  //           <button type="button" 
+  //                   className="restart-btn" 
+  //                   style={{ color: "#f9f871" }}
+  //                   onClick={() => hideModal()}
+  //                   onMouseEnter={ handleMouseOver }>
+  //             CLOSE
+  //           </button>
+  //         </div>
+  //       </p>
+  //     </div>
+  //   )
+  // }
 
   const handleMouseOver = () => {
     const ButtonAudio = new Audio(ButtonBGM);
@@ -637,6 +614,7 @@ export default function MoleGameDialog() {
     clearTimeout(moleCatch);
     setTurn(0);
     setPoint(0);
+    setMyLife(3);
     
     moleHide();
     
@@ -651,7 +629,10 @@ export default function MoleGameDialog() {
       bootstrap.gameNetwork.startGame('-1');
 
       // 내 점수도 초기화
-      bootstrap.gameNetwork.sendMyPoint(0);
+      bootstrap.gameNetwork.sendMyPoint('0');
+
+      // 내 목숨 초기화
+      bootstrap.gameNetwork.removeLife('4');
 
       bootstrap.gameNetwork.leaveGameRoom()
 
@@ -673,6 +654,7 @@ export default function MoleGameDialog() {
 
       setStartButtonColor('#3d3f43');
       setPoint(0);
+      setMyLife(3);
 
       setTimeout(showingMole, 1000);
 
@@ -692,115 +674,130 @@ export default function MoleGameDialog() {
           <CloseIcon />
         </IconButton>
 
-        { hideEnding === false ? <Modal /> : '' }
+        <RoundArea>
+          Round {turn}/10
+        </RoundArea>
+
+        {/* { hideEnding === false ? <Modal /> : '' } */}
 
         <body>
           <Header>
-              <h1 className="title" style={{ color:titleColor }}>Welcome! Whack-A-Mole</h1> 
+              <div className="title" style={{ color:titleColor }}>Welcome! Whack-A-Mole</div> 
           </Header>
 
           <Comment>
             <p className={`friend-comment ${friendname ? '' : 'start-game'}`}>
               {friendname ? '친구가 들어왔어요,' : '친구가 아직 들어오지 않았어요 !'}<br />
-              {friendname ? '방장은 Start 버튼을 눌러주세요 !' : ''}
+              {friendname ? '방장은 Start 버튼을 눌러주세요 !' : '친구가 들어와야 게임이 시작돼요.'}
             </p>
           </Comment>
 
           <div className="main">
-            <div id="problem" className="problem">
+            <Problem>
               <ProblemText>
                 { problemText1 }
               </ProblemText>
-            </div>
+            </Problem>
+
+            <TipArea>
+              틀린 답을 외치는 두더지를 잡으면 목숨이 깎여요!<br/>
+              💡 TIP: 두더지를 빨리 잡으려고 하는 것보다, 문제를 잘 읽고 푸는 게 더 중요할 거예요.
+            </TipArea>
 
             <Content>
               <YourPoint>
-                <div className="point-wrap">
-                  <span id="is-host">
-                    { ( friendname && (friendname === host)) ? '방장' : ''}<br/><br/>
-                  </span>
+                <IsHost>
+                  { ( friendname && (friendname === host)) ? '방장' : ''}<br/><br/>
+                </IsHost>
+                <CharacterArea>
                   <img src={ friendimgpath } width="50px" id="friend-character" className={ friendname ? "" : "hidden" }></img>
-                  <p id="point-text-name">
-                    [{friendname}]<br/><br/>
-                  </p>
-                  <p id="point-text">
-                    Friend Point<br/><br/>
-                    <span id="friend-point-current">{ friendPoint ? friendPoint : '0' }</span>/10
-                  </p>
-                </div>
+                </CharacterArea>
+                <NameArea>
+                  [{friendname.toUpperCase()}]<br/><br/>
+                </NameArea>
+                <LifeArea>
+                  { friendLifeElements }
+                </LifeArea>
+                <PointArea>
+                  <span id="friend-point-current">{ friendPoint ? friendPoint : '0' }</span>/10
+                </PointArea>
               </YourPoint>
               
-              <ul className="whack-a-mole clearfix">
-                <li className="mole" onClick={() => handleClick(1)}>
-                  <img id="1" src="/assets/game/molegame/mole.png"></img>
-                  <div id="answer-div-1" className={`answer-text-1 ${activeNumberList.includes(1) ? '' : 'hiding'}`}>
-                    <p id="answer-text-1">{ answerText1 }</p>
-                  </div>
-                </li>
-                <li className="mole" onClick={() => handleClick(2)}>
-                  <img id="2" src="/assets/game/molegame/mole.png"></img>
-                  <div id="answer-div-2" className={`answer-text-2 ${activeNumberList.includes(2) ? '' : 'hiding'}`}>
-                    <p id="answer-text-2">{ answerText2 }</p>
-                  </div>
-                </li>
-                <li className="mole" onClick={() => handleClick(3)}>
-                  <img id="3" src="/assets/game/molegame/mole.png"></img>
-                  <div id="answer-div-3" className={`answer-text-3 ${activeNumberList.includes(3) ? '' : 'hiding'}`}>
-                    <p id="answer-text-3">{ answerText3 }</p>
-                  </div>
-                </li>
-                <li className="mole" onClick={() => handleClick(4)}>
-                  <img id="4" src="/assets/game/molegame/mole.png"></img>
-                  <div id="answer-div-4" className={`answer-text-4 ${activeNumberList.includes(4) ? '' : 'hiding'}`}>
-                    <p id="answer-text-4">{ answerText4 }</p>
-                  </div>
-                </li>
-                <li className="mole" onClick={() => handleClick(5)}>
-                  <img id="5" src="/assets/game/molegame/mole.png"></img>
-                  <div id="answer-div-5" className={`answer-text-5 ${activeNumberList.includes(5) ? '' : 'hiding'}`}>
-                    <p id="answer-text-5">{ answerText5 }</p>
-                  </div>
-                </li>
-                <li className="mole" onClick={() => handleClick(6)}>
-                  <img id="6" src="/assets/game/molegame/mole.png"></img>
-                  <div id="answer-div-6" className={`answer-text-6 ${activeNumberList.includes(6) ? '' : 'hiding'}`}>
-                    <p id="answer-text-6">{ answerText6 }</p>
-                  </div>
-                </li>
-                <li className="mole" onClick={() => handleClick(7)}>
-                  <img id="7" src="/assets/game/molegame/mole.png"></img>
-                  <div id="answer-div-7" className={`answer-text-7 ${activeNumberList.includes(7) ? '' : 'hiding'}`}>
-                    <p id="answer-text-7">{ answerText7 }</p>
-                  </div>
-                </li>
-                <li className="mole" onClick={() => handleClick(8)}>
-                  <img id="8" src="/assets/game/molegame/mole.png"></img>
-                  <div id="answer-div-8" className={`answer-text-8 ${activeNumberList.includes(8) ? '' : 'hiding'}`}>
-                    <p id="answer-text-8">{ answerText8 }</p>
-                  </div>
-                </li>
-                <li className="mole" onClick={() => handleClick(9)}>
-                  <img id="9" src="/assets/game/molegame/mole.png"></img>
-                  <div id="answer-div-9" className={`answer-text-9 ${activeNumberList.includes(9) ? '' : 'hiding'}`}>
-                    <p id="answer-text-9">{ answerText9 }</p>
-                  </div>
-                </li>
-              </ul>
+              <Moles>
+                <ul className="whack-a-mole">
+                  <li className="mole" onClick={() => handleClick(1)}>
+                    <img id="1" src="/assets/game/molegame/mole.png"></img>
+                    <div id="answer-div-1" className={`answer-text-1 ${activeNumberList.includes(1) ? '' : 'hidden'}`}>
+                      <p id="answer-text-1">{ answerText1 }</p>
+                    </div>
+                  </li>
+                  <li className="mole" onClick={() => handleClick(2)}>
+                    <img id="2" src="/assets/game/molegame/mole.png"></img>
+                    <div id="answer-div-2" className={`answer-text-2 ${activeNumberList.includes(2) ? '' : 'hidden'}`}>
+                      <p id="answer-text-2">{ answerText2 }</p>
+                    </div>
+                  </li>
+                  <li className="mole" onClick={() => handleClick(3)}>
+                    <img id="3" src="/assets/game/molegame/mole.png"></img>
+                    <div id="answer-div-3" className={`answer-text-3 ${activeNumberList.includes(3) ? '' : 'hidden'}`}>
+                      <p id="answer-text-3">{ answerText3 }</p>
+                    </div>
+                  </li>
+                  <li className="mole" onClick={() => handleClick(4)}>
+                    <img id="4" src="/assets/game/molegame/mole.png"></img>
+                    <div id="answer-div-4" className={`answer-text-4 ${activeNumberList.includes(4) ? '' : 'hidden'}`}>
+                      <p id="answer-text-4">{ answerText4 }</p>
+                    </div>
+                  </li>
+                  <li className="mole" onClick={() => handleClick(5)}>
+                    <img id="5" src="/assets/game/molegame/mole.png"></img>
+                    <div id="answer-div-5" className={`answer-text-5 ${activeNumberList.includes(5) ? '' : 'hidden'}`}>
+                      <p id="answer-text-5">{ answerText5 }</p>
+                    </div>
+                  </li>
+                  <li className="mole" onClick={() => handleClick(6)}>
+                    <img id="6" src="/assets/game/molegame/mole.png"></img>
+                    <div id="answer-div-6" className={`answer-text-6 ${activeNumberList.includes(6) ? '' : 'hidden'}`}>
+                      <p id="answer-text-6">{ answerText6 }</p>
+                    </div>
+                  </li>
+                  <li className="mole" onClick={() => handleClick(7)}>
+                    <img id="7" src="/assets/game/molegame/mole.png"></img>
+                    <div id="answer-div-7" className={`answer-text-7 ${activeNumberList.includes(7) ? '' : 'hidden'}`}>
+                      <p id="answer-text-7">{ answerText7 }</p>
+                    </div>
+                  </li>
+                  <li className="mole" onClick={() => handleClick(8)}>
+                    <img id="8" src="/assets/game/molegame/mole.png"></img>
+                    <div id="answer-div-8" className={`answer-text-8 ${activeNumberList.includes(8) ? '' : 'hidden'}`}>
+                      <p id="answer-text-8">{ answerText8 }</p>
+                    </div>
+                  </li>
+                  <li className="mole" onClick={() => handleClick(9)}>
+                    <img id="9" src="/assets/game/molegame/mole.png"></img>
+                    <div id="answer-div-9" className={`answer-text-9 ${activeNumberList.includes(9) ? '' : 'hidden'}`}>
+                      <p id="answer-text-9">{ answerText9 }</p>
+                    </div>
+                  </li>
+                </ul>
+              </Moles>
 
               <MyPoint>
-                <div className="point-wrap">
-                  <span id="is-host">
-                    { ( friendname && (username === host)) ? '방장' : ''}<br/><br/>
-                  </span>
+                <IsHost>
+                  { ( friendname && (username === host)) ? '방장' : ''}<br/><br/>
+                </IsHost>
+                <CharacterArea>
                   <img src={ imgpath } width="50px" id="my-character"></img>
-                  <p id="point-text-name">
-                    [{username}]<br/><br/>
-                  </p>
-                  <p id="point-text">
-                    My Point<br/><br/>
-                    <span id="point-current">{ point }</span>/10
-                  </p>
-                </div>
+                </CharacterArea>
+                <NameArea>
+                  [{username.toUpperCase()}]<br/><br/>
+                </NameArea>
+                <LifeArea>
+                  { myLifeElements }
+                </LifeArea>
+                <PointArea>
+                  <span id="point-current">{ point }</span>/10
+                </PointArea>
               </MyPoint>
             </Content>
 
