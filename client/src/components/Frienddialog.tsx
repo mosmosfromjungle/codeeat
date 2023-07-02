@@ -91,6 +91,9 @@ const ChatBox = styled(Box)`
     font-family: Font_DungGeun;
   }
 `
+const TextDiv = styled.div`
+  margin-bottom: 10px;
+`
 
 const UserList = styled.div`
   Button {
@@ -138,7 +141,6 @@ export default function FriendDialog() {
   const [grade, setGrade] = useState<string>('') // git
   const [school, setSchool] = useState<string>('') // email
   const [message, setMessage] = useState<string>('')
-  
 
   const dispatch = useAppDispatch()
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -252,18 +254,16 @@ export default function FriendDialog() {
     getUserProfile(username)
       .then((response) => {
         if (!response) return
-        console.log("들어와아아아아아앙" + response)
-        const { username, character, userLevel, contactGit, contactEmail, profileMessage } = response
+        const { username, character, userLevel, grade, school, profileMessage } = response
         setFriendUsername(username)
         setFriendCharacter(character)
         setFriendUserLevel(userLevel)
-        setGrade(contactGit)
-        setSchool(contactEmail)
+        setGrade(grade)
+        setSchool(school)
         setMessage(profileMessage)
-
       })
       .catch((error) => {
-        console.error(error);
+        console.error(error)
       })
   }
 
