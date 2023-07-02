@@ -25,7 +25,7 @@ import ChatDialog from './components/helperdialog/ChatDialog'
 import { ConversationList } from './components/DM/DMList'
 import { DMRoom } from './components/DM/DMRoom'
 import UsersDialog from './components/helperdialog/UsersDialog'
-import FriendDialog from './components/helperdialog/FriendDialog'
+import FriendsDialog from './components/helperdialog/FriendsDialog'
 import LogoutDialog from './components/helperdialog/LogoutDialog'
 import VersionDialog from './components/helperdialog/VersionDialog'
 import MobileVirtualJoystick from './components/helperdialog/MobileVirtualJoystick'
@@ -98,7 +98,7 @@ function App() {
       <>
         {helperStatus === HELPER_STATUS.CHAT && <ChatDialog />}
         {helperStatus === HELPER_STATUS.USERS && <UsersDialog />}
-        {helperStatus === HELPER_STATUS.FRIENDS && <FriendDialog />}
+        {helperStatus === HELPER_STATUS.FRIENDS && <FriendsDialog />}
         {helperStatus === HELPER_STATUS.LOGOUT && <LogoutDialog />}
         {helperStatus === HELPER_STATUS.VERSION && <VersionDialog />}
 

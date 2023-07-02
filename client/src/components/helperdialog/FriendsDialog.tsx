@@ -92,7 +92,7 @@ const ProfileButton = styled.div`
   }
 `
 
-export default function FriendDialog() {
+export default function FriendsDialog() {
   const dispatch = useAppDispatch()
   const inputRef = useRef<HTMLInputElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
