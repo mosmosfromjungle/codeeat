@@ -10,7 +10,6 @@ import Chair from '../items/Chair'
 import MoleGame from '../items/MoleGame'
 import BrickGame from '../items/BrickGame'
 import RainGame from '../items/RainGame'
-import FaceChat from '../items/FaceChat'
 import { ItemType } from '../../../types/Items'
 
 import '../players/MyPlayer'
@@ -41,7 +40,6 @@ export default class Game extends Phaser.Scene {
   private brickgameMap = new Map<String, BrickGame>()
   private molegameMap = new Map<String, MoleGame>()
   private raingameMap = new Map<string, RainGame>()
-  facechatMap = new Map<String, FaceChat>()
 
   constructor() {
     super('game')
@@ -184,16 +182,6 @@ export default class Game extends Phaser.Scene {
       this.molegameMap.set(id, item)
     })
 
-    /* Face Chat */
-    const facechats = this.physics.add.staticGroup({ classType: FaceChat })
-    const facechatLayer = this.map.getObjectLayer('facechat')
-    facechatLayer.objects.forEach((obj, i) => {
-      const item = this.addObjectFromTiled(facechats, obj, 'bench', 'bench') as FaceChat
-      const id = `${i}`
-      item.faceChatId = id
-      this.facechatMap.set(id, item)
-    })
-
     // ************************************** (codeEat) //
 
     // // import other objects from Tiled map to Phaser
@@ -213,7 +201,7 @@ export default class Game extends Phaser.Scene {
 
     this.physics.add.overlap(
       this.playerSelector,
-      [chairs, molegames, raingames, brickgames, facechats],
+      [chairs, molegames, raingames, brickgames],
       this.handleItemSelectorOverlap,
       undefined,
       this
@@ -339,9 +327,6 @@ export default class Game extends Phaser.Scene {
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.addCurrentUser(playerId)
-    } else if (itemType === ItemType.FACECHAT) {
-      const facechat = this.facechatMap.get(itemId)
-      facechat?.addCurrentUser(playerId)
     }
   }
 
@@ -355,9 +340,6 @@ export default class Game extends Phaser.Scene {
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.removeCurrentUser(playerId)
-    } else if (itemType === ItemType.FACECHAT) {
-      const facechat = this.facechatMap.get(itemId)
-      facechat?.removeCurrentUser(playerId)
     }
   }
 

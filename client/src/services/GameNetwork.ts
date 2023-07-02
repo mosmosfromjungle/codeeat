@@ -143,17 +143,6 @@ export default class GameNetwork {
     this.rain_game_init()
   }
 
-  // async createFaceChatRoom(roomData: IGameRoomData) {
-  //   const { name, description, password, username } = roomData
-  //   this.room = await this.client.create(RoomType.FACECHAT, {
-  //     name,
-  //     description,
-  //     password,
-  //     username,
-  //   })
-  //   this.initialize()
-  // }
-
   /* BRICK GAME */
 
   brick_game_init() {
