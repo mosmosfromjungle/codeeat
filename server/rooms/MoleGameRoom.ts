@@ -144,6 +144,8 @@ export class MoleGameRoom extends Room<GameState> {
       name: this.name,
       description: this.description,
     })
+
+    this.broadcast(Message.CLEAR_FRIEND);
   }
 
   onLeave(client: Client, consented: boolean) {
