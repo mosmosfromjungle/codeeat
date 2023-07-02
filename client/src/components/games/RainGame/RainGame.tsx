@@ -15,14 +15,6 @@ import {
 
 import eraser from '/assets/game/RainGame/eraser.png'
 
-import TextField from '@mui/material/TextField'
-
-import { 
-  CharacterArea, NameArea, Position, 
-  TimerArea, GameArea, Left, Right, PointArea, FriendPoint, MyPoint, InputArea,
-} from './RainGameStyle'
-
-import eraser from '/assets/game/RainGame/eraser.png'
 
 interface KeywordRain {
   y: number
@@ -69,7 +61,6 @@ export function RainGame() {
   const [myState, setMyState] = useState({ heart: 3, point: 0 })
   const [youState, setYouState] = useState({ heart: 3, point: 0})
   const me = useAppSelector((state) => state.raingame.me)
-  const you = useAppSelector((state) => state.raingame.you)
   const Awords = [
     { y: 0, speed: 1, keyword: 'abs', x: 331 },
     { y: 0, speed: 1.5, keyword: 'print', x: 253 },
@@ -243,8 +234,7 @@ export function RainGame() {
       if (isMyWord) {
         setMyGame((prevGame) => prevGame.filter((word) => word.keyword !== inputKeyword))
         setMyState((prevState) => ({ ...prevState, point: prevState.point + 1 }))
-
-        bootstrap.gameNetwork.removeWord(inputKeyword)
+        // bootstrap.gameNetwork.removeWord(inputKeyword)
       }
       keywordInput.current.value = ''
     }
@@ -356,6 +346,7 @@ export function RainGame() {
                 fullWidth
                 style={{ fontSize: '20px' }}
             />
+            <button onClick={() => keydown(13)}></button>
           </div>
           <NameArea style={{ width: '70%', marginTop: '30px' }}>
             나 [{ username.toUpperCase() }]<br/>
