@@ -3,11 +3,7 @@ import { Room, Client, ServerError } from 'colyseus'
 import { Dispatcher } from '@colyseus/command'
 import { Message } from '../../types/Messages'
 import { IGameRoomData } from '../../types/Rooms'
-import { KeywordRain, RainGameState, RainGameUser, RainGameRoomState } from './schema/GameState'
-import { RainGameStartCommand } from './commands/RainGameStartCommand'
-import { IRainGameRoomState, IKeywordRain, IGameState } from '../../types/IGameState'
-import mongoose from 'mongoose'
-import MapSchema from '@colyseus/schema'
+import { RainGameState, RainGameUser } from './schema/GameState'
 import { GameState } from './schema/GameState'
 
 export class RainGameRoom extends Room<GameState> {
@@ -34,11 +30,11 @@ export class RainGameRoom extends Room<GameState> {
     this.setState(new GameState())
     this.state.host = username
 
-    this.onMessage(Message.RAIN_GAME_START, (client, content) =>
+    this.onMessage(Message.RAIN_GAME_START_C, (client, content) =>
       this.handleRainGameStart(client, content)
     )
 
-    this.onMessage(Message.RAIN_GAME_WORD, (client, content) => {
+    this.onMessage(Message.RAIN_GAME_WORD_C, (client, content) => {
       const { word, sessionId, states } = content
       console.log("점수 관련 상태변경 수신:",word)
       this.state.raingames.rainGameStates.forEach((gameState, sessionId) => {
@@ -47,11 +43,11 @@ export class RainGameRoom extends Room<GameState> {
         }
       });
 
-      this.broadcast(Message.RAIN_GAME_WORD, { word, states: this.state.raingames.rainGameStates},{ afterNextPatch: true });
+      this.broadcast(Message.RAIN_GAME_WORD_S, { word, states: this.state.raingames.rainGameStates},{ afterNextPatch: true });
       console.log("점수 관련 상태변경 송신:", JSON.parse(JSON.stringify(this.state.raingames.rainGameStates)))
     });
 
-    this.onMessage(Message.RAIN_GAME_HEART, (client,content)  => {
+    this.onMessage(Message.RAIN_GAME_HEART_C, (client,content)  => {
       console.log("하트 관련 상태변경 수신:")
       const { sessionId } = content
       this.state.raingames.rainGameStates.forEach((gameState,sessionId) => {
@@ -60,9 +56,11 @@ export class RainGameRoom extends Room<GameState> {
         }
       });
   
-      this.broadcast(Message.RAIN_GAME_HEART, { states: this.state.raingames.rainGameStates },{ afterNextPatch: true });
+      this.broadcast(Message.RAIN_GAME_HEART_S, { states: this.state.raingames.rainGameStates },{ afterNextPatch: true });
       console.log("하트 관련 상태변경 송신:",JSON.parse(JSON.stringify(this.state.raingames.rainGameStates)))
     })
+
+    this.onMessage(Message.RAIN_GAME_USER_C, (client, data) => this.handleRainGameUser(client, data))
 
   }
 
@@ -88,11 +86,9 @@ export class RainGameRoom extends Room<GameState> {
       host: this.state.host,
     })
 
-    this.onMessage(Message.RAIN_GAME_USER, (client, data) => this.handleRainGameUser(client, data))
-
     if (this.clients.length === 2) {
       this.state.raingames.rainGameReady = true
-      this.broadcast(Message.RAIN_GAME_READY)
+      this.broadcast(Message.RAIN_GAME_READY_S)
     }
   }
 
@@ -106,7 +102,7 @@ export class RainGameRoom extends Room<GameState> {
   private handleRainGameStart(client: Client, content: any) {
     console.log('handleRainGameStart')
     this.state.raingames.rainGameInProgress = true
-    this.broadcast(Message.RAIN_GAME_START)
+    this.broadcast(Message.RAIN_GAME_START_S)
     // this.handleRainGameWord(this)
   }
 
@@ -117,7 +113,7 @@ export class RainGameRoom extends Room<GameState> {
     this.state.raingames.rainGameUsers.set(client.sessionId, new RainGameUser(username, character))
     this.state.raingames.rainGameStates.set(client.sessionId, new RainGameState())
 
-    this.broadcast(Message.RAIN_GAME_USER, {user : this.state.raingames.rainGameUsers, state : this.state.raingames.rainGameStates},{ afterNextPatch: true })
+    this.broadcast(Message.RAIN_GAME_USER_S, {user : this.state.raingames.rainGameUsers, state : this.state.raingames.rainGameStates},{ afterNextPatch: true })
     console.log("유저 관련 상태 변경 송신")
   }
 }

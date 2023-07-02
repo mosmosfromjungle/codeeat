@@ -21,7 +21,7 @@ export interface RainGameStates {
   me: RainGameUser
   you: RainGameUser
   words: string
-  heart: boolean
+  dheart: boolean
 }
 
 export const initialState: RainGameStates = {

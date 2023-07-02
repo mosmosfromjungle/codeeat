@@ -52,6 +52,7 @@ export function RainGame() {
   const [youState, setYouState] = useState({ heart: initialState.youState.heart, point: initialState.youState.point})
   const targetword = useAppSelector((state) => state.raingame.words);
   const targetwordRef = useRef(targetword);
+  const [dheart, setDheart] = useState(false);
 
   const Awords = [
     { y: 0, speed: 1, keyword: 'abs', x: 331 },
@@ -118,8 +119,10 @@ export function RainGame() {
     { y: 0, speed: 1.5, keyword: 'jazz', x: 217 },
   ]
 
+
   useEffect(() => {
     setMyState({ heart: initialState.myState.heart, point: initialState.myState.point });
+    setDheart(false);
     setYouState({ heart: initialState.youState.heart, point: initialState.youState.point });
   }, [initialState]);
 
@@ -168,9 +171,10 @@ export function RainGame() {
         game.reduce((newGame, item) => {
           const newY = item.y + item.speed;
 
-          if (newY >= lineHeight) {
+          if (newY >= lineHeight && !dheart) {
             console.log("하트 관련 상태변경 송신")
             bootstrap.gameNetwork.decreaseHeart(sessionId);
+            setDheart(true)
           } else{
           newGame.push({ ...item, y: newY });
         }

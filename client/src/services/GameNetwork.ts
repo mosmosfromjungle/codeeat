@@ -279,23 +279,23 @@ export default class GameNetwork {
   
   startRainGame() {
     console.log('startRainGame')
-    this.room?.send(Message.RAIN_GAME_START)
+    this.room?.send(Message.RAIN_GAME_START_C)
   }
 
   removeWord(word: string, sessionId: string,states:RainGameStates ) {
     console.log('점수 관련 상태변경 송신:',word)
-    this.room?.send(Message.RAIN_GAME_WORD, {word: word, sessionId: sessionId,states:states })
+    this.room?.send(Message.RAIN_GAME_WORD_C, {word: word, sessionId: sessionId,states:states })
   }
 
   sendMyInfoToServer(username: string, character: string) {
     console.log('sendMyInfoToServer')
     if (!this.room) return
-    this.room.send(Message.RAIN_GAME_USER, { username: username, character: character })
+    this.room.send(Message.RAIN_GAME_USER_C, { username: username, character: character })
   }
 
   decreaseHeart(sessionId: string) {
     console.log('하트 관련 상태변경 송신')
-    this.room?.send(Message.RAIN_GAME_HEART, {sessionId: sessionId})
+    this.room?.send(Message.RAIN_GAME_HEART_C, {sessionId: sessionId})
   }
 
   /* RAIN GAME  */
@@ -318,7 +318,7 @@ export default class GameNetwork {
       store.dispatch(setRainGameHost(content.host))
     })
 
-    this.room.onMessage(Message.RAIN_GAME_USER, (data) => {
+    this.room.onMessage(Message.RAIN_GAME_USER_S, (data) => {
       const { user, state } = data;
 
       for (let sessionId in user){
@@ -335,15 +335,15 @@ export default class GameNetwork {
       }
     });
 
-    this.room.onMessage(Message.RAIN_GAME_START, () => {
+    this.room.onMessage(Message.RAIN_GAME_START_S, () => {
       store.dispatch(setRainGameInProgress(true))
     })
 
-    this.room.onMessage(Message.RAIN_GAME_READY, () => {
+    this.room.onMessage(Message.RAIN_GAME_READY_S, () => {
       store.dispatch(setRainGameReady(true))
     })
 
-    this.room.onMessage(Message.RAIN_GAME_WORD, (data) => {
+    this.room.onMessage(Message.RAIN_GAME_WORD_S, (data) => {
       const{ word, states } = data;
       console.log("상태변경 점수 관련 수신")
       
@@ -365,7 +365,7 @@ export default class GameNetwork {
     });
     });
     
-    this.room.onMessage(Message.RAIN_GAME_HEART, (data) => {
+    this.room.onMessage(Message.RAIN_GAME_HEART_S, (data) => {
       const { states } = data;
       console.log("하트 관련 상태변경 수신")
 
