@@ -6,9 +6,9 @@ import roomReducer from './RoomStore'
 import moleGameReducer from './MoleGameStore'
 import brickGameReducer from './BrickGameStore'
 import rainGameDialogReducer from './RainGameDialogStore'
+import codingRunReducer from './CodingRunStore'
 import rainGameReducer from './RainGameStore'
 import dmReducer from './DMStore'
-import faceChatReducer from './FaceChatStore'
 enableMapSet()
 
 const rootReducer = {
@@ -19,8 +19,8 @@ const rootReducer = {
   brickgame: brickGameReducer,
   rainGameDialog: rainGameDialogReducer,
   raingame: rainGameReducer,
+  codingrun: codingRunReducer,
   dm: dmReducer,
-  facechat: faceChatReducer,
 }
 
 const store = configureStore({

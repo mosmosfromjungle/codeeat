@@ -11,6 +11,7 @@ import {
   setAvailableBrickRooms,
   setAvailableMoleRooms,
   setAvailableRainRooms,
+  setAvailableCodingRooms,
   addAvailableRooms,
   removeAvailableRooms,
   clearAvailabelGameRooms,
@@ -40,6 +41,8 @@ import {
   setRainGameReady, 
   setRainGameInProgress 
 } from '../stores/RainGameStore'
+// import { 
+// } from '../stores/CodingRunStore'
 
 
 export default class GameNetwork {
@@ -92,6 +95,10 @@ export default class GameNetwork {
       this.lobby.onMessage('rooms', (rooms) => {
         store.dispatch(setAvailableRainRooms(rooms))
       })
+    } else if (type === RoomType.CODINGLOBBY) {
+      this.lobby.onMessage('rooms', (rooms) => {
+        store.dispatch(setAvailableCodingRooms(rooms))
+      })
     }
 
     this.lobby.onMessage('+', ([roomId, room]) => {
@@ -108,6 +115,7 @@ export default class GameNetwork {
     if (this.room.name === RoomType.BRICK) this.brick_game_init()
     if (this.room.name === RoomType.RAIN) this.rain_game_init()
     if (this.room.name === RoomType.MOLE) this.mole_game_init()
+    if (this.room.name === RoomType.CODING) this.coding_run_init()
   }
 
   async createBrickRoom(roomData: IGameRoomData) {
@@ -143,16 +151,16 @@ export default class GameNetwork {
     this.rain_game_init()
   }
 
-  // async createFaceChatRoom(roomData: IGameRoomData) {
-  //   const { name, description, password, username } = roomData
-  //   this.room = await this.client.create(RoomType.FACECHAT, {
-  //     name,
-  //     description,
-  //     password,
-  //     username,
-  //   })
-  //   this.initialize()
-  // }
+  async createCodingRoom(roomData: IGameRoomData) {
+    const { name, description, password, username } = roomData
+    this.room = await this.client.create(RoomType.CODING, {
+      name,
+      description,
+      password,
+      username,
+    })
+    this.coding_run_init()
+  }
 
   /* BRICK GAME */
 
@@ -321,8 +329,6 @@ export default class GameNetwork {
     })
 
     this.room.onMessage(Message.RAIN_GAME_USER, (data) => {
-
-      
       for (let key in data) {
           let user = data[key];
           if (key === this.mySessionId) {
@@ -331,18 +337,25 @@ export default class GameNetwork {
               store.dispatch(setRainGameYou(user));
           }
       }
-  });
+    });
 
-  this.room.onMessage(Message.RAIN_GAME_START, () => {
-    store.dispatch(setRainGameInProgress(true));
+    this.room.onMessage(Message.RAIN_GAME_START, () => {
+      store.dispatch(setRainGameInProgress(true));
     
-    const mySessionId = this.mySessionId;
-    
-  
-});
+      const mySessionId = this.mySessionId;
+    });
 
     this.room.onMessage(Message.RAIN_GAME_READY, () => {
       store.dispatch(setRainGameReady(true))
     })
+  }
+  
+  /* Coding Run */
+  coding_run_init() {
+    if (!this.room) return
+    this.lobby.leave()
+    store.dispatch(setLobbyJoined(false))
+    this.mySessionId = this.room.sessionId
+    store.dispatch(setGameSessionId(this.room.sessionId))
   }
 }

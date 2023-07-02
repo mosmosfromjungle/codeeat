@@ -17,7 +17,7 @@ import GameWelcomeDialog from './components/gamedialog/GameWelcomeDialog'
 import MoleGameDialog from './components/games/MoleGame/MoleGameDialog'
 import BrickGameDialog from './components/games/BrickGame/BrickGameDialog'
 import RainGameDialog from './components/games/RainGame/RainGameDialog'
-import FaceChatDialog from './components/games/FaceChatDialog'
+import CodingRunDialog from './components/games/CodingRun/CodingRunDialog'
 
 // ↓ HelperButtonGroup Dialog
 import HelperButtonGroup from './components/helperdialog/HelperButtonGroup'
@@ -60,7 +60,7 @@ function App() {
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
   const rainGameOpen = useAppSelector((state) => state.rainGameDialog.rainGameOpen)
-  const faceChatOpen = useAppSelector((state) => state.facechat.faceChatOpen)
+  const codingRunOpen = useAppSelector((state) => state.codingrun.codingRunOpen)
 
   // ↓ HelperButtonGroup Dialog
   const showChat = useAppSelector((state) => state.chat.showChat)
@@ -125,7 +125,7 @@ function App() {
     if (brickGameOpen) ui = <BrickGameDialog />
     if (moleGameOpen) ui = <MoleGameDialog />
     if (rainGameOpen) ui = <RainGameDialog />
-    if (faceChatOpen) ui = <FaceChatDialog />
+    if (codingRunOpen) ui = <CodingRunDialog />
   } else {
     ui = <EntryDialog />
   }

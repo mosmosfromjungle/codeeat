@@ -7,12 +7,12 @@ export enum RoomType {
   BRICKLOBBY = 'brick_lobby',
   MOLELOBBY = 'mole_lobby',
   RAINLOBBY = 'rain_lobby',
-  FACECHATLOBBY = 'facechat_lobby',
+  CODINGLOBBY = 'coding_lobby',
   
   MOLE = 'whackamole',
   BRICK = 'bricks',
   RAIN = 'acidrain',
-  FACECHAT = 'facechat',
+  CODING = 'codingrun',
 }
 
 export interface IRoomData {

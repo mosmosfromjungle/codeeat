@@ -2,22 +2,21 @@ import { ItemType } from '../../../types/Items'
 import store from '../stores'
 import Item from './Item'
 import Network from '../services/Network'
-import { openFaceChatDialog } from '../stores/FaceChatStore'
+import { openCodingRunDialog } from '../stores/CodingRunStore'
 import { DIALOG_STATUS, setDialogStatus } from '../stores/UserStore'
 import Bootstrap from '../scenes/Bootstrap'
 import phaserGame from '../PhaserGame'
 import { RoomType } from '../../../types/Rooms'
 
 
-export default class FaceChat extends Item {
+export default class CodingRun extends Item {
   // id?: string
-  faceChatId?: string
   currentUsers = new Set<string>()
 
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
     super(scene, x, y, texture, frame)
 
-    this.itemType = ItemType.MOLEGAME
+    this.itemType = ItemType.CODINGRUN
   }
 
   private updateStatus() {
@@ -33,7 +32,7 @@ export default class FaceChat extends Item {
 
   onOverlapDialog() {
     if (this.currentUsers.size === 0) {
-      this.setDialogBox('Press R to play the Face Chat')
+      this.setDialogBox('Press R to play the Coding Run')
     } else {
       this.setDialogBox('Press R join')
     }
@@ -51,12 +50,14 @@ export default class FaceChat extends Item {
     this.updateStatus()
   }
 
-  openDialog(playerId: string, network: Network) {
-    if (!this.faceChatId) return
+  openDialog(network: Network) {
+    // if (!this.id) return
     const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-    bootstrap.gameNetwork.joinLobbyRoom(RoomType.FACECHATLOBBY)
-    store.dispatch(openFaceChatDialog({ faceChatId: this.faceChatId, myUserId: playerId }))
-    store.dispatch(setDialogStatus(DIALOG_STATUS.GAME_LOBBY))
-    // network.connectToFaceChat(this.id)
+    bootstrap.gameNetwork.joinLobbyRoom(RoomType.CODINGLOBBY)
+    store.dispatch(openCodingRunDialog())
+
+    setTimeout(() => {
+      store.dispatch(setDialogStatus(DIALOG_STATUS.GAME_LOBBY))
+    }, 200)
   }
 }
