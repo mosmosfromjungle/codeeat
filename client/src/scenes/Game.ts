@@ -10,6 +10,7 @@ import Chair from '../items/Chair'
 import MoleGame from '../items/MoleGame'
 import BrickGame from '../items/BrickGame'
 import RainGame from '../items/RainGame'
+import CodingRun from '../items/CodingRun'
 import { ItemType } from '../../../types/Items'
 
 import '../players/MyPlayer'
@@ -40,6 +41,7 @@ export default class Game extends Phaser.Scene {
   private brickgameMap = new Map<String, BrickGame>()
   private molegameMap = new Map<String, MoleGame>()
   private raingameMap = new Map<string, RainGame>()
+  private codingrunMap = new Map<String, CodingRun>()
 
   constructor() {
     super('game')
@@ -182,6 +184,16 @@ export default class Game extends Phaser.Scene {
       this.molegameMap.set(id, item)
     })
 
+    /* Coding Run */
+    const codingruns = this.physics.add.staticGroup({ classType: CodingRun })
+    const codingrunLayer = this.map.getObjectLayer('codingrun')
+    codingrunLayer.objects.forEach((obj, i) => {
+      const item = this.addObjectFromTiled(codingruns, obj, 'bench', 'bench') as CodingRun
+      const id = `${i}`
+      item.id = id
+      this.codingrunMap.set(id, item)
+    })
+
     // ************************************** (codeEat) //
 
     // // import other objects from Tiled map to Phaser
@@ -201,7 +213,7 @@ export default class Game extends Phaser.Scene {
 
     this.physics.add.overlap(
       this.playerSelector,
-      [chairs, molegames, raingames, brickgames],
+      [chairs, molegames, raingames, brickgames, codingruns],
       this.handleItemSelectorOverlap,
       undefined,
       this
@@ -327,6 +339,9 @@ export default class Game extends Phaser.Scene {
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.addCurrentUser(playerId)
+    } else if (itemType === ItemType.CODINGRUN) {
+      const codingrun = this.codingrunMap.get(itemId)
+      codingrun?.addCurrentUser(playerId)
     }
   }
 
@@ -340,6 +355,9 @@ export default class Game extends Phaser.Scene {
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.removeCurrentUser(playerId)
+    } else if (itemType === ItemType.CODINGRUN) {
+      const codingrun = this.codingrunMap.get(itemId)
+      codingrun?.removeCurrentUser(playerId)
     }
   }
 
