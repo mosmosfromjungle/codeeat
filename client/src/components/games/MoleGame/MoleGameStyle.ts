@@ -100,6 +100,15 @@ export const Moles = styled.div`
   border-radius: 20px;
 `
 
+export const IsWinner = styled.div`
+  margin-top: 50px;
+  height: 10%;
+  font-size: 50px;
+  font-weight: bold;
+  color: #f2ecff;
+  font-family: Font_DungGeun;
+`
+
 export const IsHost = styled.div`
   margin-top: 50px;
   height: 10%;

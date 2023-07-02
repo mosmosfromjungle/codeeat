@@ -16,7 +16,7 @@ import hammer from '/assets/game/molegame/hammer.png';
 import { 
   Backdrop, Wrapper, RoundArea, Header, 
   Comment, Problem, ProblemText, TipArea, Content, 
-  Moles, MyPoint, YourPoint, IsHost, CharacterArea, NameArea, LifeArea, PointArea, 
+  Moles, MyPoint, YourPoint, IsWinner, IsHost, CharacterArea, NameArea, LifeArea, PointArea, 
 } from './MoleGameStyle'
 import './MoleGame.css'
 
@@ -77,6 +77,8 @@ export default function MoleGameDialog() {
   const [myLife, setMyLife] = useState(3);
   const [myPoint, setMyPoint] = useState(0);
   const [turn, setTurn] = useState(0);
+
+  const [winner, setWinner] = useState(String);
   
   const [moleCatch, setMoleCatch] = useState(0);
 
@@ -98,20 +100,22 @@ export default function MoleGameDialog() {
 
   // 친구 점수가 올랐을 때 내 화면에도 표시해주어야 함
   useEffect(() => {
-    // Point and Character event
-    const friendPoint = document.getElementById('friend-point-current');
-    friendPoint.classList.add('get-point');
+    if (friendPoint !== '0') {
+      // Point and Character event
+      const friendPoint = document.getElementById('friend-point-current');
+      friendPoint.classList.add('get-point');
 
-    setTimeout(function() {
-      friendPoint.classList.remove('get-point');
-    }, 1000);
+      setTimeout(function() {
+        friendPoint.classList.remove('get-point');
+      }, 1000);
 
-    const friendCharacter = document.getElementById(`friend-character`);
-    friendCharacter.classList.add('jump-animation');
+      const friendCharacter = document.getElementById('friend-character');
+      friendCharacter.classList.add('jump-animation');
 
-    setTimeout(function() {
-      friendCharacter.classList.remove('jump-animation');
-    }, 1000);
+      setTimeout(function() {
+        friendCharacter.classList.remove('jump-animation');
+      }, 1000);
+    }
   }, [friendPoint]);
 
   // 친구/내 목숨 이벤트 처리
@@ -180,8 +184,11 @@ export default function MoleGameDialog() {
         const startButton = document.getElementById('start-button-div');
         startButton.classList.add('hidden');
       }
+
       // 친구가 들어오면 방장이 시작 버튼을 누를 수 있게 함
       setStartButton(true);
+
+      setWinner('');
 
     } else {
       // 한 명이 되었으니 일단 게임 시작 못 함
@@ -196,18 +203,13 @@ export default function MoleGameDialog() {
         bootstrap.gameNetwork.changeHost(username);
       }
 
-      // 게임 도중에 한명이 나갔다면, 남은 사람이 승리
+      // 게임 도중에 한명이 나갔다면,
       if (startGame) {
-        // Clear the game
-        clearTimeout(moleCatch);
-  
-        setTurn(0);
-        setMyPoint(0);
-        setMyLife(3);
+        endGame();
+        showWinner();
         
-        moleHide();
-        
-        setStartGame(false);
+        setProblemText("정답을 말하고 있는 두더지를 잡아라!");
+
         setStartButton(false);
 
         const FinishAudio = new Audio(FinishBGM);
@@ -423,12 +425,12 @@ export default function MoleGameDialog() {
       setActiveNumber(randomNumber1);
       setActiveNumberList([randomNumber1, randomNumber2, randomNumber3]);
 
-      setStartButton(true);
+      setStartButton(false);
       setTurn(turn + 1);
 
     } else {
-      setStartButton(false);
-      setTurn(0);
+      endGame();
+      showWinner();
 
       const FinishAudio = new Audio(FinishBGM);
       FinishAudio.play();
@@ -483,11 +485,11 @@ export default function MoleGameDialog() {
         }, 1000);
 
         // Character Jump Event
-        const character = document.getElementById('my-character');
-        character.classList.add('jump-animation');
+        const myCharacter = document.getElementById('my-character');
+        myCharacter.classList.add('jump-animation');
   
         setTimeout(function() {
-          character.classList.remove('jump-animation');
+          myCharacter.classList.remove('jump-animation');
         }, 1000);
         
         // Problem + 1
@@ -512,28 +514,35 @@ export default function MoleGameDialog() {
     }
   };
 
-  // 6. Score Modal
-
-  let total = (myPoint / 10) * 100;
-  let friendTotal = (friendPoint / 10) * 100;
-
   // 7. Check the winner
-  let winner = '';
 
-  if ( total > friendTotal ) {
-    winner = username;
-  } else if ( total < friendTotal) {
+  const showWinner = () => {
+    // 1. 상대방이 있는지 확인
     if (friendname === '') {
-      winner = username;
+      // 상대방이 나가면 게임 종료
+      setProblemText("정답을 말하고 있는 두더지를 잡아라!");
+
+    // 2. 친구 목숨, 내 목숨 확인
+    } else if (friendLife === '0' || myLife === 0) {
+      if (friendLife === '0') {
+        setWinner(username);
+      } else if (myLife === 0) {
+        setWinner(friendname);
+      }
+
+    // 3. 게임이 끝까지 진행되어 종료
     } else {
-      winner = friendname;
+      if (parseInt(friendPoint) > myPoint) {
+        setWinner(friendname);
+      } else if (parseInt(friendPoint) < myPoint) {
+        setWinner(username);
+      } else {
+        setWinner('both');
+      }
     }
-  } else {
-    if (friendname === '') {
-      winner = username;
-    } else {
-      winner = "both"
-    }
+
+    // 시작 버튼을 누를 수 있도록 수정
+    setStartButton(true);
   }
 
   const handleMouseOver = () => {
@@ -544,31 +553,11 @@ export default function MoleGameDialog() {
   // 8. Close
 
   const handleClose = () => {
-    // Clear the game
-    moleHide();
-
-    setTurn(0);
-    setMyPoint(0);
-    setMyLife(3);
-    
-    clearTimeout(moleCatch);
-    setStartGame(false);
+    endGame();
 
     try {
-      // 1. 내 정보 초기화, 내가 방장이었다면 방장 이임
+      // 내 정보 초기화, 내가 방장이었다면 방장 이임
       bootstrap.gameNetwork.sendMyInfo('', '');
-
-      // 2. 문제 Problem 초기화
-      bootstrap.gameNetwork.startGame('-1');
-
-      // 3. 점수 Point 초기화
-      bootstrap.gameNetwork.sendMyPoint('-1');
-
-      // 4. 목숨 Life 초기화
-      bootstrap.gameNetwork.sendMyLife('4');
-
-      // 5. 내가 다시 들어올 경우 대비, 상대편 정보 초기화
-      bootstrap.gameNetwork.clearFriendInfo();
 
       bootstrap.gameNetwork.leaveGameRoom()
 
@@ -580,10 +569,31 @@ export default function MoleGameDialog() {
     }
   }
 
-  console.log('startButton: '+startButton);
-  console.log('problem: '+problem);
+  // Clear the game
+  const endGame = () => {
+    moleHide();
 
-  // Start game !
+    setTurn(0);
+    setMyPoint(0);
+    setMyLife(3);
+    
+    clearTimeout(moleCatch);
+    setStartGame(false);
+
+    // 1. 문제 Problem 초기화
+    bootstrap.gameNetwork.startGame('-1');
+
+    // 2. 점수 Point 초기화
+    bootstrap.gameNetwork.sendMyPoint('-1');
+
+    // 3. 목숨 Life 초기화
+    bootstrap.gameNetwork.sendMyLife('4');
+
+    // 4. 내가 다시 들어올 경우 대비, 상대편 정보 초기화
+    bootstrap.gameNetwork.clearFriendInfo();
+  }
+
+  // Change with problem
   useEffect(() => {
     if (problem === '' || problem === '0') {
       console.log("Wait for press start button")
@@ -601,6 +611,31 @@ export default function MoleGameDialog() {
       catchMole();
     }
   }, [problem]);
+
+  // Change with life
+  useEffect(() => {
+    if (friendLife === '0') {
+      endGame();
+      showWinner();
+
+      setStartButton(true);
+
+      const FinishAudio = new Audio(FinishBGM);
+      FinishAudio.play();
+    }
+  }, [friendLife]);
+
+  useEffect(() => {
+    if (myLife === 0) {
+      endGame();
+      showWinner();
+
+      setStartButton(true);
+
+      const FinishAudio = new Audio(FinishBGM);
+      FinishAudio.play();
+    }
+  }, [myLife]);
   
   return (
     <Backdrop>
@@ -643,6 +678,9 @@ export default function MoleGameDialog() {
 
             <Content>
               <YourPoint>
+                <IsWinner>
+                  { ( friendname && !startGame && (winner === friendname)) ? 'WINNER' : ''}<br/><br/>
+                </IsWinner>
                 <IsHost>
                   { ( friendname && (friendname === host)) ? '방장' : ''}<br/><br/>
                 </IsHost>
@@ -720,6 +758,9 @@ export default function MoleGameDialog() {
               </Moles>
 
               <MyPoint>
+                <IsWinner>
+                  { winner === username && !startGame ? 'WINNER' : ''}<br/><br/>
+                </IsWinner>
                 <IsHost>
                   { ( friendname && (username === host)) ? '방장' : ''}<br/><br/>
                 </IsHost>
