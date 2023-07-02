@@ -1,20 +1,14 @@
-import React, { useEffect, useRef, useState, createContext } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import rain_Background from '../../../../public/assets/game/RainGame/blackboard.png'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
 import Bootstrap from '../../../scenes/Bootstrap'
 import phaserGame from '../../../PhaserGame'
-import { Client } from 'colyseus.js'
-import { Message } from '../../../../../types/Messages'
-
 import TextField from '@mui/material/TextField'
-
 import { 
   CharacterArea, NameArea, Position, 
   TimerArea, GameArea, Left, Right, PointArea, FriendPoint, MyPoint, InputArea,
 } from './RainGameStyle'
-
 import eraser from '/assets/game/RainGame/eraser.png'
-
 
 interface KeywordRain {
   y: number
@@ -31,21 +25,17 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-const MessageContext = createContext('');
-
 export function RainGame() {
 
+  const initialState = useAppSelector((state) => state.raingame)
   const canvasHeight = 50
   const lineHeight = canvasHeight + 550
   const dispatch = useAppDispatch()
   const keywordInput = useRef<HTMLInputElement>(null)
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
   const [time, setTime] = useState(100)
-  const [message, setMessage] = useState('');
-  const words = useAppSelector((state) => state.raingame.words)
-
-
   const host = useAppSelector((state) => state.raingame.host)
+  const sessionId = useAppSelector((state) => state.user.gameSessionId)
 
   // My information
   const username = useAppSelector((state) => state.user.username)
@@ -58,9 +48,11 @@ export function RainGame() {
 
   const [myGame, setMyGame] = useState<KeywordRain[]>([])
   const [youGame, setYouGame] = useState<KeywordRain[]>([])
-  const [myState, setMyState] = useState({ heart: 3, point: 0 })
-  const [youState, setYouState] = useState({ heart: 3, point: 0})
-  const me = useAppSelector((state) => state.raingame.me)
+  const [myState, setMyState] = useState({ heart: initialState.myState.heart, point: initialState.myState.point })
+  const [youState, setYouState] = useState({ heart: initialState.youState.heart, point: initialState.youState.point})
+  const targetword = useAppSelector((state) => state.raingame.words);
+  const targetwordRef = useRef(targetword);
+
   const Awords = [
     { y: 0, speed: 1, keyword: 'abs', x: 331 },
     { y: 0, speed: 1.5, keyword: 'print', x: 253 },
@@ -127,24 +119,23 @@ export function RainGame() {
   ]
 
   useEffect(() => {
-        
-        const isYouWord = youGame.some((word) => word.keyword === words)
-        if (isYouWord) {
-          setYouGame((prevGame) => prevGame.filter((word) => word.keyword !== words))
-          setYouState((prevState) => ({ ...prevState, point: prevState.point + 1 }))
-        }
-  }, [words])
+    setMyState({ heart: initialState.myState.heart, point: initialState.myState.point });
+    setYouState({ heart: initialState.youState.heart, point: initialState.youState.point });
+  }, [initialState]);
 
+  useEffect(() => {
+    targetwordRef.current = targetword;
+  }, [targetword]);
 
   useEffect(() => {
  
     let currentWordIndex = 0
-    const words = username === host ? Awords : Bwords
+    const mywords = username === host ? Awords : Bwords
     const youWords = username === host ? Bwords : Awords
 
     const createWordsInterval = setInterval(() => {
-      if (currentWordIndex < words.length) {
-        const myKeyword = words[currentWordIndex]
+      if (currentWordIndex < mywords.length) {
+        const myKeyword = mywords[currentWordIndex]
         const youKeyword = youWords[currentWordIndex]
 
         setMyGame((myGame) => [
@@ -174,44 +165,34 @@ export function RainGame() {
     // 내 단어 위치 업데이트
     const updateMyWordsInterval = setInterval(() => {
       setMyGame((game) =>
-        game.map((item) => {
-          const newY = item.y + item.speed
+        game.reduce((newGame, item) => {
+          const newY = item.y + item.speed;
 
           if (newY >= lineHeight) {
-            setMyState((prevState) => ({ ...prevState, heart: prevState.heart - 1 }))
-          }
-          return { ...item, y: newY }
-        })
-      )
-    }, 30)
-
-    const checkHeartInterval = setInterval(() => {
-      setMyGame((prevGame) => {
-        let heartDecreased = false
-        const filteredGame = prevGame.filter((word) => {
-          if (word.y >= lineHeight) {
-            heartDecreased = true
-            return false
-          }
-          return true
-        })
-
-        if (heartDecreased) {
-          setMyState((prevState) => ({ ...prevState, heart: prevState.heart - 1 }))
+            console.log("하트 관련 상태변경 송신")
+            bootstrap.gameNetwork.decreaseHeart(sessionId);
+          } else{
+          newGame.push({ ...item, y: newY });
         }
-        return filteredGame
-      })
-    }, 100)
+        return newGame
+      }, [])
+      );
+    }, 100);
 
     // 상대방 단어 위치 업데이트
     const updateYouWordsInterval = setInterval(() => {
       setYouGame((game) =>
-        game.map((item) => {
-          const newY = item.y + item.speed
-          return { ...item, y: newY }
-        })
-      )
-    }, 30)
+        game.reduce((newGame, item) => {
+          const newY = item.y + item.speed;
+
+          if(targetwordRef.current.length > 0 && targetwordRef.current === item.keyword) {
+          } else if (newY < lineHeight) {
+            newGame.push({ ...item, y: newY });
+          } 
+          return newGame
+        }, [])
+      );
+    }, 100)
 
     const timeInterval = setInterval(() => {
       setTime((prevTime) => Math.max(prevTime - 1, 0))
@@ -222,7 +203,6 @@ export function RainGame() {
       clearInterval(createWordsInterval)
       clearInterval(updateMyWordsInterval)
       clearInterval(updateYouWordsInterval)
-      clearInterval(checkHeartInterval)
       // bootstrap.gameNetwork.room.removeAllListeners()
     }
   }, [])
@@ -233,8 +213,8 @@ export function RainGame() {
       const isMyWord = myGame.some((word) => word.keyword === inputKeyword)
       if (isMyWord) {
         setMyGame((prevGame) => prevGame.filter((word) => word.keyword !== inputKeyword))
-        setMyState((prevState) => ({ ...prevState, point: prevState.point + 1 }))
-        // bootstrap.gameNetwork.removeWord(inputKeyword)
+        console.log("입력 단어 전송:",inputKeyword)
+        bootstrap.gameNetwork.removeWord(inputKeyword,sessionId,initialState )
       }
       keywordInput.current.value = ''
     }
@@ -308,7 +288,7 @@ export function RainGame() {
                   fontSize: '1.4vw',
                   letterSpacing: '0.3vw',
                   top: `${word.y}px`,
-                  left: `${word.x + 250}px`,
+                  left: `${word.x + 120}px`,
                   color: '#FFFFFF',
                   zIndex: 2,
                 }}

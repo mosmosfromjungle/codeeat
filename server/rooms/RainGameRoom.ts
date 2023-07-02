@@ -5,11 +5,12 @@ import { Message } from '../../types/Messages'
 import { IGameRoomData } from '../../types/Rooms'
 import { KeywordRain, RainGameState, RainGameUser, RainGameRoomState } from './schema/GameState'
 import { RainGameStartCommand } from './commands/RainGameStartCommand'
-import { IRainGameRoomState, IKeywordRain } from '../../types/IGameState'
+import { IRainGameRoomState, IKeywordRain, IGameState } from '../../types/IGameState'
 import mongoose from 'mongoose'
 import MapSchema from '@colyseus/schema'
+import { GameState } from './schema/GameState'
 
-export class RainGameRoom extends Room<IRainGameRoomState> {
+export class RainGameRoom extends Room<GameState> {
   private dispatcher = new Dispatcher(this)
   private name: string
   private description: string
@@ -30,19 +31,39 @@ export class RainGameRoom extends Room<IRainGameRoomState> {
     }
 
     this.setMetadata({ name, description, hasPassword })
-    this.setState(new RainGameRoomState())
+    this.setState(new GameState())
     this.state.host = username
 
     this.onMessage(Message.RAIN_GAME_START, (client, content) =>
       this.handleRainGameStart(client, content)
     )
 
-    this.onMessage(Message.RAIN_GAME_WORD, (client, content: { words: string }) => {
-      console.log('Server onMessage')
-      this.broadcast(Message.RAIN_GAME_WORD2, { words: content.words })
+    this.onMessage(Message.RAIN_GAME_WORD, (client, content) => {
+      const { word, sessionId, states } = content
+      console.log("점수 관련 상태변경 수신:",word)
+      this.state.raingames.rainGameStates.forEach((gameState, sessionId) => {
+        if (sessionId === client.sessionId) {
+          gameState.point += 1;
+        }
+      });
+
+      this.broadcast(Message.RAIN_GAME_WORD, { word, states: this.state.raingames.rainGameStates},{ afterNextPatch: true });
+      console.log("점수 관련 상태변경 송신:", JSON.parse(JSON.stringify(this.state.raingames.rainGameStates)))
+    });
+
+    this.onMessage(Message.RAIN_GAME_HEART, (client,content)  => {
+      console.log("하트 관련 상태변경 수신:")
+      const { sessionId } = content
+      this.state.raingames.rainGameStates.forEach((gameState,sessionId) => {
+        if (sessionId === client.sessionId) {
+          gameState.heart -= 1;
+        }
+      });
+  
+      this.broadcast(Message.RAIN_GAME_HEART, { states: this.state.raingames.rainGameStates },{ afterNextPatch: true });
+      console.log("하트 관련 상태변경 송신:",JSON.parse(JSON.stringify(this.state.raingames.rainGameStates)))
     })
 
-    this.onMessage(Message.RAIN_GAME_USER, (client, data) => this.handleRainGameUser(client, data))
   }
 
   async onAuth(client: Client, options: { password: string | null }) {
@@ -59,7 +80,7 @@ export class RainGameRoom extends Room<IRainGameRoomState> {
 
   onJoin(client: Client, options: any) {
     const { username } = options
-    this.state.rainGameStates.set(client.sessionId, new RainGameState(username))
+    this.state.raingames.rainGameStates.set(client.sessionId, new RainGameState(username))
     client.send(Message.SEND_ROOM_DATA, {
       id: this.roomId,
       name: this.name,
@@ -67,8 +88,10 @@ export class RainGameRoom extends Room<IRainGameRoomState> {
       host: this.state.host,
     })
 
+    this.onMessage(Message.RAIN_GAME_USER, (client, data) => this.handleRainGameUser(client, data))
+
     if (this.clients.length === 2) {
-      this.state.rainGameReady = true
+      this.state.raingames.rainGameReady = true
       this.broadcast(Message.RAIN_GAME_READY)
     }
   }
@@ -82,7 +105,7 @@ export class RainGameRoom extends Room<IRainGameRoomState> {
   // Handle RAIN_GAME_START message
   private handleRainGameStart(client: Client, content: any) {
     console.log('handleRainGameStart')
-    this.state.rainGameInProgress = true
+    this.state.raingames.rainGameInProgress = true
     this.broadcast(Message.RAIN_GAME_START)
     // this.handleRainGameWord(this)
   }
@@ -91,48 +114,10 @@ export class RainGameRoom extends Room<IRainGameRoomState> {
   private handleRainGameUser(client: Client, data: any) {
     const { username, character } = data
 
-    this.state.rainGameUsers.set(client.sessionId, new RainGameUser(username, character))
+    this.state.raingames.rainGameUsers.set(client.sessionId, new RainGameUser(username, character))
+    this.state.raingames.rainGameStates.set(client.sessionId, new RainGameState())
 
-    this.broadcast(Message.RAIN_GAME_USER, this.state.rainGameUsers)
+    this.broadcast(Message.RAIN_GAME_USER, {user : this.state.raingames.rainGameUsers, state : this.state.raingames.rainGameStates},{ afterNextPatch: true })
+    console.log("유저 관련 상태 변경 송신")
   }
-
-  // Handle RAIN_GAME_WORD message
-  // private handleRainGameWord( room: Room) {
-  //   console.log('handleRainGameWord')
-  //   try {
-
-  //     room.clients.forEach((client) => {
-  //       const keywordRainList = this.MakeWordCommand()
-  //       this.state.keywordLists.set(client.sessionId, keywordRainList)
-  //     })
-
-  //     // Broadcast the two lists
-  //     this.broadcast(Message.RAIN_GAME_START, this.state.keywordLists)
-
-  //   } catch (error) {
-  //     console.error('Failed to generate keywords:', error)
-  //   }
-  // }
-
-  // MakeWordCommand(): MapSchema<IKeywordRain>  {
-  //   try {
-  //       console.log('MakeWordCommand')
-  //       const raingamewords = mongoose.connection.collection('raingamewords')
-
-  //       let keywordsList: new MapSchema<IKeywordRain>()
-
-  //       raingamewords.aggregate([]).toArray().then(allWords => {
-  //        allWords.forEach((word: any) => {
-  //         const keywordRain = new MapSchema<KeywordRain>(word)
-  //         keywordRain.y = 10
-  //         keywordRain.speed = 1
-  //         keywordRain.x = Math.floor(Math.random() * (550 - 50 + 1)) + 50
-  //         keywordsList.set(keywordRain.keyword,keywordRain)
-  //       });
-  //     });
-  //       return keywordsList;
-  //     } catch (error) {
-  //       console.error('Failed to generate keywords:', error)
-  //    }
-  // }
 }

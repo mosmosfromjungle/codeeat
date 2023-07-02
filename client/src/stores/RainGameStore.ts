@@ -21,6 +21,7 @@ export interface RainGameStates {
   me: RainGameUser
   you: RainGameUser
   words: string
+  heart: boolean
 }
 
 export const initialState: RainGameStates = {
@@ -43,7 +44,8 @@ export const initialState: RainGameStates = {
     username: '',
     character: '',
   },
-  words: ''
+  words: '',
+  heart: false
 }
 
 // Define Slice
@@ -53,6 +55,7 @@ export const rainGameSlice = createSlice({
   reducers: {
     setRainGameHost: (state, action: PayloadAction<string>) => {
       state.host = action.payload;
+      console.log("방장 설정:",state.host)
     },
 
     setRainGameReady: (state, action: PayloadAction<boolean>) => {
@@ -75,14 +78,27 @@ export const rainGameSlice = createSlice({
       state.me.character = character
     },
 
-    setRainGameMyState: (state, action: PayloadAction<RainGameState>) => {
-      const { point, heart } = action.payload
-      ;(state.myState.point = point), (state.myState.heart = heart)
+    setRainStateMe: (state, action: PayloadAction<RainGameState>) => {
+      const { point, heart } = action.payload;
+      state.myState.point = point;
+      state.myState.heart = heart;
+      console.log("내 상태 설정:",JSON.parse(JSON.stringify(state.myState)))
     },
 
-    setRainGameYouState: (state, action: PayloadAction<RainGameState>) => {
-      const { point, heart } = action.payload
-      ;(state.youState.point = point), (state.youState.heart = heart)
+    setRainStateYou: (state, action: PayloadAction<RainGameState>) => {
+      const { point, heart } = action.payload;
+      state.youState.point = point;
+      state.youState.heart = heart;
+      console.log("상대 상태 설정:",JSON.parse(JSON.stringify(state.youState)))
+    },
+
+    setRainGameYouHeart: (state, action: PayloadAction<boolean>) => {
+      state.heart = action.payload;
+    },
+
+    setRainGameYouWord: (state, action: PayloadAction<string>) => {
+      state.words = action.payload
+      console.log("상대 삭제 단어:", JSON.parse(JSON.stringify(state.words)))
     },
   },
 })
@@ -93,8 +109,10 @@ export const {
   setRainGameInProgress,
   setRainGameYou,
   setRainGameMe,
-  setRainGameMyState,
-  setRainGameYouState,
+  setRainGameYouHeart,
+  setRainGameYouWord,
+  setRainStateMe,
+  setRainStateYou
 } = rainGameSlice.actions
 
 export default rainGameSlice.reducer
