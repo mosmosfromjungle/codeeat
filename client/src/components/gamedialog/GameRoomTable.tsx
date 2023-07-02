@@ -109,12 +109,14 @@ export const CustomRoomTable = () => {
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
   const rainGameOpen = useAppSelector((state) => state.rainGameDialog.rainGameOpen)
   const codingRunOpen = useAppSelector((state) => state.codingrun.codingRunOpen)
+  const rankingBoardOpen = useAppSelector((state) => state.rankingboard.rankingBoardOpen)
   
   const availableRooms = useAppSelector((state) => {
     if (brickGameOpen) return state.room.availableRooms.brickRooms
     if (moleGameOpen) return state.room.availableRooms.moleRooms
     if (rainGameOpen) return state.room.availableRooms.rainRooms
     if (codingRunOpen) return state.room.availableRooms.codingRooms
+    if (rankingBoardOpen) return state.room.availableRooms.rankingRooms
     return []
   })
 

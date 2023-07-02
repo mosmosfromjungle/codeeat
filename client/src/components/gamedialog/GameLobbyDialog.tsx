@@ -13,6 +13,7 @@ import { closeBrickGameDialog } from '../../stores/BrickGameStore'
 import { closeMoleGameDialog } from '../../stores/MoleGameStore'
 import { closeRainGameDialog } from '../../stores/RainGameDialogStore'
 import { closeCodingRunDialog } from '../../stores/CodingRunStore'
+import { closeRankingBoardDialog } from '../../stores/RankingBoardStore'
 
 import phaserGame from '../../PhaserGame'
 import Bootstrap from '../../scenes/Bootstrap'
@@ -103,6 +104,7 @@ export default function GameLobbyDialog() {
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
   const rainGameOpen = useAppSelector((state) => state.rainGameDialog.rainGameOpen)
   const codingRunOpen = useAppSelector((state) => state.codingrun.codingRunOpen)
+  const rankingBoardOpen = useAppSelector((state) => state.rankingboard.rankingBoardOpen)
 
   const dispatch = useAppDispatch()
 
@@ -114,6 +116,7 @@ export default function GameLobbyDialog() {
       if (moleGameOpen) dispatch(closeMoleGameDialog())
       if (rainGameOpen) dispatch(closeRainGameDialog())
       if (codingRunOpen) dispatch(closeCodingRunDialog())
+      if (rankingBoardOpen) dispatch(closeRankingBoardDialog())
 
       dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
     } catch (error) {

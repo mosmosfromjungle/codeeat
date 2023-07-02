@@ -12,6 +12,7 @@ import {
   setAvailableMoleRooms,
   setAvailableRainRooms,
   setAvailableCodingRooms,
+  setAvailableRankingRooms,
   addAvailableRooms,
   removeAvailableRooms,
   clearAvailabelGameRooms,
@@ -99,6 +100,10 @@ export default class GameNetwork {
       this.lobby.onMessage('rooms', (rooms) => {
         store.dispatch(setAvailableCodingRooms(rooms))
       })
+    } else if (type === RoomType.RANKINGLOBBY) {
+      this.lobby.onMessage('rooms', (rooms) => {
+        store.dispatch(setAvailableRankingRooms(rooms))
+      })
     }
 
     this.lobby.onMessage('+', ([roomId, room]) => {
@@ -116,6 +121,7 @@ export default class GameNetwork {
     if (this.room.name === RoomType.RAIN) this.rain_game_init()
     if (this.room.name === RoomType.MOLE) this.mole_game_init()
     if (this.room.name === RoomType.CODING) this.coding_run_init()
+    if (this.room.name === RoomType.RANKING) this.ranking_board_init()
   }
 
   async createBrickRoom(roomData: IGameRoomData) {
@@ -162,6 +168,17 @@ export default class GameNetwork {
     this.coding_run_init()
   }
 
+  async createRankingRoom(roomData: IGameRoomData) {
+    const { name, description, password, username } = roomData
+    this.room = await this.client.create(RoomType.RANKING, {
+      name,
+      description,
+      password,
+      username,
+    })
+    this.ranking_board_init()
+  }
+
   /* BRICK GAME */
 
   brick_game_init() {
@@ -179,12 +196,12 @@ export default class GameNetwork {
 
     this.room.onMessage(Message.BRICK_GAME_PLAYERS, (content) => {
       if (content.length < 2) {
-        store.dispatch(setOppInfo({name: '', character: ''}))
+        store.dispatch(setOppInfo({ name: '', character: '' }))
       } else {
-        content.map(element => {
+        content.map((element) => {
           const { sessionId, name, character } = element
           if (sessionId !== this.mySessionId) {
-            store.dispatch(setOppInfo({name, character}))
+            store.dispatch(setOppInfo({ name, character }))
           }
         })
       }
@@ -212,7 +229,6 @@ export default class GameNetwork {
     console.log('command: ', command)
     this.room?.send(Message.BRICK_GAME_COMMAND, { command: command })
   }
-
 
   /* MOLE GAME  */
 
@@ -246,18 +262,18 @@ export default class GameNetwork {
 
     // method to receive host to me in mole game
     this.room.onMessage(Message.RECEIVE_HOST, (content) => {
-      store.dispatch(setMoleGameHost(content));
-    });
+      store.dispatch(setMoleGameHost(content))
+    })
 
     // method to receive life to friend in mole game
     this.room.onMessage(Message.RECEIVE_YOUR_LIFE, (content) => {
-      store.dispatch(setMoleGameLife(content));
-    });
-  
+      store.dispatch(setMoleGameLife(content))
+    })
+
     // method to clear friend info in mole game
     this.room.onMessage(Message.CLEAR_FRIEND, () => {
-      store.dispatch(clearMoleGameFriendInfo());
-    });
+      store.dispatch(clearMoleGameFriendInfo())
+    })
   }
 
   // ↓ Mole Game
@@ -280,19 +296,19 @@ export default class GameNetwork {
   changeHost(host: string) {
     this.room?.send(Message.SEND_HOST, { host: host })
   }
-  
+
   // method to send life count in mole game
   sendMyLife(myLife: string) {
     this.room?.send(Message.SEND_MY_LIFE, { life: myLife })
   }
-  
+
   // method to clear friend info in mole game
   clearFriendInfo() {
     this.room?.send(Message.CLEAR_FRIEND)
   }
 
   /* RAIN GAME */
-  
+
   startRainGame() {
     console.log('startRainGame')
     this.room?.send(Message.RAIN_GAME_START)
@@ -320,9 +336,9 @@ export default class GameNetwork {
     // when the server sends room data
     this.room.onMessage(Message.SEND_ROOM_DATA, (content) => {
       const roomData = {
-        id : content.id,
+        id: content.id,
         name: content.name,
-        description: content.description
+        description: content.description,
       }
       store.dispatch(setJoinedGameRoomData(roomData))
       store.dispatch(setRainGameHost(content.host))
@@ -330,28 +346,37 @@ export default class GameNetwork {
 
     this.room.onMessage(Message.RAIN_GAME_USER, (data) => {
       for (let key in data) {
-          let user = data[key];
-          if (key === this.mySessionId) {
-              store.dispatch(setRainGameMe(user));
-          } else {
-              store.dispatch(setRainGameYou(user));
-          }
+        let user = data[key]
+        if (key === this.mySessionId) {
+          store.dispatch(setRainGameMe(user))
+        } else {
+          store.dispatch(setRainGameYou(user))
+        }
       }
-    });
+    })
 
     this.room.onMessage(Message.RAIN_GAME_START, () => {
-      store.dispatch(setRainGameInProgress(true));
-    
-      const mySessionId = this.mySessionId;
-    });
+      store.dispatch(setRainGameInProgress(true))
+
+      const mySessionId = this.mySessionId
+    })
 
     this.room.onMessage(Message.RAIN_GAME_READY, () => {
       store.dispatch(setRainGameReady(true))
     })
   }
-  
+
   /* Coding Run */
   coding_run_init() {
+    if (!this.room) return
+    this.lobby.leave()
+    store.dispatch(setLobbyJoined(false))
+    this.mySessionId = this.room.sessionId
+    store.dispatch(setGameSessionId(this.room.sessionId))
+  }
+
+  /* Ranking Board */
+  ranking_board_init() {
     if (!this.room) return
     this.lobby.leave()
     store.dispatch(setLobbyJoined(false))

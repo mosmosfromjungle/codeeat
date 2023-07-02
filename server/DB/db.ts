@@ -7,6 +7,7 @@ import LastDM from '../models/LastDM'
 import DM from '../models/DM'
 import MoleGame from '../models/MoleGame'
 import CodingRun from '../models/CodingRun'
+import RankingBoard from '../models/RankingBoard'
 
 import { defaultProblems } from '../controllers/MoleGameControllers/index'
 
@@ -27,6 +28,7 @@ export async function connectDB() {
   createCollection('raingame')
   createCollection('molegame')
   createCollection('codingrun')
+  createCollection('rankingboard')
 
   // Insert default mole game problems at first
   // defaultProblems()
@@ -39,28 +41,31 @@ export const createCollection = (modelName : string) => {
 
   switch (modelName) {
     case 'user':
-      new User();
+      new User()
       break
     case 'friends':
-      new Friends();
+      new Friends()
       break
     case 'friendrequest':
-      new FriendRequest();
+      new FriendRequest()
       break
     case 'dm':
-      new DM();
-      break;
+      new DM()
+      break
     case 'lastdm':
-      new LastDM();
-      break;
+      new LastDM()
+      break
     case 'raingame':
-      new KeywordRainModel();
+      new KeywordRainModel()
       break
     case 'molegame':
       new MoleGame()
       break
     case 'codingrun':
       new CodingRun()
+      break
+    case 'rankingboard':
+      new RankingBoard()
       break
   }
 }

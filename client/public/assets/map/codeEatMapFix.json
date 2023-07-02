@@ -2227,9 +2227,44 @@
          "visible":true,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":13,
+         "name":"rankingboard",
+         "objects":[
+                {
+                 "gid":50550,
+                 "height":16,
+                 "id":125,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":912,
+                 "y":576
+                }, 
+                {
+                 "gid":50552,
+                 "height":16,
+                 "id":126,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":512,
+                 "y":576
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":13,
- "nextobjectid":125,
+ "nextlayerid":15,
+ "nextobjectid":127,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.1",
@@ -4529,6 +4564,19 @@
          "name":"picnic2",
          "spacing":0,
          "tilecount":256,
+         "tileheight":16,
+         "tilewidth":16
+        }, 
+        {
+         "columns":16,
+         "firstgid":50137,
+         "image":"..\/tileset\/billboard.png",
+         "imageheight":512,
+         "imagewidth":256,
+         "margin":0,
+         "name":"billboard",
+         "spacing":0,
+         "tilecount":512,
          "tileheight":16,
          "tilewidth":16
         }],

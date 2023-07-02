@@ -11,6 +11,7 @@ import MoleGame from '../items/MoleGame'
 import BrickGame from '../items/BrickGame'
 import RainGame from '../items/RainGame'
 import CodingRun from '../items/CodingRun'
+import RankingBoard from '../items/RankingBoard'
 import { ItemType } from '../../../types/Items'
 
 import '../players/MyPlayer'
@@ -42,6 +43,7 @@ export default class Game extends Phaser.Scene {
   private molegameMap = new Map<String, MoleGame>()
   private raingameMap = new Map<string, RainGame>()
   private codingrunMap = new Map<String, CodingRun>()
+  private rankingboardMap = new Map<String, RankingBoard>()
 
   constructor() {
     super('game')
@@ -89,7 +91,6 @@ export default class Game extends Phaser.Scene {
     } else {
       this.dmNetwork = data.dmNetwork
     }
-
 
     createCharacterAnims(this.anims)
 
@@ -140,10 +141,9 @@ export default class Game extends Phaser.Scene {
 
     // this.myPlayer = this.add.myPlayer(400, 900, 'kevin', this.network.mySessionId)
     this.myPlayer = this.add.myPlayer(705, 500, 'adam', this.network.mySessionId) // TODO: 캐릭터 시작 위치 수정 가능 -> 서버와 통일해야함
-    this.playerSelector = new PlayerSelector(this, 0, 0, 32, 32)  // TODO: 아이템과 상호작용할 수 있는 면적 
+    this.playerSelector = new PlayerSelector(this, 0, 0, 32, 32) // TODO: 아이템과 상호작용할 수 있는 면적
     console.log('game scene created')
     console.log('set my player initial setting ', this.myPlayer)
-
 
     const chairs = this.physics.add.staticGroup({ classType: Chair })
     const chairLayer = this.map.getObjectLayer('chair')
@@ -160,7 +160,7 @@ export default class Game extends Phaser.Scene {
       const item = this.addObjectFromTiled(brickgames, obj, 'picnic2', 'picnic2') as BrickGame
       // item.setDepth(item.y + item.height * 0.27)
       const id = `${i}`
-      // item.id = id   // TODO: 나중에 아이템 별로 지정된 별도의 방에 들어가게 하기 위해 필요 
+      // item.id = id   // TODO: 나중에 아이템 별로 지정된 별도의 방에 들어가게 하기 위해 필요
       this.brickgameMap.set(id, item)
     })
 
@@ -194,6 +194,16 @@ export default class Game extends Phaser.Scene {
       this.codingrunMap.set(id, item)
     })
 
+    /* Coding Run */
+    const rankingboards = this.physics.add.staticGroup({ classType: RankingBoard })
+    const rankingboardLayer = this.map.getObjectLayer('rankingboard')
+    rankingboardLayer.objects.forEach((obj, i) => {
+      const item = this.addObjectFromTiled(rankingboards, obj, 'billboard', 'billboard') as RankingBoard
+      const id = `${i}`
+      item.id = id
+      this.rankingboardMap.set(id, item)
+    })
+
     // ************************************** (codeEat) //
 
     // // import other objects from Tiled map to Phaser
@@ -213,7 +223,7 @@ export default class Game extends Phaser.Scene {
 
     this.physics.add.overlap(
       this.playerSelector,
-      [chairs, molegames, raingames, brickgames, codingruns],
+      [chairs, molegames, raingames, brickgames, codingruns, rankingboards],
       this.handleItemSelectorOverlap,
       undefined,
       this
@@ -290,13 +300,7 @@ export default class Game extends Phaser.Scene {
 
   // function to add new player to the otherPlayer group
   private handlePlayerJoined(newPlayer: IPlayer, id: string) {
-    const otherPlayer = this.add.otherPlayer(
-      newPlayer.x,
-      newPlayer.y,
-      'adam',
-      id,
-      newPlayer.name,
-      )
+    const otherPlayer = this.add.otherPlayer(newPlayer.x, newPlayer.y, 'adam', id, newPlayer.name)
     this.otherPlayers.add(otherPlayer)
     this.otherPlayerMap.set(id, otherPlayer)
   }
@@ -342,6 +346,9 @@ export default class Game extends Phaser.Scene {
     } else if (itemType === ItemType.CODINGRUN) {
       const codingrun = this.codingrunMap.get(itemId)
       codingrun?.addCurrentUser(playerId)
+    } else if (itemType === ItemType.RANKINGBOARD) {
+      const rankingboard = this.rankingboardMap.get(itemId)
+      rankingboard?.addCurrentUser(playerId)
     }
   }
 
@@ -358,6 +365,9 @@ export default class Game extends Phaser.Scene {
     } else if (itemType === ItemType.CODINGRUN) {
       const codingrun = this.codingrunMap.get(itemId)
       codingrun?.removeCurrentUser(playerId)
+    } else if (itemType === ItemType.RANKINGBOARD) {
+      const rankingboard = this.rankingboardMap.get(itemId)
+      rankingboard?.addCurrentUser(playerId)
     }
   }
 

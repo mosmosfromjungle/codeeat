@@ -18,6 +18,7 @@ import MoleGameDialog from './components/games/MoleGame/MoleGameDialog'
 import BrickGameDialog from './components/games/BrickGame/BrickGameDialog'
 import RainGameDialog from './components/games/RainGame/RainGameDialog'
 import CodingRunDialog from './components/games/CodingRun/CodingRunDialog'
+import RankingBoardDialog from './components/games/RankingBoard/RankingBoardDialog'
 
 // ↓ HelperButtonGroup Dialog
 import HelperButtonGroup from './components/helperdialog/HelperButtonGroup'
@@ -25,7 +26,7 @@ import ChatDialog from './components/ChatDialog'
 import { ConversationList } from './components/DM/DMList'
 import { DMRoom } from './components/DM/DMRoom'
 import UserDialog from './components/UserDialog'
-import FriendDialog from './components/FriendDialog'
+import FriendDialog from './components/ProfileDialog'
 import LogoutDialog from './components/LogoutDialog'
 import VersionDialog from './components/helperdialog/VersionDialog'
 import MobileVirtualJoystick from './components/helperdialog/MobileVirtualJoystick'
@@ -61,6 +62,7 @@ function App() {
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
   const rainGameOpen = useAppSelector((state) => state.rainGameDialog.rainGameOpen)
   const codingRunOpen = useAppSelector((state) => state.codingrun.codingRunOpen)
+  const rankingBoardOpen = useAppSelector((state) => state.rankingboard.rankingBoardOpen)
 
   // ↓ HelperButtonGroup Dialog
   const showChat = useAppSelector((state) => state.chat.showChat)
@@ -126,6 +128,7 @@ function App() {
     if (moleGameOpen) ui = <MoleGameDialog />
     if (rainGameOpen) ui = <RainGameDialog />
     if (codingRunOpen) ui = <CodingRunDialog />
+    if (rankingBoardOpen) ui = <RankingBoardDialog />
   } else {
     ui = <EntryDialog />
   }

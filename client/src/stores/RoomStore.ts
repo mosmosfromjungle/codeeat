@@ -26,6 +26,10 @@ const isCodingRoom = (room: RoomInterface) => {
   return room.name === RoomType.CODING
 }
 
+const isRankingRoom = (room: RoomInterface) => {
+  return room.name === RoomType.RANKING
+}
+
 export const roomSlice = createSlice({
   name: 'room',
   initialState: {
@@ -45,7 +49,8 @@ export const roomSlice = createSlice({
       moleRooms: new Array<RoomAvailable>(),
       rainRooms: new Array<RoomAvailable>(),
       codingRooms: new Array<RoomAvailable>(),
-    }
+      rankingRooms: new Array<RoomAvailable>(),
+    },
   },
   reducers: {
     setLobbyJoined: (state, action: PayloadAction<boolean>) => {
@@ -74,7 +79,7 @@ export const roomSlice = createSlice({
       state.gameRoomDescription = action.payload.description
     },
     setMainPlayers: (state, action: PayloadAction<IPlayer[]>) => {
-      state.mainPlayers = action.payload;
+      state.mainPlayers = action.payload
     },
     setAvailableRooms: (state, action: PayloadAction<RoomAvailable[]>) => {
       state.availableRooms.generalRooms = action.payload.filter((room) => isCustomRoom(room))
@@ -90,6 +95,9 @@ export const roomSlice = createSlice({
     },
     setAvailableCodingRooms: (state, action: PayloadAction<RoomAvailable[]>) => {
       state.availableRooms.codingRooms = action.payload.filter((room) => isCodingRoom(room))
+    },
+    setAvailableRankingRooms: (state, action: PayloadAction<RoomAvailable[]>) => {
+      state.availableRooms.rankingRooms = action.payload.filter((room) => isRankingRoom(room))
     },
     addAvailableRooms: (state, action: PayloadAction<{ roomId: string; room: RoomAvailable }>) => {
       if (isCustomRoom(action.payload.room)) {
@@ -137,20 +145,43 @@ export const roomSlice = createSlice({
         } else {
           state.availableRooms.codingRooms.push(action.payload.room)
         }
+      } else if (isRankingRoom(action.payload.room)) {
+        const roomIndex = state.availableRooms.rankingRooms.findIndex(
+          (room) => room.roomId === action.payload.roomId
+        )
+        if (roomIndex !== -1) {
+          state.availableRooms.rankingRooms[roomIndex] = action.payload.room
+        } else {
+          state.availableRooms.rankingRooms.push(action.payload.room)
+        }
       }
     },
     removeAvailableRooms: (state, action: PayloadAction<string>) => {
-      state.availableRooms.generalRooms = state.availableRooms.generalRooms.filter((room) => room.roomId !== action.payload)
-      state.availableRooms.brickRooms = state.availableRooms.brickRooms.filter((room) => room.roomId !== action.payload)
-      state.availableRooms.moleRooms = state.availableRooms.moleRooms.filter((room) => room.roomId !== action.payload)
-      state.availableRooms.rainRooms = state.availableRooms.rainRooms.filter((room) => room.roomId !== action.payload)
-      state.availableRooms.codingRooms = state.availableRooms.codingRooms.filter((room) => room.roomId !== action.payload)
+      state.availableRooms.generalRooms = state.availableRooms.generalRooms.filter(
+        (room) => room.roomId !== action.payload
+      )
+      state.availableRooms.brickRooms = state.availableRooms.brickRooms.filter(
+        (room) => room.roomId !== action.payload
+      )
+      state.availableRooms.moleRooms = state.availableRooms.moleRooms.filter(
+        (room) => room.roomId !== action.payload
+      )
+      state.availableRooms.rainRooms = state.availableRooms.rainRooms.filter(
+        (room) => room.roomId !== action.payload
+      )
+      state.availableRooms.codingRooms = state.availableRooms.codingRooms.filter(
+        (room) => room.roomId !== action.payload
+      )
+      state.availableRooms.rankingRooms = state.availableRooms.rankingRooms.filter(
+        (room) => room.roomId !== action.payload
+      )
     },
     clearAvailabelGameRooms: (state) => {
       state.availableRooms.brickRooms = []
       state.availableRooms.moleRooms = []
       state.availableRooms.rainRooms = []
       state.availableRooms.codingRooms = []
+      state.availableRooms.rankingRooms = []
     },
   },
 })
@@ -167,6 +198,7 @@ export const {
   setAvailableMoleRooms,
   setAvailableRainRooms,
   setAvailableCodingRooms,
+  setAvailableRankingRooms,
   addAvailableRooms,
   removeAvailableRooms,
   clearAvailabelGameRooms,

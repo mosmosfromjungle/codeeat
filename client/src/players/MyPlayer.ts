@@ -10,6 +10,7 @@ import BrickGame from '../items/BrickGame'
 import RainGame from '../items/RainGame'
 import MoleGame from '../items/MoleGame'
 import CodingRun from '../items/CodingRun'
+import RankingBoard from '../items/RankingBoard'
 
 import { phaserEvents, Event } from '../events/EventCenter'
 import store from '../stores'
@@ -80,6 +81,10 @@ export default class MyPlayer extends Player {
         case ItemType.CODINGRUN:
           const codingrun = item as CodingRun
           codingrun.openDialog(network)
+          break
+        case ItemType.RANKINGBOARD:
+          const rankingboard = item as RankingBoard
+          rankingboard.openDialog(network)
           break
       }
     }
