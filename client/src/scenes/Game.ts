@@ -3,14 +3,13 @@ import Phaser from 'phaser'
 // import { debugDraw } from '../utils/debug'
 import Network from '../services/Network'
 import DMNetwork from '../services/DMNetwork'
-// import GameNetwork from '../services/GameNetwork'
 
 import Item from '../items/Item'
 import Chair from '../items/Chair'
 import MoleGame from '../items/MoleGame'
 import BrickGame from '../items/BrickGame'
 import RainGame from '../items/RainGame'
-import FaceChat from '../items/FaceChat'
+// import FaceChat from '../items/FaceChat'
 import { ItemType } from '../../../types/Items'
 
 import '../players/MyPlayer'
@@ -23,9 +22,10 @@ import { PlayerBehavior } from '../../../types/PlayerBehavior'
 import { createCharacterAnims } from '../anims/CharacterAnims'
 
 import store from '../stores'
-import { setFocused, setShowChat } from '../stores/ChatStore'
+import { setFocused } from '../stores/ChatStore'
 import { setShowDMList, setShowDMRoom } from '../stores/DMStore'
 import { NavKeys, Keyboard } from '../../../types/KeyboardState'
+import { HELPER_STATUS, setHelperStatus } from '../stores/UserStore'
 
 export default class Game extends Phaser.Scene {
   network!: Network
@@ -41,7 +41,7 @@ export default class Game extends Phaser.Scene {
   private brickgameMap = new Map<String, BrickGame>()
   private molegameMap = new Map<String, MoleGame>()
   private raingameMap = new Map<string, RainGame>()
-  facechatMap = new Map<String, FaceChat>()
+  // facechatMap = new Map<String, FaceChat>()
 
   constructor() {
     super('game')
@@ -185,14 +185,14 @@ export default class Game extends Phaser.Scene {
     })
 
     /* Face Chat */
-    const facechats = this.physics.add.staticGroup({ classType: FaceChat })
-    const facechatLayer = this.map.getObjectLayer('facechat')
-    facechatLayer.objects.forEach((obj, i) => {
-      const item = this.addObjectFromTiled(facechats, obj, 'bench', 'bench') as FaceChat
-      const id = `${i}`
-      item.faceChatId = id
-      this.facechatMap.set(id, item)
-    })
+    // const facechats = this.physics.add.staticGroup({ classType: FaceChat })
+    // const facechatLayer = this.map.getObjectLayer('facechat')
+    // facechatLayer.objects.forEach((obj, i) => {
+    //   const item = this.addObjectFromTiled(facechats, obj, 'bench', 'bench') as FaceChat
+    //   const id = `${i}`
+    //   item.faceChatId = id
+    //   this.facechatMap.set(id, item)
+    // })
 
     // ************************************** (codeEat) //
 
@@ -213,7 +213,7 @@ export default class Game extends Phaser.Scene {
 
     this.physics.add.overlap(
       this.playerSelector,
-      [chairs, molegames, raingames, brickgames, facechats],
+      [chairs, molegames, raingames, brickgames],
       this.handleItemSelectorOverlap,
       undefined,
       this
@@ -231,7 +231,7 @@ export default class Game extends Phaser.Scene {
     this.network.onPlayerJoined(this.handlePlayerJoined, this)
     this.network.onPlayerLeft(this.handlePlayerLeft, this)
     this.network.onMyPlayerReady(this.handleMyPlayerReady, this)
-    this.network.onMyPlayerVideoConnected(this.handleMyVideoConnected, this)
+    // this.network.onMyPlayerVideoConnected(this.handleMyVideoConnected, this)
     this.network.onPlayerUpdated(this.handlePlayerUpdated, this)
     this.network.onItemUserAdded(this.handleItemUserAdded, this)
     this.network.onItemUserRemoved(this.handleItemUserRemoved, this)
@@ -326,7 +326,7 @@ export default class Game extends Phaser.Scene {
   }
 
   private handlePlayersOverlap(myPlayer, otherPlayer) {
-    otherPlayer.makeCall(myPlayer, this.network?.webRTC)
+    // otherPlayer.makeCall(myPlayer, this.network?.webRTC)
   }
 
   private handleItemUserAdded(playerId: string, itemId: string, itemType: ItemType) {
@@ -339,10 +339,11 @@ export default class Game extends Phaser.Scene {
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.addCurrentUser(playerId)
-    } else if (itemType === ItemType.FACECHAT) {
-      const facechat = this.facechatMap.get(itemId)
-      facechat?.addCurrentUser(playerId)
-    }
+    } 
+    // else if (itemType === ItemType.FACECHAT) {
+    //   const facechat = this.facechatMap.get(itemId)
+    //   facechat?.addCurrentUser(playerId)
+    // }
   }
 
   private handleItemUserRemoved(playerId: string, itemId: string, itemType: ItemType) {
@@ -355,10 +356,11 @@ export default class Game extends Phaser.Scene {
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.removeCurrentUser(playerId)
-    } else if (itemType === ItemType.FACECHAT) {
-      const facechat = this.facechatMap.get(itemId)
-      facechat?.removeCurrentUser(playerId)
-    }
+    } 
+    // else if (itemType === ItemType.FACECHAT) {
+    //   const facechat = this.facechatMap.get(itemId)
+    //   facechat?.removeCurrentUser(playerId)
+    // }
   }
 
   private handleChatMessageAdded(playerId: string, content: string) {
