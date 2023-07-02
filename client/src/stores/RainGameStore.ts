@@ -52,43 +52,31 @@ export const rainGameSlice = createSlice({
       state.host = action.payload
     },
     setRainGameReady: (state, action: PayloadAction<boolean>) => {
-      console.log('setRainGameReady')
       state.rainGameReady = action.payload
     },
     setRainGameInProgress: (state, action: PayloadAction<boolean>) => {
-        console.log('setRainGameInProgress')
         state.rainGameInProgress = action.payload
       },
     setRainGameYou: (state, action: PayloadAction<RainGameUser>) => {
-      console.log('setRainGameYou')
       const { username, character } = action.payload
       state.you.username = username
       state.you.character = character
     },
 
     setRainGameMe: (state, action: PayloadAction<RainGameUser>) => {
-      console.log('setRainGameMe')
       const { username, character } = action.payload
       state.me.username = username
       state.me.character = character
     },
     setRainGameMyState: (state, action: PayloadAction<RainGameState>) => {
-        console.log('setRainGameMyState')
       const { point, heart } = action.payload
       ;(state.myState.point = point), (state.myState.heart = heart)
     },
 
     setRainGameYouState: (state, action: PayloadAction<RainGameState>) => {
-        console.log('setRainGameYou')
       const { point, heart } = action.payload
       ;(state.youState.point = point), (state.youState.heart = heart)
     },
-    // setRainGameMyWords: (state, action: PayloadAction<KeywordRain>) => {
-    //     state.myWords = action.payload
-    // },
-    // setRainGameYouWords: (state, action: PayloadAction<KeywordRain>) => {
-    //     state.youWords = action.payload
-    // }
   },
 })
 
@@ -100,8 +88,6 @@ export const {
   setRainGameMe,
   setRainGameMyState,
   setRainGameYouState,
-  // setRainGameMyWords,
-  // setRainGameYouWords
 } = rainGameSlice.actions
 
 export default rainGameSlice.reducer
