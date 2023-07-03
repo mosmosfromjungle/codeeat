@@ -26,10 +26,9 @@ export class KeywordRain extends Schema implements IKeywordRain{
   @type('number') speed = 1;
   @type('string') keyword = '';
   @type('number') x = Math.floor(Math.random()*(550-50+1)) + 50;
-  @type('boolean') flicker = false;
-  @type('boolean') blind = false;
-  @type('boolean') accel = false;
-  @type('boolean') multifly = false;
+  @type('boolean') itemA = false;
+  @type('boolean') itemB = false;
+
   
   constructor(keyword: string) {
     super();
@@ -39,11 +38,13 @@ export class KeywordRain extends Schema implements IKeywordRain{
 export class RainGameState extends Schema implements IRainGameState {
   @type('number') point = 0;
   @type('number') heart = 3;
+  @type([ "string" ]) item: string[] = [];
 }
 
 export class RainGameUser extends Schema implements IRainGameUser{
   @type("string") username = '';
   @type('string') character = '';
+
   
   constructor(name: string, character: string) {
     super()

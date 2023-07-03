@@ -9,10 +9,8 @@ export interface IKeywordRain extends Schema {
   speed: number
   keyword: string
   x: number
-  flicker: boolean
-  blind: boolean
-  accel: boolean
-  multifly: boolean
+  itemA: boolean
+  itemB: boolean
 }
 
 export interface IRainGameUser extends Schema {
@@ -23,6 +21,7 @@ export interface IRainGameUser extends Schema {
 export interface IRainGameState extends Schema {
   point: number
   heart: number
+  item: string[]
 }
 
 export interface IRainGameRoomState extends Schema {

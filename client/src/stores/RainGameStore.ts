@@ -11,6 +11,7 @@ export interface RainGameUser {
 export interface RainGameState {
   point: number
   heart: number
+  item: string[]
 }
 export interface RainGameStates {
   host : string
@@ -31,10 +32,12 @@ export const initialState: RainGameStates = {
   myState: {
     point: 0,
     heart: 3,
+    item: []
   },
   youState: {
     point: 0,
     heart: 3,
+    item: []
   },
   me: {
     username: '',
@@ -55,7 +58,6 @@ export const rainGameSlice = createSlice({
   reducers: {
     setRainGameHost: (state, action: PayloadAction<string>) => {
       state.host = action.payload;
-      console.log("방장 설정:",state.host)
     },
 
     setRainGameReady: (state, action: PayloadAction<boolean>) => {
@@ -79,26 +81,27 @@ export const rainGameSlice = createSlice({
     },
 
     setRainStateMe: (state, action: PayloadAction<RainGameState>) => {
-      const { point, heart } = action.payload;
+      const { point, heart, item } = action.payload;
       state.myState.point = point;
       state.myState.heart = heart;
+      state.myState.item = item;
       console.log("내 상태 설정:",JSON.parse(JSON.stringify(state.myState)))
     },
 
     setRainStateYou: (state, action: PayloadAction<RainGameState>) => {
-      const { point, heart } = action.payload;
+      const { point, heart, item } = action.payload;
       state.youState.point = point;
       state.youState.heart = heart;
+      state.youState.item = item;
       console.log("상대 상태 설정:",JSON.parse(JSON.stringify(state.youState)))
     },
 
     setRainGameYouHeart: (state, action: PayloadAction<boolean>) => {
-      state.heart = action.payload;
+      state.dheart = action.payload;
     },
 
     setRainGameYouWord: (state, action: PayloadAction<string>) => {
       state.words = action.payload
-      console.log("상대 삭제 단어:", JSON.parse(JSON.stringify(state.words)))
     },
   },
 })

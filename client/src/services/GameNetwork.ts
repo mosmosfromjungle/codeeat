@@ -21,7 +21,7 @@ import {
   setMoleGameProblem,
   setMoleGameHost,
   setMoleGameLife,
- } from '../stores/MoleGameStore'
+} from '../stores/MoleGameStore'
 import {
   setBrickGameState,
   setMyPlayerScore,
@@ -30,18 +30,17 @@ import {
   setOppPlayerStatus,
   setOppInfo,
 } from '../stores/BrickGameStore'
-import { 
-  setRainGameMe, 
-  setRainGameYou, 
+import {
+  setRainGameMe,
+  setRainGameYou,
   setRainGameYouWord,
-  setRainGameHost, 
-  setRainGameReady, 
+  setRainGameHost,
+  setRainGameReady,
   setRainGameInProgress,
   setRainStateMe,
-  setRainStateYou ,
-  RainGameStates
+  setRainStateYou,
+  RainGameStates,
 } from '../stores/RainGameStore'
-
 
 export default class GameNetwork {
   private client: Client
@@ -172,12 +171,12 @@ export default class GameNetwork {
 
     this.room.onMessage(Message.BRICK_GAME_PLAYERS, (content) => {
       if (content.length < 2) {
-        store.dispatch(setOppInfo({name: '', character: ''}))
+        store.dispatch(setOppInfo({ name: '', character: '' }))
       } else {
-        content.map(element => {
+        content.map((element) => {
           const { sessionId, name, character } = element
           if (sessionId !== this.mySessionId) {
-            store.dispatch(setOppInfo({name, character}))
+            store.dispatch(setOppInfo({ name, character }))
           }
         })
       }
@@ -205,7 +204,6 @@ export default class GameNetwork {
     console.log('command: ', command)
     this.room?.send(Message.BRICK_GAME_COMMAND, { command: command })
   }
-
 
   /* MOLE GAME  */
 
@@ -239,13 +237,13 @@ export default class GameNetwork {
 
     // method to receive host to me in mole game
     this.room.onMessage(Message.RECEIVE_HOST, (content) => {
-      store.dispatch(setMoleGameHost(content));
-    });
+      store.dispatch(setMoleGameHost(content))
+    })
 
     // method to receive life to friend in mole game
     this.room.onMessage(Message.RECEIVE_LIFE, (content) => {
-      store.dispatch(setMoleGameLife(content));
-    });
+      store.dispatch(setMoleGameLife(content))
+    })
   }
 
   // ↓ Mole Game
@@ -268,33 +266,34 @@ export default class GameNetwork {
   changeHost(host: string) {
     this.room?.send(Message.SEND_HOST, { host: host })
   }
-  
+
   // method to send life count in mole game
   removeLife(life: string) {
     this.room?.send(Message.SEND_LIFE, { life: life })
   }
 
   /* RAIN GAME */
-  
+
   startRainGame() {
-    console.log('startRainGame')
     this.room?.send(Message.RAIN_GAME_START_C)
   }
 
-  removeWord(word: string, sessionId: string,states:RainGameStates ) {
-    console.log('점수 관련 상태변경 송신:',word)
-    this.room?.send(Message.RAIN_GAME_WORD_C, {word: word, sessionId: sessionId,states:states })
+  removeWord(word: string, sessionId: string, states: RainGameStates) {
+    this.room?.send(Message.RAIN_GAME_WORD_C, { word: word, sessionId: sessionId, states: states })
   }
 
   sendMyInfoToServer(username: string, character: string) {
-    console.log('sendMyInfoToServer')
     if (!this.room) return
     this.room.send(Message.RAIN_GAME_USER_C, { username: username, character: character })
   }
 
   decreaseHeart(sessionId: string) {
-    console.log('하트 관련 상태변경 송신')
-    this.room?.send(Message.RAIN_GAME_HEART_C, {sessionId: sessionId})
+    this.room?.send(Message.RAIN_GAME_HEART_C, { sessionId: sessionId })
+  }
+
+  useItem(item: string) {
+    console.log('useItem:', item)
+    this.room?.send(Message.RAIN_GAME_ITEM_C, { item: item })
   }
 
   /* RAIN GAME  */
@@ -311,28 +310,28 @@ export default class GameNetwork {
       const roomData = {
         id: content.id,
         name: content.name,
-        description: content.description
+        description: content.description,
       }
       store.dispatch(setJoinedGameRoomData(roomData))
       store.dispatch(setRainGameHost(content.host))
     })
 
     this.room.onMessage(Message.RAIN_GAME_USER_S, (data) => {
-      const { user, state } = data;
+      const { user, state } = data
 
-      for (let sessionId in user){
-        const rainGameUser = user[sessionId];
-        const rainGameState = state[sessionId];
+      for (let sessionId in user) {
+        const rainGameUser = user[sessionId]
+        const rainGameState = state[sessionId]
 
         if (sessionId === this.mySessionId) {
-          store.dispatch(setRainGameMe(rainGameUser));
-          store.dispatch(setRainStateMe(rainGameState));
+          store.dispatch(setRainGameMe(rainGameUser))
+          store.dispatch(setRainStateMe(rainGameState))
         } else {
-          store.dispatch(setRainGameYou(rainGameUser));
-          store.dispatch(setRainStateYou(rainGameState));
+          store.dispatch(setRainGameYou(rainGameUser))
+          store.dispatch(setRainStateYou(rainGameState))
         }
       }
-    });
+    })
 
     this.room.onMessage(Message.RAIN_GAME_START_S, () => {
       store.dispatch(setRainGameInProgress(true))
@@ -343,38 +342,50 @@ export default class GameNetwork {
     })
 
     this.room.onMessage(Message.RAIN_GAME_WORD_S, (data) => {
-      const{ word, states } = data;
-      console.log("상태변경 점수 관련 수신")
-      
+      const { word, states } = data
+
       Object.keys(states).forEach((id) => {
         if (id === this.mySessionId) {
-            // 내 상태를 업데이트합니다.
-            store.dispatch(setRainStateMe({
-                point: states[id].point,
-                heart: states[id].heart
-            }));
+          // 내 상태를 업데이트합니다.
+          store.dispatch(
+            setRainStateMe({
+              point: states[id].point,
+              heart: states[id].heart,
+              item: states[id].item
+            })
+          )
         } else {
-            // 상대방의 상태를 업데이트하고, 상대방의 단어도 설정합니다.
-            store.dispatch(setRainStateYou({
-                point: states[id].point,
-                heart: states[id].heart
-            }));
-            store.dispatch(setRainGameYouWord(word));
+          // 상대방의 상태를 업데이트하고, 상대방의 단어도 설정합니다.
+          store.dispatch(
+            setRainStateYou({
+              point: states[id].point,
+              heart: states[id].heart,
+              item: states[id].state
+            })
+          )
+          store.dispatch(setRainGameYouWord(word))
         }
-    });
-    });
-    
-    this.room.onMessage(Message.RAIN_GAME_HEART_S, (data) => {
-      const { states } = data;
-      console.log("하트 관련 상태변경 수신")
+      })
+    })
 
-      Object.keys(states).forEach(id => {
+    this.room.onMessage(Message.RAIN_GAME_HEART_S, (data) => {
+      const { states } = data
+      console.log("아이템 적용 메시지 수신:",states[this.mySessionId].item)
+
+      Object.keys(states).forEach((id) => {
         if (id === this.mySessionId) {
-          store.dispatch(setRainStateMe({ point: states[id].point, heart: states[id].heart }));
+          store.dispatch(setRainStateMe({
+            point: states[id].point,
+            heart: states[id].heart,
+            item: states[id].item
+          }));
         } else {
-          store.dispatch(setRainStateYou({ point: states[id].point, heart: states[id].heart }));
+          store.dispatch(setRainStateYou({
+            point: states[id].point,
+            heart: states[id].heart,
+            item: states[id].item }))
         }
-      });
-    });
+      })
+    })
   }
 }

@@ -64,17 +64,45 @@ export class RainGameRoom extends Room<GameState> {
       )
     })
 
-    this.onMessage(Message.RAIN_GAME_USER_C, (client, data: { username: string, character: string}) => {
-        
-    this.state.raingames.rainGameUsers.set(client.sessionId, new RainGameUser(data.username, data.character))
-    this.state.raingames.rainGameStates.set(client.sessionId, new RainGameState())
+    this.onMessage(Message.RAIN_GAME_ITEM_C, (client, data) => {
+      const { item } = data
+      this.state.raingames.rainGameStates.forEach((gameState, sessionId) => {
+        if (sessionId !== client.sessionId) {
+            if (item === 'A') {
+                gameState.item.push('A');
+                console.log(gameState.item)
+            }
+            if (item === 'B') {
+                gameState.item.push('B');
+            }
+        }
+    });
+    
+    this.broadcast(Message.RAIN_GAME_HEART_S, { states: this.state.raingames.rainGameStates }, { afterNextPatch: true });
+    
+    })
 
-    this.broadcast(
-      Message.RAIN_GAME_USER_S,
-      { user: this.state.raingames.rainGameUsers, state: this.state.raingames.rainGameStates, host: this.state.host  },
-      { afterNextPatch: true }
+    this.onMessage(
+      Message.RAIN_GAME_USER_C,
+      (client, data: { username: string; character: string }) => {
+        this.state.raingames.rainGameUsers.set(
+          client.sessionId,
+          new RainGameUser(data.username, data.character, [])
+        )
+        this.state.raingames.rainGameStates.set(client.sessionId, new RainGameState())
+
+        this.broadcast(
+          Message.RAIN_GAME_USER_S,
+          {
+            user: this.state.raingames.rainGameUsers,
+            state: this.state.raingames.rainGameStates,
+            host: this.state.host,
+          },
+          { afterNextPatch: true }
+        )
+      }
     )
-  })
+
   }
 
   async onAuth(client: Client, options: { password: string | null }) {
@@ -127,7 +155,6 @@ export class RainGameRoom extends Room<GameState> {
   }
   // Handle RAIN_GAME_START message
   private handleRainGameStart(client: Client, content: any) {
-    console.log('handleRainGameStart')
     this.state.raingames.rainGameInProgress = true
     this.broadcast(Message.RAIN_GAME_START_S)
     // this.handleRainGameWord(this)
