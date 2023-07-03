@@ -75,6 +75,9 @@ export class RainGameRoom extends Room<GameState> {
           if (item === 'B') {
             gameState.item.push('B')
           }
+          if (item === 'NA') {
+            gameState.item.shift();
+          }
         }
       })
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
 import Bootstrap from '../../../scenes/Bootstrap'
 import phaserGame from '../../../PhaserGame'
@@ -20,6 +20,7 @@ import {
 } from './RainGameStyle'
 import eraser from '/assets/game/RainGame/eraser.png'
 import debounce from 'lodash/debounce'
+import RainGameItemB from './RainGameItemB'
 
 interface KeywordRain {
   y: number
@@ -75,70 +76,80 @@ export function RainGame() {
   const youExtraSpeedRef = useRef(0)
   const me = useAppSelector((state) => state.raingame.me)
   const you = useAppSelector((state) => state.raingame.you)
+  const [myImage, setMyImage] = useState(false);
+  const [youImage, setYouImage] = useState(false);
+
+  const hideMyImage = useCallback(() => {
+    setMyImage(false);
+  }, []);
+
+  const hideYouImage = useCallback(() => {
+    setYouImage(false);
+  }, []);
 
   const Awords = [
-    { y: 0, speed: 1, keyword: 'abs', x: 331, itemA: true, itemB: false },
+    { y: 0, speed: 1, keyword: 'abs', x: 331, itemA: false, itemB: true },
     { y: 0, speed: 1.5, keyword: 'print', x: 253, itemA: false, itemB: false },
     { y: 0, speed: 1, keyword: 'list', x: 182, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'row', x: 413, itemA: false, itemB: false },
     { y: 0, speed: 1, keyword: 'col', x: 395, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'set', x: 267, itemA: false, itemB: false },
-    { y: 0, speed: 1, keyword: 'style', x: 149, itemA: false, itemB: true },
+    { y: 0, speed: 1, keyword: 'style', x: 149, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'font', x: 347, itemA: false, itemB: false },
     { y: 0, speed: 1, keyword: 'div', x: 278, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'h1', x: 221, itemA: false, itemB: false },
     { y: 0, speed: 1, keyword: 'h2', x: 443, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'body', x: 381, itemA: false, itemB: false },
-    { y: 0, speed: 1, keyword: 'apple', x: 399, itemA: true, itemB: false },
+    { y: 0, speed: 1, keyword: 'apple', x: 399, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'banana', x: 273, itemA: false, itemB: false },
     { y: 0, speed: 1, keyword: 'car', x: 331, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'dog', x: 253, itemA: false, itemB: false },
     { y: 0, speed: 1, keyword: 'elephant', x: 182, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'flower', x: 413, itemA: false, itemB: false },
-    { y: 0, speed: 1, keyword: 'guitar', x: 395, itemA: false, itemB: true },
+    { y: 0, speed: 1, keyword: 'guitar', x: 395, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'house', x: 267, itemA: false, itemB: false },
     { y: 0, speed: 1, keyword: 'ice cream', x: 149, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'jungle', x: 347, itemA: false, itemB: false },
     { y: 0, speed: 1, keyword: 'kangaroo', x: 278, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'lion', x: 221, itemA: false, itemB: false },
-    { y: 0, speed: 1, keyword: 'monkey', x: 443, itemA: true, itemB: false },
+    { y: 0, speed: 1, keyword: 'monkey', x: 443, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'notebook', x: 381, itemA: false, itemB: false },
     { y: 0, speed: 1, keyword: 'orange', x: 399, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'piano', x: 273, itemA: false, itemB: false },
     { y: 0, speed: 1, keyword: 'queen', x: 331, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'rabbit', x: 253, itemA: false, itemB: true },
+    { y: 0, speed: 1.5, keyword: 'rabbit', x: 253, itemA: false, itemB: false },
   ]
   const Bwords = [
-    { y: 0, speed: 1.2, keyword: 'zebra', x: 467, itemA: false, itemB: true },
+    { y: 0, speed: 1.2, keyword: 'zebra', x: 467, itemA: false, itemB: false },
     { y: 0, speed: 1.4, keyword: 'umbrella', x: 174, itemA: false, itemB: false },
     { y: 0, speed: 1.3, keyword: 'table', x: 290, itemA: false, itemB: false },
     { y: 0, speed: 1.1, keyword: 'snake', x: 485, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'rocket', x: 310, itemA: false, itemB: false },
     { y: 0, speed: 1.4, keyword: 'pizza', x: 450, itemA: false, itemB: false },
-    { y: 0, speed: 1.2, keyword: 'ocean', x: 200, itemA: true, itemB: false },
+    { y: 0, speed: 1.2, keyword: 'ocean', x: 200, itemA: false, itemB: false },
     { y: 0, speed: 1.3, keyword: 'moon', x: 388, itemA: false, itemB: false },
-    { y: 0, speed: 1.1, keyword: 'laptop', x: 333, itemA: false, itemB: false },
+    { y: 0, speed: 1.1, keyword: 'laptop', x: 333, itemA: false, itemB: true },
     { y: 0, speed: 1.5, keyword: 'kiwi', x: 223, itemA: false, itemB: false },
     { y: 0, speed: 1.2, keyword: 'island', x: 411, itemA: false, itemB: false },
     { y: 0, speed: 1.3, keyword: 'hat', x: 274, itemA: false, itemB: false },
-    { y: 0, speed: 1.4, keyword: 'grape', x: 492, itemA: false, itemB: true },
+    { y: 0, speed: 1.4, keyword: 'grape', x: 492, itemA: false, itemB: false },
     { y: 0, speed: 1.2, keyword: 'forest', x: 267, itemA: false, itemB: false },
     { y: 0, speed: 1.1, keyword: 'eagle', x: 300, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'drum', x: 475, itemA: false, itemB: false },
     { y: 0, speed: 1.3, keyword: 'chocolate', x: 230, itemA: false, itemB: false },
     { y: 0, speed: 1.4, keyword: 'book', x: 365, itemA: false, itemB: false },
-    { y: 0, speed: 1.2, keyword: 'ant', x: 415, itemA: true, itemB: false },
+    { y: 0, speed: 1.2, keyword: 'ant', x: 415, itemA: false, itemB: false },
     { y: 0, speed: 1.1, keyword: 'window', x: 320, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'television', x: 470, itemA: false, itemB: false },
     { y: 0, speed: 1.2, keyword: 'sun', x: 190, itemA: false, itemB: false },
     { y: 0, speed: 1.3, keyword: 'rain', x: 422, itemA: false, itemB: false },
     { y: 0, speed: 1.4, keyword: 'penguin', x: 237, itemA: false, itemB: false },
-    { y: 0, speed: 1.1, keyword: 'otter', x: 393, itemA: false, itemB: true },
+    { y: 0, speed: 1.1, keyword: 'otter', x: 393, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'night', x: 255, itemA: false, itemB: false },
     { y: 0, speed: 1.3, keyword: 'mountain', x: 288, itemA: false, itemB: false },
     { y: 0, speed: 1.2, keyword: 'light', x: 444, itemA: false, itemB: false },
     { y: 0, speed: 1.4, keyword: 'kite', x: 317, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'jazz', x: 217, itemA: true, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'jazz', x: 217, itemA: false, itemB: false },
   ]
   const debouncedDecreaseHeart = debounce(() => {
     bootstrap.gameNetwork.decreaseHeart(sessionId)
@@ -166,6 +177,7 @@ export function RainGame() {
         setMyState((prevState) => {
           // prevState.item 이 배열인 경우에만 slice 메서드를 사용
           const newItem = Array.isArray(prevState.item) ? prevState.item.slice(1) : []
+          bootstrap.gameNetwork.useItem('NA')
           return { ...prevState, item: newItem }
         })
       }
@@ -191,10 +203,12 @@ export function RainGame() {
         setYouState((prevState) => {
           // prevState.item 이 배열인 경우에만 slice 메서드를 사용
           const newItem = Array.isArray(prevState.item) ? prevState.item.slice(1) : []
+          bootstrap.gameNetwork.useItem('NA')
           return { ...prevState, item: newItem }
         })
       }
     }, 300)
+
     return () => {
       clearInterval(updateYouWordsInterval)
       clearInterval(youItemInterval)
@@ -202,6 +216,7 @@ export function RainGame() {
       clearInterval(meItemInterval)
     }
   }, [raingame])
+
 
   useEffect(() => {
     setMyState({
@@ -216,6 +231,8 @@ export function RainGame() {
       item: raingame.youState.item,
     })
   }, [raingame])
+
+  
 
   useEffect(() => {
     targetwordRef.current = targetword
@@ -259,10 +276,6 @@ export function RainGame() {
       }
     }, 2000)
 
-    // 데바운싱 적용
-
-    // 내 단어 위치 업데이트
-
     // 시간 측정
     const timeInterval = setInterval(() => {
       setTime((prevTime) => Math.max(prevTime - 1, 0))
@@ -302,7 +315,6 @@ export function RainGame() {
       case 'A':
         // extraSpeed를 2로 설정
         myExtraSpeedRef.current = 5
-        console.log('아이템 본인 적용 함수 호출됌')
 
         // 5초 후에 extraSpeed를 0으로 되돌리기
         setTimeout(() => {
@@ -310,8 +322,8 @@ export function RainGame() {
         }, 5000)
         break
       case 'B':
-        // 내부 로직은 각주로 비워두기
-        // ...
+        console.log('아이템 본인 적용 함수 호출됌')
+        setMyImage(true);
         break
       // ... 다른 케이스들
     }
@@ -322,7 +334,6 @@ export function RainGame() {
       case 'A':
         // extraSpeed를 2로 설정
         youExtraSpeedRef.current = 5
-        console.log('아이템 상대 적용 함수 호출됌')
 
         // 5초 후에 extraSpeed를 0으로 되돌리기
         setTimeout(() => {
@@ -330,8 +341,8 @@ export function RainGame() {
         }, 5000)
         break
       case 'B':
-        // 내부 로직은 각주로 비워두기
-        // ...
+        console.log('아이템 상대 적용 함수 호출됌')
+        setYouImage(true);
         break
       // ... 다른 케이스들
     }
@@ -368,6 +379,7 @@ export function RainGame() {
         </TimerArea>
 
         <Left>
+        <RainGameItemB show={youImage} onHide={hideYouImage} />
           {youGame.map((word, index) => (
             <h5
               key={index}
@@ -387,6 +399,7 @@ export function RainGame() {
         </Left>
 
         <Right>
+        <RainGameItemB show={myImage} onHide={hideMyImage} />
           {myGame.map((word, index) => (
             <h5
               key={index}

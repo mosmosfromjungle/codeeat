@@ -307,6 +307,8 @@ export default class GameNetwork {
     this.room?.send(Message.RAIN_GAME_ITEM_C, { item: item })
   }
 
+  
+
   /* RAIN GAME  */
 
   rain_game_init() {
