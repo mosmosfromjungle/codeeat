@@ -94,7 +94,7 @@ export default function LoginDialog() {
 
   const dispatch = useAppDispatch()
   
-  const videoConnected = useAppSelector((state) => state.user.videoConnected)
+  // const videoConnected = useAppSelector((state) => state.user.videoConnected)
   const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)
   const game = phaserGame.scene.keys.game as Game
 
@@ -224,7 +224,7 @@ export default function LoginDialog() {
           </Content>
 
           <Content>
-            {!videoConnected && (
+            {/* {!videoConnected && (
               <Warning>
                 <Alert variant="outlined" severity="warning">
                   <AlertTitle>아차!</AlertTitle>
@@ -240,13 +240,13 @@ export default function LoginDialog() {
                   비디오 연결하기
                 </Button>
               </Warning>
-            )}
+            )} */}
 
-            {videoConnected && (
+            {/* {videoConnected && (
               <Warning>
                 <Alert variant="outlined">Webcam connected!</Alert>
               </Warning>
-            )}
+            )} */}
           </Content>
           <Bottom>
             <Button variant="contained" size="large" type="submit">
