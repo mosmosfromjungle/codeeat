@@ -11,7 +11,7 @@ import { PersonAddAltOutlined, MailOutlineRounded } from '@mui/icons-material'
 import { Content, Header, HeaderTitle } from '../GlobalStyle'
 
 import { IPlayer } from '../../../../types/IOfficeState'
-import { insertLastDM } from '../../apicalls/DM/DM'
+import { getRoomId } from '../../apicalls/DM/DM'
 import { HELPER_STATUS, setHelperStatus } from '../../stores/UserStore'
 import { setReceiverName, setShowDMList, setShowDMRoom, setRoomId } from '../../stores/DMStore'
 import { useAppSelector, useAppDispatch } from '../../hooks'
@@ -136,25 +136,22 @@ export default function UsersDialog() {
       console.error('check first chat error: ',err)
     }
   }
-
-  const handleClick = async (player) => {
-    // const firstChatStatus = await checkFirstChat(player.name)
-    // if (firstChatStatus !== undefined && firstChatStatus == 200) {
-    //   dispatch(setReceiverName(player.name))
-    //   dispatch(setShowDMRoom(true))
-    //   dispatch(setShowUser(false)) // 수정 가능
-    // } else {
-      let body = {
-        senderName: username,
-        receiverName: player.name,
-        message: `${username} 님이 메시지를 보냈습니다`
+  const getRoooom = async (username, playerName) => {
+    getRoomId({myName : username, targetName: playerName})
+    .then((roomId) => {
+      if (roomId !== null) {
+        dispatch(setRoomId(roomId))
+      } else {
+        dispatch(setRoomId('first'))
       }
-      console.log(body)
-      insertLastDM(body)
-      dispatch(setReceiverName(player.name))
-      dispatch(setShowDMRoom(true))
-      dispatch(setHelperStatus(HELPER_STATUS.NONE))
-    // }
+    })
+    
+  }
+  const handleClick = (player) => {
+    getRoooom(username,player.name)
+    dispatch(setReceiverName(player.name))
+    dispatch(setShowDMRoom(true))
+    dispatch(setHelperStatus(HELPER_STATUS.NONE))
   }
 
   useEffect(() => {
@@ -271,13 +268,7 @@ export default function UsersDialog() {
                       <PersonAddAltOutlined fontSize='large' />
                     </Button>
                     <Button onClick={(e) => {
-                        // dispatch(setShowDMRoom(true));
-                        // 준택코드
-                        dispatch(setShowDMList(true))
-                        dispatch(setHelperStatus(HELPER_STATUS.NONE))
-                        // 재혁코드
                         e.preventDefault();
-                        console.log(player?.name ?? "unknown") // 🐱
                         handleClick(player)
                       }}
                     >

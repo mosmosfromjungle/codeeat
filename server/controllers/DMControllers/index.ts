@@ -31,7 +31,7 @@ export const DMController = (socket: Socket) => {
     } else {
       if (roomId == 'first'){
         roomId = createRoom();
-        console.log('횟수 세는용')
+        console.log('생성')
         updateRoomId({ roomId: roomId, senderName: username, receiverName: receiverName })
         .then(() => {
           rooms[roomId].push(username);
@@ -64,9 +64,9 @@ export const DMController = (socket: Socket) => {
     }
   };
 
-  const readMessage = (message: { roomId: string; username: string; receiverName: string; }) => {
+  const readMessage = async (message: { roomId: string; username: string; receiverName: string; }) => {
     const { roomId, username, receiverName } = message;
-  
+    console.log('읽어')
     getDMMessage(username,receiverName)
     .then((dmMessage) => {
       socket.emit('old-messages', dmMessage);

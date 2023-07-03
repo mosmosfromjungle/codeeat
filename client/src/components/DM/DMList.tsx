@@ -24,6 +24,7 @@ export const ConversationList = () => {
   const dispatch = useAppDispatch();
   const username = useAppSelector((state) => state.user.username);
   useEffect(() => {
+    console.log('방가져온다',username)
     fetchRoomList(username)
     .then((data) => {
         setRooms(data);

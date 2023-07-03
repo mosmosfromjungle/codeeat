@@ -125,9 +125,9 @@ export const updateLastDM = async (obj: { senderName: string; receiverName: stri
     }
   };
 
-  export const deleteLastDM = async (body:{ senderName: string, receiverName: string, message: string }) => {
+  export const deleteLastDM = (body:{ senderName: string, receiverName: string, message: string }) => {
     try {
-      await LastDM.collection.deleteMany({
+      LastDM.collection.deleteMany({
         $and: [
           {
             $or: [
@@ -142,3 +142,18 @@ export const updateLastDM = async (obj: { senderName: string; receiverName: stri
       console.error(err)
     }
   }
+
+  export const getThatRoom = async (body: { myName: string, targetName: string }) => {
+    try {
+      const result = await LastDM.collection.findOne({
+        $or: [
+          { $and: [{ senderName: body.myName }, { receiverName: body.targetName }] },
+          { $and: [{ senderName: body.targetName }, { receiverName: body.myName }] }
+        ]
+      })
+      return result ? result.roomId : null;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
