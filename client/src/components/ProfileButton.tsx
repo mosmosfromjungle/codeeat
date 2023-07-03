@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography'
 
 import { setShowProfile, DIALOG_STATUS } from '../stores/UserStore'
 import { setFocused } from '../stores/ChatStore'
-import { setShowDMList, setShowDMRoom } from '../stores/DMStore';
+import { setShowDMList, setShowDMRoom } from '../stores/DMStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
 import ExperienceBar from '../components/ExperienceBar'
 import { getMyProfile } from '../apicalls/auth'
@@ -87,8 +87,9 @@ export default function ProfileButton() {
   const showProfile = useAppSelector((state) => state.user.showProfile)
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
-  const userLevel = useAppSelector((state) => state.user.userLevel)
+  // const userLevel = useAppSelector((state) => state.user.userLevel)
   const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`
+  const [userLevel, setUserLevel] = useState<string>()
   const [currentExp, setCurrentExp] = useState<number>()
   const [requiredExp, setRequiredExp] = useState<number>()
 
@@ -113,7 +114,8 @@ export default function ProfileButton() {
       getMyProfile()
         .then((response) => {
           if (!response) return
-          const { currentExp, requiredExp } = response
+          const { userLevel, currentExp, requiredExp } = response
+          setUserLevel(userLevel)
           setCurrentExp(currentExp)
           setRequiredExp(requiredExp)
         })
@@ -135,15 +137,18 @@ export default function ProfileButton() {
               dispatch(setShowProfile(true))
             )}
           >
-            <ListItem style={{padding: '8px 10px'}}>
-              <ListItemAvatar>
-                <Avatar src={imgpath} />
-              </ListItemAvatar>
-              <Profile>
-                <span style={{ fontSize: '14px', lineHeight: '1' }}>Lv. {userLevel}<br/></span>
-                <span style={{ fontSize: '24px', lineHeight: '1' }}>{username}</span>
-              </Profile>
-            </ListItem>
+            <ProfileButtonWrapper>
+              <ListItem style={{padding: '8px 10px'}}>
+                <ListItemAvatar>
+                  <Avatar src={imgpath} />
+                </ListItemAvatar>
+                <Profile>
+                  <span style={{ fontSize: '14px', lineHeight: '1' }}>Lv. {userLevel}<br/></span>
+                  <span style={{ fontSize: '24px', lineHeight: '1' }}>{username}</span>
+                </Profile>
+              </ListItem>
+              <ExperienceBar currentExperience={currentExp} experienceToNextLevel={requiredExp} />
+            </ProfileButtonWrapper>
           </CustomButton>
         </ContentWrapper>
       )}

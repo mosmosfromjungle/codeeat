@@ -175,6 +175,23 @@ export const updateMyProfile = async (body: UpdateRequest): Promise<any> => {
     }
 }
 
+export const updateLevel = async (body: UpdateLevelReqest): Promise<any> => {
+  // console.log("바디는 제대로 들어오는거니?" + JSON.stringify(body))
+  try {
+    const response = await axios.post('/auth/exp', body, {
+      withCredentials: true,
+      headers: {
+        'Content-type': 'application/json',
+      },
+    })
+    if (response.status === 200) {
+      return response.data
+    }
+  } catch (error) {
+    throw error
+  }
+}
+
 // export const updateMyProfile = async () => {
 //     const body = {
 //       school: school,
@@ -233,4 +250,11 @@ export interface UpdateRequest {
   grade: string
   school: string
   profileMessage: string
+}
+
+export interface UpdateLevelReqest {
+  // username: string
+  // character: string
+  username: string
+  exp: number
 }
