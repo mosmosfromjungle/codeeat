@@ -24,7 +24,7 @@ import {
   RemoveRequest,
 } from '../../apicalls/friends'
 
-interface friendListInterface {
+interface friendInterface {
   username: string
   character: string
 }
@@ -111,19 +111,21 @@ export default function FriendsDialog() {
   const focused = useAppSelector((state) => state.chat.focused)
   const username = useAppSelector((state) => state.user.username)
   const helperStatus = useAppSelector((state) => state.user.helperStatus)
-  const [friendList, setFriendList] = useState<friendListInterface[]>([])
-  const [friendRequestList, setFriendRequestList] = useState<friendListInterface[]>([])
+  const [friendList, setFriendList] = useState<friendInterface[]>([])
+  const [friendRequestList, setFriendRequestList] = useState<friendInterface[]>([])
   const [friendUsername, setFriendUsername] = useState<string>('')
   const [friendCharacter, setFriendCharacter] = useState<string>('')
   const [friendUserLevel, setFriendUserLevel] = useState<string>('')
   const [grade, setGrade] = useState<string>('')
   const [school, setSchool] = useState<string>('')
   const [message, setMessage] = useState<string>('')
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false)
+  const [isResModalOpen, setIsResModalOpen] = useState<boolean>(false)
+  const [resMessage, setResMessage] = useState<string>('')
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
+  // const scrollToBottom = () => {
+  //   messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  // }
 
   useEffect(() => {
     if (focused) {
@@ -131,9 +133,9 @@ export default function FriendsDialog() {
     }
   }, [focused])
 
-  useEffect(() => {
-    scrollToBottom()
-  }, [chatMessages, helperStatus])
+  // useEffect(() => {
+  //   scrollToBottom()
+  // }, [chatMessages, helperStatus])
 
   useEffect(() => {
     ;(async () => {
@@ -147,7 +149,7 @@ export default function FriendsDialog() {
           console.error(error)
         })
     })()
-  }, [])
+  }, [isResModalOpen])
 
   useEffect(() => {
     ;(async () => {
@@ -161,7 +163,7 @@ export default function FriendsDialog() {
           console.error(error)
         })
     })()
-  }, [])
+  }, [isResModalOpen])
 
   const receiveAccept = (requester: string, recipient: string) => {
     const body: AcceptRequest = {
@@ -171,14 +173,16 @@ export default function FriendsDialog() {
     handleAccept(body)
       .then((response) => {
         if (!response) return
+        setResMessage('친구 요청을 수락했어요')
         // dispatch(setShowFriend(false))
-        dispatch(setHelperStatus(HELPER_STATUS.NONE))
+        // dispatch(setHelperStatus(HELPER_STATUS.NONE))
       })
       .catch((error) => {
-        if (error.response) {
-          const { status, message } = error.response.data
-          console.log('message: ' + message)
-        }
+        // if (error.response) {
+        //   const { status, message } = error.response.data
+        //   console.log('message: ' + message)
+        // }
+        setResMessage('친구요청을 수락하는데 오류가 있었어요!')
       })
   }
 
@@ -190,14 +194,16 @@ export default function FriendsDialog() {
     handleReject(body)
       .then((response) => {
         if (!response) return
+        setResMessage('친구 요청을 거절했어요')
         // dispatch(setShowFriend(false))
-        dispatch(setHelperStatus(HELPER_STATUS.NONE))
+        // dispatch(setHelperStatus(HELPER_STATUS.NONE))
       })
       .catch((error) => {
-        if (error.response) {
-          const { status, message } = error.response.data
-          console.log('message: ' + message)
-        }
+        // if (error.response) {
+        //   const { status, message } = error.response.data
+        //   console.log('message: ' + message)
+        // }
+        setResMessage('친구요청을 거절하는데 오류가 있었어요!')
       })
   }
 
@@ -209,14 +215,16 @@ export default function FriendsDialog() {
     handleRemove(body)
       .then((response) => {
         if (!response) return
+        setResMessage('친구를 삭제했어요')
         // dispatch(setShowFriend(false))
-        dispatch(setHelperStatus(HELPER_STATUS.NONE))
+        // dispatch(setHelperStatus(HELPER_STATUS.NONE))
       })
       .catch((error) => {
-        if (error.response) {
-          const { status, message } = error.response.data
-          console.log('message: ' + message)
-        }
+        // if (error.response) {
+        //   const { status, message } = error.response.data
+        //   console.log('message: ' + message)
+        // }
+        setResMessage('친구를 삭제하는데 오류가 있었어요!')
       })
   }
 
@@ -237,17 +245,58 @@ export default function FriendsDialog() {
       })
   }
 
-  const openModal = () => {
+  const openResModal = () => {
     setTimeout(() => {
-      setIsModalOpen(true)
+      setIsResModalOpen(true)
     }, 200)
   }
 
-  const closeModal = () => {
-    setIsModalOpen(false)
+  const closeResModal = () => {
+    setIsResModalOpen(false)
   }
 
-  const Modal = ({ open, handleClose }: { open: any; handleClose: any }) => {
+  const openProfileModal = () => {
+    setTimeout(() => {
+      setIsProfileModalOpen(true)
+    }, 200)
+  }
+
+  const closeProfileModal = () => {
+    setIsProfileModalOpen(false)
+  }
+
+  const ResModal = ({ open, handleClose }: { open: any; handleClose: any }) => {
+    return (
+      <div
+        style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          backgroundColor: '#222639',
+          borderRadius: '24px',
+          boxShadow: '0px, 10px, 24px, #0000006f',
+          padding: '50px',
+          zIndex: 1000,
+          fontSize: '15px',
+          color: '#eee',
+          textAlign: 'center',
+          fontFamily: 'Font_DungGeun',
+        }}
+      >
+        <h2>{resMessage}</h2>
+        <Button
+          variant="contained"
+          onClick={handleClose}
+          style={{ fontWeight: 'bold', margin: 'auto' }}
+        >
+          확인
+        </Button>
+      </div>
+    )
+  }
+
+  const ProfileModal = ({ open, handleClose }: { open: any; handleClose: any }) => {
     return (
       <div
         style={{
@@ -300,7 +349,8 @@ export default function FriendsDialog() {
 
   return (
     <Backdrop>
-      {isModalOpen && <Modal open={isModalOpen} handleClose={closeModal} />}
+      {isResModalOpen && <ResModal open={isResModalOpen} handleClose={closeResModal} />}
+      {isProfileModalOpen && <ProfileModal open={isProfileModalOpen} handleClose={closeProfileModal} />}
       <Wrapper>
         <Content>
           <Header>
@@ -322,7 +372,7 @@ export default function FriendsDialog() {
               <ListItem divider key={index} style={{ padding: '16px'}}>
                 <Button onClick={() => {
                   getFriendProfile(value.username)
-                  openModal()
+                  openProfileModal()
                 }}>
                 <NameWrapper>
                   <ListItemAvatar>
@@ -338,13 +388,19 @@ export default function FriendsDialog() {
                 </Button>
                 <ProfileButton>
                   <Button
-                    onClick={() => receiveReject(value.username, username)}
+                    onClick={() => {
+                      receiveReject(value.username, username)
+                      openResModal()
+                    }}
                     color="primary"
                   >
                     친구 싫어
                   </Button>
                   <Button
-                    onClick={() => receiveAccept(value.username, username)}
+                    onClick={() => {
+                      receiveAccept(value.username, username)
+                      openResModal()
+                    }}
                     color="primary"
                   >
                     친구 좋아
@@ -359,7 +415,7 @@ export default function FriendsDialog() {
               <ListItem divider key={index} style={{ padding: '16px'}}>
                 <Button onClick={() => {
                   getFriendProfile(value.username)
-                  openModal()
+                  openProfileModal()
                 }}>
                 <NameWrapper>
                   <ListItemAvatar>
@@ -374,7 +430,10 @@ export default function FriendsDialog() {
                 </NameWrapper>
                 </Button>
                 <ProfileButton>
-                  <Button onClick={() => removeFriendList(value.username, username)}>
+                  <Button onClick={() => {
+                    removeFriendList(value.username, username)
+                    openResModal()
+                  }}>
                     <PersonRemoveOutlined fontSize='large' style={{ color: 'gray'}} />
                   </Button>
                   <Button
