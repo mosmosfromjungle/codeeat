@@ -16,6 +16,7 @@ import { HELPER_STATUS, setHelperStatus } from '../../stores/UserStore'
 import { setReceiverName, setShowDMList, setShowDMRoom, setRoomId } from '../../stores/DMStore'
 import { useAppSelector, useAppDispatch } from '../../hooks'
 import { checkIfFirst } from '../../apicalls/DM/DM'
+import { getUserProfile } from '../../apicalls/auth'
 import { sendFriendReq, sendRequest } from '../../apicalls/friends'
 
 const Backdrop = styled.div`
@@ -71,38 +72,16 @@ const ProfileButton = styled.div`
     color: black;
   }
 `
-
-// Todo: change the parameter in body part
-const getUser = async () => {
-  const apiUrl: string = 'http://auth/user/list'
-  await fetch(apiUrl, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }).then((res) => {
-    if (res.ok) {
-      console.log('Get user list is success.')
-    }
-    // Todo: need to hanle return codes - 200, 400, 409 ...
-  })
-}
-
-// Todo: change the parameter in body part
-const getUserDetail = async (userId: string) => {
-  const apiUrl: string = 'http://auth/user/detaul/' + userId
-  await fetch(apiUrl, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }).then((res) => {
-    if (res.ok) {
-      console.log('Get user detail is success.')
-    }
-    // Todo: need to hanle return codes - 200, 400, 409 ...
-  })
-}
+const TextDiv = styled.div`
+  margin-bottom: 10px;
+`
+const Profile = styled.div`
+  color: white;
+  width: 200px;
+  font-size: 18px;
+  font-family: Font_DungGeun;
+  text-align: left;
+`
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
@@ -120,8 +99,15 @@ export default function UsersDialog() {
   const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`
   const players = useAppSelector((state) => state.room.mainPlayers)
   const [otherPlayers, setOtherPlayers] = useState<IPlayer[]>()
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+  const [friendUsername, setFriendUsername] = useState<string>('')
+  const [friendCharacter, setFriendCharacter] = useState<string>('')
+  const [friendUserLevel, setFriendUserLevel] = useState<string>('')
+  const [grade, setGrade] = useState<string>('')
+  const [school, setSchool] = useState<string>('')
   const [message, setMessage] = useState<string>('')
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false)
+  const [isResModalOpen, setIsResModalOpen] = useState<boolean>(false)
+  const [resMessage, setResMessage] = useState<string>('')
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -177,25 +163,52 @@ export default function UsersDialog() {
       .then((response) => {
         console.log(response)
         if (response.status === 201) {
-          setMessage(response.message)
+          setResMessage(response.message)
         }
       })
       .catch((error) => {
-        setMessage(error.response.data.message)
+        setResMessage(error.response.data.message)
       })
   }
 
-  const openModal = () => {
+  const getFriendProfile = (username: string) => {
+    getUserProfile(username)
+      .then((response) => {
+        if (!response) return
+        const { username, character, userLevel, grade, school, profileMessage } = response
+        setFriendUsername(username)
+        setFriendCharacter(character)
+        setFriendUserLevel(userLevel)
+        setGrade(grade)
+        setSchool(school)
+        setMessage(profileMessage)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
+
+  const openResModal = () => {
     setTimeout(() => {
-      setIsModalOpen(true)
+      setIsResModalOpen(true)
     }, 200)
   }
 
-  const closeModal = () => {
-    setIsModalOpen(false)
+  const closeResModal = () => {
+    setIsResModalOpen(false)
   }
 
-  const Modal = ({ open, handleClose }: { open: any; handleClose: any }) => {
+  const openProfileModal = () => {
+    setTimeout(() => {
+      setIsProfileModalOpen(true)
+    }, 200)
+  }
+
+  const closeProfileModal = () => {
+    setIsProfileModalOpen(false)
+  }
+
+  const ResModal = ({ open, handleClose }: { open: any; handleClose: any }) => {
     return (
       <div
         style={{
@@ -214,7 +227,58 @@ export default function UsersDialog() {
           fontFamily: 'Font_DungGeun',
         }}
       >
-        <h2>{message}</h2>
+        <h2>{resMessage}</h2>
+        <Button
+          variant="contained"
+          onClick={handleClose}
+          style={{ fontWeight: 'bold', margin: 'auto' }}
+        >
+          확인
+        </Button>
+      </div>
+    )
+  }
+
+  const ProfileModal = ({ open, handleClose }: { open: any; handleClose: any }) => {
+    return (
+      <div
+        style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          backgroundColor: '#222639',
+          borderRadius: '24px',
+          boxShadow: '0px, 10px, 24px, #0000006f',
+          padding: '50px',
+          zIndex: 1000,
+          fontSize: '15px',
+          color: '#eee',
+          textAlign: 'center',
+          fontFamily: 'Font_DungGeun',
+        }}
+      >
+        <div>
+          <div>
+            <img
+              src={`../../public/assets/character/single/${friendCharacter}_idle_anim_19.png`}
+              alt=""
+            />
+            <div>
+              <h2>Lv: {friendUserLevel}</h2>
+              <h2>{friendUsername}</h2>
+            </div>
+          </div>
+          <>
+            <TextDiv>
+              <Profile>
+                학년: {grade} <br /><br />
+                학교: {school} <br /><br />
+                자기소개: {message} <br /><br />
+              </Profile>
+            </TextDiv>
+          </>
+        </div>
         <Button
           variant="contained"
           onClick={handleClose}
@@ -228,7 +292,8 @@ export default function UsersDialog() {
 
   return (
     <Backdrop>
-      {isModalOpen && <Modal open={isModalOpen} handleClose={closeModal} />}
+      {isResModalOpen && <ResModal open={isResModalOpen} handleClose={closeResModal} />}
+      {isProfileModalOpen && <ProfileModal open={isProfileModalOpen} handleClose={closeProfileModal} />}
       <Wrapper>
         <Content>
           <Header>
@@ -250,20 +315,24 @@ export default function UsersDialog() {
               if (player.name === username) return
               return (
                 <ListItem divider key={i} style={{ padding: '16px'}}>
+                  <Button onClick={() => {
+                    getFriendProfile(player.name)
+                    openProfileModal()
+                  }}>
                   <NameWrapper>
                     <ListItemAvatar>
                       <Avatar src={imgpath} />
                       {/* <img src={imgpath} /> */}
                     </ListItemAvatar>
                     <NameProfile>
-                      {/* <Level>Lv. {userLevel}</Level> */}
                       <Username>{player.name}</Username>
                     </NameProfile>
                   </NameWrapper>
+                  </Button>
                   <ProfileButton>
                     <Button onClick={() => {
                         sendFriendRequest(username, player.name)
-                        openModal()
+                        openResModal()
                     }}>
                       <PersonAddAltOutlined fontSize='large' />
                     </Button>

@@ -62,22 +62,27 @@ export const MyInfo = styled.div`
 `
 
 export const Position = styled.div`
-    height: 30%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 `
 
 export const CharacterArea = styled.div`
     height: 40%;
-    padding: 20px;
+    width: 30%;
+    padding: 15px;
 `
 
 export const NameArea = styled.div`
     height: 30%;
+    width: 70%;
+    margin-top: 30px;
 `
 
 export const Comment = styled.div`
-    text-align: center;
-    font-size: 30px;
-    font-family: Font_DungGeun;
+    font-size: 18px;
+    padding-bottom: 10px;
 `
 
 export const TimerArea = styled.div`
@@ -119,6 +124,7 @@ export const Right = styled.div`
 `
 
 export const PointArea = styled.div`
+    width: 100%;
     height: 15%;
     display: flex;
     position: relative;
@@ -127,21 +133,46 @@ export const PointArea = styled.div`
 `
 
 export const FriendPoint = styled.div`
-    margin: 10px;
-    width: 40%;
+    display: flex;
+    position: relative;
+    left: 30px;
+    width: 20%;
+    margin-top: 10px;
     text-align: center;
+    border: 1px solid #00000029;
+    border-radius: 16px;
+    box-shadow: 0px 10px 24px #0000006f;
 `
 
 export const InputArea = styled.div`
     display: flex;
     position: relative;
     margin: 20px;
-    width: 20%;
+    width: 10%;
     text-align: center;
+    font-size: 90px;
+
+    TextField {
+        padding: 20px;
+    }
+`
+
+export const PlayArea = styled.div`
+    display: flex;
+    position: relative;
+    margin: 20px;
+    width: 25%;
+    font-size: 18px;
 `
 
 export const MyPoint = styled.div`
-    margin: 10px;
-    width: 40%;
+    display: flex;
+    position: relative;
+    right: 30px;
+    width: 20%;
+    margin-top: 10px;
     text-align: center;
+    border: 1px solid #00000029;
+    border-radius: 16px;
+    box-shadow: 0px 10px 24px #0000006f;
 `

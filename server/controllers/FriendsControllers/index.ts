@@ -35,6 +35,14 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
       return res.status(400).json({ message: '이미 친구요청을 보냈어요!' })
     }
 
+    const receivedRequest = await FriendRequest.findOne({
+      'requester.username': recipient,
+      'recipient.username': requester,
+    })
+    if (receivedRequest) {
+      return res.status(400).json({ message: '이미 친구요청을 받았어요!' })
+    }
+
     const foundRequester = await User.findOne({ username: requester })
     if (!foundRequester) return res.status(409).json({ message: 'Requester not found' })
     const foundRecipient = await User.findOne({ username: recipient })
