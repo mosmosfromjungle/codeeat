@@ -13,6 +13,8 @@ import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemAvatar from '@mui/material/ListItemAvatar'
 import Avatar from '@mui/material/Avatar'
+import { PersonRemoveOutlined, MailOutlineRounded } from '@mui/icons-material'
+import { Content, Header, HeaderTitle } from '../../GlobalStyle'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 
@@ -27,109 +29,196 @@ import { IUserInfo, IUserProfile } from '../../../../../server/controllers/UserC
 import phaserGame from '../../../PhaserGame'
 import Bootstrap from '../../../scenes/Bootstrap'
 
+/* 기존 랭킹보드 style */
+// const Backdrop = styled.div`
+//   // position: fixed;
+//   // display: flex;
+//   // width: 1000px;
+//   // gap: 10px;
+//   // bottom: 16px;
+//   // right: 16px;
+//   // align-items: flex-end;
+//   position: fixed;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   width: 100%;
+//   height: 100%;
+//   gap: 10px;
+// `
+
+// const Wrapper = styled.div`
+//   height: 100%;
+//   margin-top: auto;
+//   position: relative;
+//   width: 1000px;
+//   margin: auto;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+// `
+
+// const Content = styled.div`
+//   margin: 70px auto;
+// `
+
+// const ChatHeader = styled.div`
+//   position: relative;
+//   height: 40px;
+//   background: #000000a7;
+//   border-radius: 10px 10px 0px 0px;
+//   // dispaly: flex;
+//   // justify-content: center;
+
+//   .close {
+//     position: absolute;
+//     top: 0;
+//     right: 0;
+//   }
+// `
+
+// const Title = styled.div`
+//   // position: absolute;
+//   color: white;
+//   font-size: 20px;
+//   font-weight: bold;
+//   top: 10px;
+//   font-family: Font_DungGeun;
+//   text-align: center;
+//   line-height: 40px;
+// `
+
+// const ChatBox = styled(Box)`
+//   // height: 580px;
+//   width: 1000px;
+//   overflow: auto;
+//   background: #2c2c2c;
+//   border: 1px solid #00000029;
+//   padding: 10px 10px;
+//   border-radius: 0px 0px 10px 10px;
+
+//   Button {
+//     font-size: 17px;
+//     font-family: Font_DungGeun;
+//   }
+// `
+
+// const UserList = styled.div`
+//   display: grid;
+//   // grid-template-columns: repeat(3, 1fr);
+//   gap: 20px; // 이 값을 조절하여 원하는 간격을 설정하세요
+//   height: 800px; 
+// `
+
+// const User = styled.div`
+//   margin: 10px 10px 10px 10px;
+// `
+
+// const Profile = styled.div`
+//   // border: 3px solid red;
+//   margin-left: 30px;
+//   // padding-left: 50px;
+//   color: white;
+//   font-size: 20px;
+//   font-family: Font_DungGeun;
+//   display: flex;
+//   flex-direction: row;
+//   justify-content: space-between;
+
+//   & > div {
+//     display: flex;
+//     flex-direction: row;
+//     justify-content: space-between;
+//     gap: 100px;
+//   }
+// `
+
+// const ProfileText = styled.p`
+//   flex: 1;
+//   text-align: center;
+//   margin: 10px; // 이 값을 조절하여 원하는 간격을 설정하세요
+// `
+
 const Backdrop = styled.div`
-  // position: fixed;
-  // display: flex;
-  // width: 1000px;
-  // gap: 10px;
-  // bottom: 16px;
-  // right: 16px;
-  // align-items: flex-end;
   position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 100%;
-  gap: 10px;
+  background: rgba(0, 0, 0, 0.3);
 `
-
 const Wrapper = styled.div`
-  // height: 100%;
-  // margin-top: auto;
-  position: relative;
-  width: 1000px;
-  margin: auto;
+  width: 100%; // Adjust this as needed
+  height: 80%; // Adjust this as needed
   display: flex;
   flex-direction: column;
   align-items: center;
 `
-
-const Content = styled.div`
-  margin: 70px auto;
-`
-
-const ChatHeader = styled.div`
-  position: relative;
-  height: 40px;
-  background: #000000a7;
-  border-radius: 10px 10px 0px 0px;
-
-  .close {
-    position: absolute;
-    top: 0;
-    right: 0;
-  }
-`
-
-const Title = styled.div`
-  position: absolute;
-  color: white;
-  font-size: 20px;
-  font-weight: bold;
-  top: 10px;
-  left: 150px;
-  font-family: Font_DungGeun;
-`
-
-const ChatBox = styled(Box)`
-  // height: 580px;
-  width: 1000px;
+const Body = styled.div`
+  flex: 1;
+  height: calc(100% - 76px);
   overflow: auto;
-  background: #2c2c2c;
-  border: 1px solid #00000029;
-  padding: 10px 10px;
-  border-radius: 0px 0px 10px 10px;
+  padding: 10px 0 0 20px;
+  display: flex;
+  flex-direction: column;
 
-  Button {
-    font-size: 17px;
-    font-family: Font_DungGeun;
+  .listitem && {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: space-between;
   }
 `
-
-const UserList = styled.div`
-  display: grid;
-  // grid-template-columns: repeat(3, 1fr);
-  gap: 20px; // 이 값을 조절하여 원하는 간격을 설정하세요
-`
-
-const User = styled.div`
-  margin: 10px 10px 10px 10px;
-`
-
-const Profile = styled.div`
-  // border: 3px solid red;
-  margin-left: 30px;
-  // padding-left: 50px;
-  color: white;
-  font-size: 20px;
+const ListTitle = styled.div`
+  position: relative;
+  color: black;
+  font-size: 18px;
+  font-weight: bold;
   font-family: Font_DungGeun;
+  text-align: left;
+  padding: 8px 0;
+  //   background-color: ;
+`
+const NameWrapper = styled.div`
+  // margin-right: auto;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-
-  & > div {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    gap: 100px;
+  align-items: center;
+`
+const NameProfile = styled.div`
+  color: black;
+  font-family: Font_DungGeun;
+  font-size: 20px;
+  margin-left: 30px;
+`
+const Level = styled.div`
+  font-size: 20px;
+  line-height: 1;
+`
+const Username = styled.div`
+  font-size: 24px;
+  line-height: 1;
+  margin: 4px 0 0 0;
+`
+const ProfileButton = styled.div`
+  margin-left: auto;
+  display: flex;
+  flex-direction: row;
+  Button {
+    color: black;
   }
 `
-
-const ProfileText = styled.p`
-  flex: 1;
-  text-align: center;
-  margin: 10px; // 이 값을 조절하여 원하는 간격을 설정하세요
+const TextDiv = styled.div`
+  margin-bottom: 10px;
+`
+const Profile = styled.div`
+  color: white;
+  width: 200px;
+  font-size: 18px;
+  font-family: Font_DungGeun;
+  text-align: left;
 `
 
 
@@ -205,36 +294,49 @@ export default function RankingBoardDialog() {
     //         </IconButton>
     //       </ChatHeader>
     //       <ChatBox>
-    //         {/* <ButtonGroup variant="text" aria-label="text button group">
-    //           <Button>Bronze</Button>
-    //           <Button>Silver</Button>
-    //           <Button>Gold</Button>
-    //           <Button>Platinum</Button>
-    //           <Button>Ruby</Button>
-    //         </ButtonGroup> */}
     //         <UserList>
-    //           <User>
-    //             {usersRankingList.map((value, index) => (
+    //           {usersRankingList.slice(0, 3).map((value, index) => (
+    //             <User key={index}>
     //               <ListItem divider>
-    //                 <h1 style={{ margin: '0 40px 0 10px' }}>{index+1}</h1>
+    //                 {/* <h1 style={{ margin: '0 30px' }}>{index + 1}</h1> */}
+    //                 <img
+    //                   src={`../../public/assets/game/RankingBoard/medal${index + 1}.png`}
+    //                   style={{ margin: '0 30px 0 10px', width: '50px', height: '50px' }}
+    //                 />
     //                 <ListItemAvatar>
-    //                   {/* <Avatar src={imgpath} /> */}
     //                   <Avatar
     //                     src={`../../public/assets/character/single/${value.character}_idle_anim_19.png`}
     //                   />
     //                 </ListItemAvatar>
-
     //                 <Profile>
     //                   <div>
-    //                     {/* <p key={index}>랭킹: {index + 1}</p> */}
-    //                     <p key={index}>Lv. {value.userLevel}</p>
-    //                     <p key={index}>이름: {value.username}</p>
-    //                     <p key={index}>자기소개: {value.profileMessage}</p>
+    //                     <p>Lv. {value.userLevel}</p>
+    //                     <p>이름: {value.username}</p>
+    //                     <p>자기소개: {value.profileMessage}</p>
     //                   </div>
     //                 </Profile>
     //               </ListItem>
-    //             ))}
-    //           </User>
+    //             </User>
+    //           ))}
+    //           {usersRankingList.slice(3).map((value, index) => (
+    //             <User key={index}>
+    //               <ListItem divider>
+    //                 <h4 style={{ color: 'white', margin: '0 46px 0 28px' }}>{index + 4}</h4>
+    //                 <ListItemAvatar>
+    //                   <Avatar
+    //                     src={`../../public/assets/character/single/${value.character}_idle_anim_19.png`}
+    //                   />
+    //                 </ListItemAvatar>
+    //                 <Profile>
+    //                   <div>
+    //                     <p>Lv. {value.userLevel}</p>
+    //                     <p>이름: {value.username}</p>
+    //                     <p>자기소개: {value.profileMessage}</p>
+    //                   </div>
+    //                 </Profile>
+    //               </ListItem>
+    //             </User>
+    //           ))}
     //         </UserList>
     //       </ChatBox>
     //     </Content>
@@ -242,9 +344,9 @@ export default function RankingBoardDialog() {
     // </Backdrop>
     <Backdrop>
       <Wrapper>
-        <Content>
-          <ChatHeader>
-            <Title>랭킹 보드</Title>
+        <Content style={{ width: '600px', height: '860px' }}>
+          <Header>
+            <HeaderTitle>랭킹 보드</HeaderTitle>
             <IconButton
               aria-label="close dialog"
               className="close"
@@ -253,53 +355,54 @@ export default function RankingBoardDialog() {
             >
               <CloseIcon />
             </IconButton>
-          </ChatHeader>
-          <ChatBox>
-            <UserList>
-              {usersRankingList.slice(0, 3).map((value, index) => (
-                <User key={index}>
-                  <ListItem divider>
-                    {/* <h1 style={{ margin: '0 30px' }}>{index + 1}</h1> */}
-                    <img
-                      src={`../../public/assets/game/RankingBoard/medal${index + 1}.png`}
-                      style={{ margin: '0 30px 0 10px', width: '50px', height: '50px' }}
+          </Header>
+          <Body>
+            {usersRankingList.slice(0, 3).map((value, index) => (
+              <ListItem divider key={index} style={{ padding: '16px' }}>
+                <NameWrapper>
+                  <img
+                    src={`../../public/assets/game/RankingBoard/medal${index + 1}.png`}
+                    style={{ margin: '0 30px 0 10px', width: '50px', height: '50px' }}
+                  />
+                  <ListItemAvatar>
+                    <Avatar
+                      src={`../../public/assets/character/single/${value.character}_idle_anim_19.png`}
                     />
-                    <ListItemAvatar>
-                      <Avatar
-                        src={`../../public/assets/character/single/${value.character}_idle_anim_19.png`}
-                      />
-                    </ListItemAvatar>
-                    <Profile>
-                      <div>
-                        <p>Lv. {value.userLevel}</p>
-                        <p>이름: {value.username}</p>
-                        <p>자기소개: {value.profileMessage}</p>
-                      </div>
-                    </Profile>
-                  </ListItem>
-                </User>
-              ))}
-              {usersRankingList.slice(3).map((value, index) => (
-                <User key={index}>
-                  <ListItem divider>
-                    <h4 style={{ color: 'white', margin: '0 46px 0 28px' }}>{index + 4}</h4>
-                    <ListItemAvatar>
-                      <Avatar
-                        src={`../../public/assets/character/single/${value.character}_idle_anim_19.png`}
-                      />
-                    </ListItemAvatar>
-                    <Profile>
-                      <div>
-                        <p>Lv. {value.userLevel}</p>
-                        <p>이름: {value.username}</p>
-                        <p>자기소개: {value.profileMessage}</p>
-                      </div>
-                    </Profile>
-                  </ListItem>
-                </User>
-              ))}
-            </UserList>
-          </ChatBox>
+                  </ListItemAvatar>
+                  <NameProfile>
+                    {/* <Level>Lv. {userLevel}</Level> */}
+                    {/* <Username>{value.username}</Username> */}
+                    <div>
+                      <p>Lv. {value.userLevel}</p>
+                      <p>이름: {value.username}</p>
+                      <p>자기소개: {value.profileMessage}</p>
+                    </div>
+                  </NameProfile>
+                </NameWrapper>
+              </ListItem>
+            ))}
+            {usersRankingList.slice(3).map((value, index) => (
+              <ListItem divider key={index} style={{ padding: '16px' }}>
+                <NameWrapper>
+                  <h4 style={{ color: 'black', margin: '0 46px 0 28px' }}>{index + 4}</h4>
+                  <ListItemAvatar>
+                    <Avatar
+                      src={`../../public/assets/character/single/${value.character}_idle_anim_19.png`}
+                    />
+                  </ListItemAvatar>
+                  <NameProfile>
+                    {/* <Level>Lv. {userLevel}</Level> */}
+                    {/* <Username>{value.username}</Username> */}
+                    <div>
+                      <p>Lv. {value.userLevel}</p>
+                      <p>이름: {value.username}</p>
+                      <p>자기소개: {value.profileMessage}</p>
+                    </div>
+                  </NameProfile>
+                </NameWrapper>
+              </ListItem>
+            ))}
+          </Body>
         </Content>
       </Wrapper>
     </Backdrop>
