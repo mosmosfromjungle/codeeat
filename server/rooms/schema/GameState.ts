@@ -12,40 +12,36 @@ import {
   IRainGameState,
   IRainGameUser,
   IKeywordRain,
-  IRainGameRoomState
+  IRainGameRoomState,
 } from '../../../types/IGameState'
-
 
 /* MOLE GAME ROOM SCHEMA */
 
-
 /* RAIN GAME ROOM SCHEMA */
 
-export class KeywordRain extends Schema implements IKeywordRain{
-  @type('number') y = 10;
-  @type('number') speed = 1;
-  @type('string') keyword = '';
-  @type('number') x = Math.floor(Math.random()*(550-50+1)) + 50;
-  @type('boolean') itemA = false;
-  @type('boolean') itemB = false;
+export class KeywordRain extends Schema implements IKeywordRain {
+  @type('number') y = 10
+  @type('number') speed = 1
+  @type('string') keyword = ''
+  @type('number') x = Math.floor(Math.random() * (550 - 50 + 1)) + 50
+  @type('boolean') itemA = false
+  @type('boolean') itemB = false
 
-  
   constructor(keyword: string) {
-    super();
-    this.keyword = keyword;
+    super()
+    this.keyword = keyword
   }
 }
 export class RainGameState extends Schema implements IRainGameState {
-  @type('number') point = 0;
-  @type('number') heart = 3;
-  @type([ "string" ]) item: string[] = [];
+  @type('number') point = 0
+  @type('number') heart = 3
+  @type(['string']) item: string[] = []
 }
 
-export class RainGameUser extends Schema implements IRainGameUser{
-  @type("string") username = '';
-  @type('string') character = '';
+export class RainGameUser extends Schema implements IRainGameUser {
+  @type('string') username = ''
+  @type('string') character = ''
 
-  
   constructor(name: string, character: string) {
     super()
     this.username = name
@@ -54,17 +50,17 @@ export class RainGameUser extends Schema implements IRainGameUser{
 }
 
 export class RainGameRoomState extends Schema implements IRainGameRoomState {
-  @type("string") 
-  host = '';
-  @type("boolean")
+  @type('string')
+  host = ''
+  @type('boolean')
   rainGameReady: boolean
-  @type("boolean")
+  @type('boolean')
   rainGameInProgress: boolean
-  @type({ map: RainGameState }) 
+  @type({ map: RainGameState })
   rainGameStates = new MapSchema<RainGameState>()
-  @type({ map: RainGameUser }) 
+  @type({ map: RainGameUser })
   rainGameUsers = new MapSchema<RainGameUser>()
-  @type({ map: KeywordRain}) 
+  @type({ map: KeywordRain })
   keywordLists = new MapSchema<KeywordRain>()
 
   constructor(rainGameReady: boolean, rainGameInProgress: boolean) {
@@ -82,8 +78,8 @@ export class ImageContainer extends Schema implements IImageContainer {
 
   constructor(imgidx: number, text: string) {
     super()
-    this.imgidx = imgidx;
-    this.text = text;
+    this.imgidx = imgidx
+    this.text = text
   }
 }
 

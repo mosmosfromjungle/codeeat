@@ -8,14 +8,21 @@ import { closeRainGameDialog } from '../../../stores/RainGameDialogStore'
 import phaserGame from '../../../PhaserGame'
 import Bootstrap from '../../../scenes/Bootstrap'
 
-import { 
-  Backdrop, Wrapper, StartButton, CharacterArea, NameArea, 
-  WaitWrapper, FriendInfo, MyInfo, Position, Comment, 
-
+import {
+  Backdrop,
+  Wrapper,
+  StartButton,
+  CharacterArea,
+  NameArea,
+  WaitWrapper,
+  FriendInfo,
+  MyInfo,
+  Position,
+  Comment,
 } from './RainGameStyle'
 
 function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
+  return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
 const RainGameDialog = () => {
@@ -25,17 +32,19 @@ const RainGameDialog = () => {
   // My information
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
-  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`;
+  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`
 
   // Friend information
   const you = useAppSelector((state) => state.raingame.you)
-  const friendimgpath = `/assets/character/single/${capitalizeFirstLetter(you.character)}_idle_anim_19.png`;
+  const friendimgpath = `/assets/character/single/${capitalizeFirstLetter(
+    you.character
+  )}_idle_anim_19.png`
 
   const isReady = useAppSelector((state) => state.raingame.rainGameReady)
   const inProgress = useAppSelector((state) => state.raingame.rainGameInProgress)
-  const sessionId = useAppSelector((state) => state.user.sessionId);
-  const host = useAppSelector((state) => state.raingame.host);
-  const isHost = username === host;
+  const sessionId = useAppSelector((state) => state.user.sessionId)
+  const host = useAppSelector((state) => state.raingame.host)
+  const isHost = username === host
 
   bootstrap.gameNetwork.sendMyInfoToServer(username, character)
 
@@ -59,9 +68,7 @@ const RainGameDialog = () => {
   return (
     <Backdrop>
       <Wrapper>
-        <IconButton aria-label="close dialog" 
-                    className="close" 
-                    onClick={ handleClose }>
+        <IconButton aria-label="close dialog" className="close" onClick={handleClose}>
           <CloseIcon />
         </IconButton>
         <RainGame />

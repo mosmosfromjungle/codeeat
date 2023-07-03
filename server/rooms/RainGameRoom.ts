@@ -68,18 +68,21 @@ export class RainGameRoom extends Room<GameState> {
       const { item } = data
       this.state.raingames.rainGameStates.forEach((gameState, sessionId) => {
         if (sessionId !== client.sessionId) {
-            if (item === 'A') {
-                gameState.item.push('A');
-                console.log(gameState.item)
-            }
-            if (item === 'B') {
-                gameState.item.push('B');
-            }
+          if (item === 'A') {
+            gameState.item.push('A')
+            console.log(gameState.item)
+          }
+          if (item === 'B') {
+            gameState.item.push('B')
+          }
         }
-    });
-    
-    this.broadcast(Message.RAIN_GAME_HEART_S, { states: this.state.raingames.rainGameStates }, { afterNextPatch: true });
-    
+      })
+
+      this.broadcast(
+        Message.RAIN_GAME_HEART_S,
+        { states: this.state.raingames.rainGameStates },
+        { afterNextPatch: true }
+      )
     })
 
     this.onMessage(
@@ -102,7 +105,6 @@ export class RainGameRoom extends Room<GameState> {
         )
       }
     )
-
   }
 
   async onAuth(client: Client, options: { password: string | null }) {
@@ -127,7 +129,7 @@ export class RainGameRoom extends Room<GameState> {
       host: this.state.host,
     })
 
-      // this.broadcast(Message.RAIN_GAME_READY_S) 
+    // this.broadcast(Message.RAIN_GAME_READY_S)
   }
 
   onLeave(client: Client, consented: boolean) {
@@ -152,7 +154,7 @@ export class RainGameRoom extends Room<GameState> {
   }
   // Handle RAIN_GAME_START message
   // private handleRainGameStart(client: Client, content: any) {
-    // this.broadcast(Message.RAIN_GAME_START_S)
-    // this.handleRainGameWord(this)
+  // this.broadcast(Message.RAIN_GAME_START_S)
+  // this.handleRainGameWord(this)
   // }
 }

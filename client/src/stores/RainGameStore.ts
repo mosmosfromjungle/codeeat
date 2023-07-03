@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction} from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import phaserGame from '../PhaserGame'
 import Game from '../scenes/Game'
 import { Interface } from 'readline'
@@ -14,9 +14,9 @@ export interface RainGameState {
   item: string[]
 }
 export interface RainGameStates {
-  host : string
+  host: string
   rainGameReady: boolean
-  rainGameInProgress : boolean
+  rainGameInProgress: boolean
   myState: RainGameState
   youState: RainGameState
   me: RainGameUser
@@ -32,12 +32,12 @@ export const initialState: RainGameStates = {
   myState: {
     point: 0,
     heart: 3,
-    item: []
+    item: [],
   },
   youState: {
     point: 0,
     heart: 3,
-    item: []
+    item: [],
   },
   me: {
     username: '',
@@ -48,7 +48,7 @@ export const initialState: RainGameStates = {
     character: '',
   },
   words: '',
-  dheart: false
+  dheart: false,
 }
 
 // Define Slice
@@ -57,7 +57,7 @@ export const rainGameSlice = createSlice({
   initialState,
   reducers: {
     setRainGameHost: (state, action: PayloadAction<string>) => {
-      state.host = action.payload;
+      state.host = action.payload
     },
 
     setRainGameReady: (state, action: PayloadAction<boolean>) => {
@@ -65,8 +65,8 @@ export const rainGameSlice = createSlice({
     },
 
     setRainGameInProgress: (state, action: PayloadAction<boolean>) => {
-        state.rainGameInProgress = action.payload
-      },
+      state.rainGameInProgress = action.payload
+    },
 
     setRainGameYou: (state, action: PayloadAction<RainGameUser>) => {
       const { username, character } = action.payload
@@ -81,23 +81,23 @@ export const rainGameSlice = createSlice({
     },
 
     setRainStateMe: (state, action: PayloadAction<RainGameState>) => {
-      const { point, heart, item } = action.payload;
-      state.myState.point = point;
-      state.myState.heart = heart;
-      state.myState.item = item;
-      console.log("내 상태 설정:",JSON.parse(JSON.stringify(state.myState)))
+      const { point, heart, item } = action.payload
+      state.myState.point = point
+      state.myState.heart = heart
+      state.myState.item = item
+      console.log('내 상태 설정:', JSON.parse(JSON.stringify(state.myState)))
     },
 
     setRainStateYou: (state, action: PayloadAction<RainGameState>) => {
-      const { point, heart, item } = action.payload;
-      state.youState.point = point;
-      state.youState.heart = heart;
-      state.youState.item = item;
-      console.log("상대 상태 설정:",JSON.parse(JSON.stringify(state.youState)))
+      const { point, heart, item } = action.payload
+      state.youState.point = point
+      state.youState.heart = heart
+      state.youState.item = item
+      console.log('상대 상태 설정:', JSON.parse(JSON.stringify(state.youState)))
     },
 
     setRainGameYouHeart: (state, action: PayloadAction<boolean>) => {
-      state.dheart = action.payload;
+      state.dheart = action.payload
     },
 
     setRainGameYouWord: (state, action: PayloadAction<string>) => {
@@ -115,7 +115,7 @@ export const {
   setRainGameYouHeart,
   setRainGameYouWord,
   setRainStateMe,
-  setRainStateYou
+  setRainStateYou,
 } = rainGameSlice.actions
 
 export default rainGameSlice.reducer

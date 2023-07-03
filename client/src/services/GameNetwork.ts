@@ -22,7 +22,7 @@ import {
   setMoleGameHost,
   setMoleGameLife,
   clearMoleGameFriendInfo,
- } from '../stores/MoleGameStore'
+} from '../stores/MoleGameStore'
 import {
   setBrickGameState,
   setMyPlayerScore,
@@ -243,13 +243,13 @@ export default class GameNetwork {
 
     // method to receive life to friend in mole game
     this.room.onMessage(Message.RECEIVE_YOUR_LIFE, (content) => {
-      store.dispatch(setMoleGameLife(content));
-    });
-  
+      store.dispatch(setMoleGameLife(content))
+    })
+
     // method to clear friend info in mole game
     this.room.onMessage(Message.CLEAR_FRIEND, () => {
-      store.dispatch(clearMoleGameFriendInfo());
-    });
+      store.dispatch(clearMoleGameFriendInfo())
+    })
   }
 
   // ↓ Mole Game
@@ -277,7 +277,7 @@ export default class GameNetwork {
   sendMyLife(myLife: string) {
     this.room?.send(Message.SEND_MY_LIFE, { life: myLife })
   }
-  
+
   // method to clear friend info in mole game
   clearFriendInfo() {
     this.room?.send(Message.CLEAR_FRIEND)
@@ -362,7 +362,7 @@ export default class GameNetwork {
             setRainStateMe({
               point: states[id].point,
               heart: states[id].heart,
-              item: states[id].item
+              item: states[id].item,
             })
           )
         } else {
@@ -371,7 +371,7 @@ export default class GameNetwork {
             setRainStateYou({
               point: states[id].point,
               heart: states[id].heart,
-              item: states[id].state
+              item: states[id].state,
             })
           )
           store.dispatch(setRainGameYouWord(word))
@@ -381,20 +381,25 @@ export default class GameNetwork {
 
     this.room.onMessage(Message.RAIN_GAME_HEART_S, (data) => {
       const { states } = data
-      console.log("아이템 적용 메시지 수신:",states[this.mySessionId].item)
+      console.log('아이템 적용 메시지 수신:', states[this.mySessionId].item)
 
       Object.keys(states).forEach((id) => {
         if (id === this.mySessionId) {
-          store.dispatch(setRainStateMe({
-            point: states[id].point,
-            heart: states[id].heart,
-            item: states[id].item
-          }));
+          store.dispatch(
+            setRainStateMe({
+              point: states[id].point,
+              heart: states[id].heart,
+              item: states[id].item,
+            })
+          )
         } else {
-          store.dispatch(setRainStateYou({
-            point: states[id].point,
-            heart: states[id].heart,
-            item: states[id].item }))
+          store.dispatch(
+            setRainStateYou({
+              point: states[id].point,
+              heart: states[id].heart,
+              item: states[id].item,
+            })
+          )
         }
       })
     })
