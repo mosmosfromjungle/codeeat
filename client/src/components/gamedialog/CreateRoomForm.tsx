@@ -42,7 +42,7 @@ export const CreateRoomForm = () => {
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
   const rainGameOpen = useAppSelector((state) => state.rainGameDialog.rainGameOpen)
-  const codingRunOpen = useAppSelector((state) => state.codingrun.codingRunOpen)
+  // const faceChatOpen = useAppSelector((state) => state.facechat.faceChatOpen)
 
   const dispatch = useAppDispatch()
 
@@ -73,7 +73,7 @@ export const CreateRoomForm = () => {
         if (brickGameOpen) await bootstrap.gameNetwork.createBrickRoom(values)
         if (moleGameOpen) await bootstrap.gameNetwork.createMoleRoom(values)
         if (rainGameOpen) await bootstrap.gameNetwork.createRainRoom(values)
-        if (codingRunOpen) await bootstrap.gameNetwork.createCodingRoom(values)
+        // if (faceChatOpen) await bootstrap.gameNetwork.createFaceChatRoom(values)
         dispatch(setDialogStatus(DIALOG_STATUS.GAME_WELCOME))
       } catch (error) {
         console.error(error)
@@ -110,6 +110,7 @@ export const CreateRoomForm = () => {
         onChange={handleChange('password')}
         color="secondary"
         InputProps={{
+          autoComplete: "new-password",
           endAdornment: (
             <InputAdornment position="end">
               <IconButton

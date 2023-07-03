@@ -38,7 +38,7 @@ export class KeywordRain extends Schema implements IKeywordRain{
 }
 export class RainGameState extends Schema implements IRainGameState {
   @type('number') point = 0;
-  @type('number') heart = 5;
+  @type('number') heart = 3;
 }
 
 export class RainGameUser extends Schema implements IRainGameUser{
@@ -56,15 +56,21 @@ export class RainGameRoomState extends Schema implements IRainGameRoomState {
   @type("string") 
   host = '';
   @type("boolean")
-  rainGameReady: false
+  rainGameReady: boolean
   @type("boolean")
-  rainGameInProgress: false
+  rainGameInProgress: boolean
   @type({ map: RainGameState }) 
   rainGameStates = new MapSchema<RainGameState>()
   @type({ map: RainGameUser }) 
   rainGameUsers = new MapSchema<RainGameUser>()
   @type({ map: KeywordRain}) 
   keywordLists = new MapSchema<KeywordRain>()
+
+  constructor(rainGameReady: boolean, rainGameInProgress: boolean) {
+    super()
+    this.rainGameInProgress = false
+    this.rainGameReady = false
+  }
 }
 
 /* BRICK GAME ROOM SCHEMA */
@@ -124,4 +130,5 @@ export class GameState extends Schema implements IGameState {
   @type({ map: GamePlayer }) players = new MapSchema<GamePlayer>()
   @type('string') host = ''
   @type(BrickGameState) brickgames = new BrickGameState()
+  @type(RainGameRoomState) raingames = new RainGameRoomState()
 }

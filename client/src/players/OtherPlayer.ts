@@ -2,7 +2,7 @@ import Phaser from 'phaser'
 import Player from './Player'
 import MyPlayer from './MyPlayer'
 import { sittingShiftData } from './Player'
-import WebRTC from '../web/WebRTC'
+// import WebRTC from '../web/WebRTC'
 import { Event, phaserEvents } from '../events/EventCenter'
 
 export default class OtherPlayer extends Player {
@@ -29,22 +29,22 @@ export default class OtherPlayer extends Player {
     this.playContainerBody = this.playerContainer.body as Phaser.Physics.Arcade.Body
   }
 
-  makeCall(myPlayer: MyPlayer, webRTC: WebRTC) {
-    this.myPlayer = myPlayer
-    const myPlayerId = myPlayer.playerId
-    if (
-      !this.connected &&
-      this.connectionBufferTime >= 750 &&
-      myPlayer.readyToConnect &&
-      this.readyToConnect &&
-      myPlayer.videoConnected &&
-      myPlayerId > this.playerId
-    ) {
-      webRTC.connectToNewUser(this.playerId)
-      this.connected = true
-      this.connectionBufferTime = 0
-    }
-  }
+  // makeCall(myPlayer: MyPlayer, webRTC: WebRTC) {
+  //   this.myPlayer = myPlayer
+  //   const myPlayerId = myPlayer.playerId
+  //   if (
+  //     !this.connected &&
+  //     this.connectionBufferTime >= 750 &&
+  //     myPlayer.readyToConnect &&
+  //     this.readyToConnect &&
+  //     myPlayer.videoConnected &&
+  //     myPlayerId > this.playerId
+  //   ) {
+  //     webRTC.connectToNewUser(this.playerId)
+  //     this.connected = true
+  //     this.connectionBufferTime = 0
+  //   }
+  // }
 
   updateOtherPlayer(field: string, value: number | string | boolean) {
     switch (field) {
@@ -78,11 +78,11 @@ export default class OtherPlayer extends Player {
         }
         break
 
-      case 'videoConnected':
-        if (typeof value === 'boolean') {
-          this.videoConnected = value
-        }
-        break
+      // case 'videoConnected':
+      //   if (typeof value === 'boolean') {
+      //     this.videoConnected = value
+      //   }
+      //   break
     }
   }
 

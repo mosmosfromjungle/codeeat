@@ -2,16 +2,13 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
 import Bootstrap from '../../../scenes/Bootstrap'
 import phaserGame from '../../../PhaserGame'
-import { setRainGameMyState, setRainGameYouState} from '../../../stores/RainGameStore'
-
 import TextField from '@mui/material/TextField'
-
 import { 
   CharacterArea, NameArea, Position, 
   TimerArea, GameArea, Left, Right, PointArea, FriendPoint, MyPoint, InputArea,
 } from './RainGameStyle'
-
 import eraser from '/assets/game/RainGame/eraser.png'
+import debounce from 'lodash/debounce';
 
 interface KeywordRain {
   y: number
@@ -29,14 +26,16 @@ function capitalizeFirstLetter(string) {
 }
 
 export function RainGame() {
+
+  const initialState = useAppSelector((state) => state.raingame)
+  const canvasHeight = 50
+  const lineHeight = canvasHeight + 550
   const dispatch = useAppDispatch()
   const keywordInput = useRef<HTMLInputElement>(null)
-  const canvasHeight = 1000
-  const lineHeight = canvasHeight - 500
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
   const [time, setTime] = useState(100)
-  const [point, setPoint] = useState<number>(0)
   const host = useAppSelector((state) => state.raingame.host)
+  const sessionId = useAppSelector((state) => state.user.gameSessionId)
 
   // My information
   const username = useAppSelector((state) => state.user.username)
@@ -49,9 +48,11 @@ export function RainGame() {
 
   const [myGame, setMyGame] = useState<KeywordRain[]>([])
   const [youGame, setYouGame] = useState<KeywordRain[]>([])
-  const myState = useAppSelector((state) => state.raingame.myState)
-  const youState = useAppSelector((state) => state.raingame.youState)
-  const me = useAppSelector((state) => state.raingame.me)
+  const [myState, setMyState] = useState({ heart: initialState.myState.heart, point: initialState.myState.point })
+  const [youState, setYouState] = useState({ heart: initialState.youState.heart, point: initialState.youState.point})
+  const targetword = useAppSelector((state) => state.raingame.words);
+  const targetwordRef = useRef(targetword);
+  const [dheart, setDheart] = useState(false);
 
   const Awords = [
     { y: 0, speed: 1, keyword: 'abs', x: 331 },
@@ -117,17 +118,27 @@ export function RainGame() {
     { y: 0, speed: 1.4, keyword: 'kite', x: 317 },
     { y: 0, speed: 1.5, keyword: 'jazz', x: 217 },
   ]
-  if (username === host) {
-  }
+
 
   useEffect(() => {
+    setMyState({ heart: initialState.myState.heart, point: initialState.myState.point });
+    setDheart(false);
+    setYouState({ heart: initialState.youState.heart, point: initialState.youState.point });
+  }, [initialState]);
+
+  useEffect(() => {
+    targetwordRef.current = targetword;
+  }, [targetword]);
+
+  useEffect(() => {
+ 
     let currentWordIndex = 0
-    const words = username === host ? Awords : Bwords
+    const mywords = username === host ? Awords : Bwords
     const youWords = username === host ? Bwords : Awords
 
     const createWordsInterval = setInterval(() => {
-      if (currentWordIndex < words.length) {
-        const myKeyword = words[currentWordIndex]
+      if (currentWordIndex < mywords.length) {
+        const myKeyword = mywords[currentWordIndex]
         const youKeyword = youWords[currentWordIndex]
 
         setMyGame((myGame) => [
@@ -154,25 +165,43 @@ export function RainGame() {
       }
     }, 2000)
 
+    // 데바운싱 적용
+    const debouncedDecreaseHeart = debounce(() => {
+      bootstrap.gameNetwork.decreaseHeart(sessionId);
+    }, 300);
+
     // 내 단어 위치 업데이트
     const updateMyWordsInterval = setInterval(() => {
       setMyGame((game) =>
-        game.map((item) => {
-          const newY = item.y + item.speed
-          return { ...item, y: newY }
-        })
-      )
-    }, 30)
+        game.reduce((newGame, item) => {
+          const newY = item.y + item.speed;
+
+          if (newY >= lineHeight && !dheart) {
+            console.log("하트 관련 상태변경 송신")
+            debouncedDecreaseHeart();
+            setDheart(true)
+          } else{
+          newGame.push({ ...item, y: newY });
+        }
+        return newGame
+      }, [])
+      );
+    }, 100);
 
     // 상대방 단어 위치 업데이트
     const updateYouWordsInterval = setInterval(() => {
       setYouGame((game) =>
-        game.map((item) => {
-          const newY = item.y + item.speed
-          return { ...item, y: newY }
-        })
-      )
-    }, 30)
+        game.reduce((newGame, item) => {
+          const newY = item.y + item.speed;
+
+          if(targetwordRef.current.length > 0 && targetwordRef.current === item.keyword) {
+          } else if (newY < lineHeight) {
+            newGame.push({ ...item, y: newY });
+          } 
+          return newGame
+        }, [])
+      );
+    }, 100)
 
     const timeInterval = setInterval(() => {
       setTime((prevTime) => Math.max(prevTime - 1, 0))
@@ -180,12 +209,10 @@ export function RainGame() {
 
     return () => {
       clearInterval(timeInterval)
-
       clearInterval(createWordsInterval)
       clearInterval(updateMyWordsInterval)
       clearInterval(updateYouWordsInterval)
-      bootstrap.gameNetwork.room.removeAllListeners()
-
+      // bootstrap.gameNetwork.room.removeAllListeners()
     }
   }, [])
 
@@ -195,7 +222,10 @@ export function RainGame() {
       const isMyWord = myGame.some((word) => word.keyword === inputKeyword)
       if (isMyWord) {
         setMyGame((prevGame) => prevGame.filter((word) => word.keyword !== inputKeyword))
-        setPoint((prevPoint) => prevPoint + 1)
+        console.log("입력 단어 전송:",inputKeyword)
+        bootstrap.gameNetwork.removeWord(inputKeyword,sessionId,initialState )
+      } else{
+        /* for 지원 : 입력이 틀렸을 때 로직 넣는 곳 */  
       }
       keywordInput.current.value = ''
     }
@@ -269,7 +299,7 @@ export function RainGame() {
                   fontSize: '1.4vw',
                   letterSpacing: '0.3vw',
                   top: `${word.y}px`,
-                  left: `${word.x + 250}px`,
+                  left: `${word.x + 120}px`,
                   color: '#FFFFFF',
                   zIndex: 2,
                 }}
@@ -307,6 +337,7 @@ export function RainGame() {
                 fullWidth
                 style={{ fontSize: '20px' }}
             />
+            <button onClick={() => keydown(13)}></button>
           </div>
           <NameArea style={{ width: '70%', marginTop: '30px' }}>
             나 [{ username.toUpperCase() }]<br/>

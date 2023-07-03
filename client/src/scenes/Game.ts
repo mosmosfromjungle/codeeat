@@ -3,15 +3,14 @@ import Phaser from 'phaser'
 // import { debugDraw } from '../utils/debug'
 import Network from '../services/Network'
 import DMNetwork from '../services/DMNetwork'
-// import GameNetwork from '../services/GameNetwork'
 
 import Item from '../items/Item'
 import Chair from '../items/Chair'
 import MoleGame from '../items/MoleGame'
 import BrickGame from '../items/BrickGame'
 import RainGame from '../items/RainGame'
-import CodingRun from '../items/CodingRun'
 import RankingBoard from '../items/RankingBoard'
+// import FaceChat from '../items/FaceChat'
 import { ItemType } from '../../../types/Items'
 
 import '../players/MyPlayer'
@@ -24,9 +23,10 @@ import { PlayerBehavior } from '../../../types/PlayerBehavior'
 import { createCharacterAnims } from '../anims/CharacterAnims'
 
 import store from '../stores'
-import { setFocused, setShowChat } from '../stores/ChatStore'
+import { setFocused } from '../stores/ChatStore'
 import { setShowDMList, setShowDMRoom } from '../stores/DMStore'
 import { NavKeys, Keyboard } from '../../../types/KeyboardState'
+import { HELPER_STATUS, setHelperStatus } from '../stores/UserStore'
 
 export default class Game extends Phaser.Scene {
   network!: Network
@@ -42,8 +42,8 @@ export default class Game extends Phaser.Scene {
   private brickgameMap = new Map<String, BrickGame>()
   private molegameMap = new Map<String, MoleGame>()
   private raingameMap = new Map<string, RainGame>()
-  private codingrunMap = new Map<String, CodingRun>()
   private rankingboardMap = new Map<String, RankingBoard>()
+  // facechatMap = new Map<String, FaceChat>()
 
   constructor() {
     super('game')
@@ -60,13 +60,12 @@ export default class Game extends Phaser.Scene {
     this.keyR = this.input.keyboard.addKey('R')
     this.input.keyboard.disableGlobalCapture()
     this.input.keyboard.on('keydown-ENTER', (event) => {
-      store.dispatch(setShowChat(true))
+      store.dispatch(setHelperStatus(HELPER_STATUS.CHAT))
       store.dispatch(setFocused(true))
     })
     this.input.keyboard.on('keydown-ESC', (event) => {
-      store.dispatch(setShowChat(false))
+      store.dispatch(setHelperStatus(HELPER_STATUS.NONE))
       store.dispatch(setShowDMRoom(false))
-      // store.dispatch(setShowDMRoom(false))
       store.dispatch(setShowDMList(false))
     })
   }
@@ -184,16 +183,6 @@ export default class Game extends Phaser.Scene {
       this.molegameMap.set(id, item)
     })
 
-    /* Coding Run */
-    const codingruns = this.physics.add.staticGroup({ classType: CodingRun })
-    const codingrunLayer = this.map.getObjectLayer('codingrun')
-    codingrunLayer.objects.forEach((obj, i) => {
-      const item = this.addObjectFromTiled(codingruns, obj, 'bench', 'bench') as CodingRun
-      const id = `${i}`
-      item.id = id
-      this.codingrunMap.set(id, item)
-    })
-
     /* Ranking Board */
     const rankingboards = this.physics.add.staticGroup({ classType: RankingBoard })
     const rankingboardLayer = this.map.getObjectLayer('rankingboard')
@@ -203,6 +192,15 @@ export default class Game extends Phaser.Scene {
       item.id = id
       this.rankingboardMap.set(id, item)
     })
+    /* Face Chat */
+    // const facechats = this.physics.add.staticGroup({ classType: FaceChat })
+    // const facechatLayer = this.map.getObjectLayer('facechat')
+    // facechatLayer.objects.forEach((obj, i) => {
+    //   const item = this.addObjectFromTiled(facechats, obj, 'bench', 'bench') as FaceChat
+    //   const id = `${i}`
+    //   item.faceChatId = id
+    //   this.facechatMap.set(id, item)
+    // })
 
     // ************************************** (codeEat) //
 
@@ -223,7 +221,7 @@ export default class Game extends Phaser.Scene {
 
     this.physics.add.overlap(
       this.playerSelector,
-      [chairs, molegames, raingames, brickgames, codingruns, rankingboards],
+      [chairs, molegames, raingames, brickgames, rankingboards],
       this.handleItemSelectorOverlap,
       undefined,
       this
@@ -241,7 +239,7 @@ export default class Game extends Phaser.Scene {
     this.network.onPlayerJoined(this.handlePlayerJoined, this)
     this.network.onPlayerLeft(this.handlePlayerLeft, this)
     this.network.onMyPlayerReady(this.handleMyPlayerReady, this)
-    this.network.onMyPlayerVideoConnected(this.handleMyVideoConnected, this)
+    // this.network.onMyPlayerVideoConnected(this.handleMyVideoConnected, this)
     this.network.onPlayerUpdated(this.handlePlayerUpdated, this)
     this.network.onItemUserAdded(this.handleItemUserAdded, this)
     this.network.onItemUserRemoved(this.handleItemUserRemoved, this)
@@ -330,7 +328,7 @@ export default class Game extends Phaser.Scene {
   }
 
   private handlePlayersOverlap(myPlayer, otherPlayer) {
-    otherPlayer.makeCall(myPlayer, this.network?.webRTC)
+    // otherPlayer.makeCall(myPlayer, this.network?.webRTC)
   }
 
   private handleItemUserAdded(playerId: string, itemId: string, itemType: ItemType) {
@@ -343,13 +341,14 @@ export default class Game extends Phaser.Scene {
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.addCurrentUser(playerId)
-    } else if (itemType === ItemType.CODINGRUN) {
-      const codingrun = this.codingrunMap.get(itemId)
-      codingrun?.addCurrentUser(playerId)
     } else if (itemType === ItemType.RANKINGBOARD) {
       const rankingboard = this.rankingboardMap.get(itemId)
       rankingboard?.addCurrentUser(playerId)
     }
+    // else if (itemType === ItemType.FACECHAT) {
+    //   const facechat = this.facechatMap.get(itemId)
+    //   facechat?.addCurrentUser(playerId)
+    // }
   }
 
   private handleItemUserRemoved(playerId: string, itemId: string, itemType: ItemType) {
@@ -362,13 +361,14 @@ export default class Game extends Phaser.Scene {
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.removeCurrentUser(playerId)
-    } else if (itemType === ItemType.CODINGRUN) {
-      const codingrun = this.codingrunMap.get(itemId)
-      codingrun?.removeCurrentUser(playerId)
     } else if (itemType === ItemType.RANKINGBOARD) {
       const rankingboard = this.rankingboardMap.get(itemId)
       rankingboard?.addCurrentUser(playerId)
     }
+    // else if (itemType === ItemType.FACECHAT) {
+    //   const facechat = this.facechatMap.get(itemId)
+    //   facechat?.removeCurrentUser(playerId)
+    // }
   }
 
   private handleChatMessageAdded(playerId: string, content: string) {
