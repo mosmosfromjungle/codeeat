@@ -1,96 +1,130 @@
 import React, { useRef, useState, useEffect } from 'react'
 import styled from 'styled-components'
-
-import IconButton from '@mui/material/IconButton'
-import Box from '@mui/material/Box'
-
-import CloseIcon from '@mui/icons-material/Close'
-
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-
-import { setShowProfile } from '../stores/UserStore'
-import { useAppSelector, useAppDispatch } from '../hooks'
-import { getMyProfile } from '../apicalls/auth';
-import { UpdateRequest, updateMyProfile } from '../apicalls/auth';
-
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
 import Button from '@mui/material/Button'
-import axios from 'axios'
+import IconButton from '@mui/material/IconButton'
+import CloseIcon from '@mui/icons-material/Close'
+import { Content, Header, HeaderTitle } from './GlobalStyle'
+
+import { useAppSelector, useAppDispatch } from '../hooks'
+import { setShowProfile } from '../stores/UserStore'
+import { getMyProfile } from '../apicalls/auth'
+import { UpdateRequest, updateMyProfile } from '../apicalls/auth'
+
+import phaserGame from '../PhaserGame'
+import Game from '../scenes/Game'
 
 const Backdrop = styled.div`
   position: fixed;
   display: flex;
   gap: 10px;
-  bottom: 40px;
+  bottom: 32px;
   left: 16px;
   align-items: flex-end;
 `
-
 const Wrapper = styled.div`
   height: 100%;
   margin-top: auto;
 `
-const Form = styled.form``
-
-const Content = styled.div`
-  margin: 70px auto;
-`
-
-const ChatHeader = styled.div`
-  position: relative;
-  height: 40px;
-  background: #000000a7;
-  border-radius: 10px 10px 0px 0px;
-
-  .close {
-    position: absolute;
-    top: 0;
-    right: 0;
-  }
-`
-
-const Title = styled.div`
-  position: absolute;
-  color: white;
-  font-size: 20px;
-  font-weight: bold;
-  top: 10px;
-  left: 95px;
-  font-family: Font_DungGeun;
-`
-
-const ChatBox = styled(Box)`
-  height: 370px;
-  width: 250px;
+const Body = styled.div`
+  flex: 1;
+  height: calc(100% - 60px);
   overflow: auto;
-  background: #2c2c2c;
-  border: 1px solid #00000029;
-  padding: 10px 30px;
-  border-radius: 0px 0px 10px 10px;
-`
-
-const TextDiv = styled.div`
-  margin-bottom: 10px;
-`
-
-const Buttons = styled.div`
-  button {
-    left: 30px;
-    margin: 10px 10px 10px 10px;
-    font-size: 20px;
-    font-family: Font_DungGeun;
+  padding: 10px 32px 32px 32px;
+  display: flex;
+  flex-direction: column;
+  
+  .listitem {
+    padding: 20px;
+    flex: 0 0 auto;
+    margin-bottom: 20px;
   }
 `
-
-const Profile = styled.div`
-  color: white;
-  font-size: 20px;
+const NameProfile = styled.div`
+  color: black;
   font-family: Font_DungGeun;
+`
+const Level = styled.div`
+  font-size: 20px;
+  line-height: 1;
+`
+const Username = styled.div`
+  font-size: 28px;
+  line-height: 1;
+  margin: 4px 0 0 0;
+`
+const Form = styled.form`
+`
+const Table = styled.div`
+`
+const TextDiv = styled.div`
+  // margin-bottom: 10px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: left;
+`
+const Profile = styled.div`
+  color: black;
+  font-family: Font_DungGeun;
+  padding: 0 16px;
+`
+const ProfileItem = styled.div`
+  margin: 16px 0;
+`
+const ProfileTitle = styled.div`
+  font-size: 20px;
+  margin: 20px 0 0 0;
+  background-color: #c5e4d7;
+`
+const ProfileContent = styled.div`
+  height: 37.6px;
+  font-size: 22px;
+  margin: 8px 0 0 0;
+  overflow: auto;
+`
+const ProfileMessage = styled.div`
+  height: 100px;
+  font-size: 20px;
+  margin: 8px 0 0 0;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  overflow: auto;
+`
+const InputField = styled.input`
+  width: 100%;
+  font-size: 22px;
+  margin: 8px 0 0 0;
+  padding: 4px 8px;
+`
+const MessageInputField = styled.input`
+  width: 100%;
+  height: 100px;
+  font-size: 22px;
+  margin: 8px 0 0 0;
+  padding: 4px 8px;
+  // white-space: pre-wrap;
+  // overflow-wrap: break-word;
+  // word-wrap: break-word;
+  // word-break: break-word;
+  // hyphens: auto;
+  // overflow: auto;
+`
+const Buttons = styled.div`
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  
+  button {
+    font-size: 20px;
+    font-family: Font_DungGeun; 
+  }
 `
 
 function capitalizeFirstLetter(string) {
@@ -110,10 +144,10 @@ export default function ProfileDialog() {
 
   const dispatch = useAppDispatch()
 
-  const [grade, setGrade] = useState<string>('') // git
-  const [school, setSchool] = useState<string>('') // email
+  const [isOpen, setIsOpen] = useState(false)
+  const [grade, setGrade] = useState<string>('')
+  const [school, setSchool] = useState<string>('')
   const [message, setMessage] = useState<string>('')
-
   const [gradeFieldEmpty, setGradeFieldEmpty] = useState<boolean>(false)
   const [schoolFieldWrongFormat, setSchoolFieldEmpty] = useState<boolean>(false)
   const [messageFieldEmpty, setmessageFieldEmpty] = useState<boolean>(false)
@@ -137,9 +171,9 @@ export default function ProfileDialog() {
       getMyProfile()
         .then((response) => {
           if (!response) return;
-          const { contactGit, contactEmail, profileMessage } = response
-          setGrade(contactGit)
-          setSchool(contactEmail)
+          const { grade, school, profileMessage } = response
+          setGrade(grade)
+          setSchool(school)
           setMessage(profileMessage)
         })
         .catch((error) => {
@@ -147,14 +181,6 @@ export default function ProfileDialog() {
         });
     })();
   }, []);
-
-  const [open, setOpen] = React.useState(true);
-
-  const handleClick = () => {
-    setOpen(!open);
-  };
-
-  const [isOpen, setIsOpen] = useState(false)
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     // reset the error message
@@ -172,18 +198,16 @@ export default function ProfileDialog() {
       setmessageFieldEmpty(true)
     } else {
       const body: UpdateRequest = {
-        username: username,
-        character: character,
-        contactGit: grade,
-        contactEmail: school,
+        grade: grade,
+        school: school,
         profileMessage: message,
       }
       updateMyProfile(body)
         .then((response) => {
           if (response.status === 200) {
-            const { contactGit, contactEmail, profileMessage } = response.payload
-            setGrade(contactGit)
-            setSchool(contactEmail)
+            const { grade, school, profileMessage } = response.payload
+            setGrade(grade)
+            setSchool(school)
             setMessage(profileMessage)
             console.log('성공')
             setIsOpen(false)
@@ -196,14 +220,16 @@ export default function ProfileDialog() {
           }
         })
     }
+    const game = phaserGame.scene.keys.game as Game
+    game.enableKeys()
   }
 
   return (
     <Backdrop>
       <Wrapper>
         <Content>
-          <ChatHeader>
-            <Title>내소개</Title>
+          <Header>
+            <HeaderTitle style={{ backgroundColor: 'lightgreen' }}>내 프로필</HeaderTitle>
             <IconButton
               aria-label="close dialog"
               className="close"
@@ -212,72 +238,81 @@ export default function ProfileDialog() {
             >
               <CloseIcon />
             </IconButton>
-          </ChatHeader>
-          <ChatBox>
+          </Header>
+          <Body>
             <List>
               <ListItem>
                 <ListItemAvatar>
-                  <Avatar src={imgpath} />
+                  {/* <Avatar src={imgpath} /> */}
+                  <img src={imgpath} />
                 </ListItemAvatar>
-                <Profile>
-                  레벨 {userLevel}
-                  <br />
-                  <br />
-                  <strong>{username}</strong>님
-                </Profile>
+                <NameProfile>
+                  <Level>Lv. {userLevel}</Level>
+                  <Username>{username}</Username>
+                </NameProfile>
               </ListItem>
             </List>
             {isOpen ? (
-              <>
-                <Form onSubmit={handleSubmit}>
-                  <TextDiv>
-                    <TextField
-                      label="학년"
-                      id="standard-size-normal"
-                      defaultValue=""
-                      onChange={(e) => setGrade(e.target.value)}
-                      variant="standard"
-                    />
-                    <TextField
-                      label="학교"
-                      id="standard-size-normal"
-                      defaultValue=""
-                      onChange={(e) => setSchool(e.target.value)}
-                      variant="standard"
-                    />
-                    <TextField
-                      id="standard-size-normal"
-                      label="자기소개"
-                      defaultValue=""
-                      onChange={(e) => setMessage(e.target.value)}
-                      variant="standard"
-                    />
-                  </TextDiv>
-                  <Buttons>
-                    <Button variant="contained" size="large" type="submit">
-                      수정완료
-                    </Button>
-                  </Buttons>
-                </Form>
-              </>
-            ) : (
-              <>
+              <Form onSubmit={handleSubmit}>
                 <TextDiv>
                   <Profile>
-                    학년: {grade} <br></br>
-                    <br />
-                    학교: {school} <br></br>
-                    <br />
-                    자기소개: {message} <br></br>
-                    <br />
+                    <ProfileItem>
+                      <ProfileTitle>학년</ProfileTitle>
+                      <InputField
+                        defaultValue=""
+                        onChange={(e) => setGrade(e.target.value)}
+                      />
+                    </ProfileItem>
+                    <ProfileItem>
+                      <ProfileTitle>학교</ProfileTitle>
+                      <InputField
+                        defaultValue=""
+                        onChange={(e) => setSchool(e.target.value)}
+                      />
+                    </ProfileItem>
+                    <ProfileItem>
+                      <ProfileTitle>자기소개</ProfileTitle>
+                      <MessageInputField
+                        defaultValue=""
+                        onChange={(e) => setMessage(e.target.value)}
+                      />
+                    </ProfileItem>
                   </Profile>
                 </TextDiv>
                 <Buttons>
-                  <Button onClick={() => setIsOpen(true)}>수정하기</Button>
+                  <Button type="submit">수정완료</Button>
                 </Buttons>
-              </>
+              </Form>
+            ) : (
+              <Table>
+                <TextDiv>
+                  <Profile>
+                    <ProfileItem>
+                      <ProfileTitle>학년</ProfileTitle>
+                      <ProfileContent>{grade}</ProfileContent>
+                    </ProfileItem>
+                    <ProfileItem>
+                      <ProfileTitle>학교</ProfileTitle>
+                      <ProfileContent>{school}</ProfileContent>
+                    </ProfileItem>
+                    <ProfileItem>
+                      <ProfileTitle>자기소개</ProfileTitle>
+                      <ProfileMessage>{message}</ProfileMessage>
+                    </ProfileItem>
+                  </Profile>
+                </TextDiv>
+                <Buttons>
+                  <Button onClick={() => {
+                    const game = phaserGame.scene.keys.game as Game
+                    game.disableKeys()
+                    setIsOpen(true)
+                  }}>
+                    수정하기
+                  </Button>
+                </Buttons>
+              </Table>
             )}
-          </ChatBox>
+          </Body>
         </Content>
       </Wrapper>
     </Backdrop>

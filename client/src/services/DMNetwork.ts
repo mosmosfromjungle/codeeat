@@ -16,10 +16,12 @@ export default class DMNetwork {
   private socketClient: Socket;
   public oldMessages: OldMessage[];
   constructor() {
-    const socketUrl = process.env.NODE_ENV === 'production'
-    ? import.meta.env.VITE_SERVER_URL
-    : `http://${window.location.hostname}:8888`
-    
+    const socketUrl = 
+    // process.env.NODE_ENV === 'production'
+    // ? import.meta.env.VITE_SERVER_URL
+    // : `http://${window.location.hostname}:8888`
+    `http://localhost:8888`
+
     this.socketClient = io(socketUrl, {
       transports: ['websocket', 'polling', 'flashsocket'],
       withCredentials: true,
@@ -41,24 +43,28 @@ export default class DMNetwork {
 
   joinRoom = (roomId: string, senderName: string, receiverName: string, callback:any) => {
     this.socketClient.emit('join-room', { roomId: roomId, username: senderName, receiverName: receiverName });
-    console.log(' 여기 ---')
+    console.log('emit joinRoom - roomId:',roomId,'senderName:',senderName,'receiverName:',receiverName)
     this.socketClient.on('old-messages', (data) => {
       this.oldMessages = [];
       data.forEach((element: any) => {
         if (element.senderName) {
+          if (element.senderName === senderName) {
+            element.id = 0;
+          } else {
+            element.id = 1;
+          }
           this.oldMessages.push(element);
         }
       });
+      callback(this.oldMessages)
     });
-    callback(this.oldMessages)
   };
 
-  sendMessage = (message: object) => {
-    console.log('메시지 전송 호출')
+  async sendMessage (message: object) {
     this.socketClient.emit('message', message)
   }
 
-  whoAmI = (username: string) => {
+  async whoAmI(username: string){
     this.socketClient.emit('whoAmI', username);
   };
 

@@ -22,9 +22,9 @@ const isRainRoom = (room: RoomInterface) => {
   return room.name === RoomType.RAIN
 }
 
-const isFaceChatRoom = (room: RoomInterface) => {
-  return room.name === RoomType.FACECHAT
-}
+// const isFaceChatRoom = (room: RoomInterface) => {
+//   return room.name === RoomType.FACECHAT
+// }
 
 export const roomSlice = createSlice({
   name: 'room',
@@ -44,7 +44,7 @@ export const roomSlice = createSlice({
       brickRooms: new Array<RoomAvailable>(),
       moleRooms: new Array<RoomAvailable>(),
       rainRooms: new Array<RoomAvailable>(),
-      faceChatRooms: new Array<RoomAvailable>(),
+      // faceChatRooms: new Array<RoomAvailable>(),
     }
   },
   reducers: {
@@ -88,9 +88,9 @@ export const roomSlice = createSlice({
     setAvailableRainRooms: (state, action: PayloadAction<RoomAvailable[]>) => {
       state.availableRooms.rainRooms = action.payload.filter((room) => isRainRoom(room))
     },
-    setAvailableFaceChatRooms: (state, action: PayloadAction<RoomAvailable[]>) => {
-      state.availableRooms.faceChatRooms = action.payload.filter((room) => isFaceChatRoom(room))
-    },
+    // setAvailableFaceChatRooms: (state, action: PayloadAction<RoomAvailable[]>) => {
+    //   state.availableRooms.faceChatRooms = action.payload.filter((room) => isFaceChatRoom(room))
+    // },
     addAvailableRooms: (state, action: PayloadAction<{ roomId: string; room: RoomAvailable }>) => {
       if (isCustomRoom(action.payload.room)) {
         const roomIndex = state.availableRooms.generalRooms.findIndex(
@@ -128,29 +128,30 @@ export const roomSlice = createSlice({
         } else {
           state.availableRooms.rainRooms.push(action.payload.room)
         }
-      } else if (isFaceChatRoom(action.payload.room)) {
-        const roomIndex = state.availableRooms.faceChatRooms.findIndex(
-          (room) => room.roomId === action.payload.roomId
-        )
-        if (roomIndex !== -1) {
-          state.availableRooms.faceChatRooms[roomIndex] = action.payload.room
-        } else {
-          state.availableRooms.faceChatRooms.push(action.payload.room)
-        }
-      }
+      } 
+      // else if (isFaceChatRoom(action.payload.room)) {
+      //   const roomIndex = state.availableRooms.faceChatRooms.findIndex(
+      //     (room) => room.roomId === action.payload.roomId
+      //   )
+      //   if (roomIndex !== -1) {
+      //     state.availableRooms.faceChatRooms[roomIndex] = action.payload.room
+      //   } else {
+      //     state.availableRooms.faceChatRooms.push(action.payload.room)
+      //   }
+      // }
     },
     removeAvailableRooms: (state, action: PayloadAction<string>) => {
       state.availableRooms.generalRooms = state.availableRooms.generalRooms.filter((room) => room.roomId !== action.payload)
       state.availableRooms.brickRooms = state.availableRooms.brickRooms.filter((room) => room.roomId !== action.payload)
       state.availableRooms.moleRooms = state.availableRooms.moleRooms.filter((room) => room.roomId !== action.payload)
       state.availableRooms.rainRooms = state.availableRooms.rainRooms.filter((room) => room.roomId !== action.payload)
-      state.availableRooms.faceChatRooms = state.availableRooms.faceChatRooms.filter((room) => room.roomId !== action.payload)
+      // state.availableRooms.faceChatRooms = state.availableRooms.faceChatRooms.filter((room) => room.roomId !== action.payload)
     },
     clearAvailabelGameRooms: (state) => {
       state.availableRooms.brickRooms = []
       state.availableRooms.moleRooms = []
       state.availableRooms.rainRooms = []
-      state.availableRooms.faceChatRooms = []
+      // state.availableRooms.faceChatRooms = []
     },
   },
 })
@@ -166,7 +167,7 @@ export const {
   setAvailableBrickRooms,
   setAvailableMoleRooms,
   setAvailableRainRooms,
-  setAvailableFaceChatRooms,
+  // setAvailableFaceChatRooms,
   addAvailableRooms,
   removeAvailableRooms,
   clearAvailabelGameRooms,

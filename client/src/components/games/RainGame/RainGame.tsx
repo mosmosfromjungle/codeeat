@@ -5,7 +5,8 @@ import phaserGame from '../../../PhaserGame'
 import TextField from '@mui/material/TextField'
 import { 
   CharacterArea, NameArea, Position, 
-  TimerArea, GameArea, Left, Right, PointArea, FriendPoint, MyPoint, InputArea,
+  TimerArea, GameArea, Left, Right, PointArea, FriendPoint, MyPoint, 
+  InputArea, PlayArea, Comment, 
 } from './RainGameStyle'
 import eraser from '/assets/game/RainGame/eraser.png'
 import debounce from 'lodash/debounce';
@@ -396,39 +397,52 @@ const updateYouWordsInterval = setInterval(() => {
       </GameArea>
 
       <PointArea>
-        <FriendPoint style={{ width: '40%', display: 'flex', position: 'relative' }}>
-          <CharacterArea style={{ width: '30%' }}>
+        <FriendPoint>
+          <CharacterArea>
             <img src={ friendimgpath } width="60px" id="friend-character"></img>
           </CharacterArea>
-          <NameArea style={{ width: '30%', marginTop: '30px' }}>
-            친구 [{youInfo.username.toUpperCase()}] <br/>
+          <NameArea>
+            친구 [{you.username.toUpperCase()}] <br/>
             { friendLifeElements }
           </NameArea>
         </FriendPoint>
 
-        <InputArea style={{ width: '20%', marginTop: '20px', fontSize: '90px' }}>
+        <PlayArea>
+          
+        </PlayArea>
+
+        <InputArea>
           <Position>
             { youState.point }:{ myState.point }
           </Position>
         </InputArea>
 
-        <MyPoint style={{ display: 'flex', position: 'relative' }}>
-          <div style={{ width: '30%', marginTop: '30px' }}>
+        <PlayArea>
+          <div>
+            <Comment>
+              명령어를 입력한 후 엔터를 쳐주세요 !
+            </Comment>
             <TextField
-                label="명령어 입력 후 엔터"
-                variant="outlined"
+                focused
                 inputRef={keywordInput}
                 onKeyPress={(e) => keydown(e.charCode)}
                 fullWidth
-                style={{ fontSize: '20px' }}
+                InputProps={{
+                  style: {
+                    width: '300px',
+                  },
+                }}
             />
-            <button onClick={() => keydown(13)}></button>
+            <button onClick={() => keydown(13)} style={{ display: 'none' }}></button>
           </div>
-          <NameArea style={{ width: '70%', marginTop: '30px' }}>
+        </PlayArea>
+
+        <MyPoint>
+          <NameArea>
             나 [{ username.toUpperCase() }]<br/>
             { myLifeElements }
           </NameArea>
-          <CharacterArea style={{ width: '20%' }}>
+          <CharacterArea>
             <img src={ imgpath } width="60px" id="my-character"></img>
           </CharacterArea>
         </MyPoint>

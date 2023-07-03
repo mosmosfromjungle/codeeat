@@ -8,6 +8,7 @@ import {
     refreshAccessToken,
     authenticateUser,
     userProfile,
+    gainExp,
 } from '../controllers/UserControllers/index'
 
 express().use(express.json()) 
@@ -27,6 +28,8 @@ router.post('/refresh', refreshAccessToken)
 router.get('/authenticate', authenticateToken, authenticateUser)
 
 router.get('/profile/:username', userProfile)
+
+router.post('/exp', gainExp)
 
 router.use((err, res) => {
   console.error(err)
