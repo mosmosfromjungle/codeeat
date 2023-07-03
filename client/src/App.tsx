@@ -25,7 +25,7 @@ import ChatDialog from './components/ChatDialog'
 import { ConversationList } from './components/DM/DMList'
 import { DMRoom } from './components/DM/DMRoom'
 import UserDialog from './components/UserDialog'
-import FriendDialog from './components/FriendDialog'
+import FriendsDialog from './components/helperdialog/FriendsDialog'
 import LogoutDialog from './components/LogoutDialog'
 import VersionDialog from './components/helperdialog/VersionDialog'
 import MobileVirtualJoystick from './components/helperdialog/MobileVirtualJoystick'
@@ -107,7 +107,7 @@ function App() {
         {showDMList && <ConversationList />}
         {showDMRoom && <DMRoom />}
         {showUser && <UserDialog />}
-        {showFriend && <FriendDialog />}
+        {showFriend && <FriendsDialog />}
         {showLogout && <LogoutDialog />}
         {showProfile && <ProfileDialog />}
         {showVersion && <VersionDialog />}

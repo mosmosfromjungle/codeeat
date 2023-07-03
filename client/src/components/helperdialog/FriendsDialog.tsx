@@ -19,9 +19,9 @@ import Avatar from '@mui/material/Avatar'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 
-import { setShowDMList, setShowDMRoom } from '../stores/DMStore'
-import { setShowUser, setShowFriend } from '../stores/ChatStore'
-import { useAppSelector, useAppDispatch } from '../hooks'
+import { setShowDMList, setShowDMRoom } from '../../stores/DMStore'
+import { setShowUser, setShowFriend } from '../../stores/ChatStore'
+import { useAppSelector, useAppDispatch } from '../../hooks'
 import {
   getFriendList,
   getFriendRequestList,
@@ -31,9 +31,9 @@ import {
   AcceptRequest,
   RejectRequest,
   RemoveRequest,
-} from '../apicalls/friends'
-import { getUserProfile } from '../apicalls/auth'
-import { IFriends } from '../../../server/controllers/FriendsControllers/types'
+} from '../../apicalls/friends'
+import { getUserProfile } from '../../apicalls/auth'
+import { IFriends } from '../../../../server/controllers/FriendsControllers/types'
 import axios from 'axios'
 
 const Backdrop = styled.div`
@@ -123,7 +123,7 @@ const ProfileButton = styled.div`
   }
 `
 
-export default function FriendDialog() {
+export default function FriendsDialog() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const chatMessages = useAppSelector((state) => state.chat.chatMessages)
