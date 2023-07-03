@@ -7,8 +7,8 @@ import Button from '@mui/material/Button'
 
 import CloseIcon from '@mui/icons-material/Close'
 
-import { DIALOG_STATUS, setDialogStatus, setShowLogout } from '../stores/UserStore'
-import { useAppSelector, useAppDispatch } from '../hooks'
+import { DIALOG_STATUS, setDialogStatus, HELPER_STATUS, setHelperStatus } from '../../stores/UserStore'
+import { useAppSelector, useAppDispatch } from '../../hooks'
 
 const Backdrop = styled.div`
   position: fixed;
@@ -81,7 +81,7 @@ export default function LogoutDialog() {
   const inputRef = useRef<HTMLInputElement>(null)
   const chatMessages = useAppSelector((state) => state.chat.chatMessages)
   const focused = useAppSelector((state) => state.chat.focused)
-  const showLogout = useAppSelector((state) => state.user.showLogout)
+  const helperStatus = useAppSelector((state) => state.user.helperStatus)
 
   const dispatch = useAppDispatch()
 
@@ -97,7 +97,7 @@ export default function LogoutDialog() {
 
   useEffect(() => {
     scrollToBottom()
-  }, [chatMessages, showLogout])
+  }, [chatMessages, helperStatus])
 
   const handleLogout = () => {
     ;
@@ -114,7 +114,7 @@ export default function LogoutDialog() {
               <IconButton
                 aria-label="close dialog"
                 className="close"
-                onClick={() => dispatch(setShowLogout(false)) }
+                onClick={() => dispatch(setHelperStatus(HELPER_STATUS.NONE))}
                 size="small"
               >
                 <CloseIcon />
@@ -129,7 +129,7 @@ export default function LogoutDialog() {
                   <Button onClick={() => window.location.href = '/' }>
                     네
                   </Button>
-                  <Button onClick={() => dispatch(setShowLogout(false)) }>
+                  <Button onClick={() => dispatch(setHelperStatus(HELPER_STATUS.NONE))}>
                     아니요
                   </Button>
                 </Buttons>

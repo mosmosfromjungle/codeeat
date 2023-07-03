@@ -105,7 +105,7 @@ const avatars = [
 export default function GameWelcomeDialog() {
   const dispatch = useAppDispatch()
   const gameJoined = useAppSelector((state) => state.room.gameJoined)
-  const videoConnected = useAppSelector((state) => state.user.videoConnected)
+  // const videoConnected = useAppSelector((state) => state.user.videoConnected)
   const character = useAppSelector((state) => state.user.character)
   const username = useAppSelector((state) => state.user.username)
   const index = avatars.findIndex((avatar) => avatar.name === character)

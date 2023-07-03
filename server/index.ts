@@ -7,6 +7,7 @@ import { RoomType } from '../types/Rooms'
 import authRouter from './routes/auth';
 import lastdmRouter from './routes/lastdm'
 import dmRouter from './routes/dm'
+import friendsRouter from './routes/friends'
 import molegameRouter from './routes/molegame';
 // import socialRoutes from "@colyseus/social/express"
 
@@ -14,6 +15,7 @@ import { connectDB } from './DB/db'
 import { SkyOffice } from './rooms/SkyOffice'
 import { GameRoom } from './rooms/GameRoom'
 import { BrickGameRoom } from './rooms/BrickGameRoom'
+import { RainGameRoom} from './rooms/RainGameRoom'
 import { MoleGameRoom } from './rooms/MoleGameRoom'
 import { DMController } from './controllers/DMControllers'
 import { Socket } from 'socket.io'
@@ -72,12 +74,13 @@ mainServer.define(RoomType.CUSTOM, SkyOffice).enableRealtimeListing()
 mainServer.define(RoomType.BRICKLOBBY, LobbyRoom)
 mainServer.define(RoomType.MOLELOBBY, LobbyRoom)
 mainServer.define(RoomType.RAINLOBBY, LobbyRoom)
-mainServer.define(RoomType.FACECHATLOBBY, LobbyRoom)
+// mainServer.define(RoomType.FACECHATLOBBY, LobbyRoom)
 
 mainServer.define(RoomType.BRICK, BrickGameRoom).enableRealtimeListing()
+mainServer.define(RoomType.MOLE, GameRoom).enableRealtimeListing()
+mainServer.define(RoomType.RAIN, RainGameRoom).enableRealtimeListing()
 mainServer.define(RoomType.MOLE, MoleGameRoom).enableRealtimeListing()
-mainServer.define(RoomType.RAIN, GameRoom).enableRealtimeListing()
-mainServer.define(RoomType.FACECHAT, GameRoom).enableRealtimeListing()
+// mainServer.define(RoomType.FACECHAT, GameRoom).enableRealtimeListing()
 
 /**
  * Register @colyseus/social routes
@@ -92,6 +95,7 @@ app.use('/colyseus', monitor())
 
 /* API Routes */
 app.use('/auth', authRouter);
+app.use('/friends', friendsRouter);
 app.use('/dm', dmRouter)
 app.use('/lastdm', lastdmRouter);
 app.use('/molegame', molegameRouter);

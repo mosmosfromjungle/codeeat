@@ -1,21 +1,23 @@
-export type Token = string;
+export type Token = string
 
 export interface IUserInfo {
-    userId?: string;
-    hashedPassword?: string;
-    username?: string;
-    userProfile?: IUserProfile;
-    refreshToken?: Token | null;
-    createdAt?: Date | null;
+    userId: string
+    hashedPassword: string
+    username: string
+    userProfile: IUserProfile
+    refreshToken?: Token | null
+    createdAt: Date | null
 }
 
 export interface IUserProfile {
-    [key: string]: any;
-    character?: string;
-    userLevel?: string;
-    contactGit?: string;
-    contactEmail?: string;
-    profileMessage?: string;
+    [key: string]: any
+    character: string
+    userLevel: string
+    currentExp: number
+    requiredExp: number
+    grade?: string
+    school?: string
+    profileMessage?: string
 }
 
-//   lastUpdated?: Date | null;
+//   lastUpdated?: Date | null

@@ -4,24 +4,10 @@ import { IGameState } from '../../../types/IGameState'
 import { Message } from '../../../types/Messages'
 import store from '../stores'
 import { setGameSessionId } from '../stores/UserStore'
-import { 
-  setMoleGameFriendInfo,
-  setMoleGameFriendData,
-  setMoleGameProblem,
-  setMoleGameHost,
- } from '../stores/MoleGameStore'
-import { 
-  setBrickGameState,
-  setMyPlayerScore,
-  setMyPlayerStatus, 
-  setOppPlayerScore, 
-  setOppPlayerStatus 
-} from '../stores/BrickGameStore'
 import {
   setLobbyJoined,
   setGameJoined,
   setJoinedGameRoomData,
-  setGamePlayers,
   setAvailableBrickRooms,
   setAvailableMoleRooms,
   setAvailableRainRooms,
@@ -29,6 +15,32 @@ import {
   removeAvailableRooms,
   clearAvailabelGameRooms,
 } from '../stores/RoomStore'
+import {
+  setMoleGameFriendInfo,
+  setMoleGameFriendData,
+  setMoleGameProblem,
+  setMoleGameHost,
+  setMoleGameLife,
+  clearMoleGameFriendInfo,
+ } from '../stores/MoleGameStore'
+import {
+  setBrickGameState,
+  setMyPlayerScore,
+  setMyPlayerStatus,
+  setOppPlayerScore,
+  setOppPlayerStatus,
+  setOppInfo,
+} from '../stores/BrickGameStore'
+import { 
+  setRainGameMe, 
+  setRainGameYou, 
+  setRainGameMyState,
+  setRainGameHost, 
+  setRainGameYouState, 
+  setRainGameReady, 
+  setRainGameInProgress 
+} from '../stores/RainGameStore'
+
 
 export default class GameNetwork {
   private client: Client
@@ -63,7 +75,7 @@ export default class GameNetwork {
     }
     this.lobby = undefined
   }
-  
+
   async joinLobbyRoom(type: RoomType) {
     this.lobby = await this.client.joinOrCreate(type)
     store.dispatch(setLobbyJoined(true))
@@ -93,16 +105,14 @@ export default class GameNetwork {
 
   async joinCustomById(roomId: string, password: string | null, username: string) {
     this.room = await this.client.joinById(roomId, { password, username })
-    if (this.room.name === RoomType.BRICK) {
-      this.brick_game_init()
-    } else {
-      this.initialize()
-    }
+    if (this.room.name === RoomType.BRICK) this.brick_game_init()
+    if (this.room.name === RoomType.RAIN) this.rain_game_init()
+    if (this.room.name === RoomType.MOLE) this.mole_game_init()
   }
 
   async createBrickRoom(roomData: IGameRoomData) {
     const { name, description, password, username } = roomData
-    this.room = await this.client.create(RoomType.BRICK, {  
+    this.room = await this.client.create(RoomType.BRICK, {
       name,
       description,
       password,
@@ -119,9 +129,9 @@ export default class GameNetwork {
       password,
       username,
     })
-    this.initialize()
+    this.mole_game_init()
   }
-  
+
   async createRainRoom(roomData: IGameRoomData) {
     const { name, description, password, username } = roomData
     this.room = await this.client.create(RoomType.RAIN, {
@@ -130,76 +140,21 @@ export default class GameNetwork {
       password,
       username,
     })
-    this.initialize()
+    this.rain_game_init()
   }
 
-  async createFaceChatRoom(roomData: IGameRoomData) {
-    const { name, description, password, username } = roomData
-    this.room = await this.client.create(RoomType.FACECHAT, {
-      name,
-      description,
-      password,
-      username,
-    })
-    this.initialize()
-  }
-
-  // set up all network listeners before the game starts
-  initialize() {
-    if (!this.room) return
-
-    this.lobby.leave()
-    store.dispatch(setLobbyJoined(false))
-    this.mySessionId = this.room.sessionId
-    store.dispatch(setGameSessionId(this.room.sessionId)) 
-
-    // when the server sends room data
-    this.room.onMessage(Message.SEND_ROOM_DATA, (content) => {
-      store.dispatch(setJoinedGameRoomData(content))
-    })
-
-    // when the server sends data of players in this room
-    this.room.onMessage(Message.SEND_GAME_PLAYERS, (content) => {
-      store.dispatch(setGamePlayers(content))
-    })
-
-    // ↓ Mole Game
-    // method to receive friend info to me in mole game
-    this.room.onMessage(Message.RECEIVE_MOLE, (content) => {
-      store.dispatch(setMoleGameFriendInfo(content));
-    });
-
-    // method to receive friend point to me in mole game
-    this.room.onMessage(Message.RECEIVE_YOUR_POINT, (content) => {
-      store.dispatch(setMoleGameFriendData(content));
-    });
-
-    // method to receive friend point to me in mole game
-    this.room.onMessage(Message.RESPONSE_MOLE, (content) => {
-      store.dispatch(setMoleGameProblem(content));
-    });
-
-    // method to receive host to me in mole game
-    this.room.onMessage(Message.RECEIVE_HOST, (content) => {
-      store.dispatch(setMoleGameHost(content));
-    });
-  }
-
-  // method to send player updates to Colyseus server
-  updatePlayer(currentX: number, currentY: number, currentAnim: string) {
-    this.room?.send(Message.UPDATE_PLAYER, { x: currentX, y: currentY, anim: currentAnim })
-  }
-
-  // method to send player name to Colyseus server
-  updatePlayerName(currentName: string) {
-    this.room?.send(Message.UPDATE_PLAYER_NAME, { name: currentName })
-  }
-
-  // // method to send ready-to-connect signal to Colyseus server
-  // readyToConnect() {
-  //   this.room?.send(Message.READY_TO_CONNECT)
-  //   phaserEvents.emit(Event.MY_PLAYER_READY)
+  // async createFaceChatRoom(roomData: IGameRoomData) {
+  //   const { name, description, password, username } = roomData
+  //   this.room = await this.client.create(RoomType.FACECHAT, {
+  //     name,
+  //     description,
+  //     password,
+  //     username,
+  //   })
+  //   this.initialize()
   // }
+
+  /* BRICK GAME */
 
   brick_game_init() {
     if (!this.room) return
@@ -207,19 +162,24 @@ export default class GameNetwork {
     this.lobby.leave()
     store.dispatch(setLobbyJoined(false))
     this.mySessionId = this.room.sessionId
-    store.dispatch(setGameSessionId(this.room.sessionId)) 
+    store.dispatch(setGameSessionId(this.room.sessionId))
 
     this.room.onMessage(Message.SEND_ROOM_DATA, (content) => {
       store.dispatch(setJoinedGameRoomData(content))
       console.log('saved metadata')
     })
 
-    this.room.onMessage(Message.SEND_GAME_PLAYERS, (content) => {
-      store.dispatch(setGamePlayers(content))
-    })
-
-    this.room.onMessage(Message.BRICK_GAME_STATE, (content) => {
-      store.dispatch(setBrickGameState(content))
+    this.room.onMessage(Message.BRICK_GAME_PLAYERS, (content) => {
+      if (content.length < 2) {
+        store.dispatch(setOppInfo({name: '', character: ''}))
+      } else {
+        content.map(element => {
+          const { sessionId, name, character } = element
+          if (sessionId !== this.mySessionId) {
+            store.dispatch(setOppInfo({name, character}))
+          }
+        })
+      }
     })
 
     this.room.onMessage(Message.BRICK_GAME_STATE, (content) => {
@@ -238,52 +198,60 @@ export default class GameNetwork {
         store.dispatch(setOppPlayerStatus(payload.playerStatus))
       }
     })
-
-    // // TODO: 이거 왜 안될까 ㅜㅜ 
-    // this.room.state.brickgames.brickPlayers?.forEach((value: IBrickPlayer, key: string, map: Map<string, IBrickPlayer>) => {
-    //   this.brickPlayerListen(value, key)
-    // })
-
-    // this.room.state.brickgames.brickPlayers.onAdd = (player: IBrickPlayer, key: string) => {
-    //   this.brickPlayerListen(player, key)
-    // }
   }
-
-  /* BRICK GAMES */
-  // brickPlayerListen(player: IBrickPlayer, key: string) {
-  //   if (key === this.mySessionId) {
-  //     player.onChange = (changes) => {
-  //       changes.forEach((change) => {
-  //         const { field, value } = change
-  //         if (field === 'playerScore') {
-  //           store.dispatch(setMyPlayerScore(value))
-  //         }
-  //         if (field === 'playerStatus') {
-  //           console.log('status change: ', value)
-  //           store.dispatch(setMyPlayerStatus(value))
-  //         }
-  //       })
-  //     }
-  //   } else {
-  //     player.onChange = (changes) => {
-  //       changes.forEach((change) => {
-  //         const { field, value } = change
-  //         if (field === 'playerScore') {
-  //           store.dispatch(setOppPlayerScore(value))
-  //         }
-  //         if (field === 'playerStatus') {
-  //           store.dispatch(setOppPlayerStatus(value))
-  //         }
-  //       })
-  //     }
-  //   }
-  // }
 
   brickGameCommand(command: string) {
     console.log('command: ', command)
     this.room?.send(Message.BRICK_GAME_COMMAND, { command: command })
   }
+
+
+  /* MOLE GAME  */
+
+  mole_game_init() {
+    if (!this.room) return
+    this.lobby.leave()
+    store.dispatch(setLobbyJoined(false))
+    this.mySessionId = this.room.sessionId
+    store.dispatch(setGameSessionId(this.room.sessionId))
+
+    // when the server sends room data
+    this.room.onMessage(Message.SEND_ROOM_DATA, (content) => {
+      store.dispatch(setJoinedGameRoomData(content))
+    })
+
+    // ↓ Mole Game
+    // method to receive friend info to me in mole game
+    this.room.onMessage(Message.RECEIVE_MOLE, (content) => {
+      store.dispatch(setMoleGameFriendInfo(content))
+    })
+
+    // method to receive friend point to me in mole game
+    this.room.onMessage(Message.RECEIVE_YOUR_POINT, (content) => {
+      store.dispatch(setMoleGameFriendData(content))
+    })
+
+    // method to receive friend point to me in mole game
+    this.room.onMessage(Message.RESPONSE_MOLE, (content) => {
+      store.dispatch(setMoleGameProblem(content))
+    })
+
+    // method to receive host to me in mole game
+    this.room.onMessage(Message.RECEIVE_HOST, (content) => {
+      store.dispatch(setMoleGameHost(content));
+    });
+
+    // method to receive life to friend in mole game
+    this.room.onMessage(Message.RECEIVE_YOUR_LIFE, (content) => {
+      store.dispatch(setMoleGameLife(content));
+    });
   
+    // method to clear friend info in mole game
+    this.room.onMessage(Message.CLEAR_FRIEND, () => {
+      store.dispatch(clearMoleGameFriendInfo());
+    });
+  }
+
   // ↓ Mole Game
   // method to send my info to friend in mole game
   sendMyInfo(myName: string, myCharacter: string) {
@@ -304,17 +272,77 @@ export default class GameNetwork {
   changeHost(host: string) {
     this.room?.send(Message.SEND_HOST, { host: host })
   }
-
-  // Rain Game
-  startRainGame() {
-    console.log("1. 게임 초기화 과정이 진행된다!")
-    this.room?.send(Message.RAIN_GAME_START);
+  
+  // method to send life count in mole game
+  sendMyLife(myLife: string) {
+    this.room?.send(Message.SEND_MY_LIFE, { life: myLife })
+  }
+  
+  // method to clear friend info in mole game
+  clearFriendInfo() {
+    this.room?.send(Message.CLEAR_FRIEND)
   }
 
-  MakingWord(){
-    console.log("단어 만들라고 서버에게 명령함")
-    this.room?.send(Message.SEND_RAIN_GAME_PLAYERS);
+  /* RAIN GAME */
+  
+  startRainGame() {
+    console.log('startRainGame')
+    this.room?.send(Message.RAIN_GAME_START)
+  }
+
+  // GetWordsList(username1, username2) {
+  //   console.log('GetWordsList')
+  //   this.room?.send(Message.RAIN_GAME_WORD, { username1, username2 })
+  // }
+
+  sendMyInfoToServer(username: string, character: string) {
+    console.log('sendMyInfoToServer')
+    if (!this.room) return
+
+    this.room.send(Message.RAIN_GAME_USER, { username: username, character: character })
+  }
+
+  rain_game_init() {
+    if (!this.room) return
+    this.lobby.leave()
+    store.dispatch(setLobbyJoined(false))
+    this.mySessionId = this.room.sessionId
+    store.dispatch(setGameSessionId(this.room.sessionId))
+
+    // when the server sends room data
+    this.room.onMessage(Message.SEND_ROOM_DATA, (content) => {
+      const roomData = {
+        id : content.id,
+        name: content.name,
+        description: content.description
+      }
+      store.dispatch(setJoinedGameRoomData(roomData))
+      store.dispatch(setRainGameHost(content.host))
+    })
+
+    this.room.onMessage(Message.RAIN_GAME_USER, (data) => {
+
+      
+      for (let key in data) {
+          let user = data[key];
+          if (key === this.mySessionId) {
+              store.dispatch(setRainGameMe(user));
+          } else {
+              store.dispatch(setRainGameYou(user));
+          }
+      }
+  });
+
+  this.room.onMessage(Message.RAIN_GAME_START, () => {
+    store.dispatch(setRainGameInProgress(true));
+    
+    const mySessionId = this.mySessionId;
+    
+  
+});
+
+    this.room.onMessage(Message.RAIN_GAME_READY, () => {
+      store.dispatch(setRainGameReady(true))
+    })
   }
 }
-
-

@@ -1,10 +1,7 @@
 import axios from 'axios'
-
 import Cookies from 'universal-cookie'
 const cookies = new Cookies()
-
 // TODO: userAppSelector를 통해 UserStore에 저장된 accessToken을 가져와서 API 호출에 사용하는 방법도 있다.
-
 export const logout = () => {
     cookies.remove('refreshToken', { path: '/' });
     // cookies.remove('accessToken', { path: '/' });
@@ -12,10 +9,8 @@ export const logout = () => {
     // cookies.remove('username', { path: '/' });
     // cookies.remove('character', { path: '/' });
     // TODO: Add API calls for deleting refreshToken (in case of token extortion)
-
     window.location.href = '/';
 }
-
 const refreshAccessToken = async (body: object) => {
     try {
         const response = await axios.post('auth/refresh', body, {
@@ -35,7 +30,6 @@ const refreshAccessToken = async (body: object) => {
         return false
     }
 }
-
 export const login = async (body: LoginRequest): Promise<any> => {
     try {
         const response = await axios.post('/auth/login', body, {
@@ -55,7 +49,6 @@ export const login = async (body: LoginRequest): Promise<any> => {
         throw error
     }
 }
-
 export const authenticateUser = async (): Promise<any | null> => {
   try {
     const response = await axios.get('/auth/authenticate', {
@@ -63,7 +56,6 @@ export const authenticateUser = async (): Promise<any | null> => {
         'Content-type': 'application/json',
       },
     });
-
     if (response.status === 200) {
       const { data } = response;
       if (data.status == 200) {
@@ -85,14 +77,12 @@ export const authenticateUser = async (): Promise<any | null> => {
         logout();
         return null;
       }
-
       try {
         const response2 = await axios.get('/auth/authenticate', {
           headers: {
             'Content-type': 'application/json',
           },
         });
-
         if (response2.status === 200) {
           const { data } = response2;
           if (data.status == 200) {
@@ -104,11 +94,8 @@ export const authenticateUser = async (): Promise<any | null> => {
       }
     }
   }
-
   return null;
 };
-
-
 export const getMyProfile = async (): Promise<any> => {
     const response = await axios.get('/auth/myprofile');
     const { data } = response;
@@ -140,6 +127,47 @@ export const getMyProfile = async (): Promise<any> => {
     return null;
 };
 
+export const updateMyProfile = async (body: UpdateRequest): Promise<any> => {
+    try {
+        const response = await axios.patch('/auth/update', body, {
+            withCredentials: true,
+            headers: {
+                'Content-type': 'application/json',
+            },
+        })
+        if (response.status === 200) {
+          return response.data
+        }
+    } catch (error) {
+        throw error
+    }
+}
+
+// export const updateMyProfile = async () => {
+//     const body = {
+//       school: school,
+//       grade: grade,
+//       description: description,
+//     }
+//     try {
+//       const response = await axios.post(`/update`, body)
+//       if (response) {
+//         const { status } = response.data
+//         if (response.status === 200) {
+//           if (status === 200) {
+//             return 1
+//           } else if (status === 404) {
+//             return 2
+//           } else if (status === 409) {
+//             return 3
+//           }
+//         } else {
+//           console.log('서버에러')
+//         }
+//       }
+//     } catch (error) {}
+//   }
+
 export const join = async (body: JoinRequest): Promise<any> => {
   try {
     const response = await axios.post('/auth/signup', body, {
@@ -156,15 +184,21 @@ export const join = async (body: JoinRequest): Promise<any> => {
     throw error 
   }
 }
-
 export interface JoinRequest {
   userId: string
   password: string
   username: string
   character: string
 }
-
 export interface LoginRequest {
     userId: string
     password: string
+}
+
+export interface UpdateRequest {
+  // username: string
+  // character: string
+  grade: string
+  school: string
+  profileMessage: string
 }

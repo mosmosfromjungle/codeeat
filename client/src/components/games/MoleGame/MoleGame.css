@@ -1,5 +1,4 @@
 html, body {
-  margin-bottom: 20px;
   box-sizing: border-box;
   font-family: 'Press Start 2P';
 }
@@ -8,17 +7,15 @@ html, body {
   box-sizing: inherit;
 }
 
+h1 {
+  color: white;
+  text-align: center;
+}
+
 button {
   font-family: inherit;
   /* cursor: pointer; */
   cursor : url(/assets/game/molegame/cursor_1.png) 20 30
-}
-
-h1 {
-  color: #f2ecff;
-  text-align: center;
-  line-height: 1.5;
-  font-size: 25px;
 }
 
 .main{
@@ -26,18 +23,11 @@ h1 {
   width: 100%;
 }
 
-.whack-a-mole {
-  margin: 0 auto;
-  list-style: none;
-  width:650px;
-  border-radius: 20px;
-}
-
 .mole{
   float: left;
-  width: 190px;
-  height: 190px;
-  margin: 5px;
+  width: 30%;
+  height: 30%;
+  margin: 1%;
   overflow: hidden;
   cursor : url('/assets/game/molegame/cursor_1.png'), pointer;
   border-radius: 20px;
@@ -65,6 +55,7 @@ li {
   font-weight: bold;
   font-size: 25px;
   transform: translate( -50%, -50% );
+  text-shadow: 0px 0px 12px rgba(0, 0, 0, 0.9);
 }
 
 .mole > img{
@@ -97,10 +88,6 @@ li {
   animation-iteration-count: infinite;
 }
 
-.hiding{
-  display: none;
-}
-
 @keyframes shake {
   0% { transform: translate(1px, 1px) rotate(0deg); }
   10% { transform: translate(-1px, -2px) rotate(-1deg); }
@@ -130,17 +117,11 @@ li {
 }
 
 @keyframes point {
-  0% { font-size: 60px; }
-  25% { font-size: 50px; }
-  50% { font-size: 40px; }
-  75% { font-size: 30px; }
-  100% { font-size: 20px; }
-}
-
-.point-wrap{
-  float: left;
-  width: 100%;
-  overflow: hiddlen;
+  0% { font-size: 65px; }
+  25% { font-size: 55px; }
+  50% { font-size: 45px; }
+  75% { font-size: 35px; }
+  100% { font-size: 25px; }
 }
 
 .btn-wrap{
@@ -153,7 +134,7 @@ li {
   height: 40px;
   font-size: 15px;
   font-weight: 900;
-  margin: 10px 0 10px 0;
+  margin: 10px 0 0 0;
   background: #d6806e;
   border: none;
   color: #f2ecff;
@@ -172,7 +153,7 @@ li {
 
 .point-box {
   background-color: #4e4e4e;
-  width: 600px;
+  width: 650px;
   margin: 10px auto 0 auto;
   text-align: center;
   border-radius: 20px;
@@ -185,98 +166,17 @@ li {
 }
 
 .start-game {
-  animation: blink-effect 1s step-end infinite;
-}
-
-.friend-comment {
-  float: right;
-  margin-right: 20px;
-  font-size: 20px;
-  font-family: Font_DungGeun;
-}
-
-#point-text {
-  font-size: 20px;
-  font-weight: bold;
-  color: #f2ecff;
-}
-
-#is-host, #point-text-name {
-  font-size: 35px;
-  font-weight: bold;
-  color: #f2ecff;
-  font-family: Font_DungGeun;
+  animation: blink-effect 3s step-end infinite;
 }
 
 #friend-point-current, #point-current {
-  font-size: 20px;
+  font-size: 25px;
   font-weight: bold;
   color: #fbb666;
 }
 
 .get-point{
   animation: point 0.3s;
-}
-
-.ending {
-  display:none;
-  position: absolute;
-  border-radius: 20px;
-  font-size: 20px;
-  text-align: center;
-  top: 20%;
-  left: 50%;
-  width: 550px;
-  height: 400px;
-  margin: 0 auto;
-  background: #3d3f43;
-  z-index: 2;
-}
-
-#ending-box {
-  margin: 50px 0 0 0;
-  font-size: 20px;
-  line-height: 1.8;
-  color: #f2ecff;
-}
-
-#ending-box .last {
-  color: #fbb666;
-}
-
-#ending-box .winner {
-  font-size: 30px;
-  color: #7644ea;
-  font-family: Font_DungGeun;
-}
-
-#ending-box-title {
-  font-size: 25px;
-  color: #f9f871;
-}
-
-.ending-bg {
-  display: none;
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 1;
-}
-
-.finalEnding{
-  display: block;
-}
-
-.problem{
-  color: white;
-  border-width: 5px;
-  border-color: white;
-  border-style: dashed;
-  text-align: center;
-  width: 800px;
-  height: 100px;
-  margin: 10px auto 10px auto;
 }
 
 .hidden {
