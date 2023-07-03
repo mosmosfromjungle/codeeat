@@ -399,6 +399,7 @@ export default function BrickGameDialog() {
                     }}
                     fullWidth
                     InputProps={{
+                      autoComplete: 'off',
                       // 친구가 들어오기 전에는 입력할 수 없도록
                       readOnly: oppUsername === '',
                       style: { fontSize: '20px', height: '50px' },

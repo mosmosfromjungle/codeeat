@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import axios from 'axios'
 
 import { useAppSelector, useAppDispatch } from './hooks'
-import { DIALOG_STATUS } from './stores/UserStore'
+import { DIALOG_STATUS, HELPER_STATUS } from './stores/UserStore'
 
 // ↓ Entry Dialog
 import EntryDialog from './components/entrydialog/EntryDialog'
@@ -17,19 +17,19 @@ import GameWelcomeDialog from './components/gamedialog/GameWelcomeDialog'
 import MoleGameDialog from './components/games/MoleGame/MoleGameDialog'
 import BrickGameDialog from './components/games/BrickGame/BrickGameDialog'
 import RainGameDialog from './components/games/RainGame/RainGameDialog'
-import FaceChatDialog from './components/games/FaceChatDialog'
+// import FaceChatDialog from './components/games/FaceChatDialog'
 
 // ↓ HelperButtonGroup Dialog
 import HelperButtonGroup from './components/helperdialog/HelperButtonGroup'
-import ChatDialog from './components/ChatDialog'
+import ChatDialog from './components/helperdialog/ChatDialog'
 import { ConversationList } from './components/DM/DMList'
 import { DMRoom } from './components/DM/DMRoom'
-import UserDialog from './components/UserDialog'
+import UsersDialog from './components/helperdialog/UsersDialog'
 import FriendsDialog from './components/helperdialog/FriendsDialog'
-import LogoutDialog from './components/LogoutDialog'
+import LogoutDialog from './components/helperdialog/LogoutDialog'
 import VersionDialog from './components/helperdialog/VersionDialog'
 import MobileVirtualJoystick from './components/helperdialog/MobileVirtualJoystick'
-import VideoConnectionDialog from './components/VideoConnectionDialog'
+// import VideoConnectionDialog from './components/VideoConnectionDialog'
 
 // ↓ Profile Button & Dialog
 import ProfileButton from './components/ProfileButton'
@@ -37,7 +37,7 @@ import ProfileDialog from './components/ProfileDialog'
 
 import GlobalFont from '../public/assets/fonts/GlobalFont'
 
-import { authenticateUser } from './apicalls/auth';
+// import { authenticateUser } from './apicalls/auth';
 
 // import Cookies from 'universal-cookie';
 // const cookies = new Cookies();
@@ -54,29 +54,23 @@ const Backdrop = styled.div`
 `
 
 function App() {
+  const dispatch = useAppDispatch()
   const dialogStatus = useAppSelector((state) => state.user.dialogStatus)
 
   // ↓ Game Dialog
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
   const rainGameOpen = useAppSelector((state) => state.rainGameDialog.rainGameOpen)
-  const faceChatOpen = useAppSelector((state) => state.facechat.faceChatOpen)
+  // const faceChatOpen = useAppSelector((state) => state.facechat.faceChatOpen)
 
   // ↓ HelperButtonGroup Dialog
-  const showChat = useAppSelector((state) => state.chat.showChat)
+  const helperStatus = useAppSelector((state) => state.user.helperStatus)
   const showDMList = useAppSelector((state) => state.dm.showDMList)
   const showDMRoom = useAppSelector((state) => state.dm.showDMRoom)
-  const showUser = useAppSelector((state) => state.chat.showUser)
-  const showFriend = useAppSelector((state) => state.chat.showFriend)
-  const showLogout = useAppSelector((state) => state.user.showLogout)
-  const showVersion = useAppSelector((state) => state.user.showVersion)
-  const videoConnected = useAppSelector((state) => state.user.videoConnected)
-  const audioConnected = useAppSelector((state) => state.user.audioConnected)
-
+  
   // ↓ Profile Dialog
   const showProfile = useAppSelector((state) => state.user.showProfile)
 
-  const dispatch = useAppDispatch()
 
   // TODO: cookie 가져오는 부분 해결 필요 
   // useEffect(() => {
@@ -102,16 +96,15 @@ function App() {
   } else if (dialogStatus === DIALOG_STATUS.IN_MAIN) {
     ui = (
       <>
-        {/* // UGLY: Need to move to HelperButtonGroup  */}
-        {showChat && <ChatDialog />}
+        {helperStatus === HELPER_STATUS.CHAT && <ChatDialog />}
+        {helperStatus === HELPER_STATUS.USERS && <UsersDialog />}
+        {helperStatus === HELPER_STATUS.FRIENDS && <FriendsDialog />}
+        {helperStatus === HELPER_STATUS.LOGOUT && <LogoutDialog />}
+        {helperStatus === HELPER_STATUS.VERSION && <VersionDialog />}
+
         {showDMList && <ConversationList />}
         {showDMRoom && <DMRoom />}
-        {showUser && <UserDialog />}
-        {showFriend && <FriendsDialog />}
-        {showLogout && <LogoutDialog />}
         {showProfile && <ProfileDialog />}
-        {showVersion && <VersionDialog />}
-        {!videoConnected && <VideoConnectionDialog />}
         <MobileVirtualJoystick />
         <HelperButtonGroup />
         <ProfileButton />
@@ -125,7 +118,7 @@ function App() {
     if (brickGameOpen) ui = <BrickGameDialog />
     if (moleGameOpen) ui = <MoleGameDialog />
     if (rainGameOpen) ui = <RainGameDialog />
-    if (faceChatOpen) ui = <FaceChatDialog />
+    // if (faceChatOpen) ui = <FaceChatDialog />
   } else {
     ui = <EntryDialog />
   }

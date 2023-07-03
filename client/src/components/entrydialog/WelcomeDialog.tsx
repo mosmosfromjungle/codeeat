@@ -115,7 +115,7 @@ export default function WelcomeDialog() {
   const roomJoined = useAppSelector((state) => state.room.roomJoined)
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
-  const videoConnected = useAppSelector((state) => state.user.videoConnected)
+  // const videoConnected = useAppSelector((state) => state.user.videoConnected)
 
   const index = avatars.findIndex((avatar) => avatar.name === character)
   
@@ -150,7 +150,7 @@ export default function WelcomeDialog() {
         </Left>
         <Right>
             <h1 style={{ fontSize: '24px' }}>{username} 님</h1>
-          {!videoConnected && (
+          {/* {!videoConnected && (
             <Warning>
               <Alert variant="outlined" severity="warning">
                 <AlertTitle>아차!</AlertTitle>
@@ -171,7 +171,7 @@ export default function WelcomeDialog() {
             <Warning>
               <Alert variant="outlined"> 마이크도 쓸 수 있어요!</Alert>
             </Warning>
-          )}
+          )} */}
         </Right>
       </Content>
       <Bottom>
