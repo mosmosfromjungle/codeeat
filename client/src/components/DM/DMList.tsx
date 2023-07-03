@@ -24,6 +24,7 @@ export const ConversationList = () => {
   const dispatch = useAppDispatch();
   const username = useAppSelector((state) => state.user.username);
   useEffect(() => {
+    console.log('방가져온다',username)
     fetchRoomList(username)
     .then((data) => {
         setRooms(data);
@@ -35,7 +36,7 @@ export const ConversationList = () => {
   }, [rooms]);
 
 const handleClick = (room) => {
-  dispatch(setReceiverName(room.receiverName));
+  dispatch(setReceiverName(room.receiverName == username ? room.senderName : room.receiverName));
   dispatch(setRoomId(room.roomId));
   console.log('룸아이디설정',room.roomId)
   dispatch(setShowDMRoom(true))
@@ -58,25 +59,21 @@ return (
         {rooms.length !== 0 ? (
           rooms.map((room) => {
             return (
-              <ListTag
+            <ListTag
                 key={room._id}
                 onClick={() => {
                   dispatch(setShowDMList(false))
                   handleClick(room);
                 }}
               >
-                <ProfileAvatarImage
-                  src={DefaultAvatar}
-                  alt={room.receiverName}
-                />
                 <UserNamewithLastMessage>
-                  <UserName>{room.receiverName}</UserName>
+                  <UserName>{room.senderName}</UserName>
                     <LastMessage>
                       {room.message}
                     </LastMessage>
                 </UserNamewithLastMessage>
               </ListTag>
-            );
+              )
           })
         ) : (
           <>
@@ -89,13 +86,6 @@ return (
     </Backdrop>
   );
 };
-
-
-const ProfileAvatarImage = styled.img`
-  width: 50px;
-  height: 50px;
-  border-radius: 100%;
-`;
 
 const ListTag = styled.li`
   width: 335px;

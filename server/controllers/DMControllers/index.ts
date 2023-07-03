@@ -29,14 +29,15 @@ export const DMController = (socket: Socket) => {
       rooms[roomId].push(username);
       socket.join(roomId);
     } else {
-      roomId = createRoom();
-      if (roomId == 'start'){
-      console.log('횟수 세는용')
-      updateRoomId({ roomId: roomId, senderName: username, receiverName: receiverName })
-      .then(() => {
-        rooms[roomId].push(username);
-      })  
+      if (roomId == 'first'){
+        roomId = createRoom();
+        console.log('생성')
+        updateRoomId({ roomId: roomId, senderName: username, receiverName: receiverName })
+        .then(() => {
+          rooms[roomId].push(username);
+        })  
       } else {
+        roomId = createRoom();
         addLastDM({senderName: username, receiverName: receiverName, message: ' ', roomId})
         updateRoomId({ roomId: roomId, senderName: username, receiverName: receiverName })
         .then(() => {
@@ -63,9 +64,9 @@ export const DMController = (socket: Socket) => {
     }
   };
 
-  const readMessage = (message: { roomId: string; username: string; receiverName: string; }) => {
+  const readMessage = async (message: { roomId: string; username: string; receiverName: string; }) => {
     const { roomId, username, receiverName } = message;
-  
+    console.log('읽어')
     getDMMessage(username,receiverName)
     .then((dmMessage) => {
       socket.emit('old-messages', dmMessage);
