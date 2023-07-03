@@ -72,38 +72,6 @@ const ProfileButton = styled.div`
   }
 `
 
-// Todo: change the parameter in body part
-const getUser = async () => {
-  const apiUrl: string = 'http://auth/user/list'
-  await fetch(apiUrl, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }).then((res) => {
-    if (res.ok) {
-      console.log('Get user list is success.')
-    }
-    // Todo: need to hanle return codes - 200, 400, 409 ...
-  })
-}
-
-// Todo: change the parameter in body part
-const getUserDetail = async (userId: string) => {
-  const apiUrl: string = 'http://auth/user/detaul/' + userId
-  await fetch(apiUrl, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }).then((res) => {
-    if (res.ok) {
-      console.log('Get user detail is success.')
-    }
-    // Todo: need to hanle return codes - 200, 400, 409 ...
-  })
-}
-
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
@@ -127,35 +95,12 @@ export default function UsersDialog() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
-  const checkFirstChat = async (receiverName) => {
-    try {
-      const first = await checkIfFirst({ senderName: username, receiverName: receiverName});
-      console.log('첫 디엠인지 아닌지 체크, 첫디엠이면 status:200 && undefined')
-      return first?.status
-    } catch(err) {
-      console.error('check first chat error: ',err)
-    }
-  }
-
   const handleClick = async (player) => {
-    // const firstChatStatus = await checkFirstChat(player.name)
-    // if (firstChatStatus !== undefined && firstChatStatus == 200) {
-    //   dispatch(setReceiverName(player.name))
-    //   dispatch(setShowDMRoom(true))
-    //   dispatch(setShowUser(false)) // 수정 가능
-    // } else {
-      let body = {
-        senderName: username,
-        receiverName: player.name,
-        message: `${username} 님이 메시지를 보냈습니다`
-      }
-      console.log(body)
-      insertLastDM(body)
-      dispatch(setReceiverName(player.name))
-      dispatch(setShowDMRoom(true))
-      dispatch(setHelperStatus(HELPER_STATUS.NONE))
-    // }
-  }
+    dispatch(setRoomId('first'))
+    dispatch(setReceiverName(player.name))
+    dispatch(setShowDMRoom(true))
+    dispatch(setHelperStatus(HELPER_STATUS.NONE))
+}
 
   useEffect(() => {
     if (focused) {
@@ -259,7 +204,6 @@ export default function UsersDialog() {
                       {/* <img src={imgpath} /> */}
                     </ListItemAvatar>
                     <NameProfile>
-                      {/* <Level>Lv. {userLevel}</Level> */}
                       <Username>{player.name}</Username>
                     </NameProfile>
                   </NameWrapper>
@@ -271,13 +215,7 @@ export default function UsersDialog() {
                       <PersonAddAltOutlined fontSize='large' />
                     </Button>
                     <Button onClick={(e) => {
-                        // dispatch(setShowDMRoom(true));
-                        // 준택코드
-                        dispatch(setShowDMList(true))
-                        dispatch(setHelperStatus(HELPER_STATUS.NONE))
-                        // 재혁코드
                         e.preventDefault();
-                        console.log(player?.name ?? "unknown") // 🐱
                         handleClick(player)
                       }}
                     >
