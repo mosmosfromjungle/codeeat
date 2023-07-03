@@ -16,7 +16,7 @@ import {
 } from '../../apicalls/DM/DM';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
-import DefaultAvatar from '../../images/logo.png'
+import DefaultAvatar from '../../images/login/Lucy_login.png'
 
 /* DM목록을 불러온다.  */
 export const ConversationList = () => {
@@ -80,7 +80,7 @@ return (
           })
         ) : (
           <>
-            <NoDMMessage> <strong>아직 대화방이 없어요</strong><br></br> </NoDMMessage>
+            <NoDMMessage> <strong>📭 아직 대화방이 없어요</strong><br></br><br></br><br></br> </NoDMMessage>
             <NoDMMessage> <strong>다른 플레이어와 개인대화를 시작해보세요!</strong><br></br> </NoDMMessage>
           </>
         )}

@@ -52,7 +52,7 @@ export default function DMBubbles(props) {
     <>
       <Wrapper>
         <ChatFeed
-          maxHeight={450}
+          maxHeight={400}
           messages={messageList || []}
           bubblesCentered={false}
           bubbleStyles={{

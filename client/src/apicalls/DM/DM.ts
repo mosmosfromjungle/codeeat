@@ -45,7 +45,3 @@ export interface RoomListResponse {
   roomId: string;
   updatedAt: Date | null;
 }
-export interface FetchChattingRequest {
-  roomId: number;
-  cursor: number | null;
-}

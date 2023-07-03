@@ -48,6 +48,11 @@ export default class DMNetwork {
       this.oldMessages = [];
       data.forEach((element: any) => {
         if (element.senderName) {
+          if (element.senderName === senderName) {
+            element.id = 0;
+          } else {
+            element.id = 1;
+          }
           this.oldMessages.push(element);
         }
       });
