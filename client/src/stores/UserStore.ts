@@ -21,6 +21,16 @@ export enum DIALOG_STATUS {
   IN_GAME = 'in_game',
 }
 
+export enum HELPER_STATUS {
+  NONE = 'none',
+  CHAT = 'chat',
+  DM = 'dm',
+  USERS = 'users',
+  FRIENDS = 'friends',
+  LOGOUT = 'logout',
+  VERSION = 'version',
+}
+
 export const userSlice = createSlice({
   name: 'user',
   initialState: {
@@ -35,19 +45,13 @@ export const userSlice = createSlice({
     username: '',
     character: '',
     userLevel: '',
-    // userTier: '',
     playerNameMap: new Map<string, string>(),
     
     /* Status regarding screen dialog */
     dialogStatus: DIALOG_STATUS.ENTRY,
-    showLogout: false,
-    showQuit: false,
-    showVersion: false,
+    helperStatus: HELPER_STATUS.NONE,
+    // showQuit: false, // game 퇴장 dialog...
     showProfile: false,
-
-    /* Video and Audio connection */
-    videoConnected: false,
-    audioConnected: false,
   },
   reducers: {
     toggleBackgroundMode: (state) => {
@@ -91,17 +95,8 @@ export const userSlice = createSlice({
     setDialogStatus: (state, action: PayloadAction<DIALOG_STATUS>) => {
       state.dialogStatus = action.payload
     },
-    setShowLogout: (state, action: PayloadAction<boolean>) => {
-      state.showLogout = action.payload
-    },
-    setShowVersion: (state, action: PayloadAction<boolean>) => {
-      state.showVersion = action.payload
-    },
-    setVideoConnected: (state, action: PayloadAction<boolean>) => {
-      state.videoConnected = action.payload
-    },
-    setAudioConnected: (state, action: PayloadAction<boolean>) => {
-      state.audioConnected = action.payload
+    setHelperStatus: (state, action: PayloadAction<HELPER_STATUS>) => {
+      state.helperStatus = action.payload
     },
     setShowProfile: (state, action: PayloadAction<boolean>) => {
       state.showProfile = action.payload
@@ -122,10 +117,7 @@ export const {
   setPlayerNameMap,
   removePlayerNameMap,
   setDialogStatus,
-  setShowLogout,
-  setShowVersion,
-  setVideoConnected,
-  setAudioConnected,
+  setHelperStatus,
   setShowProfile,
 } = userSlice.actions
 
