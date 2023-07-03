@@ -35,7 +35,7 @@ export const ConversationList = () => {
   }, [rooms]);
 
 const handleClick = (room) => {
-  dispatch(setReceiverName(room.receiverName));
+  dispatch(setReceiverName(room.receiverName == username ? room.senderName : room.receiverName));
   dispatch(setRoomId(room.roomId));
   console.log('룸아이디설정',room.roomId)
   dispatch(setShowDMRoom(true))
@@ -65,12 +65,8 @@ return (
                   handleClick(room);
                 }}
               >
-                <ProfileAvatarImage
-                  src={DefaultAvatar}
-                  alt={room.receiverName}
-                />
                 <UserNamewithLastMessage>
-                  <UserName>{room.receiverName}</UserName>
+                  <UserName>{room.receiverName == username ? room.senderName : room.receiverName}</UserName>
                     <LastMessage>
                       {room.message}
                     </LastMessage>
@@ -89,13 +85,6 @@ return (
     </Backdrop>
   );
 };
-
-
-const ProfileAvatarImage = styled.img`
-  width: 50px;
-  height: 50px;
-  border-radius: 100%;
-`;
 
 const ListTag = styled.li`
   width: 335px;

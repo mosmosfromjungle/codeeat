@@ -31,7 +31,9 @@ export const getLastDM = async (senderName: string) => {
   let result = new Array();
   try {
     await LastDM.collection
-    .find({ senderName: senderName })
+    // .find({$or:[{$and:[{ senderName: senderName }, { message: {$ne:' '}}]},{$and:[{ receiverName: senderName }, { message: {$ne:' '}}]}]})
+    .find({$and:[{$or:[{senderName : senderName}, {receiverName: senderName}]},{message: {$ne:' '}}]})
+    // .find({$and:[{senderName : senderName},{message: {$ne:' '}}]})
     .sort({ _id: -1 })
     .toArray()
     .then((elem) => {
@@ -63,13 +65,13 @@ export const addLastDM = async (obj: {
         roomId: 'first',
         updatedAt: updatedAt,
       });
-      LastDM.collection.insertOne({
-        senderName: obj.receiverName,
-        receiverName: obj.senderName,
-        message: obj.message,
-        roomId: 'first',
-        updatedAt: updatedAt,
-      });
+      // LastDM.collection.insertOne({
+      //   senderName: obj.receiverName,
+      //   receiverName: obj.senderName,
+      //   message: obj.message,
+      //   roomId: 'first',
+      //   updatedAt: updatedAt,
+      // });
     return true;
 }
 

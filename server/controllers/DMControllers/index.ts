@@ -29,14 +29,15 @@ export const DMController = (socket: Socket) => {
       rooms[roomId].push(username);
       socket.join(roomId);
     } else {
-      roomId = createRoom();
-      if (roomId == 'start'){
-      console.log('횟수 세는용')
-      updateRoomId({ roomId: roomId, senderName: username, receiverName: receiverName })
-      .then(() => {
-        rooms[roomId].push(username);
-      })  
+      if (roomId == 'first'){
+        roomId = createRoom();
+        console.log('횟수 세는용')
+        updateRoomId({ roomId: roomId, senderName: username, receiverName: receiverName })
+        .then(() => {
+          rooms[roomId].push(username);
+        })  
       } else {
+        roomId = createRoom();
         addLastDM({senderName: username, receiverName: receiverName, message: ' ', roomId})
         updateRoomId({ roomId: roomId, senderName: username, receiverName: receiverName })
         .then(() => {
