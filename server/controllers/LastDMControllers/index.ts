@@ -65,13 +65,13 @@ export const addLastDM = async (obj: {
         roomId: 'first',
         updatedAt: updatedAt,
       });
-      // LastDM.collection.insertOne({
-      //   senderName: obj.receiverName,
-      //   receiverName: obj.senderName,
-      //   message: obj.message,
-      //   roomId: 'first',
-      //   updatedAt: updatedAt,
-      // });
+      LastDM.collection.insertOne({
+        senderName: obj.receiverName,
+        receiverName: obj.senderName,
+        message: obj.message,
+        roomId: 'first',
+        updatedAt: updatedAt,
+      });
     return true;
 }
 
