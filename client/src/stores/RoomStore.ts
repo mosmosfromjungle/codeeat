@@ -26,10 +26,6 @@ const isCodingRoom = (room: RoomInterface) => {
   return room.name === RoomType.CODING
 }
 
-const isRankingRoom = (room: RoomInterface) => {
-  return room.name === RoomType.RANKING
-}
-
 export const roomSlice = createSlice({
   name: 'room',
   initialState: {
@@ -49,7 +45,6 @@ export const roomSlice = createSlice({
       moleRooms: new Array<RoomAvailable>(),
       rainRooms: new Array<RoomAvailable>(),
       codingRooms: new Array<RoomAvailable>(),
-      rankingRooms: new Array<RoomAvailable>(),
     },
   },
   reducers: {
@@ -95,9 +90,6 @@ export const roomSlice = createSlice({
     },
     setAvailableCodingRooms: (state, action: PayloadAction<RoomAvailable[]>) => {
       state.availableRooms.codingRooms = action.payload.filter((room) => isCodingRoom(room))
-    },
-    setAvailableRankingRooms: (state, action: PayloadAction<RoomAvailable[]>) => {
-      state.availableRooms.rankingRooms = action.payload.filter((room) => isRankingRoom(room))
     },
     addAvailableRooms: (state, action: PayloadAction<{ roomId: string; room: RoomAvailable }>) => {
       if (isCustomRoom(action.payload.room)) {
@@ -145,15 +137,6 @@ export const roomSlice = createSlice({
         } else {
           state.availableRooms.codingRooms.push(action.payload.room)
         }
-      } else if (isRankingRoom(action.payload.room)) {
-        const roomIndex = state.availableRooms.rankingRooms.findIndex(
-          (room) => room.roomId === action.payload.roomId
-        )
-        if (roomIndex !== -1) {
-          state.availableRooms.rankingRooms[roomIndex] = action.payload.room
-        } else {
-          state.availableRooms.rankingRooms.push(action.payload.room)
-        }
       }
     },
     removeAvailableRooms: (state, action: PayloadAction<string>) => {
@@ -172,16 +155,12 @@ export const roomSlice = createSlice({
       state.availableRooms.codingRooms = state.availableRooms.codingRooms.filter(
         (room) => room.roomId !== action.payload
       )
-      state.availableRooms.rankingRooms = state.availableRooms.rankingRooms.filter(
-        (room) => room.roomId !== action.payload
-      )
     },
     clearAvailabelGameRooms: (state) => {
       state.availableRooms.brickRooms = []
       state.availableRooms.moleRooms = []
       state.availableRooms.rainRooms = []
       state.availableRooms.codingRooms = []
-      state.availableRooms.rankingRooms = []
     },
   },
 })
@@ -198,7 +177,6 @@ export const {
   setAvailableMoleRooms,
   setAvailableRainRooms,
   setAvailableCodingRooms,
-  setAvailableRankingRooms,
   addAvailableRooms,
   removeAvailableRooms,
   clearAvailabelGameRooms,

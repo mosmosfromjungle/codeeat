@@ -12,7 +12,6 @@ import {
   setAvailableMoleRooms,
   setAvailableRainRooms,
   setAvailableCodingRooms,
-  setAvailableRankingRooms,
   addAvailableRooms,
   removeAvailableRooms,
   clearAvailabelGameRooms,
@@ -100,10 +99,6 @@ export default class GameNetwork {
       this.lobby.onMessage('rooms', (rooms) => {
         store.dispatch(setAvailableCodingRooms(rooms))
       })
-    } else if (type === RoomType.RANKINGLOBBY) {
-      this.lobby.onMessage('rooms', (rooms) => {
-        store.dispatch(setAvailableRankingRooms(rooms))
-      })
     }
 
     this.lobby.onMessage('+', ([roomId, room]) => {
@@ -121,7 +116,6 @@ export default class GameNetwork {
     if (this.room.name === RoomType.RAIN) this.rain_game_init()
     if (this.room.name === RoomType.MOLE) this.mole_game_init()
     if (this.room.name === RoomType.CODING) this.coding_run_init()
-    if (this.room.name === RoomType.RANKING) this.ranking_board_init()
   }
 
   async createBrickRoom(roomData: IGameRoomData) {
@@ -166,17 +160,6 @@ export default class GameNetwork {
       username,
     })
     this.coding_run_init()
-  }
-
-  async createRankingRoom(roomData: IGameRoomData) {
-    const { name, description, password, username } = roomData
-    this.room = await this.client.create(RoomType.RANKING, {
-      name,
-      description,
-      password,
-      username,
-    })
-    this.ranking_board_init()
   }
 
   /* BRICK GAME */
@@ -368,15 +351,6 @@ export default class GameNetwork {
 
   /* Coding Run */
   coding_run_init() {
-    if (!this.room) return
-    this.lobby.leave()
-    store.dispatch(setLobbyJoined(false))
-    this.mySessionId = this.room.sessionId
-    store.dispatch(setGameSessionId(this.room.sessionId))
-  }
-
-  /* Ranking Board */
-  ranking_board_init() {
     if (!this.room) return
     this.lobby.leave()
     store.dispatch(setLobbyJoined(false))

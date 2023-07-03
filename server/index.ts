@@ -18,7 +18,6 @@ import { BrickGameRoom } from './rooms/BrickGameRoom'
 import { RainGameRoom} from './rooms/RainGameRoom'
 import { MoleGameRoom } from './rooms/MoleGameRoom'
 import { CodingRunRoom } from './rooms/CodingRunRoom'
-import { RankingBoardRoom } from './rooms/RankingBoardRoom'
 import { DMController } from './controllers/DMControllers'
 import { Socket } from 'socket.io'
 
@@ -77,14 +76,12 @@ mainServer.define(RoomType.BRICKLOBBY, LobbyRoom)
 mainServer.define(RoomType.MOLELOBBY, LobbyRoom)
 mainServer.define(RoomType.RAINLOBBY, LobbyRoom)
 mainServer.define(RoomType.CODINGLOBBY, LobbyRoom)
-mainServer.define(RoomType.RANKINGLOBBY, LobbyRoom)
 
 mainServer.define(RoomType.BRICK, BrickGameRoom).enableRealtimeListing()
 mainServer.define(RoomType.MOLE, GameRoom).enableRealtimeListing()
 mainServer.define(RoomType.RAIN, RainGameRoom).enableRealtimeListing()
 mainServer.define(RoomType.MOLE, MoleGameRoom).enableRealtimeListing()
 mainServer.define(RoomType.CODING, CodingRunRoom).enableRealtimeListing()
-mainServer.define(RoomType.RANKING, RankingBoardRoom).enableRealtimeListing()
 
 /**
  * Register @colyseus/social routes

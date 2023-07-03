@@ -84,7 +84,7 @@ export default class MyPlayer extends Player {
           break
         case ItemType.RANKINGBOARD:
           const rankingboard = item as RankingBoard
-          rankingboard.openDialog(network)
+          rankingboard.openDialog()
           break
       }
     }

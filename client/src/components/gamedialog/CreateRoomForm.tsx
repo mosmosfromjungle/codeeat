@@ -43,7 +43,6 @@ export const CreateRoomForm = () => {
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
   const rainGameOpen = useAppSelector((state) => state.rainGameDialog.rainGameOpen)
   const codingRunOpen = useAppSelector((state) => state.codingrun.codingRunOpen)
-  const rankingBoardOpen = useAppSelector((state) => state.rankingboard.rankingBoardOpen)
 
   const dispatch = useAppDispatch()
 
@@ -75,7 +74,6 @@ export const CreateRoomForm = () => {
         if (moleGameOpen) await bootstrap.gameNetwork.createMoleRoom(values)
         if (rainGameOpen) await bootstrap.gameNetwork.createRainRoom(values)
         if (codingRunOpen) await bootstrap.gameNetwork.createCodingRoom(values)
-        if (rankingBoardOpen) await bootstrap.gameNetwork.createRankingRoom(values)
         dispatch(setDialogStatus(DIALOG_STATUS.GAME_WELCOME))
       } catch (error) {
         console.error(error)

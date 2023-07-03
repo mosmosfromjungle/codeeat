@@ -32,9 +32,7 @@ import {
   RejectRequest,
   RemoveRequest,
 } from '../apicalls/friends'
-import { getUsersRanking } from '../apicalls/auth'
 import { IFriends } from '../../../server/controllers/FriendsControllers/types'
-import { IUserInfo, IUserProfile } from '../../../server/controllers/UserControllers/types'
 import axios from 'axios'
 
 const Backdrop = styled.div`
@@ -120,7 +118,7 @@ const ProfileButton = styled.div`
   }
 `
 
-export default function FriendDialog() {
+export default function FriendsDialog() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const chatMessages = useAppSelector((state) => state.chat.chatMessages)
@@ -152,7 +150,6 @@ export default function FriendDialog() {
   const [open, setOpen] = React.useState(true)
   const [friendList, setFriendList] = useState<IFriends[]>([])
   const [friendRequestList, setFriendRequestList] = useState<IFriends[]>([])
-  const [usersRankingList, setUsersRankingList] = useState<IUserInfo[]>([])
   const [isOpen, isSetOpen] = useState(false)
 
   useEffect(() => {
@@ -176,20 +173,6 @@ export default function FriendDialog() {
           if (!response) return
           const { findReceivedRequests } = response
           setFriendRequestList(findReceivedRequests)
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-    })()
-  }, [])
-
-  useEffect(() => {
-    ;(async () => {
-      getUsersRanking()
-        .then((response) => {
-          if (!response) return
-          const { findUsersRanking } = response
-          setUsersRankingList(findUsersRanking)
         })
         .catch((error) => {
           console.error(error)
@@ -354,33 +337,6 @@ export default function FriendDialog() {
                         친구 좋아
                       </Button>
                     </ProfileButton>
-                  </ListItem>
-                ))}
-              </User>
-            </UserList>
-            <hr></hr>
-            <UserList>
-              <User>
-                {usersRankingList.length > 0 && (
-                  <span style={{ color: 'white', fontFamily: 'Font_DungGeun' }}>랭킹 보드</span>
-                )}
-                {usersRankingList.map((value, index) => (
-                  <ListItem divider>
-                    <ListItemAvatar>
-                      {/* <Avatar src={imgpath} /> */}
-                      <Avatar
-                        src={`../../public/assets/character/single/${value.character}_idle_anim_19.png`}
-                      />
-                    </ListItemAvatar>
-
-                    <Profile>
-                      <div>
-                        <p key={index}>랭킹: {index + 1}</p>
-                        <p key={index}>Lv. {value.userLevel}</p>
-                        <p key={index}>이름: {value.username}</p>
-                        {/* <p key={index}>자기소개: {value.profileMessage}</p> */}
-                      </div>
-                    </Profile>
                   </ListItem>
                 ))}
               </User>

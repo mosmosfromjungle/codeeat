@@ -194,7 +194,7 @@ export default class Game extends Phaser.Scene {
       this.codingrunMap.set(id, item)
     })
 
-    /* Coding Run */
+    /* Ranking Board */
     const rankingboards = this.physics.add.staticGroup({ classType: RankingBoard })
     const rankingboardLayer = this.map.getObjectLayer('rankingboard')
     rankingboardLayer.objects.forEach((obj, i) => {

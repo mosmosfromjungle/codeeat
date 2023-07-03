@@ -32,7 +32,7 @@ export default class RankingBoard extends Item {
 
   onOverlapDialog() {
     if (this.currentUsers.size === 0) {
-      this.setDialogBox('Press R to play the Ranking Board')
+      this.setDialogBox('R을 눌러 랭킹 보드 확인!')
     } else {
       this.setDialogBox('Press R join')
     }
@@ -50,14 +50,7 @@ export default class RankingBoard extends Item {
     this.updateStatus()
   }
 
-  openDialog(network: Network) {
-    // if (!this.id) return
-    const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-    bootstrap.gameNetwork.joinLobbyRoom(RoomType.RANKINGLOBBY)
+  openDialog() {
     store.dispatch(openRankingBoardDialog())
-
-    setTimeout(() => {
-      store.dispatch(setDialogStatus(DIALOG_STATUS.GAME_LOBBY))
-    }, 200)
   }
 }
