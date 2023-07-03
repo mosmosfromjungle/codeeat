@@ -58,21 +58,7 @@ return (
         {rooms.length !== 0 ? (
           rooms.map((room) => {
             return (
-              room.senderName == username ?
-              (<ListTag
-                key={room._id}
-                onClick={() => {
-                  dispatch(setShowDMList(false))
-                  handleClick(room);
-                }}
-              >
-                <UserNamewithLastMessage>
-                  <UserName>{room.receiverName}</UserName>
-                    <LastMessage>
-                      {room.message}
-                    </LastMessage>
-                </UserNamewithLastMessage>
-              </ListTag>) : (<ListTag
+            <ListTag
                 key={room._id}
                 onClick={() => {
                   dispatch(setShowDMList(false))
@@ -85,8 +71,8 @@ return (
                       {room.message}
                     </LastMessage>
                 </UserNamewithLastMessage>
-              </ListTag>)
-            );
+              </ListTag>
+              )
           })
         ) : (
           <>

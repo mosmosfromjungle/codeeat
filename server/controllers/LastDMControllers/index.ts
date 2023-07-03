@@ -3,7 +3,7 @@ import LastDM, { ILastDMDocument } from '../../models/LastDM'
 import {userMap} from '../..'
 const time_diff = 9 * 60 * 60 * 1000;
 /* last dm 가져오기 */
-export const loadData = async (req: Request, res: Response) => {
+export const loadData = (req: Request, res: Response) => {
     const body = req.body;
     if (!body.senderName){
       return res.status(404).json({
@@ -65,13 +65,13 @@ export const addLastDM = async (obj: {
         roomId: 'first',
         updatedAt: updatedAt,
       });
-      LastDM.collection.insertOne({
-        senderName: obj.receiverName,
-        receiverName: obj.senderName,
-        message: obj.message,
-        roomId: 'first',
-        updatedAt: updatedAt,
-      });
+      // LastDM.collection.insertOne({
+      //   senderName: obj.receiverName,
+      //   receiverName: obj.senderName,
+      //   message: obj.message,
+      //   roomId: 'first',
+      //   updatedAt: updatedAt,
+      // });
     return true;
 }
 

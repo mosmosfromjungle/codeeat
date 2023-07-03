@@ -21,7 +21,7 @@ import Divider from '@mui/material/Divider';
 import { IPlayer } from '../../../types/IOfficeState';
 import { insertLastDM, checkIfFirst } from '../apicalls/DM/DM';
 
-import { setShowUser } from '../stores/ChatStore'
+import { HELPER_STATUS, setHelperStatus } from '../stores/UserStore'
 import { setReceiverName, setShowDMList, setShowDMRoom, setRoomId } from '../stores/DMStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
 
@@ -149,7 +149,6 @@ export default function UserDialog() {
   const inputRef = useRef<HTMLInputElement>(null)
   const chatMessages = useAppSelector((state) => state.chat.chatMessages)
   const focused = useAppSelector((state) => state.chat.focused)
-  const showUser = useAppSelector((state) => state.chat.showUser)
 
   const myName = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
@@ -168,7 +167,7 @@ export default function UserDialog() {
       dispatch(setRoomId('first'))
       dispatch(setReceiverName(player.name))
       dispatch(setShowDMRoom(true))
-      dispatch(setShowUser(false))
+      dispatch(setHelperStatus(HELPER_STATUS.NONE))
   }
 
   useEffect(() => {
@@ -183,7 +182,7 @@ export default function UserDialog() {
 
   useEffect(() => {
     scrollToBottom()
-  }, [chatMessages, showUser])
+  }, [chatMessages])
   return (
     <Backdrop>
         <Wrapper>
@@ -193,7 +192,7 @@ export default function UserDialog() {
               <IconButton
                 aria-label="close dialog"
                 className="close"
-                onClick={() => dispatch(setShowUser(false))}
+                onClick={() => dispatch(setHelperStatus(HELPER_STATUS.NONE))}
                 size="small"
               >
                 <CloseIcon />
