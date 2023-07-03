@@ -9,7 +9,7 @@ import Chair from '../items/Chair'
 import BrickGame from '../items/BrickGame'
 import RainGame from '../items/RainGame'
 import MoleGame from '../items/MoleGame'
-import FaceChat from '../items/FaceChat'
+// import FaceChat from '../items/FaceChat'
 
 import { phaserEvents, Event } from '../events/EventCenter'
 import store from '../stores'
@@ -77,10 +77,10 @@ export default class MyPlayer extends Player {
           const molegame = item as MoleGame
           molegame.openDialog(network)
           break
-        case ItemType.FACECHAT:
-          const faceChat = item as FaceChat
-          faceChat.openDialog(this.playerId, network)
-          break
+        // case ItemType.FACECHAT:
+        //   const faceChat = item as FaceChat
+        //   faceChat.openDialog(this.playerId, network)
+        //   break
       }
     }
 

@@ -14,9 +14,6 @@ export const chatSlice = createSlice({
   initialState: {
     chatMessages: new Array<{ messageType: MessageType; chatMessage: IChatMessage }>(),
     focused: false,
-    showChat: false,
-    showUser: false,
-    showFriend: false,
   },
   reducers: {
     pushChatMessage: (state, action: PayloadAction<IChatMessage>) => {
@@ -50,15 +47,6 @@ export const chatSlice = createSlice({
       action.payload ? game.disableKeys() : game.enableKeys()
       state.focused = action.payload
     },
-    setShowChat: (state, action: PayloadAction<boolean>) => {
-      state.showChat = action.payload
-    },
-    setShowUser: (state, action: PayloadAction<boolean>) => {
-      state.showUser = action.payload
-    },
-    setShowFriend: (state, action: PayloadAction<boolean>) => {
-      state.showFriend = action.payload
-    },
   },
 })
 
@@ -67,9 +55,6 @@ export const {
   pushPlayerJoinedMessage,
   pushPlayerLeftMessage,
   setFocused,
-  setShowChat,
-  setShowUser,
-  setShowFriend,
 } = chatSlice.actions
 
 export default chatSlice.reducer

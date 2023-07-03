@@ -3,21 +3,21 @@ import React, { useRef, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
-import Box from '@mui/material/Box'
 import InputBase from '@mui/material/InputBase'
 import CloseIcon from '@mui/icons-material/Close'
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon'
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
+import { Content, Header, HeaderTitle } from '../GlobalStyle'
 
-import { MessageType, setFocused, setShowChat, setShowUser } from '../stores/ChatStore'
-import { setShowDMList, setShowDMRoom } from '../stores/DMStore'
-import { setShowLogout } from '../stores/UserStore'
-import { useAppSelector, useAppDispatch } from '../hooks'
-import { getColorByString } from '../util'
+import { MessageType, setFocused } from '../../stores/ChatStore'
+import { setShowDMList, setShowDMRoom } from '../../stores/DMStore'
+import { HELPER_STATUS, setHelperStatus } from '../../stores/UserStore'
+import { useAppSelector, useAppDispatch } from '../../hooks'
+import { getColorByString } from '../../util'
 
-import phaserGame from '../PhaserGame'
-import Game from '../scenes/Game'
+import phaserGame from '../../PhaserGame'
+import Game from '../../scenes/Game'
 
 const Backdrop = styled.div`
   position: fixed;
@@ -27,53 +27,22 @@ const Backdrop = styled.div`
   right: 16px;
   align-items: flex-end;
 `
-
 const Wrapper = styled.div`
   height: 100%;
   margin-top: auto;
 `
-
 const ButtonGroup = styled.div`
   display: flex;
   gap: 10px;
 `
-
-const Content = styled.div`
-  margin: 70px auto;
-`
-
-const ChatHeader = styled.div`
-  position: relative;
-  height: 48px;
-  background: #000000a7;
-  border-radius: 10px 10px 0px 0px;
-
-  .close {
-    position: absolute;
-    top: 0;
-    right: 0;
-  }
-`
-
-const Title = styled.div`
-  position: absolute;
-  color: white;
-  font-size: 20px;
-  font-weight: bold;
-  top: 10px;
-  left: 140px;
-  font-family: Font_DungGeun;
-`
-
-const ChatBox = styled(Box)`
-  height: 400px;
-  width: 400px;
+const Body = styled.div`
+  flex: 1;
+  height: calc(100% - 120px);
   overflow: auto;
-  background: #2c2c2c;
-  border: 1px solid #00000029;
-  padding: 10px 10px;
+  padding: 10px 32px 32px 32px;
+  display: flex;
+  flex-direction: column;
 `
-
 const MessageWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -81,7 +50,7 @@ const MessageWrapper = styled.div`
 
   p {
     margin: 3px;
-    text-shadow: 0.3px 0.3px black;
+    text-shadow: 0.3px 0.3px gray;
     font-size: 20px;
     font-weight: bold;
     overflow-wrap: anywhere;
@@ -89,7 +58,7 @@ const MessageWrapper = styled.div`
   }
 
   span {
-    color: white;
+    color: black;
     font-weight: normal;
   }
 
@@ -97,29 +66,24 @@ const MessageWrapper = styled.div`
     color: grey;
     font-weight: normal;
   }
-
-  :hover {
-    background: #3a3a3a;
-  }
 `
-
 const InputWrapper = styled.form`
-  box-shadow: 10px 10px 10px #00000018;
-  border: 1px solid #42eacb;
-  border-radius: 0px 0px 10px 10px;
+  height: 60px;
+  padding: 4px 16px;
   display: flex;
   flex-direction: row;
-  background: linear-gradient(180deg, #000000c1, #242424c0);
+  // background: linear-gradient(180deg, #000000c1, #242424c0);
+  // border-radius: 0px 0px 3px 3px;
 `
-
 const InputTextField = styled(InputBase)`
-  border-radius: 0px 0px 10px 10px;
+  // border-radius: 0px 0px 10px 10px;
   input {
     padding: 5px;
     font-family: Font_DungGeun;
+    font-size: 18px;
+    color: black
   }
 `
-
 const EmojiPickerWrapper = styled.div`
   position: absolute;
   bottom: 110px;
@@ -175,7 +139,7 @@ export default function ChatDialog() {
   const inputRef = useRef<HTMLInputElement>(null)
   const chatMessages = useAppSelector((state) => state.chat.chatMessages)
   const focused = useAppSelector((state) => state.chat.focused)
-  const showChat = useAppSelector((state) => state.chat.showChat)
+  const helperStatus = useAppSelector((state) => state.user.helperStatus)
 
   const dispatch = useAppDispatch()
   const game = phaserGame.scene.keys.game as Game
@@ -188,11 +152,9 @@ export default function ChatDialog() {
     if (event.key === 'Escape') {
       // move focus back to the game
       inputRef.current?.blur()
-      dispatch(setShowChat(false))
+      dispatch(setHelperStatus(HELPER_STATUS.NONE))
       dispatch(setShowDMList(false))
       dispatch(setShowDMRoom(false))
-      dispatch(setShowUser(false))
-      dispatch(setShowLogout(false))
     }
   }
 
@@ -237,27 +199,27 @@ export default function ChatDialog() {
 
   useEffect(() => {
     scrollToBottom()
-  }, [chatMessages, showChat])
+  }, [chatMessages, helperStatus])
 
   return (
     <Backdrop>
       <ButtonGroup>
         <Wrapper>
           <Content>
-            <ChatHeader>
-              <Title>
+            <Header>
+              <HeaderTitle style={{ backgroundColor: 'yellow' }}>
                 전체 메세지
-              </Title>
+              </HeaderTitle>
               <IconButton
                 aria-label="close dialog"
                 className="close"
-                onClick={() => dispatch(setShowChat(false))}
+                onClick={() => dispatch(setHelperStatus(HELPER_STATUS.NONE))}
                 size="small"
               >
                 <CloseIcon />
               </IconButton>
-            </ChatHeader>
-            <ChatBox>
+            </Header>
+            <Body>
               {chatMessages.map(({ messageType, chatMessage }, index) => (
                 <Message chatMessage={chatMessage} messageType={messageType} key={index} />
               ))}
@@ -278,7 +240,7 @@ export default function ChatDialog() {
                   />
                 </EmojiPickerWrapper>
               )}
-            </ChatBox>
+            </Body>
             <InputWrapper onSubmit={handleSubmit}>
               <InputTextField
                 inputRef={inputRef}
@@ -300,7 +262,7 @@ export default function ChatDialog() {
                 }}
               />
               <IconButton aria-label="emoji" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
-                <InsertEmoticonIcon />
+                <InsertEmoticonIcon style={{ color: 'black'}} />
               </IconButton>
             </InputWrapper>
           </Content>

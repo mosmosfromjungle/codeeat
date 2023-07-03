@@ -1,5 +1,4 @@
 import React, { useRef, useState, useEffect } from 'react'
-import styled from 'styled-components'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 
@@ -12,12 +11,12 @@ import CorrectBGM from '/assets/audios/mole_correct.mp3';
 import WrongBGM from '/assets/audios/mole_wrong.mp3';
 import FinishBGM from '/assets/audios/mole_finish.mp3';
 
-import potato from '/assets/game/molegame/potato.png';
+import hammer from '/assets/game/molegame/hammer.png';
 
 import { 
   Backdrop, Wrapper, RoundArea, Header, 
   Comment, Problem, ProblemText, TipArea, Content, 
-  Moles, MyPoint, YourPoint, IsHost, CharacterArea, NameArea, LifeArea, PointArea, 
+  Moles, MyPoint, YourPoint, IsWinner, IsHost, CharacterArea, NameArea, LifeArea, PointArea, 
 } from './MoleGameStyle'
 import './MoleGame.css'
 
@@ -53,7 +52,7 @@ export default function MoleGameDialog() {
   const [flag, setFlag] = useState(0);
   const [titleColor, setTitleColor] = useState('#f2ecff');
 
-  const [problemText1, setProblemText1] = useState("정답을 말하고 있는 두더지를 잡아라!");
+  const [problemText, setProblemText] = useState("정답을 말하고 있는 두더지를 잡아라!");
 
   const [answerText1, setAnswerText1] = useState(String);
   const [answerText2, setAnswerText2] = useState(String);
@@ -67,20 +66,29 @@ export default function MoleGameDialog() {
 
   const [startButtonColor, setStartButtonColor] = useState('');
   const [startButtonText, setStartButtonText] = useState('PRESS START');
-  const [disableStartButton, setDisableStartButton] = React.useState(false);
+  const [startButton, setStartButton] = React.useState(false);
 
   const [activeNumber, setActiveNumber] = useState(0);
   const [activeNumberList, setActiveNumberList] = useState([0, 0, 0]);
 
-  // const [hideEnding, setHideEnding] = React.useState(true);
   const [canClick, setCanClick] = useState(true);
   const [startGame, setStartGame] = useState(false);
   
   const [myLife, setMyLife] = useState(3);
-  const [point, setPoint] = useState(0);
+  const [myPoint, setMyPoint] = useState(0);
   const [turn, setTurn] = useState(0);
+
+  const [winner, setWinner] = useState(String);
   
   const [moleCatch, setMoleCatch] = useState(0);
+
+  // If friend get point, display event
+  const friendPoint = useAppSelector((state) => state.molegame.friendPoint);
+
+  // If friend click wrong, display event
+  const friendLife = useAppSelector((state) => state.molegame.friendLife);
+
+  const problem = useAppSelector((state) => state.molegame.problem);
 
   let randomNumber1 = 0;
   let randomNumber2 = 0;
@@ -90,44 +98,39 @@ export default function MoleGameDialog() {
   let moleNumber2 = 0;
   let moleNumber3 = 0;
 
-  // If friend get point, display event
-  let friendPoint = useAppSelector((state) => state.molegame.friendPoint);
-
-  // If friend click wrong, display event
-  let friendLife = parseInt(useAppSelector((state) => state.molegame.friendlife));
-
+  // 친구 점수가 올랐을 때 내 화면에도 표시해주어야 함
   useEffect(() => {
-    // Point and Character event
-    const friendPoint = document.getElementById('friend-point-current');
-    friendPoint.classList.add('get-point');
+    if (friendPoint !== '0') {
+      // Point and Character event
+      const friendPoint = document.getElementById('friend-point-current');
+      friendPoint.classList.add('get-point');
 
-    setTimeout(function() {
-      friendPoint.classList.remove('get-point');
-    }, 1000);
+      setTimeout(function() {
+        friendPoint.classList.remove('get-point');
+      }, 1000);
 
-    const friendCharacter = document.getElementById(`friend-character`);
-    friendCharacter.classList.add('jump-animation');
+      const friendCharacter = document.getElementById('friend-character');
+      friendCharacter.classList.add('jump-animation');
 
-    setTimeout(function() {
-      friendCharacter.classList.remove('jump-animation');
-    }, 1000);
+      setTimeout(function() {
+        friendCharacter.classList.remove('jump-animation');
+      }, 1000);
+    }
   }, [friendPoint]);
 
+  // 친구/내 목숨 이벤트 처리
   let friendLifeElements = [];
   let myLifeElements = [];
 
-  console.log("friendLife: "+friendLife);
-  console.log("myLife: "+myLife);
-
-  for (let i = 0; i < friendLife; i++) {
+  for (let i = 0; i < parseInt(friendLife); i++) {
     friendLifeElements.push(
-      <img src={ potato } width="60px"></img>
+      <img key={ i } src={ hammer } width="60px" style={{ margin: '5px' }}></img>
     );
   }
 
   for (let i = 0; i < myLife; i++) {
     myLifeElements.push(
-      <img src={ potato } width="60px"></img>
+      <img key={ i } src={ hammer } width="60px" style={{ margin: '5px' }}></img>
     );
   }
 
@@ -182,32 +185,32 @@ export default function MoleGameDialog() {
         startButton.classList.add('hidden');
       }
 
+      // 친구가 들어오면 방장이 시작 버튼을 누를 수 있게 함
+      setStartButton(true);
+
+      setWinner('');
+
     } else {
       // 한 명이 되었으니 일단 게임 시작 못 함
       const startButton = document.getElementById('start-button-div');
       startButton.classList.add('hidden');
 
+      // 친구가 나가면 방장은 버튼을 누를 수 없음
+      setStartButton(false);
+
       if (host !== username) {
-        // 내가 방장이 아닌데, 상대방(방장)이 나갔다면,
-        // 이 방의 방장을 나로 업데이트
+        // 내가 방장이 아닌데 상대방(방장)이 나갔다면, 이 방의 방장을 나로 업데이트
         bootstrap.gameNetwork.changeHost(username);
       }
 
       // 게임 도중에 한명이 나갔다면,
-      // 남은 사람이 승리
       if (startGame) {
-        // Clear the game
-        clearTimeout(moleCatch);
-  
-        setTurn(0);
-        setPoint(0);
-        setMyLife(3);
+        endGame();
+        showWinner();
         
-        moleHide();
-        
-        setStartGame(false);
+        setProblemText("정답을 말하고 있는 두더지를 잡아라!");
 
-        setDisableStartButton(true);
+        setStartButton(false);
 
         const FinishAudio = new Audio(FinishBGM);
         FinishAudio.play();
@@ -215,12 +218,8 @@ export default function MoleGameDialog() {
     }
   }, [friendname, host]);
 
-  const problem = useAppSelector((state) => state.molegame.problem);
-
-  // startMole 함수는 방장만 들어올 수 있음
+  // 방장만 들어올 수 있음
   const startMole = () => {
-    console.log("Function [startMole]");
-
     // Request start game
     bootstrap.gameNetwork.startGame('0');
   }
@@ -228,8 +227,6 @@ export default function MoleGameDialog() {
   // 4. Show Event
 
   const randomHole = () => {
-    console.log("Function [randomHole]");
-
     let luckyMoles = [];
 
     const makeNum = () => {
@@ -253,14 +250,10 @@ export default function MoleGameDialog() {
   }
 
   const moleActive = (num) => {
-    console.log("Function [moleActive]");
-    
     num.classList.add('active');
   }
 
   const moleHide = () => {
-    console.log("Function [moleHide]");
-
     let mole1 = document.getElementById('1');
     let mole2 = document.getElementById('2');
     let mole3 = document.getElementById('3');
@@ -293,8 +286,6 @@ export default function MoleGameDialog() {
   }
 
   const showingMole = () => {
-    console.log("Function [showingMole]");
-
     if (turn < 10) {
       let luckyMoles = randomHole();
 
@@ -422,7 +413,7 @@ export default function MoleGameDialog() {
 
       setCanClick(true);
 
-      setProblemText1(problems[turn][0]);
+      setProblemText(problems[turn][0]);
 
       moleActive(moleNumber1);
       moleActive(moleNumber2);
@@ -434,30 +425,24 @@ export default function MoleGameDialog() {
       setActiveNumber(randomNumber1);
       setActiveNumberList([randomNumber1, randomNumber2, randomNumber3]);
 
-      setDisableStartButton(true);
-
+      setStartButton(false);
       setTurn(turn + 1);
 
     } else {
-      setDisableStartButton(true);
-      
-      setTurn(0);
+      endGame();
+      showWinner();
 
       const FinishAudio = new Audio(FinishBGM);
       FinishAudio.play();
 
       setStartButtonText('PRESS AGAIN');
       setStartButtonColor('#f2ecff');
-
-      setStartGame(false);
     }
   }
 
   // 5. Catch Mole Event
 
   const seeMole = () => {
-    console.log("Function [seeMole]");
-
     moleHide();
     
     clearTimeout(moleCatch);
@@ -465,15 +450,12 @@ export default function MoleGameDialog() {
   }
 
   const catchMole = () => {
-    console.log("Function [catchMole]");
     seeMole();
     
     clearTimeout(moleCatch);
   }
 
-  const handleClick = (num) => {
-    console.log("Function [handleClick]");
-    
+  const handleClick = (num) => {    
     if (!canClick) {
       return;
     }
@@ -493,10 +475,9 @@ export default function MoleGameDialog() {
         const getPoint = document.getElementById('point-current');
         getPoint.classList.add('get-point');
 
-        setPoint(point + 1);
-        
-        // 상대방에게 내 점수를 보내주어야 함
-        bootstrap.gameNetwork.sendMyPoint(point + 1);
+        // Point + 1
+        setMyPoint(myPoint + 1);
+        bootstrap.gameNetwork.sendMyPoint(myPoint.toString());
 
         setTimeout(function() {
           const removePoint = document.getElementById('point-current');
@@ -504,14 +485,14 @@ export default function MoleGameDialog() {
         }, 1000);
 
         // Character Jump Event
-        const character = document.getElementById(`my-character`);
-        character.classList.add('jump-animation');
+        const myCharacter = document.getElementById('my-character');
+        myCharacter.classList.add('jump-animation');
   
         setTimeout(function() {
-          character.classList.remove('jump-animation');
+          myCharacter.classList.remove('jump-animation');
         }, 1000);
         
-        // 다음 문제로 넘어가라고 요청
+        // Problem + 1
         bootstrap.gameNetwork.startGame(turn.toString());
 
       // Wrong Answer
@@ -519,12 +500,9 @@ export default function MoleGameDialog() {
         const WrongAudio = new Audio(WrongBGM);
         WrongAudio.play();
 
+        // Life - 1
         setMyLife(myLife - 1);
-
-        // 그리고 친구 화면에서도 내 감자 깎아야 함
-        bootstrap.gameNetwork.removeLife(myLife.toString());
-
-        //jiwon
+        bootstrap.gameNetwork.sendMyLife(myLife.toString());
 
         const number = document.getElementById(`${num}`);
         number.classList.add('click-wrong');
@@ -536,71 +514,36 @@ export default function MoleGameDialog() {
     }
   };
 
-  // 6. Score Modal
-
-  let total = (point / 10) * 100;
-  let friendTotal = (friendPoint / 10) * 100;
-
-  // const modalEvent = () => {
-  //   setHideEnding(false);
-  //   setDisableStartButton(true);
-  // }
-
-  // const hideModal = () => {
-  //   setHideEnding(true);
-  //   setDisableStartButton(false);
-  // }
-
   // 7. Check the winner
-  let winner = '';
 
-  if ( total > friendTotal ) {
-    winner = username;
-  } else if ( total < friendTotal) {
+  const showWinner = () => {
+    // 1. 상대방이 있는지 확인
     if (friendname === '') {
-      winner = username;
+      // 상대방이 나가면 게임 종료
+      setProblemText("정답을 말하고 있는 두더지를 잡아라!");
+
+    // 2. 친구 목숨, 내 목숨 확인
+    } else if (friendLife === '0' || myLife === 0) {
+      if (friendLife === '0') {
+        setWinner(username);
+      } else if (myLife === 0) {
+        setWinner(friendname);
+      }
+
+    // 3. 게임이 끝까지 진행되어 종료
     } else {
-      winner = friendname;
+      if (parseInt(friendPoint) > myPoint) {
+        setWinner(friendname);
+      } else if (parseInt(friendPoint) < myPoint) {
+        setWinner(username);
+      } else {
+        setWinner('both');
+      }
     }
-  } else {
-    if (friendname === '') {
-      winner = username;
-    } else {
-      winner = "both"
-    }
+
+    // 시작 버튼을 누를 수 있도록 수정
+    setStartButton(true);
   }
-
-  // const Modal = () => {
-  //   return(
-  //     <div id="ending" className="ending finalEnding">
-  //       <p id="ending-box">
-  //         <p id="ending-box-title">Game Over !</p>
-  //         <p>
-  //           <span>Your score is &nbsp;</span>
-  //           <span className='last'>{ total }</span>
-  //         </p>
-  //         <p>
-  //           <span>Friend score is &nbsp;</span>
-  //           <span className='last'>{ friendTotal }</span>
-  //         </p>
-  //         <p>
-  //           <span>The winner is &nbsp;</span>
-  //           <span className='winner'>{ winner }</span>
-  //         </p>
-
-  //         <div className="btn-wrap">
-  //           <button type="button" 
-  //                   className="restart-btn" 
-  //                   style={{ color: "#f9f871" }}
-  //                   onClick={() => hideModal()}
-  //                   onMouseEnter={ handleMouseOver }>
-  //             CLOSE
-  //           </button>
-  //         </div>
-  //       </p>
-  //     </div>
-  //   )
-  // }
 
   const handleMouseOver = () => {
     const ButtonAudio = new Audio(ButtonBGM);
@@ -610,29 +553,11 @@ export default function MoleGameDialog() {
   // 8. Close
 
   const handleClose = () => {
-    // Clear the game
-    clearTimeout(moleCatch);
-    setTurn(0);
-    setPoint(0);
-    setMyLife(3);
-    
-    moleHide();
-    
-    setStartGame(false);
+    endGame();
 
     try {
-      // 상대방에게 나 나간다고 알려줌
-      // 만약 내가 방장이었다면, 방장 이임 해주어야 함
+      // 내 정보 초기화, 내가 방장이었다면 방장 이임
       bootstrap.gameNetwork.sendMyInfo('', '');
-
-      // 그리고 나갈 때 problem 초기화
-      bootstrap.gameNetwork.startGame('-1');
-
-      // 내 점수도 초기화
-      bootstrap.gameNetwork.sendMyPoint('0');
-
-      // 내 목숨 초기화
-      bootstrap.gameNetwork.removeLife('4');
 
       bootstrap.gameNetwork.leaveGameRoom()
 
@@ -644,24 +569,73 @@ export default function MoleGameDialog() {
     }
   }
 
-  // Start game !
+  // Clear the game
+  const endGame = () => {
+    moleHide();
+
+    setTurn(0);
+    setMyPoint(0);
+    setMyLife(3);
+    
+    clearTimeout(moleCatch);
+    setStartGame(false);
+
+    // 1. 문제 Problem 초기화
+    bootstrap.gameNetwork.startGame('-1');
+
+    // 2. 점수 Point 초기화
+    bootstrap.gameNetwork.sendMyPoint('-1');
+
+    // 3. 목숨 Life 초기화
+    bootstrap.gameNetwork.sendMyLife('4');
+
+    // 4. 내가 다시 들어올 경우 대비, 상대편 정보 초기화
+    bootstrap.gameNetwork.clearFriendInfo();
+  }
+
+  // Change with problem
   useEffect(() => {
     if (problem === '' || problem === '0') {
       console.log("Wait for press start button")
 
     } else if (problem === '1') {
+      // 현재 게임 진행중인지 아닌지를 판별
       setStartGame(true);
-
       setStartButtonColor('#3d3f43');
-      setPoint(0);
-      setMyLife(3);
 
+      setMyPoint(0);
+      setMyLife(3);
       setTimeout(showingMole, 1000);
 
     } else {
       catchMole();
     }
   }, [problem]);
+
+  // Change with life
+  useEffect(() => {
+    if (friendLife === '0') {
+      endGame();
+      showWinner();
+
+      setStartButton(true);
+
+      const FinishAudio = new Audio(FinishBGM);
+      FinishAudio.play();
+    }
+  }, [friendLife]);
+
+  useEffect(() => {
+    if (myLife === 0) {
+      endGame();
+      showWinner();
+
+      setStartButton(true);
+
+      const FinishAudio = new Audio(FinishBGM);
+      FinishAudio.play();
+    }
+  }, [myLife]);
   
   return (
     <Backdrop>
@@ -678,8 +652,6 @@ export default function MoleGameDialog() {
           Round {turn}/10
         </RoundArea>
 
-        {/* { hideEnding === false ? <Modal /> : '' } */}
-
         <body>
           <Header>
               <div className="title" style={{ color:titleColor }}>Welcome! Whack-A-Mole</div> 
@@ -695,7 +667,7 @@ export default function MoleGameDialog() {
           <div className="main">
             <Problem>
               <ProblemText>
-                { problemText1 }
+                { problemText }
               </ProblemText>
             </Problem>
 
@@ -706,6 +678,9 @@ export default function MoleGameDialog() {
 
             <Content>
               <YourPoint>
+                <IsWinner>
+                  { ( friendname && !startGame && (winner === friendname)) ? 'WINNER' : ''}<br/><br/>
+                </IsWinner>
                 <IsHost>
                   { ( friendname && (friendname === host)) ? '방장' : ''}<br/><br/>
                 </IsHost>
@@ -783,6 +758,9 @@ export default function MoleGameDialog() {
               </Moles>
 
               <MyPoint>
+                <IsWinner>
+                  { winner === username && !startGame ? 'WINNER' : ''}<br/><br/>
+                </IsWinner>
                 <IsHost>
                   { ( friendname && (username === host)) ? '방장' : ''}<br/><br/>
                 </IsHost>
@@ -796,7 +774,7 @@ export default function MoleGameDialog() {
                   { myLifeElements }
                 </LifeArea>
                 <PointArea>
-                  <span id="point-current">{ point }</span>/10
+                  <span id="point-current">{ myPoint }</span>/10
                 </PointArea>
               </MyPoint>
             </Content>
@@ -806,8 +784,8 @@ export default function MoleGameDialog() {
                 <button type="button" 
                         className="start-btn" 
                         style={{ color: startButtonColor }} 
-                        disabled={ disableStartButton } 
-                        onClick={ !disableStartButton ? () => startMole() : null}
+                        disabled={ !startButton } 
+                        onClick={ startButton ? () => startMole() : null}
                         onMouseEnter={ handleMouseOver }>
                   { startButtonText }
                 </button>
