@@ -27,8 +27,8 @@ export interface RainGameStates {
 
 export const initialState: RainGameStates = {
   host: '',
-  rainGameReady: false,
-  rainGameInProgress: false,
+  rainGameReady: true,
+  rainGameInProgress: true,
   myState: {
     point: 0,
     heart: 3,

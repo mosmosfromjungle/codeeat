@@ -69,8 +69,8 @@ export class RainGameRoomState extends Schema implements IRainGameRoomState {
 
   constructor(rainGameReady: boolean, rainGameInProgress: boolean) {
     super()
-    this.rainGameInProgress = false
-    this.rainGameReady = false
+    this.rainGameInProgress = true
+    this.rainGameReady = true
   }
 }
 

@@ -35,7 +35,7 @@ import {
   setRainGameYou,
   setRainGameYouWord,
   setRainGameHost,
-  setRainGameReady,
+  // setRainGameReady,
   setRainGameInProgress,
   setRainStateMe,
   setRainStateYou,
@@ -274,9 +274,9 @@ export default class GameNetwork {
 
   /* RAIN GAME */
 
-  startRainGame() {
-    this.room?.send(Message.RAIN_GAME_START_C)
-  }
+  // startRainGame() {
+  //   this.room?.send(Message.RAIN_GAME_START_C)
+  // }
 
   removeWord(word: string, sessionId: string, states: RainGameStates) {
     this.room?.send(Message.RAIN_GAME_WORD_C, { word: word, sessionId: sessionId, states: states })
@@ -333,13 +333,13 @@ export default class GameNetwork {
       }
     })
 
-    this.room.onMessage(Message.RAIN_GAME_START_S, () => {
-      store.dispatch(setRainGameInProgress(true))
-    })
+    // this.room.onMessage(Message.RAIN_GAME_START_S, () => {
+    //   store.dispatch(setRainGameInProgress(true))
+    // })
 
-    this.room.onMessage(Message.RAIN_GAME_READY_S, () => {
-      store.dispatch(setRainGameReady(true))
-    })
+    // this.room.onMessage(Message.RAIN_GAME_READY_S, () => {
+    //   store.dispatch(setRainGameReady(true))
+    // })
 
     this.room.onMessage(Message.RAIN_GAME_WORD_S, (data) => {
       const { word, states } = data
