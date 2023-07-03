@@ -657,13 +657,6 @@ export default function MoleGameDialog() {
               <div className="title" style={{ color:titleColor }}>Welcome! Whack-A-Mole</div> 
           </Header>
 
-          <Comment>
-            <p className={`friend-comment ${friendname ? '' : 'start-game'}`}>
-              {friendname ? '친구가 들어왔어요,' : '친구가 아직 들어오지 않았어요 !'}<br />
-              {friendname ? '방장은 Start 버튼을 눌러주세요 !' : '친구가 들어와야 게임이 시작돼요.'}
-            </p>
-          </Comment>
-
           <div className="main">
             <Problem>
               <ProblemText>
