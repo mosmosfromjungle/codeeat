@@ -55,6 +55,7 @@ const MessageWrapper = styled.div`
     font-weight: bold;
     overflow-wrap: anywhere;
     font-family: Font_DungGeun;
+    line-height: 1.2;
   }
 
   span {
