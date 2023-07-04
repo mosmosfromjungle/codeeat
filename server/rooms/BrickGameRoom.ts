@@ -57,9 +57,10 @@ export class BrickGameRoom extends Room<IGameState> {
     return true
   }
 
+  /* 플레이어가 입장했을 때 방 정원을 모두 채웠다면 게임 준비 완료 상태로 표시 */
   onJoin(client: Client, options: any) {
-    const { username } = options
-    this.state.players.set(client.sessionId, new GamePlayer(username))
+    const { username, character } = options
+    this.state.players.set(client.sessionId, new GamePlayer(username, character))
     this.state.brickgames.brickPlayers.set(client.sessionId, new BrickPlayer())
 
     client.send(Message.SEND_ROOM_DATA, {
@@ -68,30 +69,48 @@ export class BrickGameRoom extends Room<IGameState> {
       description: this.description,
     })
 
+    if (this.clients.length >= this.maxClients) {
+      this.state.brickgames.gameStarting = true
+    }
     this.sendGameState(client)
-    this.broadcastPlayersData(this)
+    this.broadcastPlayersData()
+
+    // 임시
+    if (this.clients.length >= this.maxClients) {
+      this.startGame()
+    }
   }
 
+  /* 플레이어가 퇴장할 때 아직 게임이 진행중인 상태라면 5초 후 게임을 강제 종료 */
   onLeave(client: Client) {
     if (this.state.players.has(client.sessionId)) {
       this.state.players.delete(client.sessionId)
     }
     
-    this.broadcastPlayersData(this)
+    this.broadcastPlayersData()
+
+    if (this.state.brickgames.gameInProgress) {
+      this.endGame()
+    }
   }
 
   handleCommand(client: Client, command: string) {
     const player = this.state.brickgames.brickPlayers.get(client.sessionId)
     if (!player) throw new Error('handleCommand Error - no client')
-    
     const playerStatus = player.playerStatus
     const lowercaseCommand = command.toLowerCase()
+    let winner = false
 
     if (lowercaseCommand === 'submit') {
       const playerScore = player.playerScore
       let roundPoint = 0
       const problemType = this.state.brickgames.problemType
       const problemId = this.state.brickgames.problemId
+      // 0. 다른 사람이 먼저 맞춘 경우 에러 전달
+      if (this.state.brickgames.hasRoundWinner) {
+        this.sendError(client, '이미 정답을 맞췄어요!')
+        return
+      }
       // 1. 정답이 맞는지 확인 -> 틀렸으면 에러 전달
       const submitArray = Array.from(playerStatus.currentImages.values()).map((value) => value.imgidx)
       console.log('submitted image array: ', submitArray)
@@ -101,7 +120,6 @@ export class BrickGameRoom extends Room<IGameState> {
         } else {
           playerScore.chance -= 1
           this.sendError(client, '틀렸습니다!')
-          return
         }
       } else if (problemType === QUIZ_TYPE.SAME3) {
         if (submitArray.length === 3 
@@ -112,7 +130,6 @@ export class BrickGameRoom extends Room<IGameState> {
           } else {
             playerScore.chance -= 1
             this.sendError(client, '틀렸습니다!')
-            return
           }
       } else if (problemType === QUIZ_TYPE.DIFF3) {
         if (submitArray.length === 3 
@@ -123,7 +140,6 @@ export class BrickGameRoom extends Room<IGameState> {
           } else {
             playerScore.chance -= 1
             this.sendError(client, '틀렸습니다!')
-            return
           }
       } else {
         throw new Error('채점하는데 뭔가 이상함')
@@ -132,6 +148,7 @@ export class BrickGameRoom extends Room<IGameState> {
       if (this.state.brickgames.hasRoundWinner === false) {
         console.log('먼저 맞춘 사람이 1점 더 획득')
         this.state.brickgames.hasRoundWinner = true
+        winner = true
         roundPoint += 1
       }
       // 3. 추가 점수를 획득할 수 있는지 확인
@@ -144,8 +161,9 @@ export class BrickGameRoom extends Room<IGameState> {
       })
       playerScore.totalPoint += roundPoint
       playerScore.pointArray.push(roundPoint)
-    } else if (lowercaseCommand === 'restore') {
-      this.dispatcher.dispatch(new BrickGameCommand(), { client, command: 'restore', commandText: command })
+    /* Restore 기능 제거 */
+    // } else if (lowercaseCommand === 'restore') {
+    //   this.dispatcher.dispatch(new BrickGameCommand(), { client, command: 'restore', commandText: command })
     } else if (lowercaseCommand === 'reset') {
       playerStatus.selectedOption = DATA_STRUCTURE.NONE
       playerStatus.currentImages.splice(0, playerStatus.currentImages.length)
@@ -167,8 +185,9 @@ export class BrickGameRoom extends Room<IGameState> {
             } else {
               this.sendError(client, FORMAT_ERROR)
             }
-          } else if (lowercaseCommand === 'pop') {
-            this.dispatcher.dispatch(new BrickGameCommand(), { client, command: 'remove', commandText: command, index: playerStatus.currentImages.length - 1 })
+          /* List 자료구조에서 pop 연산 제거 */
+          // } else if (lowercaseCommand === 'pop') {
+          //   this.dispatcher.dispatch(new BrickGameCommand(), { client, command: 'remove', commandText: command, index: playerStatus.currentImages.length - 1 })
           } else {
             this.sendError(client, COMMAND_ERROR)
           }
@@ -229,7 +248,22 @@ export class BrickGameRoom extends Room<IGameState> {
           break
       }
     }
+
     this.broadcastPlayerUpdate(client)
+
+    /* 해당 클라이언트가 이긴 경우 라운드 초기화 후 새로운 라운드 시작 */
+    if (winner) {
+      this.broadcastRoundWinner(client)  
+      this.resetRound()
+      setTimeout(() => {
+        this.newRound()
+      }, 2000);
+    }
+  }
+
+  broadcastRoundWinner(client: Client) {
+    // TODO: 두 플레이어 모두 5초 카운트다운, 먼저 맞추지 못한 플레이어는 5초 이내에만 제출할 수 있음
+    this.broadcast(Message.BRICK_ROUND_WINNER, this.state.players.get(client.sessionId)?.username)
   }
 
   sendError(client: Client, message: string) {
@@ -255,16 +289,18 @@ export class BrickGameRoom extends Room<IGameState> {
     }
   }
 
-  broadcastPlayersData(room: BrickGameRoom) {
-    const players = Array.from(room.state.players.values()).map((player, key) => ({
-      sessionId: key,
-      name: player.name,
-      character: player.anim
+  /* Broadcast player username and character */
+  broadcastPlayersData() {
+    const players = Array.from(this.state.players.values()).map((player, index) => ({
+      sessionId: this.clients[index].sessionId,
+      username: player.username,
+      character: player.character
     }))
     console.log('players: ', players)
-    room.broadcast(Message.BRICK_GAME_PLAYERS, players);
+    this.broadcast(Message.BRICK_GAME_PLAYERS, players);
   }
 
+  /* Broadcast updates about a client */
   broadcastPlayerUpdate(client: Client) {
     const playerUpdate = {client: client,
       payload: this.state.brickgames.brickPlayers.get(client.sessionId),
@@ -272,21 +308,16 @@ export class BrickGameRoom extends Room<IGameState> {
     this.broadcast(Message.BRICK_PLAYER_UPDATE, playerUpdate)
   }
 
+  /* Start the game by starting a new round */
   startGame() {
     if (this.state.brickgames.gameInProgress) return
     this.state.brickgames.gameInProgress = true
 
     this.newRound()
-
-    this.broadcastGameState()
-    this.clients.map((value) => {
-      this.broadcastPlayerUpdate(value)
-    })
   }
 
+  /* Start a new round and broadcast */
   newRound() {
-    this.state.brickgames.hasRoundWinner = false
-    
     const newProblem = this.getRandomProblem()
     console.log('problem: ', newProblem)
     this.state.brickgames.problemId = newProblem.problemId
@@ -306,35 +337,60 @@ export class BrickGameRoom extends Room<IGameState> {
       })
     )
     this.state.brickgames.brickPlayers.forEach((value) => {
+      value.playerStatus.currentImages.splice(0, value.playerStatus.currentImages.length)
       this.state.brickgames.problemImages.forEach((elem) => {
         value.playerStatus.currentImages.push(elem)  
       })
     })
+
+    this.broadcastGameState()
+    this.clients.map((value) => {
+      this.broadcastPlayerUpdate(value)
+    })
   }
 
-  getRandomProblem() {
-    const randomIndex = Math.floor(Math.random() * ProblemTypes.length);
-    return ProblemTypes[randomIndex];
+  /* 라운드 내용을 초기화 */
+  resetRound() {
+    this.state.brickgames.hasRoundWinner = false
+    this.state.brickgames.problemId = 0
+    this.state.brickgames.problemType = QUIZ_TYPE.NONE
+    this.state.brickgames.problemImages.splice(0, this.state.brickgames.problemImages.length)
+    this.state.brickgames.brickPlayers.forEach((value) => {
+      value.playerStatus.currentImages.splice(0, value.playerStatus.currentImages.length)
+      value.playerStatus.selectedOption = DATA_STRUCTURE.NONE
+      value.playerStatus.commandArray.splice(0, value.playerStatus.commandArray.length)
+    })
+
+    this.broadcastGameState()
+    this.clients.map((value) => {
+      this.broadcastPlayerUpdate(value)
+    })
   }
 
+  /* End the game by kicking users out leading to autodiapose */
   endGame() {
     if (!this.state.brickgames.gameInProgress) {
       return
     }
 
     this.state.brickgames.gameInProgress = false
+    this.resetRound()
 
-    // Disconnect all clients after 10 seconds and the room will autodispose
     setTimeout(() => {
       for (const client of this.clients.values()) {
         client.leave()
       }
-    }, 10000)
+    }, 5000)
   }
 
   onDispose() {
     console.log('room', this.roomId, 'disposing...')
     this.dispatcher.stop()
+  }
+
+  getRandomProblem() {
+    const randomIndex = Math.floor(Math.random() * ProblemTypes.length);
+    return ProblemTypes[randomIndex];
   }
 
   generateNumberArray(problemType, generateKey) {

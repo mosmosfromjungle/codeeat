@@ -28,4 +28,5 @@ export interface IGameRoomData {
   password: string | null
   // autoDispose: boolean
   username: string
+  character: string
 }

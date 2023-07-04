@@ -66,7 +66,7 @@ export class RainGameRoomState extends Schema implements IRainGameRoomState {
   @type({ map: KeywordRain}) 
   keywordLists = new MapSchema<KeywordRain>()
 
-  constructor(rainGameReady: boolean, rainGameInProgress: boolean) {
+  constructor() {
     super()
     this.rainGameInProgress = false
     this.rainGameReady = false
@@ -117,12 +117,13 @@ export class BrickGameState extends Schema implements IBrickGameState {
 /* GAME ROOM SCHEMA */
 
 export class GamePlayer extends Schema implements IGamePlayer {
-  @type('string') name = ''
-  @type('string') anim = 'adam_idle_down'
+  @type('string') username = ''
+  @type('string') character = ''
 
-  constructor(name: string) {
+  constructor(username: string, character: string) {
     super()
-    this.name = name
+    this.username = username
+    this.character = character
   }
 }
 

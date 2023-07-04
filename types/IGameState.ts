@@ -72,8 +72,8 @@ export interface IBrickGameState extends Schema {
 /* GAME ROOM SCHEMA */
 
 export interface IGamePlayer extends Schema {
-  name: string
-  anim: string
+  username: string
+  character: string
 }
 
 export interface IGameState extends Schema {

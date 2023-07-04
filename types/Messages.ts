@@ -31,6 +31,7 @@ export enum Message {
   BRICK_GAME_STATE,
   BRICK_GAME_ERROR,
   BRICK_PLAYER_UPDATE,
+  BRICK_ROUND_WINNER,
   
   // ***** MOLE GAME *****
   SEND_MOLE,
