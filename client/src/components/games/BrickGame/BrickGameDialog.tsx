@@ -23,6 +23,9 @@ import CloseIcon from '@mui/icons-material/Close'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 
+import { updateLevel, UpdateLevelReqest } from '../../../apicalls/auth'
+import ExperienceResultModal from '../../ExperienceResultModal'
+
 import { 
   GlobalStyle, Backdrop, Wrapper, BottomWrapper, 
   RoundWrapper, MidWrapper, HelperWrapper, QuizWrapper, OpponentWrapper, ScoreWrapper, MyWrapper, 
@@ -91,6 +94,46 @@ export default function BrickGameDialog() {
   const [oppImages, setOppImages] = useState<{ src: any; text: string }[]>([])
   const [command, setCommand] = useState('')
 
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+  const openModal = () => {
+    setTimeout(() => {
+      setIsModalOpen(true)
+    }, 200)
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false)
+    handleClose();
+  }
+
+  // 경험치 보내주기
+  const gainExpUpdateLevel = (username: string, exp: number) => {
+    const body: UpdateLevelReqest = {
+      username: username,
+      exp: exp,
+    }
+    updateLevel(body)
+      .then((response) => {
+        if (!response) return
+      })
+      .catch((error) => {
+        if (error.response) {
+          const { status, message } = error.response.data
+        }
+      })
+  }
+
+  // useEffect(() => {
+  //   if (winner == username) {
+  //     gainExpUpdateLevel(username, 7)
+  //   } else if (winner == friendname) {
+  //     gainExpUpdateLevel(username, 3)
+  //   }
+  //   if (winner) {
+  //     openModal()
+  //   }
+  // }, [winner])
+
   useEffect(() => {
     setMyImages(myCurrentImages.map((value, index) => ({
       src: imgsrc[value.imgidx - 1],
@@ -128,6 +171,10 @@ export default function BrickGameDialog() {
   const handleSubmit = () => {
     bootstrap.gameNetwork.brickGameCommand('submit');
     setCommand('');
+
+    // 여기에 임시로 경험치 모달 열리게 해둠, 이후 구현 시 아래 두줄 주석 처리 필.
+    gainExpUpdateLevel(username, 7);
+    setIsModalOpen(true);
   }
 
   let oppLifeElements = [];
@@ -157,6 +204,10 @@ export default function BrickGameDialog() {
           >
             <CloseIcon />
           </IconButton>
+
+          {isModalOpen && (
+            <ExperienceResultModal open={isModalOpen} handleClose={closeModal} />
+          )}
 
           <RoundWrapper>
             <div style={{ flex: 1, fontSize: '24px' }} className={`${oppUsername ? '' : 'start-game'}`}>
