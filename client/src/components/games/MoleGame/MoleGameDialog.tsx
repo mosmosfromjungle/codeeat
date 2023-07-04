@@ -24,7 +24,7 @@ import './MoleGame.css'
 import phaserGame from '../../../PhaserGame'
 import Bootstrap from '../../../scenes/Bootstrap'
 import { updateLevel, UpdateLevelReqest } from '../../../apicalls/auth'
-// import ExperienceResultModal from '../../ExperienceResultModal'
+import ExperienceResultModal from '../../ExperienceResultModal'
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -95,16 +95,16 @@ export default function MoleGameDialog() {
 
   const problem = useAppSelector((state) => state.molegame.problem)
 
-  // const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-  // const openModal = () => {
-  //   setTimeout(() => {
-  //     setIsModalOpen(true)
-  //   }, 200)
-  // }
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+  const openModal = () => {
+    setTimeout(() => {
+      setIsModalOpen(true)
+    }, 200)
+  }
 
-  // const closeModal = () => {
-  //   setIsModalOpen(false)
-  // }
+  const closeModal = () => {
+    setIsModalOpen(false)
+  }
 
   let randomNumber1 = 0
   let randomNumber2 = 0
@@ -642,10 +642,10 @@ export default function MoleGameDialog() {
     } else if (winner == friendname) {
       gainExpUpdateLevel(username, 3)
     }
-    // if (winner) {
-    //   openModal()
-    //   setWinner('')
-    // }
+    if (winner) {
+      openModal()
+      setWinner('')
+    }
   }, [winner])
 
   // Change with problem
@@ -853,9 +853,9 @@ export default function MoleGameDialog() {
                   <br />
                   <br />
                 </IsWinner>
-                {/* {isModalOpen && (
+                {isModalOpen && (
                   <ExperienceResultModal open={isModalOpen} handleClose={closeModal} />
-                )} */}
+                )}
                 <IsHost>
                   {friendname && username === host ? '방장' : ''}
                   <br />
