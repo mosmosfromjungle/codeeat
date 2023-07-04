@@ -43,7 +43,7 @@ const Wrapper = styled.form`
   border-radius: 16px;
   padding: 36px 40px;
   box-shadow: 0px 0px 5px #0000006f;
-  width: 50%;
+  width: 40%;
 `
 const Title = styled.h3`
   margin: 5px;
@@ -60,26 +60,13 @@ const Left = styled.div`
   font-color: 20px;
   font-size: 20px;
 `
-const ImgContainer = styled.div`
-  width: 160px;
-  height: 220px;
-  background: #dbdbe0;
-  border-radius: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;  
-
-  img {
-      display: block;
-      width: 95px;
-      height: 136px;
-      object-fit: contain;
-  }
-`
 const Right = styled.div`
   width: 50%;
-  margin: 10px 0 10px 0;
+  margin: 0 0 0 30px;
   color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 const Bottom = styled.div`
   display: flex;
@@ -97,17 +84,16 @@ const Special = styled.span`
 `
 const Description = styled.span`
   color: white;
-  justify-content: center;
-  font-size: 20px;
-`
-const Games = styled.div`
-  text-align: center;
+  font-size: 18px;
 `
 const Image = styled.span`
-  margin: 20px;
-  text-align: center;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  align-items: center;  
+  
+  img {
+    width: 100%;
+  }
 `
 const avatars = [
   { name: 'adam', img: Adam },
@@ -155,7 +141,7 @@ export default function WelcomeDialog() {
       <Content>
         <Left>
           <Image>
-            <img src={ welcome } style={{ width: '90%' }}></img>
+            <img src={ welcome }></img>
           </Image>
         </Left>
         <Right>
@@ -165,12 +151,6 @@ export default function WelcomeDialog() {
 
             저희 코드잇에는 세가지 게임이 있어요. <br/>
             왼쪽 맵을 확인하여 원하는 게임을 플레이해보세요 !<br/>
-
-            <Games>
-              <p>두더지 게임</p>
-              <p>산성비 게임</p>
-              <p>자료구조 게임</p>
-            </Games>
           </Description>
         </Right>
       </Content>
