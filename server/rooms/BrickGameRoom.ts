@@ -280,7 +280,7 @@ export class BrickGameRoom extends Room<IGameState> {
       problemImages: this.state.brickgames.problemImages,
       gameInProgress: this.state.brickgames.gameInProgress,
       gameStarting: this.state.brickgames.gameStarting,
-      currentRound: this.state.brickgames.currnetRound,
+      currentRound: this.state.brickgames.currentRound,
     }
     if (!client) {
       this.broadcast(Message.BRICK_GAME_STATE, gameState)
@@ -318,6 +318,7 @@ export class BrickGameRoom extends Room<IGameState> {
 
   /* Start a new round and broadcast */
   newRound() {
+    this.state.brickgames.currentRound += 1
     const newProblem = this.getRandomProblem()
     console.log('problem: ', newProblem)
     this.state.brickgames.problemId = newProblem.problemId

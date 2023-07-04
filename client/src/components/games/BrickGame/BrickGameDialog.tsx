@@ -55,12 +55,6 @@ export default function BrickGameDialog() {
   const dispatch = useAppDispatch()
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
 
-  // Game state
-  const problemType  = useAppSelector((state) => state.brickgame.brickGameState.problemType)
-  const round  = useAppSelector((state) => state.brickgame.brickGameState.currentRound)
-  const hasRoundWinner  = useAppSelector((state) => state.brickgame.brickGameState.hasRoundWinner)
-  const [problem, setProblem] = useState<string>('같은 동물 2마리만 남겨주세요!');
-
   // My information
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character);
@@ -80,6 +74,15 @@ export default function BrickGameDialog() {
   const oppCurrentImages = useAppSelector((state) => state.brickgame.oppPlayerStatus.currentImages)
   const oppSelectedOption = useAppSelector((state) => state.brickgame.oppPlayerStatus.selectedOption)
   const oppCommandArray = useAppSelector((state) => state.brickgame.oppPlayerStatus.commandArray)
+
+  // Game state
+  const problemType  = useAppSelector((state) => state.brickgame.brickGameState.problemType)
+  const round  = useAppSelector((state) => state.brickgame.brickGameState.currentRound)
+  const hasRoundWinner  = useAppSelector((state) => state.brickgame.brickGameState.hasRoundWinner)
+  const [problem, setProblem] = useState<string>('같은 동물 2마리만 남겨주세요!');
+
+  
+  
 
   // 이미지 배열 배치
   const imgsrc = [img1, img2, img3, img4, img5, img6]

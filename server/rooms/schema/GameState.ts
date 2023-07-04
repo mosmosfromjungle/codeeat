@@ -110,7 +110,7 @@ export class BrickGameState extends Schema implements IBrickGameState {
   @type([ImageContainer]) problemImages = new ArraySchema<ImageContainer>()
   @type('boolean') gameInProgress = false
   @type('boolean') gameStarting = false
-  @type('number') currnetRound = 0
+  @type('number') currentRound = 0
   @type('boolean') hasRoundWinner = false
 }
 

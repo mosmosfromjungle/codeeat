@@ -65,7 +65,7 @@ export interface IBrickGameState extends Schema {
   problemImages: ArraySchema<IImageContainer>
   gameInProgress: boolean
   gameStarting: boolean
-  currnetRound: number
+  currentRound: number
   hasRoundWinner: boolean
 }
 
