@@ -233,7 +233,11 @@ export default function ProfileDialog() {
             <IconButton
               aria-label="close dialog"
               className="close"
-              onClick={() => dispatch(setHelperStatus(HELPER_STATUS.NONE))}
+              onClick={() => {
+                const game = phaserGame.scene.keys.game as Game
+                game.enableKeys()
+                dispatch(setHelperStatus(HELPER_STATUS.NONE))
+              }}
               size="small"
             >
               <CloseIcon />

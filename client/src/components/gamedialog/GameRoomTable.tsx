@@ -124,7 +124,7 @@ export const CustomRoomTable = () => {
     if (!lobbyJoined) return
     const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
     bootstrap.gameNetwork.joinCustomById(roomId, password, username, character).then(() => {
-      dispatch(setDialogStatus(DIALOG_STATUS.GAME_WELCOME))
+      dispatch(setDialogStatus(DIALOG_STATUS.IN_GAME))
     }).catch((error) => {
         console.error(error)
         if (password) setShowPasswordError(true)
