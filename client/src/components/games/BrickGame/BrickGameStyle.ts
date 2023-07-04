@@ -85,7 +85,7 @@ export const HelperWrapper = styled.div`
 
 export const QuizWrapper = styled.div`
   width: 60%;
-  background-color: gray;
+  background-color: #666666;
   border-radius: 20px;
   margin: 0 0 0 8px;
   display: flex;
@@ -159,7 +159,7 @@ export const MyWrapper = styled.div`
 `
 
 export const ImageArrayWrapper = styled.div`
-  height: 140px;
+  height: 120px;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -183,7 +183,7 @@ export const CommandArrayWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  height: 60px;
+  height: 50px;
   background-color: lightgray;
   border-radius: 16px;
   color: gray;
@@ -196,6 +196,7 @@ export const CommandArrayWrapper = styled.div`
 export const ImageContainer = styled.div`
   position: relative;
   margin: 10px;
+  height: 100px;
 `
 
 export const ImageText = styled.div`
@@ -203,7 +204,7 @@ export const ImageText = styled.div`
   bottom: 0;
   left: 0;
   width: 100%;
-  padding: 8px;
+  padding: 10px;
   // background-color: rgba(0, 0, 0, 0.6);
   color: white;
   font-family: 'CustomFont', sans-serif;
@@ -299,4 +300,16 @@ export const Right = styled.div`
     font-size: 20px;
     font-family: 'CustomFont', sans-serif;
   }
+`
+
+export const CharacterArea = styled.div`
+  height: 50%;
+`
+
+export const NameArea = styled.div`
+  height: 50%;
+`
+
+export const Special = styled.span`
+  color: yellow;
 `
