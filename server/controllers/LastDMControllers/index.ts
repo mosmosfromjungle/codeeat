@@ -3,7 +3,7 @@ import LastDM, { ILastDMDocument } from '../../models/LastDM'
 import {userMap} from '../..'
 const time_diff = 9 * 60 * 60 * 1000;
 /* last dm 가져오기 */
-export const loadData = async (req: Request, res: Response) => {
+export const loadData = (req: Request, res: Response) => {
     const body = req.body;
     if (!body.senderName){
       return res.status(404).json({
@@ -31,7 +31,9 @@ export const getLastDM = async (senderName: string) => {
   let result = new Array();
   try {
     await LastDM.collection
-    .find({ senderName: senderName })
+    // .find({$or:[{$and:[{ senderName: senderName }, { message: {$ne:' '}}]},{$and:[{ receiverName: senderName }, { message: {$ne:' '}}]}]})
+    .find({$and:[{$or:[{senderName : senderName}, {receiverName: senderName}]},{message: {$ne:' '}}]})
+    // .find({$and:[{senderName : senderName},{message: {$ne:' '}}]})
     .sort({ _id: -1 })
     .toArray()
     .then((elem) => {
@@ -63,13 +65,13 @@ export const addLastDM = async (obj: {
         roomId: 'first',
         updatedAt: updatedAt,
       });
-      LastDM.collection.insertOne({
-        senderName: obj.receiverName,
-        receiverName: obj.senderName,
-        message: obj.message,
-        roomId: 'first',
-        updatedAt: updatedAt,
-      });
+      // LastDM.collection.insertOne({
+      //   senderName: obj.receiverName,
+      //   receiverName: obj.senderName,
+      //   message: obj.message,
+      //   roomId: 'first',
+      //   updatedAt: updatedAt,
+      // });
     return true;
 }
 
@@ -123,9 +125,9 @@ export const updateLastDM = async (obj: { senderName: string; receiverName: stri
     }
   };
 
-  export const deleteLastDM = async (body:{ senderName: string, receiverName: string, message: string }) => {
+  export const deleteLastDM = (body:{ senderName: string, receiverName: string, message: string }) => {
     try {
-      await LastDM.collection.deleteMany({
+      LastDM.collection.deleteMany({
         $and: [
           {
             $or: [
@@ -140,3 +142,18 @@ export const updateLastDM = async (obj: { senderName: string; receiverName: stri
       console.error(err)
     }
   }
+
+  export const getThatRoom = async (body: { myName: string, targetName: string }) => {
+    try {
+      const result = await LastDM.collection.findOne({
+        $or: [
+          { $and: [{ senderName: body.myName }, { receiverName: body.targetName }] },
+          { $and: [{ senderName: body.targetName }, { receiverName: body.myName }] }
+        ]
+      })
+      return result ? result.roomId : null;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};

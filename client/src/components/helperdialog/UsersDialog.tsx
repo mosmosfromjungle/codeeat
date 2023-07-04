@@ -11,7 +11,7 @@ import { PersonAddAltOutlined, MailOutlineRounded } from '@mui/icons-material'
 import { Content, Header, HeaderTitle } from '../GlobalStyle'
 
 import { IPlayer } from '../../../../types/IOfficeState'
-import { insertLastDM } from '../../apicalls/DM/DM'
+import { getRoomId } from '../../apicalls/DM/DM'
 import { HELPER_STATUS, setHelperStatus } from '../../stores/UserStore'
 import { setReceiverName, setShowDMList, setShowDMRoom, setRoomId } from '../../stores/DMStore'
 import { useAppSelector, useAppDispatch } from '../../hooks'
@@ -113,12 +113,32 @@ export default function UsersDialog() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
-  const handleClick = async (player) => {
-    dispatch(setRoomId('first'))
+  const checkFirstChat = async (receiverName) => {
+    try {
+      const first = await checkIfFirst({ senderName: username, receiverName: receiverName});
+      console.log('첫 디엠인지 아닌지 체크, 첫디엠이면 status:200 && undefined')
+      return first?.status
+    } catch(err) {
+      console.error('check first chat error: ',err)
+    }
+  }
+  const getRoooom = async (username, playerName) => {
+    getRoomId({myName : username, targetName: playerName})
+    .then((roomId) => {
+      if (roomId !== null) {
+        dispatch(setRoomId(roomId))
+      } else {
+        dispatch(setRoomId('first'))
+      }
+    })
+    
+  }
+  const handleClick = (player) => {
+    getRoooom(username,player.name)
     dispatch(setReceiverName(player.name))
     dispatch(setShowDMRoom(true))
     dispatch(setHelperStatus(HELPER_STATUS.NONE))
-}
+  }
 
   useEffect(() => {
     if (focused) {

@@ -94,7 +94,7 @@ export default class GameNetwork {
       this.lobby.onMessage('rooms', (rooms) => {
         store.dispatch(setAvailableRainRooms(rooms))
       })
-    }
+    } 
 
     this.lobby.onMessage('+', ([roomId, room]) => {
       store.dispatch(addAvailableRooms({ roomId, room }))
@@ -145,17 +145,6 @@ export default class GameNetwork {
     this.rain_game_init()
   }
 
-  // async createFaceChatRoom(roomData: IGameRoomData) {
-  //   const { name, description, password, username } = roomData
-  //   this.room = await this.client.create(RoomType.FACECHAT, {
-  //     name,
-  //     description,
-  //     password,
-  //     username,
-  //   })
-  //   this.initialize()
-  // }
-
   /* BRICK GAME */
 
   brick_game_init() {
@@ -173,12 +162,12 @@ export default class GameNetwork {
 
     this.room.onMessage(Message.BRICK_GAME_PLAYERS, (content) => {
       if (content.length < 2) {
-        store.dispatch(setOppInfo({name: '', character: ''}))
+        store.dispatch(setOppInfo({ name: '', character: '' }))
       } else {
-        content.map(element => {
+        content.map((element) => {
           const { sessionId, name, character } = element
           if (sessionId !== this.mySessionId) {
-            store.dispatch(setOppInfo({name, character}))
+            store.dispatch(setOppInfo({ name, character }))
           }
         })
       }
@@ -206,7 +195,6 @@ export default class GameNetwork {
     console.log('command: ', command)
     this.room?.send(Message.BRICK_GAME_COMMAND, { command: command })
   }
-
 
   /* MOLE GAME  */
 
@@ -240,18 +228,18 @@ export default class GameNetwork {
 
     // method to receive host to me in mole game
     this.room.onMessage(Message.RECEIVE_HOST, (content) => {
-      store.dispatch(setMoleGameHost(content));
-    });
+      store.dispatch(setMoleGameHost(content))
+    })
 
     // method to receive life to friend in mole game
     this.room.onMessage(Message.RECEIVE_YOUR_LIFE, (content) => {
-      store.dispatch(setMoleGameLife(content));
-    });
-  
+      store.dispatch(setMoleGameLife(content))
+    })
+
     // method to clear friend info in mole game
     this.room.onMessage(Message.CLEAR_FRIEND, () => {
-      store.dispatch(clearMoleGameFriendInfo());
-    });
+      store.dispatch(clearMoleGameFriendInfo())
+    })
   }
 
   // ↓ Mole Game
@@ -274,19 +262,19 @@ export default class GameNetwork {
   changeHost(host: string) {
     this.room?.send(Message.SEND_HOST, { host: host })
   }
-  
+
   // method to send life count in mole game
   sendMyLife(myLife: string) {
     this.room?.send(Message.SEND_MY_LIFE, { life: myLife })
   }
-  
+
   // method to clear friend info in mole game
   clearFriendInfo() {
     this.room?.send(Message.CLEAR_FRIEND)
   }
 
   /* RAIN GAME */
-  
+
   startRainGame() {
     console.log('startRainGame')
     this.room?.send(Message.RAIN_GAME_START_C)
@@ -322,7 +310,7 @@ export default class GameNetwork {
       const roomData = {
         id: content.id,
         name: content.name,
-        description: content.description
+        description: content.description,
       }
       store.dispatch(setJoinedGameRoomData(roomData))
       store.dispatch(setRainGameHost(content.host))

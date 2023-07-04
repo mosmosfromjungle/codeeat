@@ -440,3 +440,37 @@ export const gainExp = async (req: CustomRequest, res: Response) => {
 function getRequiredExp(level: number) {
     return 10 + (level * 5)
 }
+
+export const getUserRankingsList = async (req: CustomRequest, res: Response) => {
+  try {
+    const users = await User.find()
+      .sort({ 'userProfile.userLevel': -1, 'userProfile.currentExp': -1 })
+      .limit(10)
+      .lean()
+      .exec()
+
+    const findUsersRanking = users.map((user) => ({
+      username: user.username,
+      character: user.userProfile.character,
+      userLevel: user.userProfile.userLevel,
+      currentExp: user.userProfile.currentExp,
+      profileMessage: user.userProfile.profileMessage,
+    }))
+    console.log(findUsersRanking)
+
+    res.status(200).json({ findUsersRanking })
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({
+      status: 500,
+      message: '유저 랭킹 조회 실패',
+    })
+  }
+}
+
+
+
+
+
+
+

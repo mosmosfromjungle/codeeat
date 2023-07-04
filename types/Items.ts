@@ -3,5 +3,6 @@ export enum ItemType {
   MOLEGAME,
   BRICKGAME,
   RAINGAME,
+  RANKINGBOARD,
   // FACECHAT,
 }

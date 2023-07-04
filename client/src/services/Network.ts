@@ -171,17 +171,6 @@ export default class Network {
     //   }
     // }
 
-    // new instance added to the facechats MapSchema
-    // this.room.state.faceChats.onAdd = (facechat: IFaceChat, key: string) => {
-    //   // track changes on every child object's connectedUser
-    //   facechat.connectedUser.onAdd = (item, index) => {
-    //     phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.FACECHAT)
-    //   }
-    //   facechat.connectedUser.onRemove = (item, index) => {
-    //     phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.FACECHAT)
-    //   }
-    // }
-
     // new instance added to the chatMessages ArraySchema
     this.room.state.chatMessages.onAdd = (item, index) => {
       store.dispatch(pushChatMessage(item))
