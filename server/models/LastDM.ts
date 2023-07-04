@@ -7,6 +7,7 @@ const lastdm = new Schema<ILastDM>({
   receiverName:{ type: String, required: true },
   message: { type: String, required: false },
   roomId: { type: String, required: false },
+  unreadCount: { type: Number, required: false },
   updatedAt: { type: Date, default: Date.now, required: false },
 });
 

@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import styled from 'styled-components';
 import Game from '../../scenes/Game';
 import phaserGame from '../../PhaserGame';
+import { setNewMessageCnt } from '../../stores/DMStore';
 
 const Wrapper = styled.div`
   height: 450px;
@@ -46,6 +47,7 @@ export default function DMBubbles(props) {
 
   useEffect(() => {
     setMessageList((messageList) => [...messageList, newMessage]);
+    dispatch(setNewMessageCnt(-1))
   }, [newMessage]);
 
   return (
