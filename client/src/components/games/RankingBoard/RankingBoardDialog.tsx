@@ -366,7 +366,7 @@ export default function RankingBoardDialog() {
                   />
                   <ListItemAvatar>
                     <Avatar
-                      src={`../../public/assets/character/single/${value.character}_idle_anim_19.png`}
+                      src={`../../public/assets/character/single/${value.character}.png`}
                     />
                   </ListItemAvatar>
                   <NameProfile>
@@ -387,7 +387,7 @@ export default function RankingBoardDialog() {
                   <h4 style={{ color: 'black', margin: '0 46px 0 28px' }}>{index + 4}</h4>
                   <ListItemAvatar>
                     <Avatar
-                      src={`../../public/assets/character/single/${value.character}_idle_anim_19.png`}
+                      src={`../../public/assets/character/single/${value.character}.png`}
                     />
                   </ListItemAvatar>
                   <NameProfile>
