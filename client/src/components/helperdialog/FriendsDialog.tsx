@@ -33,7 +33,7 @@ const Backdrop = styled.div`
   position: fixed;
   display: flex;
   gap: 10px;
-  bottom: 16px;
+  bottom: 24px;
   right: 16px;
   align-items: flex-end;
 `
