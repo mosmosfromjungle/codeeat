@@ -138,7 +138,7 @@ export default function MoleGameDialog() {
 
   const problems = [
     ['파이썬에서 리스트에 들어있는 모든 수를 합하는 함수는?', ['sum', 'len', 'map']],
-    ['파이썬에서 리스트의 개수를 구하는 함수는?', ['len', 'abs', 'map']],
+    ['파이썬에서 리스트의 원소 개수를 구하는 함수는?', ['len', 'abs', 'map']],
     ['파이썬에서 새로운 정렬된 리스트를 반환하는 함수는?', ['sorted', 'len', 'map']],
     ['파이썬에서 리스트 자체를 정렬시켜버리는 것은?', ['sort', 'len', 'map']],
     ['파이썬에서 내림차순 정렬을 위해 사용하는 옵션은?', ['reverse', 'len', 'map']],
