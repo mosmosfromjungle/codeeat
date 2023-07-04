@@ -32,9 +32,9 @@ export default class BrickGame extends Item {
 
   onOverlapDialog() {
     if (this.currentUsers.size === 0) {
-      this.setDialogBox('Press R to play the Brick Game')
+      this.setDialogBox('R 눌러서 동물 멀리뛰기 참가하기')
     } else {
-      this.setDialogBox('Press R join')
+      this.setDialogBox('R 눌러서 참가하기')
     }
   }
 

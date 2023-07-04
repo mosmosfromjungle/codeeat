@@ -43,5 +43,6 @@ export interface RoomListResponse {
   receiverName: string;
   message: string;
   roomId: string;
+  unreadCount?: number;
   updatedAt: Date | null;
 }
