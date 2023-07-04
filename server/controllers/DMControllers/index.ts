@@ -29,22 +29,28 @@ export const DMController = (socket: Socket) => {
       rooms[roomId].push(username);
       socket.join(roomId);
     } else {
-      if (roomId == 'first'){
-        roomId = createRoom();
-        console.log('생성')
-        updateRoomId({ roomId: roomId, senderName: username, receiverName: receiverName })
-        .then(() => {
-          rooms[roomId].push(username);
-        })  
-      } else {
-        roomId = createRoom();
-        addLastDM({senderName: username, receiverName: receiverName, message: ' ', roomId})
-        updateRoomId({ roomId: roomId, senderName: username, receiverName: receiverName })
-        .then(() => {
-          deleteLastDM({senderName: username, receiverName: receiverName, message: ' '})
-          rooms[roomId].push(username);
-        })
-      }
+      roomId = createRoom();
+      addLastDM({senderName: username, receiverName: receiverName, message: ' ', roomId})
+      updateRoomId({ senderName: username, receiverName: receiverName, roomId: roomId })
+      .then(() => {
+        rooms[roomId].push(username);
+      });
+      // if (roomId == 'first'){
+      //   roomId = createRoom();
+      //   console.log('생성')
+      //   updateRoomId({ roomId: roomId, senderName: username, receiverName: receiverName })
+      //   .then(() => {
+      //     rooms[roomId].push(username);
+      //   })  
+      // } else {
+      //   roomId = createRoom();
+      //   addLastDM({senderName: username, receiverName: receiverName, message: ' ', roomId})
+      //   updateRoomId({ roomId: roomId, senderName: username, receiverName: receiverName })
+      //   .then(() => {
+      //     deleteLastDM({senderName: username, receiverName: receiverName, message: ' '})
+      //     rooms[roomId].push(username);
+      //   })
+      // }
     }
     readMessage({ roomId, username, receiverName });
   };
