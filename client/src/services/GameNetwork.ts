@@ -105,42 +105,45 @@ export default class GameNetwork {
     })
   }
 
-  async joinCustomById(roomId: string, password: string | null, username: string) {
-    this.room = await this.client.joinById(roomId, { password, username })
+  async joinCustomById(roomId: string, password: string | null, username: string, character: string) {
+    this.room = await this.client.joinById(roomId, { password, username, character })
     if (this.room.name === RoomType.BRICK) this.brick_game_init()
     if (this.room.name === RoomType.RAIN) this.rain_game_init()
     if (this.room.name === RoomType.MOLE) this.mole_game_init()
   }
 
   async createBrickRoom(roomData: IGameRoomData) {
-    const { name, description, password, username } = roomData
+    const { name, description, password, username, character } = roomData
     this.room = await this.client.create(RoomType.BRICK, {
       name,
       description,
       password,
       username,
+      character,
     })
     this.brick_game_init()
   }
 
   async createMoleRoom(roomData: IGameRoomData) {
-    const { name, description, password, username } = roomData
+    const { name, description, password, username, character } = roomData
     this.room = await this.client.create(RoomType.MOLE, {
       name,
       description,
       password,
       username,
+      character,
     })
     this.mole_game_init()
   }
 
   async createRainRoom(roomData: IGameRoomData) {
-    const { name, description, password, username } = roomData
+    const { name, description, password, username, character } = roomData
     this.room = await this.client.create(RoomType.RAIN, {
       name,
       description,
       password,
       username,
+      character,
     })
     this.rain_game_init()
   }
@@ -162,12 +165,12 @@ export default class GameNetwork {
 
     this.room.onMessage(Message.BRICK_GAME_PLAYERS, (content) => {
       if (content.length < 2) {
-        store.dispatch(setOppInfo({ name: '', character: '' }))
+        store.dispatch(setOppInfo({username: '', character: ''}))
       } else {
-        content.map((element) => {
-          const { sessionId, name, character } = element
+        content.map(element => {
+          const { sessionId, username, character } = element
           if (sessionId !== this.mySessionId) {
-            store.dispatch(setOppInfo({ name, character }))
+            store.dispatch(setOppInfo({username: username, character}))
           }
         })
       }
@@ -194,6 +197,10 @@ export default class GameNetwork {
   brickGameCommand(command: string) {
     console.log('command: ', command)
     this.room?.send(Message.BRICK_GAME_COMMAND, { command: command })
+  }
+
+  brickGameStart() {
+    this.room?.send(Message.BRICK_GAME_START)
   }
 
   /* MOLE GAME  */

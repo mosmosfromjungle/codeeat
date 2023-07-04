@@ -51,6 +51,7 @@ export const CreateRoomForm = () => {
     description: '',
     password: null,
     username: username,
+    character: character,
   })
 
   const handleChange = (prop: keyof IGameRoomData) => (event: React.ChangeEvent<HTMLInputElement>) => {

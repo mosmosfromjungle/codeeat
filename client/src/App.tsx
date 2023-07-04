@@ -69,9 +69,6 @@ function App() {
   const helperStatus = useAppSelector((state) => state.user.helperStatus)
   const showDMList = useAppSelector((state) => state.dm.showDMList)
   const showDMRoom = useAppSelector((state) => state.dm.showDMRoom)
-  
-  // ↓ Profile Dialog
-  const showProfile = useAppSelector((state) => state.user.showProfile)
 
 
   // TODO: cookie 가져오는 부분 해결 필요 
@@ -98,15 +95,15 @@ function App() {
   } else if (dialogStatus === DIALOG_STATUS.IN_MAIN) {
     ui = (
       <>
+        {helperStatus === HELPER_STATUS.PROFILE && <ProfileDialog />}
         {helperStatus === HELPER_STATUS.CHAT && <ChatDialog />}
+        {/* {helperStatus === HELPER_STATUS.DM && <ConversationList />} */}
         {helperStatus === HELPER_STATUS.USERS && <UsersDialog />}
         {helperStatus === HELPER_STATUS.FRIENDS && <FriendsDialog />}
         {helperStatus === HELPER_STATUS.LOGOUT && <LogoutDialog />}
         {helperStatus === HELPER_STATUS.VERSION && <VersionDialog />}
-
         {showDMList && <ConversationList />}
         {showDMRoom && <DMRoom />}
-        {showProfile && <ProfileDialog />}
         {rankingBoardOpen && <RankingBoardDialog />}
         <MobileVirtualJoystick />
         <HelperButtonGroup />

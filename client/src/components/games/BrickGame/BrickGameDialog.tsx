@@ -53,58 +53,39 @@ function capitalizeFirstLetter(string) {
 
 export default function BrickGameDialog() {
   const dispatch = useAppDispatch()
+  const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
 
+  // My information
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character);
-  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}.png`;
-
-  // Friend information
-  const friendname = useAppSelector((state) => state.brickgame.oppName);
-  const friendcharacter = useAppSelector((state) => state.brickgame.oppCharacter);
-  const friendimgpath = `/assets/character/single/${capitalizeFirstLetter(friendcharacter)}.png`;
-  
-  const gamePlayers = useAppSelector((state) => state.room.gamePlayers)
-  const problemType  = useAppSelector((state) => state.brickgame.brickGameState.problemType)
+  const myImgpath = `/assets/character/single/${capitalizeFirstLetter(character)}.png`;
+  const myPoint = useAppSelector((state) => state.brickgame.myPlayerScore.totalPoint)
+  const myLife = useAppSelector((state) => state.brickgame.myPlayerScore.chance)
   const myCurrentImages = useAppSelector((state) => state.brickgame.myPlayerStatus.currentImages)
   const mySelectedOption = useAppSelector((state) => state.brickgame.myPlayerStatus.selectedOption)
   const myCommandArray = useAppSelector((state) => state.brickgame.myPlayerStatus.commandArray)
+
+  // Friend information
+  const oppUsername = useAppSelector((state) => state.brickgame.oppUsername)
+  const oppCharacter = useAppSelector((state) => state.brickgame.oppCharacter)
+  const oppImgpath = `/assets/character/single/${capitalizeFirstLetter(oppCharacter)}.png`
+  const oppPoint = useAppSelector((state) => state.brickgame.oppPlayerScore.totalPoint)
+  const oppLife = useAppSelector((state) => state.brickgame.oppPlayerScore.chance)
   const oppCurrentImages = useAppSelector((state) => state.brickgame.oppPlayerStatus.currentImages)
   const oppSelectedOption = useAppSelector((state) => state.brickgame.oppPlayerStatus.selectedOption)
   const oppCommandArray = useAppSelector((state) => state.brickgame.oppPlayerStatus.commandArray)
 
+  // Game state
+  const problemType  = useAppSelector((state) => state.brickgame.brickGameState.problemType)
+  const round  = useAppSelector((state) => state.brickgame.brickGameState.currentRound)
+  const hasRoundWinner  = useAppSelector((state) => state.brickgame.brickGameState.hasRoundWinner)
   const [problem, setProblem] = useState<string>('같은 동물 2마리만 남겨주세요!');
-  const [round, setRound] = useState<number>(0)
 
-  // My information
-  const [players, setPlayers] = useState<PlayersInterface[]>([])
-  const [myCharacter, setMyCharacter] = useState<string>()
-  const [myPoint, setMyPoint] = useState<number>(0)
-  const [myLife, setMyLife] = useState<number>(3)
+  
+  
 
-  // Friend information
-  const [oppUsername, setOppUsername] = useState<string>('')
-  const [oppCharacter, setOppCharacter] = useState<string>()
-  const [oppPoint, setOppPoint] = useState<number>(0)
-  const [oppLife, setOppLife] = useState<number>(3)
-
-  const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-
-  /* FETCH PLAYERS IN ROOM */
-  // useEffect(() => {
-  //   setPlayers(gamePlayers)
-  //   console.log('game player: ', gamePlayers)
-
-  //   gamePlayers.map((value, index) => {
-  //     if (value.name === username) {
-  //       // setMyCharacter(value.anim)
-  //     } else {
-  //       setOppUsername(value.name)
-  //     }
-  //   })
-  // }, [gamePlayers])
-
+  // 이미지 배열 배치
   const imgsrc = [img1, img2, img3, img4, img5, img6]
-
   const [myImages, setMyImages] = useState<{ src: any; text: string }[]>([])
   const [oppImages, setOppImages] = useState<{ src: any; text: string }[]>([])
   const [command, setCommand] = useState('')
@@ -246,8 +227,8 @@ export default function BrickGameDialog() {
               <ScoreWrapper>
                 <div style={{ flex: 1, color: 'white', fontSize: '25px', lineHeight: '1.5' }}>
                   <OppInfo>
-                    [{ friendname.toUpperCase() }]
-                    <img src={ friendimgpath } width="40px" id="friend-character" className={ friendname ? "" : "hidden" }></img>
+                    [{ oppUsername.toUpperCase() }]
+                    <img src={ oppImgpath } width="40px" id="my-character"></img>
                   </OppInfo>
                 </div>
                 <div style={{ flex: 1, color: 'white', fontSize: '25px', textAlign: 'right', lineHeight: '1.5' }}>
@@ -315,7 +296,7 @@ export default function BrickGameDialog() {
                 <div style={{ flex: 1, color: 'white', fontSize: '25px', lineHeight: '1.5' }}>
                   <MyInfo>
                     [{ username.toUpperCase() }]
-                    <img src={ imgpath } width="40px" id="my-character"></img>
+                    <img src={ myImgpath } width="40px" id="my-character"></img>
                   </MyInfo>
                 </div>
                 <div style={{ flex: 1, color: 'white', fontSize: '25px', textAlign: 'right', lineHeight: '1.5' }}>

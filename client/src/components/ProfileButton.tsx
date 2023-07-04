@@ -1,16 +1,11 @@
 import React, { useRef, useEffect, Component, useState } from 'react'
 import styled from 'styled-components'
+import Button from '@mui/material/Button';
+import ListItem from '@mui/material/ListItem';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import Avatar from '@mui/material/Avatar';
 
-import Button from '@mui/material/Button'
-import ListItem from '@mui/material/ListItem'
-import ListItemText from '@mui/material/ListItemText'
-import ListItemAvatar from '@mui/material/ListItemAvatar'
-import Avatar from '@mui/material/Avatar'
-import Typography from '@mui/material/Typography'
-
-import { setShowProfile, DIALOG_STATUS } from '../stores/UserStore'
-import { setFocused } from '../stores/ChatStore'
-import { setShowDMList, setShowDMRoom } from '../stores/DMStore'
+import { DIALOG_STATUS, HELPER_STATUS, setHelperStatus } from '../stores/UserStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
 import ExperienceBar from '../components/ExperienceBar'
 import { getMyProfile } from '../apicalls/auth'
@@ -84,7 +79,7 @@ export default function ProfileButton() {
   const dialogStatus = useAppSelector((state) => state.user.dialogStatus)
   const roomJoined = useAppSelector((state) => state.room.roomJoined)
   const focused = useAppSelector((state) => state.chat.focused)
-  const showProfile = useAppSelector((state) => state.user.showProfile)
+  const helperStatus = useAppSelector((state) => state.user.helperStatus)
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
   const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}.png`
@@ -107,7 +102,7 @@ export default function ProfileButton() {
 
   useEffect(() => {
     scrollToBottom()
-  }, [chatMessages, showProfile])
+  }, [chatMessages, helperStatus])
 
   useEffect(() => {
     ;(async () => {
@@ -131,10 +126,10 @@ export default function ProfileButton() {
         <ContentWrapper>
           <CustomButton
             disableRipple
-            onClick={() => showProfile ? (
-              dispatch(setShowProfile(false))
+            onClick={() => helperStatus === HELPER_STATUS.PROFILE ? (
+              dispatch(setHelperStatus(HELPER_STATUS.NONE))
             ) : (
-              dispatch(setShowProfile(true))
+              dispatch(setHelperStatus(HELPER_STATUS.PROFILE))
             )}
           >
             <ProfileButtonWrapper>

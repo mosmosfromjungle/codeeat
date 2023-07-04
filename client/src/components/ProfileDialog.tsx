@@ -9,9 +9,9 @@ import CloseIcon from '@mui/icons-material/Close'
 import { Content, Header, HeaderTitle } from './GlobalStyle'
 
 import { useAppSelector, useAppDispatch } from '../hooks'
-import { setShowProfile } from '../stores/UserStore'
 import { getMyProfile } from '../apicalls/auth'
 import { UpdateRequest, updateMyProfile } from '../apicalls/auth'
+import { HELPER_STATUS, setHelperStatus } from '../stores/UserStore'
 
 import phaserGame from '../PhaserGame'
 import Game from '../scenes/Game'
@@ -20,7 +20,7 @@ const Backdrop = styled.div`
   position: fixed;
   display: flex;
   gap: 10px;
-  bottom: 32px;
+  bottom: 24px;
   left: 16px;
   align-items: flex-end;
 `
@@ -136,7 +136,7 @@ export default function ProfileDialog() {
   const inputRef = useRef<HTMLInputElement>(null)
   const chatMessages = useAppSelector((state) => state.chat.chatMessages)
   const focused = useAppSelector((state) => state.chat.focused)
-  const showProfile = useAppSelector((state) => state.user.showProfile)
+  const helperStatus = useAppSelector((state) => state.user.helperStatus)
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
   const userLevel = useAppSelector((state) => state.user.userLevel)
@@ -164,7 +164,7 @@ export default function ProfileDialog() {
 
   useEffect(() => {
     scrollToBottom()
-  }, [chatMessages, showProfile])
+  }, [chatMessages, helperStatus])
 
   useEffect(() => {
     (async () => {
@@ -233,7 +233,7 @@ export default function ProfileDialog() {
             <IconButton
               aria-label="close dialog"
               className="close"
-              onClick={() => dispatch(setShowProfile(false))}
+              onClick={() => dispatch(setHelperStatus(HELPER_STATUS.NONE))}
               size="small"
             >
               <CloseIcon />
