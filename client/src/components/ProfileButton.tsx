@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, Component } from 'react'
+import React, { useRef, useEffect, Component, useState } from 'react'
 import styled from 'styled-components'
 import Button from '@mui/material/Button';
 import ListItem from '@mui/material/ListItem';
@@ -7,6 +7,8 @@ import Avatar from '@mui/material/Avatar';
 
 import { DIALOG_STATUS, HELPER_STATUS, setHelperStatus } from '../stores/UserStore'
 import { useAppSelector, useAppDispatch } from '../hooks'
+import ExperienceBar from '../components/ExperienceBar'
+import { getMyProfile } from '../apicalls/auth'
 
 const Backdrop = styled.div`
   // position: fixed;
@@ -58,8 +60,16 @@ const CustomButton = styled(Button)`
 // stroke="%23ffffff"
 // stroke="%23e2f0ea"
 
+const ProfileButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+`
+
 function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+  return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
 export default function ProfileButton() {
@@ -72,8 +82,11 @@ export default function ProfileButton() {
   const helperStatus = useAppSelector((state) => state.user.helperStatus)
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
-  const userLevel = useAppSelector((state) => state.user.userLevel)
+  // const userLevel = useAppSelector((state) => state.user.userLevel)
   const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`
+  const [userLevel, setUserLevel] = useState<string>()
+  const [currentExp, setCurrentExp] = useState<number>()
+  const [requiredExp, setRequiredExp] = useState<number>()
 
   const dispatch = useAppDispatch()
 
@@ -91,6 +104,22 @@ export default function ProfileButton() {
     scrollToBottom()
   }, [chatMessages, helperStatus])
 
+  useEffect(() => {
+    ;(async () => {
+      getMyProfile()
+        .then((response) => {
+          if (!response) return
+          const { userLevel, currentExp, requiredExp } = response
+          setUserLevel(userLevel)
+          setCurrentExp(currentExp)
+          setRequiredExp(requiredExp)
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    })()
+  }, [])
+
   return (
     <Backdrop>
       {roomJoined && dialogStatus === DIALOG_STATUS.IN_MAIN && (
@@ -103,15 +132,18 @@ export default function ProfileButton() {
               dispatch(setHelperStatus(HELPER_STATUS.PROFILE))
             )}
           >
-            <ListItem style={{padding: '8px 10px'}}>
-              <ListItemAvatar>
-                <Avatar src={imgpath} />
-              </ListItemAvatar>
-              <Profile>
-                <span style={{ fontSize: '14px', lineHeight: '1' }}>Lv. {userLevel}<br/></span>
-                <span style={{ fontSize: '24px', lineHeight: '1' }}>{username}</span>
-              </Profile>
-            </ListItem>
+            <ProfileButtonWrapper>
+              <ListItem style={{padding: '8px 10px'}}>
+                <ListItemAvatar>
+                  <Avatar src={imgpath} />
+                </ListItemAvatar>
+                <Profile>
+                  <span style={{ fontSize: '14px', lineHeight: '1' }}>Lv. {userLevel}<br/></span>
+                  <span style={{ fontSize: '24px', lineHeight: '1' }}>{username}</span>
+                </Profile>
+              </ListItem>
+              <ExperienceBar currentExperience={currentExp} experienceToNextLevel={requiredExp} />
+            </ProfileButtonWrapper>
           </CustomButton>
         </ContentWrapper>
       )}

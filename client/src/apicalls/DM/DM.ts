@@ -22,9 +22,9 @@ export const fetchRoomList = async (username: string): Promise<any> => {
     console.error(error);
   }
 };
-export const insertLastDM = async (body: {senderName: string; receiverName: string; message: string}) => {
+export const getRoomId = async (body: {myName: string, targetName: string}) => {
   try {
-    const response = await axios.post(`/lastdm/injectLastDM`, body);
+    const response = await axios.post(`/lastdm/getRoom`, body);
     return response.data;
   } catch(err) {
     console.error(err)
@@ -43,5 +43,6 @@ export interface RoomListResponse {
   receiverName: string;
   message: string;
   roomId: string;
+  unreadCount?: number;
   updatedAt: Date | null;
 }

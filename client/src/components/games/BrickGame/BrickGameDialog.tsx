@@ -37,13 +37,13 @@ import './BrickGame.css'
 const WRONG_OPERATION = '해당 자료구조에서 사용되지 않는 연산입니다!'
 const COMMON_MESSAGE = (
   <>
-    <span style={{ fontSize: '22px' }}>두 캐릭터를 더하려면 </span>
-    <span style={{ fontSize: '30px' }}>'sum' </span>
+    {/* <span style={{ fontSize: '22px' }}>두 캐릭터를 더하려면 </span>
+    <span style={{ fontSize: '30px' }}>'sum' </span> */}
 
-    <span style={{ fontSize: '22px' }}>| 처음으로 돌리려면 </span>
+    <span style={{ fontSize: '22px' }}>처음으로 돌리려면 </span>
     <span style={{ fontSize: '30px' }}>'reset' </span>
 
-    <span style={{ fontSize: '22px' }}>입력</span>
+    <span style={{ fontSize: '22px' }}>입력 후 엔터</span>
   </>
 )
 
@@ -156,8 +156,8 @@ export default function BrickGameDialog() {
 
           <RoundWrapper>
             <div style={{ flex: 1, fontSize: '24px' }} className={`${oppUsername ? '' : 'start-game'}`}>
-              {oppUsername ? '친구가 들어왔어요,' : '친구가 아직 들어오지 않았어요 !'}<br />
-              {oppUsername ? '게임을 진행해주세요 !' : ''}
+              {/* {oppUsername ? '친구가 들어왔어요,' : '친구가 아직 들어오지 않았어요 !'}<br />
+              {oppUsername ? '게임을 진행해주세요 !' : ''} */}
             </div>
             <div className="title" style={{ flex: 'auto', textAlign: 'center', fontSize: '40px' }}>
               동물 멀리뛰기<br/>
@@ -189,10 +189,12 @@ export default function BrickGameDialog() {
                   몬스터 배열을 수정해주세요! */}
                   {/* {problemType} */}
 
-                  {oppUsername ? 
+                  {problem}
+
+                  {/* {oppUsername ? 
                     `${problem}` :
                     '친구가 들어오면 여기에 문제가 보일거예요!'
-                  }
+                  } */}
                 </span>
               </div>
 

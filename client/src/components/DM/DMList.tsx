@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
+import { Content, Header, HeaderTitle } from '../GlobalStyle'
 import {
   setNewMessage,
   setReceiverName,
   setRoomId,
+  setNewMessageCnt,
   setShowDMList,
   setShowDMRoom
 } from '../../stores/DMStore';
@@ -14,15 +16,15 @@ import {
   fetchRoomList,
   RoomListResponse,
 } from '../../apicalls/DM/DM';
-import Cookies from 'universal-cookie';
-const cookies = new Cookies();
-import DefaultAvatar from '../../images/login/Lucy_login.png'
 
 /* DM목록을 불러온다.  */
 export const ConversationList = () => {
   const [rooms, setRooms] = useState<RoomListResponse[]>([]);
   const dispatch = useAppDispatch();
   const username = useAppSelector((state) => state.user.username);
+  const newMessage = useAppSelector((state) => state.dm.newMessage)
+  const newMessageCnt = useAppSelector((state) => state.dm.newMessageCnt)
+
   useEffect(() => {
     fetchRoomList(username)
     .then((data) => {
@@ -38,13 +40,16 @@ const handleClick = (room) => {
   dispatch(setReceiverName(room.receiverName));
   dispatch(setRoomId(room.roomId));
   console.log('룸아이디설정',room.roomId)
+
+  dispatch(setNewMessageCnt(-1 * room.unreadCount))
+  dispatch(setNewMessage({ message: '' }))
   dispatch(setShowDMRoom(true))
 }
 return (
     <Backdrop>
-        <DMwrapper>
-        <DMHeader>
-              <Title> DM 목록 </Title>
+        <Content>
+        <Header>
+              <HeaderTitle> DM 목록 </HeaderTitle>
               <IconButton
                 aria-label="close dialog"
                 className="close"
@@ -53,141 +58,136 @@ return (
               >
                 <CloseIcon />
               </IconButton>
-            </DMHeader>
+            </Header>
         <DMList>
         {rooms.length !== 0 ? (
           rooms.map((room) => {
+            let unreadCount = room.unreadCount;
+
+            if (newMessage?.message && newMessage?.senderName === room.receiverName && room.unreadCount === 0) {
+              unreadCount! += 1;
+            }
+            if (newMessageCnt === 0) {
+              room.unreadCount = 0
+            }
             return (
               <ListTag
                 key={room._id}
                 onClick={() => {
                   dispatch(setShowDMList(false))
                   handleClick(room);
-                }}
-              >
-                <ProfileAvatarImage
-                  src={DefaultAvatar}
-                  alt={room.receiverName}
-                />
+                }}>
                 <UserNamewithLastMessage>
                   <UserName>{room.receiverName}</UserName>
                     <LastMessage>
                       {room.message}
                     </LastMessage>
+                    <br></br>
+                    {room.unreadCount! > 0 ? <UnreadCnt>{unreadCount}</UnreadCnt> : null}
                 </UserNamewithLastMessage>
               </ListTag>
             );
           })
         ) : (
           <>
-            <NoDMMessage> <strong>📭 아직 대화방이 없어요</strong><br></br><br></br><br></br> </NoDMMessage>
+            <NoDMMessage> <strong> 📭 아직 대화방이 없어요</strong><br></br><br></br><br></br> </NoDMMessage>
             <NoDMMessage> <strong>다른 플레이어와 개인대화를 시작해보세요!</strong><br></br> </NoDMMessage>
           </>
         )}
         </DMList>
-      </DMwrapper>
+      </Content>
     </Backdrop>
   );
 };
 
-
-const ProfileAvatarImage = styled.img`
-  width: 50px;
-  height: 50px;
-  border-radius: 100%;
-`;
-
 const ListTag = styled.li`
-  width: 335px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  cursor: pointer;
-  padding: 5px;
-  margin-bottom: 10px;
+width: 100%;
+display: flex;
+flex-direction: row;
+align-items: center;
+justify-content: flex-start;
+cursor: pointer;
+padding: 16px;
+margin-bottom: 10px;
+border-bottom: 2px solid black;
+min-height: 30px;
 `;
 const UserNamewithLastMessage = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: flex-start;
-  color: white;
+  color: black;
   justify-content: space-between;
-  padding: 0px 0px 0px 25px;
+  padding: 0px 0px 0px 0px;
   border-bottom: 1px solid gray;
   cursor: pointer;
   font-size: 10px;
   height: 60px;
   font-family: Font_DungGeun;
-`;
+  flex-grow: 1;
+
+  &:last-child {
+    border-bottom: none;
+  }`;
 const UserName = styled.div`
   display: block;
-  font-size: 15px;
-  margin: 0px 0px 10px 0px;
+  font-size: 20px;
+  margin: 0px 0px 10px -10px;
   font-weight: bold;
-  color: #33FF99;
+  color: green;
 `;
 const LastMessage = styled.div`
-  display: block;
-  font-size: 1.5em;
-  margin: 0px 0px 10px 0px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 20px;
+  margin: 0px 0px 0px 0px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  width: 200px;
+  width: 180px;
   height: 20px;
+  flex-shrink: 1;
 `;
 const Backdrop = styled.div`
 position: fixed;
 display: flex;
 gap: 10px;
-bottom: 75px;
+bottom: 16px;
 right: 16px;
 align-items: flex-end;
 `
 const DMList = styled.div`
-height: 500px;
-width: 360px;
-overflow: auto;
-background: #2c2c2c;
-border: 1px solid #00000029;
-padding: 10px 10px;
-border-radius: 0px 0px 10px 10px;
+flex: 1;
+  height: calc(100% - 76px);
+  overflow: auto;
+  padding: 10px 0 0 20px;
+  display: flex;
+  flex-direction: column;
+  
+  .listitem && {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: space-between;
+  }
+`;
 
-Button {
-  font-size: 17px;
-  font-family: Font_DungGeun;
-}
+const UnreadCnt = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 100%;
+  background-color: red;
+  color: white;
+  font-size: 12px;
 `;
 
 const NoDMMessage = styled.div`
-  color: white;
+  color: black;
   width: 300px;
   font-size: 20px;
   font-family: Font_DungGeun;
-`
-const DMHeader = styled.div`
-  position: relative;
-  height: 40px;
-  background: #000000a7;
-  border-radius: 10px 10px 0px 0px;
-
-  .close {
-    position: absolute;
-    top: 0;
-    right: 0;
-  }
-`
-const Title = styled.div`
-  position: absolute;
-  color: white;
-  font-size: 20px;
-  font-weight: bold;
-  top: 10px;
-  left: 150px;
-  font-family: Font_DungGeun;
-`
-const DMwrapper = styled.div`
-  height: 100%;
-  margin-top: auto;
 `

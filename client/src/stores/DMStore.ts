@@ -10,6 +10,7 @@ export const DMSlice = createSlice({
     roomId: '',
     receiverId: '',
     receiverName: '',
+    newMessageCnt: 0,
     newMessage: {
       senderName: '',
       receiverName: '',
@@ -25,8 +26,9 @@ export const DMSlice = createSlice({
     setShowDMRoom: (state, action: PayloadAction<boolean>) => {
       state.showDMRoom = action.payload;
     },
-    setReceiverId: (state, action: PayloadAction<string>) => {
-      state.receiverId = action.payload;
+    setNewMessageCnt: (state, action: PayloadAction<number>) => {
+      state.newMessageCnt += action.payload;
+      if (state.newMessageCnt < 0) state.newMessageCnt = 0;
     },
     setReceiverName: (state, action: PayloadAction<string>) => {
       state.receiverName = action.payload;
@@ -41,7 +43,7 @@ export const DMSlice = createSlice({
 });
 
 export const {
-  setReceiverId,
+  setNewMessageCnt,
   setReceiverName,
   setRoomId,
   setNewMessage,
