@@ -129,7 +129,6 @@ export default class Game extends Phaser.Scene {
       // ***새롭게 16px 캐릭터로 변경하기 위한 코드***
       this.myPlayer = this.add.myPlayer(
       Phaser.Math.RND.between(400, 900),
-      Phaser.Math.RND.between(400, 900),
       'kevin',
       this.network.mySessionId,
       // userId,
@@ -138,9 +137,9 @@ export default class Game extends Phaser.Scene {
     );
     */
 
-    // this.myPlayer = this.add.myPlayer(400, 900, 'kevin', this.network.mySessionId)
-    this.myPlayer = this.add.myPlayer(705, 500, 'adam', this.network.mySessionId) // TODO: 캐릭터 시작 위치 수정 가능 -> 서버와 통일해야함
-    this.playerSelector = new PlayerSelector(this, 0, 0, 32, 32) // TODO: 아이템과 상호작용할 수 있는 면적
+    this.myPlayer = this.add.myPlayer(705, 600, 'noah', this.network.mySessionId)
+    // this.myPlayer = this.add.myPlayer(705, 500, 'adam', this.network.mySessionId) // TODO: 캐릭터 시작 위치 수정 가능 -> 서버와 통일해야함
+    this.playerSelector = new PlayerSelector(this, 0, 0, 32, 32)  // TODO: 아이템과 상호작용할 수 있는 면적 
     console.log('game scene created')
     console.log('set my player initial setting ', this.myPlayer)
 
@@ -214,7 +213,7 @@ export default class Game extends Phaser.Scene {
 
     this.otherPlayers = this.physics.add.group({ classType: OtherPlayer })
 
-    this.cameras.main.zoom = 1.5
+    this.cameras.main.zoom = 2.2
     this.cameras.main.startFollow(this.myPlayer, true)
     this.physics.add.collider([this.myPlayer, this.myPlayer.playerContainer], secondGroundLayer)
     this.physics.add.collider([this.myPlayer, this.myPlayer.playerContainer], fenceLayer)
@@ -298,7 +297,7 @@ export default class Game extends Phaser.Scene {
 
   // function to add new player to the otherPlayer group
   private handlePlayerJoined(newPlayer: IPlayer, id: string) {
-    const otherPlayer = this.add.otherPlayer(newPlayer.x, newPlayer.y, 'adam', id, newPlayer.name)
+    const otherPlayer = this.add.otherPlayer(newPlayer.x, newPlayer.y, 'noah', id, newPlayer.name)
     this.otherPlayers.add(otherPlayer)
     this.otherPlayerMap.set(id, otherPlayer)
   }

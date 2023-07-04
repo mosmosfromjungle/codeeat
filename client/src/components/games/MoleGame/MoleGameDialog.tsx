@@ -35,20 +35,18 @@ export default function MoleGameDialog() {
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
 
   // My information
-  const username = useAppSelector((state) => state.user.username)
-  const character = useAppSelector((state) => state.user.character)
-  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`
+  const username = useAppSelector((state) => state.user.username);
+  const character = useAppSelector((state) => state.user.character);
+  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}.png`;
 
   // Send my info to friend (client -> server)
   bootstrap.gameNetwork.sendMyInfo(username, character)
 
   // Friend information
-  const friendname = useAppSelector((state) => state.molegame.friendName)
-  const friendcharacter = useAppSelector((state) => state.molegame.friendCharacter)
-  const friendimgpath = `/assets/character/single/${capitalizeFirstLetter(
-    friendcharacter
-  )}_idle_anim_19.png`
-
+  const friendname = useAppSelector((state) => state.molegame.friendName);
+  const friendcharacter = useAppSelector((state) => state.molegame.friendCharacter);
+  const friendimgpath = `/assets/character/single/${capitalizeFirstLetter(friendcharacter)}.png`;
+  
   // Get room host information
   const host = useAppSelector((state) => state.molegame.host)
 

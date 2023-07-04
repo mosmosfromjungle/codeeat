@@ -106,6 +106,10 @@ const Profile = styled.div`
   text-align: left;
 `
 
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1)
+}
+
 export default function FriendsDialog() {
   const dispatch = useAppDispatch()
   const inputRef = useRef<HTMLInputElement>(null)
@@ -321,7 +325,7 @@ export default function FriendsDialog() {
         <div>
           <div>
             <img
-              src={`../../public/assets/character/single/${friendCharacter}_idle_anim_19.png`}
+              src={`../../public/assets/character/single/${friendCharacter}.png`}
               alt=""
             />
             <div>
@@ -380,7 +384,7 @@ export default function FriendsDialog() {
                 <NameWrapper>
                   <ListItemAvatar>
                     <Avatar
-                      src={`../../public/assets/character/single/${value.character}_idle_anim_19.png`}
+                      src={`../../public/assets/character/single/${value.character}.png`}
                     />
                   </ListItemAvatar>
                   <NameProfile>
@@ -423,7 +427,7 @@ export default function FriendsDialog() {
                 <NameWrapper>
                   <ListItemAvatar>
                     <Avatar
-                      src={`../../public/assets/character/single/${value.character}_idle_anim_19.png`}
+                      src={`../../public/assets/character/single/${value.character}.png`}
                     />
                   </ListItemAvatar>
                   <NameProfile>

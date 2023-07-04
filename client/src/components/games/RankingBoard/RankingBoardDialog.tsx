@@ -233,7 +233,7 @@ export default function RankingBoardDialog() {
   // My information
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
-  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`
+  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}.png`
 
   // Send my info to friend (client -> server)
   bootstrap.gameNetwork.sendMyInfo(username, character)
@@ -243,7 +243,7 @@ export default function RankingBoardDialog() {
   const friendcharacter = useAppSelector((state) => state.molegame.friendCharacter)
   const friendimgpath = `/assets/character/single/${capitalizeFirstLetter(
     friendcharacter
-  )}_idle_anim_19.png`
+  )}.png`
 
   // Get room host information
   const host = useAppSelector((state) => state.molegame.host)
@@ -366,7 +366,7 @@ export default function RankingBoardDialog() {
                   />
                   <ListItemAvatar>
                     <Avatar
-                      src={`../../public/assets/character/single/${value.character}_idle_anim_19.png`}
+                      src={`../../public/assets/character/single/${value.character}.png`}
                     />
                   </ListItemAvatar>
                   <NameProfile>
@@ -387,7 +387,7 @@ export default function RankingBoardDialog() {
                   <h4 style={{ color: 'black', margin: '0 46px 0 28px' }}>{index + 4}</h4>
                   <ListItemAvatar>
                     <Avatar
-                      src={`../../public/assets/character/single/${value.character}_idle_anim_19.png`}
+                      src={`../../public/assets/character/single/${value.character}.png`}
                     />
                   </ListItemAvatar>
                   <NameProfile>

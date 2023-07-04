@@ -41,11 +41,11 @@ export function RainGame() {
   // My information
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
-  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`;
+  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}.png`;
   
   // Friend information
   const you = useAppSelector((state) => state.raingame.you)
-  const friendimgpath = `/assets/character/single/${capitalizeFirstLetter(you.character)}_idle_anim_19.png`;
+  const friendimgpath = `/assets/character/single/${capitalizeFirstLetter(you.character)}.png`;
 
   const [myGame, setMyGame] = useState<KeywordRain[]>([])
   const [youGame, setYouGame] = useState<KeywordRain[]>([])
@@ -314,7 +314,7 @@ export function RainGame() {
       <PointArea>
         <FriendPoint>
           <CharacterArea>
-            <img src={ friendimgpath } width="60px" id="friend-character"></img>
+            <img src={ friendimgpath } width="50px" id="friend-character"></img>
           </CharacterArea>
           <NameArea>
             친구 [{you.username.toUpperCase()}] <br/>
@@ -358,7 +358,7 @@ export function RainGame() {
             { myLifeElements }
           </NameArea>
           <CharacterArea>
-            <img src={ imgpath } width="60px" id="my-character"></img>
+            <img src={ imgpath } width="50px" id="my-character"></img>
           </CharacterArea>
         </MyPoint>
       </PointArea>

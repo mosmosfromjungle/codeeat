@@ -18,16 +18,20 @@ import { Navigation } from 'swiper'
 import 'swiper/css'
 import 'swiper/css/navigation'
 
-import Adam from '../../images/login/Adam_login.png'
-import Ash from '../../images/login/Ash_login.png'
-import Lucy from '../../images/login/Lucy_login.png'
-import Nancy from '../../images/login/Nancy_login.png'
+// import Adam from '../../images/login/Adam_login.png'
+// import Ash from '../../images/login/Ash_login.png'
+// import Lucy from '../../images/login/Lucy_login.png'
+// import Nancy from '../../images/login/Nancy_login.png'
 
 // ***새롭게 16px 캐릭터로 변경하기 위한 코드*** 
-// import Logan from '../../images/login/Logan_login.png'
-// import Kevin from '../../images/login/Kevin_login.png'
-// import Zoey from '../../images/login/Zoey_login.png'
-// import Emma from '../../images/login/Emma_login.png'
+import Noah from '../../images/login/Noah_login.png'
+import Nora from '../../images/login/Nora_login.png'
+import Owen from '../../images/login/Owen_login.png'
+import Maya from '../../images/login/Maya_login.png'
+import Jiji from '../../images/login/Jiji_login.png'
+import John from '../../images/login/John_login.png'
+import Mina from '../../images/login/Mina_login.png'
+import Ryan from '../../images/login/Ryan_login.png'
 
 import { useAppSelector, useAppDispatch } from '../../hooks'
 import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore'
@@ -118,16 +122,20 @@ const ProgressBarWrapper = styled.div`
 `
 
 const avatars = [
-  { name: 'adam', img: Adam },
-  { name: 'ash', img: Ash },
-  { name: 'lucy', img: Lucy },
-  { name: 'nancy', img: Nancy },
+  // { name: 'adam', img: Adam },
+  // { name: 'ash', img: Ash },
+  // { name: 'lucy', img: Lucy },
+  // { name: 'nancy', img: Nancy },
 
   // ***새롭게 16px 캐릭터로 변경하기 위한 코드***
-  // { name: 'logan', img: Logan },
-  // { name: 'kevin', img: Kevin },
-  // { name: 'zoey', img: Zoey },
-  // { name: 'emma', img: Emma },
+  { name: 'noah', img: Noah },
+  { name: 'nora', img: Nora },
+  { name: 'maya', img: Maya },
+  { name: 'owen', img: Owen },
+  { name: 'jiji', img: Jiji },
+  { name: 'john', img: John },
+  { name: 'mina', img: Mina },
+  { name: 'ryan', img: Ryan },
 ]
 
 // shuffle the avatars array

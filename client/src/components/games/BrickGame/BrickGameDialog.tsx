@@ -58,7 +58,7 @@ export default function BrickGameDialog() {
   // My information
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character);
-  const myImgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`;
+  const myImgpath = `/assets/character/single/${capitalizeFirstLetter(character)}.png`;
   const myPoint = useAppSelector((state) => state.brickgame.myPlayerScore.totalPoint)
   const myLife = useAppSelector((state) => state.brickgame.myPlayerScore.chance)
   const myCurrentImages = useAppSelector((state) => state.brickgame.myPlayerStatus.currentImages)
@@ -68,7 +68,7 @@ export default function BrickGameDialog() {
   // Friend information
   const oppUsername = useAppSelector((state) => state.brickgame.oppUsername)
   const oppCharacter = useAppSelector((state) => state.brickgame.oppCharacter)
-  const oppImgpath = `/assets/character/single/${capitalizeFirstLetter(oppCharacter)}_idle_anim_19.png`
+  const oppImgpath = `/assets/character/single/${capitalizeFirstLetter(oppCharacter)}.png`
   const oppPoint = useAppSelector((state) => state.brickgame.oppPlayerScore.totalPoint)
   const oppLife = useAppSelector((state) => state.brickgame.oppPlayerScore.chance)
   const oppCurrentImages = useAppSelector((state) => state.brickgame.oppPlayerStatus.currentImages)

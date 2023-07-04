@@ -1,1090 +1,975 @@
+
+// ***새롭게 16px 캐릭터로 변경하기 위한 코드*** //
 import Phaser from 'phaser'
 
 export const createCharacterAnims = (anims: Phaser.Animations.AnimationManager) => {
   const animsFrameRate = 15
 
+  // noah ******** //
   anims.create({
-    key: 'nancy_idle_right',
-    frames: anims.generateFrameNames('nancy', {
-      start: 0,
-      end: 5,
+    key: 'noah_idle_right',
+    frames: anims.generateFrameNames('noah', {
+      start: 56,
+      end: 61,
     }),
     repeat: -1,
     frameRate: animsFrameRate * 0.6,
   })
 
   anims.create({
-    key: 'nancy_idle_up',
-    frames: anims.generateFrameNames('nancy', {
-      start: 6,
-      end: 11,
+    key: 'noah_idle_up',
+    frames: anims.generateFrameNames('noah', {
+      start: 62,
+      end: 67,
     }),
     repeat: -1,
     frameRate: animsFrameRate * 0.6,
   })
 
   anims.create({
-    key: 'nancy_idle_left',
-    frames: anims.generateFrameNames('nancy', {
-      start: 12,
-      end: 17,
+    key: 'noah_idle_left',
+    frames: anims.generateFrameNames('noah', {
+      start: 68,
+      end: 73,
     }),
     repeat: -1,
     frameRate: animsFrameRate * 0.6,
   })
 
   anims.create({
-    key: 'nancy_idle_down',
-    frames: anims.generateFrameNames('nancy', {
-      start: 18,
-      end: 23,
+    key: 'noah_idle_down',
+    frames: anims.generateFrameNames('noah', {
+      start: 74,
+      end: 79,
     }),
     repeat: -1,
     frameRate: animsFrameRate * 0.6,
   })
 
   anims.create({
-    key: 'nancy_run_right',
-    frames: anims.generateFrameNames('nancy', {
-      start: 24,
-      end: 29,
+    key: 'noah_run_right',
+    frames: anims.generateFrameNames('noah', {
+      start: 112,
+      end: 117,
     }),
     repeat: -1,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'nancy_run_up',
-    frames: anims.generateFrameNames('nancy', {
-      start: 30,
-      end: 35,
+    key: 'noah_run_up',
+    frames: anims.generateFrameNames('noah', {
+      start: 118,
+      end: 123,
     }),
     repeat: -1,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'nancy_run_left',
-    frames: anims.generateFrameNames('nancy', {
-      start: 36,
-      end: 41,
+    key: 'noah_run_left',
+    frames: anims.generateFrameNames('noah', {
+      start: 124,
+      end: 129,
     }),
     repeat: -1,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'nancy_run_down',
-    frames: anims.generateFrameNames('nancy', {
-      start: 42,
-      end: 47,
+    key: 'noah_run_down',
+    frames: anims.generateFrameNames('noah', {
+      start: 130,
+      end: 135,
     }),
     repeat: -1,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'nancy_sit_down',
-    frames: anims.generateFrameNames('nancy', {
-      start: 48,
-      end: 48,
+    key: 'noah_sit_down',
+    frames: anims.generateFrameNames('noah', {
+      start: 3,
+      end: 3,
     }),
     repeat: 0,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'nancy_sit_left',
-    frames: anims.generateFrameNames('nancy', {
-      start: 49,
-      end: 49,
+    key: 'noah_sit_left',
+    frames: anims.generateFrameNames('noah', {
+      start: 234,
+      end: 234,
     }),
     repeat: 0,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'nancy_sit_right',
-    frames: anims.generateFrameNames('nancy', {
-      start: 50,
-      end: 50,
+    key: 'noah_sit_right',
+    frames: anims.generateFrameNames('noah', {
+      start: 233,
+      end: 233,
     }),
     repeat: 0,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'nancy_sit_up',
-    frames: anims.generateFrameNames('nancy', {
-      start: 51,
-      end: 51,
+    key: 'noah_sit_up',
+    frames: anims.generateFrameNames('noah', {
+      start: 1,
+      end: 1,
     }),
     repeat: 0,
     frameRate: animsFrameRate,
   })
 
+  // maya *************
   anims.create({
-    key: 'lucy_idle_right',
-    frames: anims.generateFrameNames('lucy', {
-      start: 0,
-      end: 5,
+    key: 'maya_idle_right',
+    frames: anims.generateFrameNames('maya', {
+      start: 56,
+      end: 61,
     }),
     repeat: -1,
     frameRate: animsFrameRate * 0.6,
   })
 
   anims.create({
-    key: 'lucy_idle_up',
-    frames: anims.generateFrameNames('lucy', {
-      start: 6,
-      end: 11,
+    key: 'maya_idle_up',
+    frames: anims.generateFrameNames('maya', {
+      start: 62,
+      end: 67,
     }),
     repeat: -1,
     frameRate: animsFrameRate * 0.6,
   })
 
   anims.create({
-    key: 'lucy_idle_left',
-    frames: anims.generateFrameNames('lucy', {
-      start: 12,
-      end: 17,
+    key: 'maya_idle_left',
+    frames: anims.generateFrameNames('maya', {
+      start: 68,
+      end: 73,
     }),
     repeat: -1,
     frameRate: animsFrameRate * 0.6,
   })
 
   anims.create({
-    key: 'lucy_idle_down',
-    frames: anims.generateFrameNames('lucy', {
-      start: 18,
-      end: 23,
+    key: 'maya_idle_down',
+    frames: anims.generateFrameNames('maya', {
+      start: 74,
+      end: 79,
     }),
     repeat: -1,
     frameRate: animsFrameRate * 0.6,
   })
 
   anims.create({
-    key: 'lucy_run_right',
-    frames: anims.generateFrameNames('lucy', {
-      start: 24,
-      end: 29,
+    key: 'maya_run_right',
+    frames: anims.generateFrameNames('maya', {
+      start: 112,
+      end: 117,
     }),
     repeat: -1,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'lucy_run_up',
-    frames: anims.generateFrameNames('lucy', {
-      start: 30,
-      end: 35,
+    key: 'maya_run_up',
+    frames: anims.generateFrameNames('maya', {
+      start: 118,
+      end: 123,
     }),
     repeat: -1,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'lucy_run_left',
-    frames: anims.generateFrameNames('lucy', {
-      start: 36,
-      end: 41,
+    key: 'maya_run_left',
+    frames: anims.generateFrameNames('maya', {
+      start: 124,
+      end: 129,
     }),
     repeat: -1,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'lucy_run_down',
-    frames: anims.generateFrameNames('lucy', {
-      start: 42,
-      end: 47,
+    key: 'maya_run_down',
+    frames: anims.generateFrameNames('maya', {
+      start: 130,
+      end: 135,
     }),
     repeat: -1,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'lucy_sit_down',
-    frames: anims.generateFrameNames('lucy', {
-      start: 48,
-      end: 48,
+    key: 'maya_sit_down',
+    frames: anims.generateFrameNames('maya', {
+      start: 3,
+      end: 3,
     }),
     repeat: 0,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'lucy_sit_left',
-    frames: anims.generateFrameNames('lucy', {
-      start: 49,
-      end: 49,
+    key: 'maya_sit_left',
+    frames: anims.generateFrameNames('maya', {
+      start: 234,
+      end: 234,
     }),
     repeat: 0,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'lucy_sit_right',
-    frames: anims.generateFrameNames('lucy', {
-      start: 50,
-      end: 50,
+    key: 'maya_sit_right',
+    frames: anims.generateFrameNames('maya', {
+      start: 233,
+      end: 233,
     }),
     repeat: 0,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'lucy_sit_up',
-    frames: anims.generateFrameNames('lucy', {
-      start: 51,
-      end: 51,
+    key: 'maya_sit_up',
+    frames: anims.generateFrameNames('maya', {
+      start: 1,
+      end: 1,
     }),
     repeat: 0,
     frameRate: animsFrameRate,
   })
 
+  // nora ************
   anims.create({
-    key: 'ash_idle_right',
-    frames: anims.generateFrameNames('ash', {
-      start: 0,
-      end: 5,
+    key: 'nora_idle_right',
+    frames: anims.generateFrameNames('nora', {
+      start: 56,
+      end: 61,
     }),
     repeat: -1,
     frameRate: animsFrameRate * 0.6,
   })
 
   anims.create({
-    key: 'ash_idle_up',
-    frames: anims.generateFrameNames('ash', {
-      start: 6,
-      end: 11,
+    key: 'nora_idle_up',
+    frames: anims.generateFrameNames('nora', {
+      start: 62,
+      end: 67,
     }),
     repeat: -1,
     frameRate: animsFrameRate * 0.6,
   })
 
   anims.create({
-    key: 'ash_idle_left',
-    frames: anims.generateFrameNames('ash', {
-      start: 12,
-      end: 17,
+    key: 'nora_idle_left',
+    frames: anims.generateFrameNames('nora', {
+      start: 68,
+      end: 73,
     }),
     repeat: -1,
     frameRate: animsFrameRate * 0.6,
   })
 
   anims.create({
-    key: 'ash_idle_down',
-    frames: anims.generateFrameNames('ash', {
-      start: 18,
-      end: 23,
+    key: 'nora_idle_down',
+    frames: anims.generateFrameNames('nora', {
+      start: 74,
+      end: 79,
     }),
     repeat: -1,
     frameRate: animsFrameRate * 0.6,
   })
 
   anims.create({
-    key: 'ash_run_right',
-    frames: anims.generateFrameNames('ash', {
-      start: 24,
-      end: 29,
+    key: 'nora_run_right',
+    frames: anims.generateFrameNames('nora', {
+      start: 112,
+      end: 117,
     }),
     repeat: -1,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'ash_run_up',
-    frames: anims.generateFrameNames('ash', {
-      start: 30,
-      end: 35,
+    key: 'nora_run_up',
+    frames: anims.generateFrameNames('nora', {
+      start: 118,
+      end: 123,
     }),
     repeat: -1,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'ash_run_left',
-    frames: anims.generateFrameNames('ash', {
-      start: 36,
-      end: 41,
+    key: 'nora_run_left',
+    frames: anims.generateFrameNames('nora', {
+      start: 124,
+      end: 129,
     }),
     repeat: -1,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'ash_run_down',
-    frames: anims.generateFrameNames('ash', {
-      start: 42,
-      end: 47,
+    key: 'nora_run_down',
+    frames: anims.generateFrameNames('nora', {
+      start: 130,
+      end: 135,
     }),
     repeat: -1,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'ash_sit_down',
-    frames: anims.generateFrameNames('ash', {
-      start: 48,
-      end: 48,
+    key: 'nora_sit_down',
+    frames: anims.generateFrameNames('nora', {
+      start: 3,
+      end: 3,
     }),
     repeat: 0,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'ash_sit_left',
-    frames: anims.generateFrameNames('ash', {
-      start: 49,
-      end: 49,
+    key: 'nora_sit_left',
+    frames: anims.generateFrameNames('nora', {
+      start: 234,
+      end: 234,
     }),
     repeat: 0,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'ash_sit_right',
-    frames: anims.generateFrameNames('ash', {
-      start: 50,
-      end: 50,
+    key: 'nora_sit_right',
+    frames: anims.generateFrameNames('nora', {
+      start: 233,
+      end: 233,
     }),
     repeat: 0,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'ash_sit_up',
-    frames: anims.generateFrameNames('ash', {
-      start: 51,
-      end: 51,
+    key: 'nora_sit_up',
+    frames: anims.generateFrameNames('nora', {
+      start: 1,
+      end: 1,
     }),
     repeat: 0,
     frameRate: animsFrameRate,
   })
 
+  // owen ******************
   anims.create({
-    key: 'adam_idle_right',
-    frames: anims.generateFrameNames('adam', {
-      start: 0,
-      end: 5,
+    key: 'owen_idle_right',
+    frames: anims.generateFrameNames('owen', {
+      start: 56,
+      end: 61,
     }),
     repeat: -1,
     frameRate: animsFrameRate * 0.6,
   })
 
   anims.create({
-    key: 'adam_idle_up',
-    frames: anims.generateFrameNames('adam', {
-      start: 6,
-      end: 11,
+    key: 'owen_idle_up',
+    frames: anims.generateFrameNames('owen', {
+      start: 62,
+      end: 67,
     }),
     repeat: -1,
     frameRate: animsFrameRate * 0.6,
   })
 
   anims.create({
-    key: 'adam_idle_left',
-    frames: anims.generateFrameNames('adam', {
-      start: 12,
-      end: 17,
+    key: 'owen_idle_left',
+    frames: anims.generateFrameNames('owen', {
+      start: 68,
+      end: 73,
     }),
     repeat: -1,
     frameRate: animsFrameRate * 0.6,
   })
 
   anims.create({
-    key: 'adam_idle_down',
-    frames: anims.generateFrameNames('adam', {
-      start: 18,
-      end: 23,
+    key: 'owen_idle_down',
+    frames: anims.generateFrameNames('owen', {
+      start: 74,
+      end: 79,
     }),
     repeat: -1,
     frameRate: animsFrameRate * 0.6,
   })
 
   anims.create({
-    key: 'adam_run_right',
-    frames: anims.generateFrameNames('adam', {
-      start: 24,
-      end: 29,
+    key: 'owen_run_right',
+    frames: anims.generateFrameNames('owen', {
+      start: 112,
+      end: 117,
     }),
     repeat: -1,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'adam_run_up',
-    frames: anims.generateFrameNames('adam', {
-      start: 30,
-      end: 35,
+    key: 'owen_run_up',
+    frames: anims.generateFrameNames('owen', {
+      start: 118,
+      end: 123,
     }),
     repeat: -1,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'adam_run_left',
-    frames: anims.generateFrameNames('adam', {
-      start: 36,
-      end: 41,
+    key: 'owen_run_left',
+    frames: anims.generateFrameNames('owen', {
+      start: 124,
+      end: 129,
     }),
     repeat: -1,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'adam_run_down',
-    frames: anims.generateFrameNames('adam', {
-      start: 42,
-      end: 47,
+    key: 'owen_run_down',
+    frames: anims.generateFrameNames('owen', {
+      start: 130,
+      end: 135,
     }),
     repeat: -1,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'adam_sit_down',
-    frames: anims.generateFrameNames('adam', {
-      start: 48,
-      end: 48,
+    key: 'owen_sit_down',
+    frames: anims.generateFrameNames('owen', {
+      start: 3,
+      end: 3,
     }),
     repeat: 0,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'adam_sit_left',
-    frames: anims.generateFrameNames('adam', {
-      start: 49,
-      end: 49,
+    key: 'owen_sit_left',
+    frames: anims.generateFrameNames('owen', {
+      start: 234,
+      end: 234,
     }),
     repeat: 0,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'adam_sit_right',
-    frames: anims.generateFrameNames('adam', {
-      start: 50,
-      end: 50,
+    key: 'owen_sit_right',
+    frames: anims.generateFrameNames('owen', {
+      start: 233,
+      end: 233,
     }),
     repeat: 0,
     frameRate: animsFrameRate,
   })
 
   anims.create({
-    key: 'adam_sit_up',
-    frames: anims.generateFrameNames('adam', {
-      start: 51,
-      end: 51,
+    key: 'owen_sit_up',
+    frames: anims.generateFrameNames('owen', {
+      start: 1,
+      end: 1,
+    }),
+    repeat: 0,
+    frameRate: animsFrameRate,
+  })
+
+  // jiji *********
+  anims.create({
+    key: 'jiji_idle_right',
+    frames: anims.generateFrameNames('jiji', {
+      start: 56,
+      end: 61,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate * 0.6,
+  })
+
+  anims.create({
+    key: 'jiji_idle_up',
+    frames: anims.generateFrameNames('jiji', {
+      start: 62,
+      end: 67,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate * 0.6,
+  })
+
+  anims.create({
+    key: 'jiji_idle_left',
+    frames: anims.generateFrameNames('jiji', {
+      start: 68,
+      end: 73,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate * 0.6,
+  })
+
+  anims.create({
+    key: 'jiji_idle_down',
+    frames: anims.generateFrameNames('jiji', {
+      start: 74,
+      end: 79,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate * 0.6,
+  })
+
+  anims.create({
+    key: 'jiji_run_right',
+    frames: anims.generateFrameNames('jiji', {
+      start: 112,
+      end: 117,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'jiji_run_up',
+    frames: anims.generateFrameNames('jiji', {
+      start: 118,
+      end: 123,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'jiji_run_left',
+    frames: anims.generateFrameNames('jiji', {
+      start: 124,
+      end: 129,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'jiji_run_down',
+    frames: anims.generateFrameNames('jiji', {
+      start: 130,
+      end: 135,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'jiji_sit_down',
+    frames: anims.generateFrameNames('jiji', {
+      start: 3,
+      end: 3,
+    }),
+    repeat: 0,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'jiji_sit_left',
+    frames: anims.generateFrameNames('jiji', {
+      start: 234,
+      end: 234,
+    }),
+    repeat: 0,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'jiji_sit_right',
+    frames: anims.generateFrameNames('jiji', {
+      start: 233,
+      end: 233,
+    }),
+    repeat: 0,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'jiji_sit_up',
+    frames: anims.generateFrameNames('jiji', {
+      start: 1,
+      end: 1,
+    }),
+    repeat: 0,
+    frameRate: animsFrameRate,
+  })
+
+  // john ******************* //
+  anims.create({
+    key: 'john_idle_right',
+    frames: anims.generateFrameNames('john', {
+      start: 56,
+      end: 61,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate * 0.6,
+  })
+
+  anims.create({
+    key: 'john_idle_up',
+    frames: anims.generateFrameNames('john', {
+      start: 62,
+      end: 67,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate * 0.6,
+  })
+
+  anims.create({
+    key: 'john_idle_left',
+    frames: anims.generateFrameNames('john', {
+      start: 68,
+      end: 73,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate * 0.6,
+  })
+
+  anims.create({
+    key: 'john_idle_down',
+    frames: anims.generateFrameNames('john', {
+      start: 74,
+      end: 79,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate * 0.6,
+  })
+
+  anims.create({
+    key: 'john_run_right',
+    frames: anims.generateFrameNames('john', {
+      start: 112,
+      end: 117,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'john_run_up',
+    frames: anims.generateFrameNames('john', {
+      start: 118,
+      end: 123,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'john_run_left',
+    frames: anims.generateFrameNames('john', {
+      start: 124,
+      end: 129,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'john_run_down',
+    frames: anims.generateFrameNames('john', {
+      start: 130,
+      end: 135,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'john_sit_down',
+    frames: anims.generateFrameNames('john', {
+      start: 3,
+      end: 3,
+    }),
+    repeat: 0,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'john_sit_left',
+    frames: anims.generateFrameNames('john', {
+      start: 234,
+      end: 234,
+    }),
+    repeat: 0,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'john_sit_right',
+    frames: anims.generateFrameNames('john', {
+      start: 233,
+      end: 233,
+    }),
+    repeat: 0,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'john_sit_up',
+    frames: anims.generateFrameNames('john', {
+      start: 1,
+      end: 1,
+    }),
+    repeat: 0,
+    frameRate: animsFrameRate,
+  })
+
+  // mina *********************
+  anims.create({
+    key: 'mina_idle_right',
+    frames: anims.generateFrameNames('mina', {
+      start: 56,
+      end: 61,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate * 0.6,
+  })
+
+  anims.create({
+    key: 'mina_idle_up',
+    frames: anims.generateFrameNames('mina', {
+      start: 62,
+      end: 67,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate * 0.6,
+  })
+
+  anims.create({
+    key: 'mina_idle_left',
+    frames: anims.generateFrameNames('mina', {
+      start: 68,
+      end: 73,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate * 0.6,
+  })
+
+  anims.create({
+    key: 'mina_idle_down',
+    frames: anims.generateFrameNames('mina', {
+      start: 74,
+      end: 79,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate * 0.6,
+  })
+
+  anims.create({
+    key: 'mina_run_right',
+    frames: anims.generateFrameNames('mina', {
+      start: 112,
+      end: 117,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'mina_run_up',
+    frames: anims.generateFrameNames('mina', {
+      start: 118,
+      end: 123,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'mina_run_left',
+    frames: anims.generateFrameNames('mina', {
+      start: 124,
+      end: 129,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'mina_run_down',
+    frames: anims.generateFrameNames('mina', {
+      start: 130,
+      end: 135,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'mina_sit_down',
+    frames: anims.generateFrameNames('mina', {
+      start: 3,
+      end: 3,
+    }),
+    repeat: 0,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'mina_sit_left',
+    frames: anims.generateFrameNames('mina', {
+      start: 234,
+      end: 234,
+    }),
+    repeat: 0,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'mina_sit_right',
+    frames: anims.generateFrameNames('mina', {
+      start: 233,
+      end: 233,
+    }),
+    repeat: 0,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'mina_sit_up',
+    frames: anims.generateFrameNames('mina', {
+      start: 1,
+      end: 1,
+    }),
+    repeat: 0,
+    frameRate: animsFrameRate,
+  })
+
+  // ryan ******************
+  anims.create({
+    key: 'ryan_idle_right',
+    frames: anims.generateFrameNames('ryan', {
+      start: 56,
+      end: 61,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate * 0.6,
+  })
+
+  anims.create({
+    key: 'ryan_idle_up',
+    frames: anims.generateFrameNames('ryan', {
+      start: 62,
+      end: 67,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate * 0.6,
+  })
+
+  anims.create({
+    key: 'ryan_idle_left',
+    frames: anims.generateFrameNames('ryan', {
+      start: 68,
+      end: 73,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate * 0.6,
+  })
+
+  anims.create({
+    key: 'ryan_idle_down',
+    frames: anims.generateFrameNames('ryan', {
+      start: 74,
+      end: 79,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate * 0.6,
+  })
+
+  anims.create({
+    key: 'ryan_run_right',
+    frames: anims.generateFrameNames('ryan', {
+      start: 112,
+      end: 117,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'ryan_run_up',
+    frames: anims.generateFrameNames('ryan', {
+      start: 118,
+      end: 123,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'ryan_run_left',
+    frames: anims.generateFrameNames('ryan', {
+      start: 124,
+      end: 129,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'ryan_run_down',
+    frames: anims.generateFrameNames('ryan', {
+      start: 130,
+      end: 135,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'ryan_sit_down',
+    frames: anims.generateFrameNames('ryan', {
+      start: 3,
+      end: 3,
+    }),
+    repeat: 0,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'ryan_sit_left',
+    frames: anims.generateFrameNames('ryan', {
+      start: 234,
+      end: 234,
+    }),
+    repeat: 0,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'ryan_sit_right',
+    frames: anims.generateFrameNames('ryan', {
+      start: 233,
+      end: 233,
+    }),
+    repeat: 0,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'ryan_sit_up',
+    frames: anims.generateFrameNames('ryan', {
+      start: 1,
+      end: 1,
     }),
     repeat: 0,
     frameRate: animsFrameRate,
   })
 }
-
-// ************************************************** //
-// ***새롭게 16px 캐릭터로 변경하기 위한 코드*** //
-// import Phaser from 'phaser';
-
-// export const createCharacterAnims = (anims: Phaser.Animations.AnimationManager) => {
-//   const animsFrameRate = 15;
-
-//   anims.create({
-//     key: 'logan_idle_right',
-//     frames: anims.generateFrameNames('logan', {
-//       start: 57,
-//       end: 62,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate * 0.6,
-//   });
-
-//   anims.create({
-//     key: 'logan_idle_up',
-//     frames: anims.generateFrameNames('logan', {
-//       start: 63,
-//       end: 68,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate * 0.6,
-//   });
-
-//   anims.create({
-//     key: 'logan_idle_left',
-//     frames: anims.generateFrameNames('logan', {
-//       start: 69,
-//       end: 74,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate * 0.6,
-//   });
-
-//   anims.create({
-//     key: 'logan_idle_down',
-//     frames: anims.generateFrameNames('logan', {
-//       start: 75,
-//       end: 80,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate * 0.6,
-//   });
-
-//   anims.create({
-//     key: 'logan_run_right',
-//     frames: anims.generateFrameNames('logan', {
-//       start: 114,
-//       end: 119,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'logan_run_up',
-//     frames: anims.generateFrameNames('logan', {
-//       start: 120,
-//       end: 125,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'logan_run_left',
-//     frames: anims.generateFrameNames('logan', {
-//       start: 126,
-//       end: 131,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'logan_run_down',
-//     frames: anims.generateFrameNames('logan', {
-//       start: 132,
-//       end: 137,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'logan_sit_down',
-//     frames: anims.generateFrameNames('logan', {
-//       start: 3,
-//       end: 3,
-//     }),
-//     repeat: 0,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'logan_sit_left',
-//     frames: anims.generateFrameNames('logan', {
-//       start: 234,
-//       end: 234,
-//     }),
-//     repeat: 0,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'logan_sit_right',
-//     frames: anims.generateFrameNames('logan', {
-//       start: 233,
-//       end: 233,
-//     }),
-//     repeat: 0,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'logan_sit_up',
-//     frames: anims.generateFrameNames('logan', {
-//       start: 1,
-//       end: 1,
-//     }),
-//     repeat: 0,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'kevin_idle_right',
-//     frames: anims.generateFrameNames('kevin', {
-//       start: 57,
-//       end: 62,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate * 0.6,
-//   });
-
-//   anims.create({
-//     key: 'kevin_idle_up',
-//     frames: anims.generateFrameNames('kevin', {
-//       start: 63,
-//       end: 68,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate * 0.6,
-//   });
-
-//   anims.create({
-//     key: 'kevin_idle_left',
-//     frames: anims.generateFrameNames('kevin', {
-//       start: 69,
-//       end: 74,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate * 0.6,
-//   });
-
-//   anims.create({
-//     key: 'kevin_idle_down',
-//     frames: anims.generateFrameNames('kevin', {
-//       start: 75,
-//       end: 80,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate * 0.6,
-//   });
-
-//   anims.create({
-//     key: 'kevin_run_right',
-//     frames: anims.generateFrameNames('kevin', {
-//       start: 114,
-//       end: 119,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'kevin_run_up',
-//     frames: anims.generateFrameNames('kevin', {
-//       start: 120,
-//       end: 125,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'kevin_run_left',
-//     frames: anims.generateFrameNames('kevin', {
-//       start: 126,
-//       end: 131,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'kevin_run_down',
-//     frames: anims.generateFrameNames('kevin', {
-//       start: 132,
-//       end: 137,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'kevin_sit_down',
-//     frames: anims.generateFrameNames('kevin', {
-//       start: 3,
-//       end: 3,
-//     }),
-//     repeat: 0,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'kevin_sit_left',
-//     frames: anims.generateFrameNames('kevin', {
-//       start: 234,
-//       end: 234,
-//     }),
-//     repeat: 0,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'kevin_sit_right',
-//     frames: anims.generateFrameNames('kevin', {
-//       start: 233,
-//       end: 233,
-//     }),
-//     repeat: 0,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'kevin_sit_up',
-//     frames: anims.generateFrameNames('kevin', {
-//       start: 1,
-//       end: 1,
-//     }),
-//     repeat: 0,
-//     frameRate: animsFrameRate,
-//   });
-//   anims.create({
-//     key: 'zoey_idle_right',
-//     frames: anims.generateFrameNames('zoey', {
-//       start: 57,
-//       end: 62,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate * 0.6,
-//   });
-
-//   anims.create({
-//     key: 'zoey_idle_up',
-//     frames: anims.generateFrameNames('zoey', {
-//       start: 63,
-//       end: 68,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate * 0.6,
-//   });
-
-//   anims.create({
-//     key: 'zoey_idle_left',
-//     frames: anims.generateFrameNames('zoey', {
-//       start: 69,
-//       end: 74,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate * 0.6,
-//   });
-
-//   anims.create({
-//     key: 'zoey_idle_down',
-//     frames: anims.generateFrameNames('zoey', {
-//       start: 75,
-//       end: 80,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate * 0.6,
-//   });
-
-//   anims.create({
-//     key: 'zoey_run_right',
-//     frames: anims.generateFrameNames('zoey', {
-//       start: 114,
-//       end: 119,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'zoey_run_up',
-//     frames: anims.generateFrameNames('zoey', {
-//       start: 120,
-//       end: 125,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'zoey_run_left',
-//     frames: anims.generateFrameNames('zoey', {
-//       start: 126,
-//       end: 131,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'zoey_run_down',
-//     frames: anims.generateFrameNames('zoey', {
-//       start: 132,
-//       end: 137,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'zoey_sit_down',
-//     frames: anims.generateFrameNames('zoey', {
-//       start: 3,
-//       end: 3,
-//     }),
-//     repeat: 0,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'zoey_sit_left',
-//     frames: anims.generateFrameNames('zoey', {
-//       start: 234,
-//       end: 234,
-//     }),
-//     repeat: 0,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'zoey_sit_right',
-//     frames: anims.generateFrameNames('zoey', {
-//       start: 233,
-//       end: 233,
-//     }),
-//     repeat: 0,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'zoey_sit_up',
-//     frames: anims.generateFrameNames('zoey', {
-//       start: 1,
-//       end: 1,
-//     }),
-//     repeat: 0,
-//     frameRate: animsFrameRate,
-//   });
-//   anims.create({
-//     key: 'kevin_idle_right',
-//     frames: anims.generateFrameNames('kevin', {
-//       start: 57,
-//       end: 62,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate * 0.6,
-//   });
-
-//   anims.create({
-//     key: 'kevin_idle_up',
-//     frames: anims.generateFrameNames('kevin', {
-//       start: 63,
-//       end: 68,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate * 0.6,
-//   });
-
-//   anims.create({
-//     key: 'kevin_idle_left',
-//     frames: anims.generateFrameNames('kevin', {
-//       start: 69,
-//       end: 74,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate * 0.6,
-//   });
-
-//   anims.create({
-//     key: 'kevin_idle_down',
-//     frames: anims.generateFrameNames('kevin', {
-//       start: 75,
-//       end: 80,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate * 0.6,
-//   });
-
-//   anims.create({
-//     key: 'kevin_run_right',
-//     frames: anims.generateFrameNames('kevin', {
-//       start: 114,
-//       end: 119,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'kevin_run_up',
-//     frames: anims.generateFrameNames('kevin', {
-//       start: 120,
-//       end: 125,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'kevin_run_left',
-//     frames: anims.generateFrameNames('kevin', {
-//       start: 126,
-//       end: 131,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'kevin_run_down',
-//     frames: anims.generateFrameNames('kevin', {
-//       start: 132,
-//       end: 137,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'kevin_sit_down',
-//     frames: anims.generateFrameNames('kevin', {
-//       start: 3,
-//       end: 3,
-//     }),
-//     repeat: 0,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'kevin_sit_left',
-//     frames: anims.generateFrameNames('kevin', {
-//       start: 234,
-//       end: 234,
-//     }),
-//     repeat: 0,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'kevin_sit_right',
-//     frames: anims.generateFrameNames('kevin', {
-//       start: 233,
-//       end: 233,
-//     }),
-//     repeat: 0,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'kevin_sit_up',
-//     frames: anims.generateFrameNames('kevin', {
-//       start: 1,
-//       end: 1,
-//     }),
-//     repeat: 0,
-//     frameRate: animsFrameRate,
-//   });
-//   anims.create({
-//     key: 'emma_idle_right',
-//     frames: anims.generateFrameNames('emma', {
-//       start: 57,
-//       end: 62,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate * 0.6,
-//   });
-
-//   anims.create({
-//     key: 'emma_idle_up',
-//     frames: anims.generateFrameNames('emma', {
-//       start: 63,
-//       end: 68,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate * 0.6,
-//   });
-
-//   anims.create({
-//     key: 'emma_idle_left',
-//     frames: anims.generateFrameNames('emma', {
-//       start: 69,
-//       end: 74,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate * 0.6,
-//   });
-
-//   anims.create({
-//     key: 'emma_idle_down',
-//     frames: anims.generateFrameNames('emma', {
-//       start: 75,
-//       end: 80,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate * 0.6,
-//   });
-
-//   anims.create({
-//     key: 'emma_run_right',
-//     frames: anims.generateFrameNames('emma', {
-//       start: 114,
-//       end: 119,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'emma_run_up',
-//     frames: anims.generateFrameNames('emma', {
-//       start: 120,
-//       end: 125,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'emma_run_left',
-//     frames: anims.generateFrameNames('emma', {
-//       start: 126,
-//       end: 131,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'emma_run_down',
-//     frames: anims.generateFrameNames('emma', {
-//       start: 132,
-//       end: 137,
-//     }),
-//     repeat: -1,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'emma_sit_down',
-//     frames: anims.generateFrameNames('emma', {
-//       start: 3,
-//       end: 3,
-//     }),
-//     repeat: 0,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'emma_sit_left',
-//     frames: anims.generateFrameNames('emma', {
-//       start: 234,
-//       end: 234,
-//     }),
-//     repeat: 0,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'emma_sit_right',
-//     frames: anims.generateFrameNames('emma', {
-//       start: 233,
-//       end: 233,
-//     }),
-//     repeat: 0,
-//     frameRate: animsFrameRate,
-//   });
-
-//   anims.create({
-//     key: 'emma_sit_up',
-//     frames: anims.generateFrameNames('emma', {
-//       start: 1,
-//       end: 1,
-//     }),
-//     repeat: 0,
-//     frameRate: animsFrameRate,
-//   });
-// };

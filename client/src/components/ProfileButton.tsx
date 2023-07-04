@@ -82,8 +82,8 @@ export default function ProfileButton() {
   const helperStatus = useAppSelector((state) => state.user.helperStatus)
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
+  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}.png`
   // const userLevel = useAppSelector((state) => state.user.userLevel)
-  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`
   const [userLevel, setUserLevel] = useState<string>()
   const [currentExp, setCurrentExp] = useState<number>()
   const [requiredExp, setRequiredExp] = useState<number>()

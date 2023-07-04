@@ -94,40 +94,56 @@ export default class Bootstrap extends Phaser.Scene {
       frameHeight: 16,
     })
 
-    this.load.spritesheet('adam', 'assets/character/adam.png', {
-      frameWidth: 32,
-      frameHeight: 48,
-    })
-    this.load.spritesheet('ash', 'assets/character/ash.png', {
-      frameWidth: 32,
-      frameHeight: 48,
-    })
-    this.load.spritesheet('lucy', 'assets/character/lucy.png', {
-      frameWidth: 32,
-      frameHeight: 48,
-    })
-    this.load.spritesheet('nancy', 'assets/character/nancy.png', {
-      frameWidth: 32,
-      frameHeight: 48,
-    })
+    // this.load.spritesheet('adam', 'assets/character/adam.png', {
+    //   frameWidth: 32,
+    //   frameHeight: 48,
+    // })
+    // this.load.spritesheet('ash', 'assets/character/ash.png', {
+    //   frameWidth: 32,
+    //   frameHeight: 48,
+    // })
+    // this.load.spritesheet('lucy', 'assets/character/lucy.png', {
+    //   frameWidth: 32,
+    //   frameHeight: 48,
+    // })
+    // this.load.spritesheet('nancy', 'assets/character/nancy.png', {
+    //   frameWidth: 32,
+    //   frameHeight: 48,
+    // })
 
     // ***새롭게 16px 캐릭터로 변경하기 위한 코드***
-    // this.load.spritesheet('logan', 'assets/character/logan.png', {
-    //   frameWidth: 16,
-    //   frameHeight: 32,
-    // });
-    // this.load.spritesheet('kevin', 'assets/character/kevin.png', {
-    //   frameWidth: 16,
-    //   frameHeight: 32,
-    // });
-    // this.load.spritesheet('zoey', 'assets/character/zoey.png', {
-    //   frameWidth: 16,
-    //   frameHeight: 32,
-    // });
-    // this.load.spritesheet('emma', 'assets/character/emma.png', {
-    //   frameWidth: 16,
-    //   frameHeight: 32,
-    // });
+    this.load.spritesheet('noah', 'assets/character/noah.png', {
+      frameWidth: 16,
+      frameHeight: 32,
+    })
+    this.load.spritesheet('nora', 'assets/character/nora.png', {
+      frameWidth: 16,
+      frameHeight: 32,
+    })
+    this.load.spritesheet('maya', 'assets/character/maya.png', {
+      frameWidth: 16,
+      frameHeight: 32,
+    })
+    this.load.spritesheet('owen', 'assets/character/owen.png', {
+      frameWidth: 16,
+      frameHeight: 32,
+    })
+    this.load.spritesheet('jiji', 'assets/character/jiji.png', {
+      frameWidth: 16,
+      frameHeight: 32,
+    })
+    this.load.spritesheet('john', 'assets/character/john.png', {
+      frameWidth: 16,
+      frameHeight: 32,
+    })
+    this.load.spritesheet('mina', 'assets/character/mina.png', {
+      frameWidth: 16,
+      frameHeight: 32,
+    })
+    this.load.spritesheet('ryan', 'assets/character/ryan.png', {
+      frameWidth: 16,
+      frameHeight: 32,
+    })
 
     this.load.on('complete', () => {
       this.preloadComplete = true

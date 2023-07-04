@@ -140,7 +140,7 @@ export default function ProfileDialog() {
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
   const userLevel = useAppSelector((state) => state.user.userLevel)
-  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`
+  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}.png`
 
   const dispatch = useAppDispatch()
 
@@ -244,7 +244,7 @@ export default function ProfileDialog() {
               <ListItem>
                 <ListItemAvatar>
                   {/* <Avatar src={imgpath} /> */}
-                  <img src={imgpath} />
+                  <img src={imgpath} style={{ width: '40px', height: '70px', objectFit: 'cover'}} />
                 </ListItemAvatar>
                 <NameProfile>
                   <Level>Lv. {userLevel}</Level>
