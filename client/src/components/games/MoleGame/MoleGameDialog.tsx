@@ -460,6 +460,10 @@ export default function MoleGameDialog() {
       return;
     }
 
+    if (!startGame) {
+      return;
+    }
+
     // Click Other
     if (!activeNumberList.includes(num)) {
       return;
