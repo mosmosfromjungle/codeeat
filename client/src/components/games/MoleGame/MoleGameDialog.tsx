@@ -102,6 +102,7 @@ export default function MoleGameDialog() {
 
   const closeModal = () => {
     setIsModalOpen(false)
+    handleClose();
   }
 
   let randomNumber1 = 0
@@ -561,15 +562,6 @@ export default function MoleGameDialog() {
 
     // 시작 버튼을 누를 수 있도록 수정
     setStartButton(true)
-
-    // 경험치 준택 유저이름에 따라서 하면 될듯!
-    // useEffect(() => {
-    //   if (winner == username) {
-    //     gainExpUpdateLevel(username, 7);
-    //   } else if (winner == friendname) {
-    //     gainExpUpdateLevel(username, 3);
-    //   }
-    // }, [winner])
   }
 
   const handleMouseOver = () => {
@@ -627,13 +619,11 @@ export default function MoleGameDialog() {
     }
     updateLevel(body)
       .then((response) => {
-        // console.log('api는 잘 통과하니???' + JSON.stringify(response))
         if (!response) return
       })
       .catch((error) => {
         if (error.response) {
           const { status, message } = error.response.data
-          console.log('message: ' + message)
         }
       })
   }
@@ -646,7 +636,6 @@ export default function MoleGameDialog() {
     }
     if (winner) {
       openModal()
-      setWinner('')
     }
   }, [winner])
 
@@ -855,9 +844,11 @@ export default function MoleGameDialog() {
                   <br />
                   <br />
                 </IsWinner>
+
                 {isModalOpen && (
                   <ExperienceResultModal open={isModalOpen} handleClose={closeModal} />
                 )}
+
                 <IsHost>
                   {friendname && username === host ? '방장' : ''}
                   <br />
