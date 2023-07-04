@@ -159,6 +159,37 @@ export const getUserProfile = async (username): Promise<any> => {
   return null
 }
 
+export const getUsersRanking = async (): Promise<any> => {
+  const response = await axios.get('/auth/ranking')
+  const { data } = response
+  if (response.status == 200) {
+    return data
+  }
+
+  if (response.status === 401) {
+    const refreshToken = cookies.get('refreshToken')
+
+    if (refreshToken) {
+      const issuedResponse = await refreshAccessToken({
+        refreshToken: refreshToken,
+      })
+
+      if (!issuedResponse) {
+        logout()
+        return
+      }
+
+      const response2 = await axios.get('/auth/ranking')
+      const { data } = response2
+      if (response2.status == 200) {
+        return data.payload
+      }
+    }
+  }
+
+  return null
+}
+
 export const updateMyProfile = async (body: UpdateRequest): Promise<any> => {
     try {
         const response = await axios.patch('/auth/update', body, {
@@ -173,6 +204,23 @@ export const updateMyProfile = async (body: UpdateRequest): Promise<any> => {
     } catch (error) {
         throw error
     }
+}
+
+export const updateLevel = async (body: UpdateLevelReqest): Promise<any> => {
+  // console.log("바디는 제대로 들어오는거니?" + JSON.stringify(body))
+  try {
+    const response = await axios.post('/auth/exp', body, {
+      withCredentials: true,
+      headers: {
+        'Content-type': 'application/json',
+      },
+    })
+    if (response.status === 200) {
+      return response.data
+    }
+  } catch (error) {
+    throw error
+  }
 }
 
 // export const updateMyProfile = async () => {
@@ -233,4 +281,11 @@ export interface UpdateRequest {
   grade: string
   school: string
   profileMessage: string
+}
+
+export interface UpdateLevelReqest {
+  // username: string
+  // character: string
+  username: string
+  exp: number
 }

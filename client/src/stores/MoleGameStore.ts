@@ -64,6 +64,8 @@ export const moleGameSlice = createSlice({
     clearMoleGameFriendInfo: (
       state
     ) => {
+      state.friendName = '';
+      state.friendCharacter = '';
       state.friendPoint = '0';
       state.friendLife = '3';
     },

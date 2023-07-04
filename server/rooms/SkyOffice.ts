@@ -59,11 +59,6 @@ export class SkyOffice extends Room<OfficeState> {
     //   this.state.molegames.set(String(i), new MoleGame())
     // }
 
-    // HARD-CODED: Add 1 faceChats in a room
-    // for (let i = 0; i < 20; i++) {
-    //   this.state.faceChats.set(String(i), new FaceChat())
-    // }
-
     // // when a player connect to a typinggame, add to the typinggame connectedUser array
     // this.onMessage(Message.CONNECT_TO_TYPINGGAME, (client, message: { typinggameId: string }) => {
     //   this.dispatcher.dispatch(new TypingGameAddUserCommand(), {
@@ -210,11 +205,6 @@ export class SkyOffice extends Room<OfficeState> {
     // this.state.molegames.forEach((molegame) => {
     //   if (molegame.connectedUser.has(client.sessionId)) {
     //     molegame.connectedUser.delete(client.sessionId)
-    //   }
-    // })
-    // this.state.faceChats.forEach((facechat) => {
-    //   if (facechat.connectedUser.has(client.sessionId)) {
-    //     facechat.connectedUser.delete(client.sessionId)
     //   }
     // })
   }

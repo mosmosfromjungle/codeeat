@@ -8,6 +8,7 @@ import {
     refreshAccessToken,
     authenticateUser,
     userProfile,
+    getUserRankingsList,
     gainExp,
 } from '../controllers/UserControllers/index'
 
@@ -28,6 +29,8 @@ router.post('/refresh', refreshAccessToken)
 router.get('/authenticate', authenticateToken, authenticateUser)
 
 router.get('/profile/:username', userProfile)
+
+router.get('/ranking', getUserRankingsList)
 
 router.post('/exp', gainExp)
 

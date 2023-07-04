@@ -37,22 +37,22 @@ export const createCollection = (modelName : string) => {
 
   switch (modelName) {
     case 'user':
-      new User();
+      new User()
       break
     case 'friends':
-      new Friends();
+      new Friends()
       break
     case 'friendrequest':
-      new FriendRequest();
+      new FriendRequest()
       break
     case 'dm':
-      new DM();
-      break;
+      new DM()
+      break
     case 'lastdm':
-      new LastDM();
-      break;
+      new LastDM()
+      break
     case 'raingame':
-      new KeywordRainModel();
+      new KeywordRainModel()
       break
     case 'molegame':
       new MoleGame()

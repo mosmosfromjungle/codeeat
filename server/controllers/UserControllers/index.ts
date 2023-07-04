@@ -213,7 +213,6 @@ export const login = async (req: Request, res: Response) => {
 export const myProfile = async (req: CustomRequest, res: Response) => {
     const decoded = req.decoded
     const foundUser = await User.collection.findOne({ userId: decoded.userId })
-    
     if (foundUser) {
         return res.status(200).json({
             status: 200,
@@ -230,6 +229,7 @@ export const myProfile = async (req: CustomRequest, res: Response) => {
             }
         })
     }
+    
 
     return res.status(404).json({
         status: 404,
@@ -401,7 +401,7 @@ export const gainExp = async (req: CustomRequest, res: Response) => {
     // const decoded = req.decoded
     // if (!decoded) return res.status(405).json(AUTH_ERROR)
     // const foundUser = await User.collection.findOne({ userId: decoded.userId })
-    const foundUser = await User.collection.findOne({ userId: req.body.username })
+    const foundUser = await User.findOne({ username: req.body.username })
     if (!foundUser) return res.status(404).json({ message: '유저 데이터 조회 실패' })
 
     const oldUserLevel = foundUser.userProfile.userLevel
@@ -413,7 +413,8 @@ export const gainExp = async (req: CustomRequest, res: Response) => {
     let levelUp = 0
     while (foundUser.userProfile.currentExp >= foundUser.userProfile.requiredExp) {
         levelUp += 1
-        foundUser.userProfile.userLevel += 1
+        // foundUser.userProfile.userLevel += 1
+        foundUser.userProfile.userLevel = parseInt(foundUser.userProfile.userLevel, 10) + 1
         foundUser.userProfile.currentExp -= foundUser.userProfile.requiredExp
         foundUser.userProfile.requiredExp = getRequiredExp(foundUser.userProfile.userLevel)
     }
@@ -439,3 +440,37 @@ export const gainExp = async (req: CustomRequest, res: Response) => {
 function getRequiredExp(level: number) {
     return 10 + (level * 5)
 }
+
+export const getUserRankingsList = async (req: CustomRequest, res: Response) => {
+  try {
+    const users = await User.find()
+      .sort({ 'userProfile.userLevel': -1, 'userProfile.currentExp': -1 })
+      .limit(10)
+      .lean()
+      .exec()
+
+    const findUsersRanking = users.map((user) => ({
+      username: user.username,
+      character: user.userProfile.character,
+      userLevel: user.userProfile.userLevel,
+      currentExp: user.userProfile.currentExp,
+      profileMessage: user.userProfile.profileMessage,
+    }))
+    console.log(findUsersRanking)
+
+    res.status(200).json({ findUsersRanking })
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({
+      status: 500,
+      message: '유저 랭킹 조회 실패',
+    })
+  }
+}
+
+
+
+
+
+
+
