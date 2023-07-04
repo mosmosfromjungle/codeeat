@@ -31,11 +31,7 @@ export default class RankingBoard extends Item {
   }
 
   onOverlapDialog() {
-    if (this.currentUsers.size === 0) {
-      this.setDialogBox('R을 눌러 랭킹 보드 확인!')
-    } else {
-      this.setDialogBox('Press R join')
-    }
+    this.setDialogBox('R 눌러 랭킹 보드 확인!')
   }
 
   addCurrentUser(userId: string) {
