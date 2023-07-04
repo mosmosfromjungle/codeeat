@@ -137,7 +137,7 @@ export default class Game extends Phaser.Scene {
     );
     */
 
-    this.myPlayer = this.add.myPlayer(705, 900, 'noah', this.network.mySessionId)
+    this.myPlayer = this.add.myPlayer(705, 600, 'noah', this.network.mySessionId)
     // this.myPlayer = this.add.myPlayer(705, 500, 'adam', this.network.mySessionId) // TODO: 캐릭터 시작 위치 수정 가능 -> 서버와 통일해야함
     this.playerSelector = new PlayerSelector(this, 0, 0, 32, 32)  // TODO: 아이템과 상호작용할 수 있는 면적 
     console.log('game scene created')
