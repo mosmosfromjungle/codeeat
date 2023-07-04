@@ -23,6 +23,8 @@ export interface RainGameStates {
   you: RainGameUser
   words: string
   dheart: boolean
+  winner: string
+  reason: string
 }
 
 export const initialState: RainGameStates = {
@@ -49,6 +51,8 @@ export const initialState: RainGameStates = {
   },
   words: '',
   dheart: false,
+  winner: '',
+  reason: '',
 }
 
 // Define Slice
@@ -85,7 +89,6 @@ export const rainGameSlice = createSlice({
       state.myState.point = point
       state.myState.heart = heart
       state.myState.item = item
-      console.log('내 상태 설정:', JSON.parse(JSON.stringify(state.myState)))
     },
 
     setRainStateYou: (state, action: PayloadAction<RainGameState>) => {
@@ -93,7 +96,6 @@ export const rainGameSlice = createSlice({
       state.youState.point = point
       state.youState.heart = heart
       state.youState.item = item
-      console.log('상대 상태 설정:', JSON.parse(JSON.stringify(state.youState)))
     },
 
     setRainGameYouHeart: (state, action: PayloadAction<boolean>) => {
@@ -103,6 +105,14 @@ export const rainGameSlice = createSlice({
     setRainGameYouWord: (state, action: PayloadAction<string>) => {
       state.words = action.payload
     },
+
+    setRainGameWinner: (state, action: PayloadAction<{ winner: string; reason: string }>) => {
+      console.log("승자 설정 액션")
+      const { winner, reason } = action.payload
+      state.winner = winner
+      state.reason = reason
+      state.rainGameInProgress = false
+    }
   },
 })
 
@@ -116,6 +126,7 @@ export const {
   setRainGameYouWord,
   setRainStateMe,
   setRainStateYou,
+  setRainGameWinner
 } = rainGameSlice.actions
 
 export default rainGameSlice.reducer

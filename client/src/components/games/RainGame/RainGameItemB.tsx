@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
-import cloud from '/assets/game/RainGame/baby.png'
+import blind from '/assets/game/RainGame/blind.png'
 
 const RainGameItemB = ({ show, onHide }) => {
   useEffect(() => {
     if (show) {
       const timer = setTimeout(() => {
         onHide();
-      }, 10000);
+      }, 5000);
       return () => clearTimeout(timer);
     }
   }, [show, onHide]);
@@ -14,14 +14,16 @@ const RainGameItemB = ({ show, onHide }) => {
   return (
     show && (
       <img
-        src= {cloud} // 여기에 이미지 URL을 입력하세요.
-        alt="cloud image"
+        src= {blind}
+        alt="blind image"
         style={{
           position: 'absolute',
           top: '50%',
-          left: '10%',
+          left:'10%',
           transform: 'translateY(-50%)',
           zIndex: 3,
+          width: '90%',
+          height: '90%',
         }}
       />
     )

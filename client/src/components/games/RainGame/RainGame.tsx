@@ -17,10 +17,14 @@ import {
   InputArea,
   PlayArea,
   Comment,
+  ResultArea,
 } from './RainGameStyle'
 import eraser from '/assets/game/RainGame/eraser.png'
 import debounce from 'lodash/debounce'
 import RainGameItemB from './RainGameItemB'
+import RainGameEnd from './RainGameEnd'
+import { DIALOG_STATUS, setDialogStatus } from '../../../stores/UserStore'
+import { closeRainGameDialog } from '../../../stores/RainGameDialogStore'
 
 interface KeywordRain {
   y: number
@@ -42,7 +46,7 @@ export function RainGame() {
   const dispatch = useAppDispatch()
   const keywordInput = useRef<HTMLInputElement>(null)
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-  const [time, setTime] = useState(100)
+  const [time, setTime] = useState(10)
   const host = useAppSelector((state) => state.raingame.host)
   const sessionId = useAppSelector((state) => state.user.gameSessionId)
 
@@ -76,86 +80,199 @@ export function RainGame() {
   const youExtraSpeedRef = useRef(0)
   const me = useAppSelector((state) => state.raingame.me)
   const you = useAppSelector((state) => state.raingame.you)
-  const [myImage, setMyImage] = useState(false);
-  const [youImage, setYouImage] = useState(false);
+  const [myImage, setMyImage] = useState(false)
+  const [youImage, setYouImage] = useState(false)
+  const winner = useAppSelector((state) => state.raingame.winner)
+  const reason = useAppSelector((state) => state.raingame.reason)
+  const [gameInProgress, setGameInProgress] = useState(true)
 
   const hideMyImage = useCallback(() => {
-    setMyImage(false);
-  }, []);
+    setMyImage(false)
+  }, [])
 
   const hideYouImage = useCallback(() => {
-    setYouImage(false);
-  }, []);
+    setYouImage(false)
+  }, [])
+
+  // 승리자 체크
+
+  const WinnerCheck = () => {
+    // 상대가 나갔을 때
+    if (you.username === '') {
+      bootstrap.gameNetwork.endGame(me.username, '상대가 퇴장하였습니다!')
+
+      // 둘 중 하나의 heart가 0일 때
+    } else if (youState.heart === 0 || myState.heart === 0) {
+      if (youState.heart === 0) {
+        bootstrap.gameNetwork.endGame(me.username, '홀로 살아남았습니다!')
+      } else if (myState.heart === 0) {
+        bootstrap.gameNetwork.endGame(you.username, '홀로 살아남았습니다!')
+      }
+
+      // 시간이 0이 되었을 때
+    } else if (time === 0) {
+      console.log("시간 0 감지")
+      if (myState.point > youState.point) {
+        console.log("나의 승리 조건 만족")
+        bootstrap.gameNetwork.endGame(
+          me.username,
+          '${myState.point} 대 ${youState.point} 으로 더 높은 점수를 기록하였습니다!'
+        )
+      } else if (myState.point < youState.point) {
+        bootstrap.gameNetwork.endGame(
+          me.username,
+          '${youState.point} 대 ${myState.point} 으로 더 높은 점수를 기록하였습니다!'
+        )
+      } else {
+        bootstrap.gameNetwork.endGame('draw', '무승부입니다! 최선을 다 한 두 사람 모두 승자!')
+      }
+    }
+  }
+
+  const handleClose = () => {
+    try {
+      bootstrap.gameNetwork.leaveGameRoom()
+      dispatch(closeRainGameDialog())
+      dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
+    } catch (error) {
+      console.error('Error leaving the room:', error)
+    }
+  }
 
   const Awords = [
-    { y: 0, speed: 1, keyword: 'abs', x: 331, itemA: false, itemB: true },
-    { y: 0, speed: 1.5, keyword: 'print', x: 253, itemA: false, itemB: false },
-    { y: 0, speed: 1, keyword: 'list', x: 182, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'row', x: 413, itemA: false, itemB: false },
-    { y: 0, speed: 1, keyword: 'col', x: 395, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'set', x: 267, itemA: false, itemB: false },
-    { y: 0, speed: 1, keyword: 'style', x: 149, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'font', x: 347, itemA: false, itemB: false },
-    { y: 0, speed: 1, keyword: 'div', x: 278, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'h1', x: 221, itemA: false, itemB: false },
-    { y: 0, speed: 1, keyword: 'h2', x: 443, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'body', x: 381, itemA: false, itemB: false },
-    { y: 0, speed: 1, keyword: 'apple', x: 399, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'banana', x: 273, itemA: false, itemB: false },
-    { y: 0, speed: 1, keyword: 'car', x: 331, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'dog', x: 253, itemA: false, itemB: false },
-    { y: 0, speed: 1, keyword: 'elephant', x: 182, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'flower', x: 413, itemA: false, itemB: false },
-    { y: 0, speed: 1, keyword: 'guitar', x: 395, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'house', x: 267, itemA: false, itemB: false },
-    { y: 0, speed: 1, keyword: 'ice cream', x: 149, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'jungle', x: 347, itemA: false, itemB: false },
-    { y: 0, speed: 1, keyword: 'kangaroo', x: 278, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'lion', x: 221, itemA: false, itemB: false },
-    { y: 0, speed: 1, keyword: 'monkey', x: 443, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'notebook', x: 381, itemA: false, itemB: false },
-    { y: 0, speed: 1, keyword: 'orange', x: 399, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'piano', x: 273, itemA: false, itemB: false },
-    { y: 0, speed: 1, keyword: 'queen', x: 331, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'rabbit', x: 253, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'computer', x: 190, itemA: false, itemB: true },
+    { y: 0, speed: 1.5, keyword: 'code', x: 240, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'program', x: 280, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'button', x: 320, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'screen', x: 360, itemA: true, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'click', x: 400, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'type', x: 440, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'game', x: 480, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'save', x: 220, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'picture', x: 260, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'sound', x: 310, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'play', x: 350, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'stop', x: 390, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'go', x: 430, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'back', x: 470, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'web', x: 210, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'internet', x: 250, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'link', x: 290, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'password', x: 330, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'mouse', x: 370, itemA: false, itemB: true },
+    { y: 0, speed: 1.9, keyword: 'keyboard', x: 410, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'app', x: 450, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'scroll', x: 200, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'drag', x: 240, itemA: true, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'drop', x: 280, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'zoom', x: 320, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'chat', x: 360, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'emoji', x: 400, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'video', x: 440, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'download', x: 220, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'attachment', x: 260, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'backup', x: 300, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'bluetooth', x: 340, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'bold', x: 380, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'bullet', x: 420, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'cache', x: 210, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'compress', x: 250, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'dashboard', x: 290, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'edit', x: 330, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'encrypt', x: 370, itemA: false, itemB: true },
+    { y: 0, speed: 1.5, keyword: 'filter', x: 410, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'firewall', x: 450, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'flash drive', x: 200, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'folder', x: 240, itemA: true, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'graph', x: 280, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'hacker', x: 320, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'hyperlink', x: 360, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'italic', x: 400, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'logout', x: 440, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'mute', x: 480, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'plugin', x: 220, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'preview', x: 260, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'reboot', x: 300, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'scroll', x: 340, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'template', x: 380, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'thumbnail', x: 420, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'toggle', x: 460, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'username', x: 220, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'volume', x: 260, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'wiFi', x: 300, itemA: false, itemB: false },
   ]
   const Bwords = [
-    { y: 0, speed: 1.2, keyword: 'zebra', x: 467, itemA: false, itemB: false },
-    { y: 0, speed: 1.4, keyword: 'umbrella', x: 174, itemA: false, itemB: false },
-    { y: 0, speed: 1.3, keyword: 'table', x: 290, itemA: false, itemB: false },
-    { y: 0, speed: 1.1, keyword: 'snake', x: 485, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'rocket', x: 310, itemA: false, itemB: false },
-    { y: 0, speed: 1.4, keyword: 'pizza', x: 450, itemA: false, itemB: false },
-    { y: 0, speed: 1.2, keyword: 'ocean', x: 200, itemA: false, itemB: false },
-    { y: 0, speed: 1.3, keyword: 'moon', x: 388, itemA: false, itemB: false },
-    { y: 0, speed: 1.1, keyword: 'laptop', x: 333, itemA: false, itemB: true },
-    { y: 0, speed: 1.5, keyword: 'kiwi', x: 223, itemA: false, itemB: false },
-    { y: 0, speed: 1.2, keyword: 'island', x: 411, itemA: false, itemB: false },
-    { y: 0, speed: 1.3, keyword: 'hat', x: 274, itemA: false, itemB: false },
-    { y: 0, speed: 1.4, keyword: 'grape', x: 492, itemA: false, itemB: false },
-    { y: 0, speed: 1.2, keyword: 'forest', x: 267, itemA: false, itemB: false },
-    { y: 0, speed: 1.1, keyword: 'eagle', x: 300, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'drum', x: 475, itemA: false, itemB: false },
-    { y: 0, speed: 1.3, keyword: 'chocolate', x: 230, itemA: false, itemB: false },
-    { y: 0, speed: 1.4, keyword: 'book', x: 365, itemA: false, itemB: false },
-    { y: 0, speed: 1.2, keyword: 'ant', x: 415, itemA: false, itemB: false },
-    { y: 0, speed: 1.1, keyword: 'window', x: 320, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'television', x: 470, itemA: false, itemB: false },
-    { y: 0, speed: 1.2, keyword: 'sun', x: 190, itemA: false, itemB: false },
-    { y: 0, speed: 1.3, keyword: 'rain', x: 422, itemA: false, itemB: false },
-    { y: 0, speed: 1.4, keyword: 'penguin', x: 237, itemA: false, itemB: false },
-    { y: 0, speed: 1.1, keyword: 'otter', x: 393, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'night', x: 255, itemA: false, itemB: false },
-    { y: 0, speed: 1.3, keyword: 'mountain', x: 288, itemA: false, itemB: false },
-    { y: 0, speed: 1.2, keyword: 'light', x: 444, itemA: false, itemB: false },
-    { y: 0, speed: 1.4, keyword: 'kite', x: 317, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'jazz', x: 217, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'upload', x: 170, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'folder', x: 210, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'file', x: 260, itemA: true, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'cut', x: 310, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'copy', x: 350, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'paste', x: 390, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'print', x: 430, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'camera', x: 470, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'microphone', x: 190, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'speaker', x: 230, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'text', x: 270, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'font', x: 310, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'color', x: 350, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'paint', x: 390, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'draw', x: 430, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'icon', x: 470, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'search', x: 210, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'window', x: 250, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'minimize', x: 290, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'maximize', x: 330, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'close', x: 370, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'refresh', x: 410, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'sign in', x: 450, itemA: true, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'sign out', x: 190, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'username', x: 230, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'error', x: 270, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'pop-up', x: 310, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'menu', x: 350, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'settings', x: 390, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'tab', x: 430, itemA: false, itemB: true },
+    { y: 0, speed: 1.9, keyword: 'animation', x: 470, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'bookmark', x: 210, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'browser', x: 250, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'checkbox', x: 290, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'cursor', x: 330, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'desktop', x: 370, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'highlight', x: 410, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'home page', x: 450, itemA: false, itemB: true },
+    { y: 0, speed: 1.5, keyword: 'inbox', x: 190, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'install', x: 230, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'uninstall', x: 270, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'laptop', x: 310, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'network', x: 350, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'offline', x: 390, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'online', x: 430, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'password', x: 470, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'profile', x: 210, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'scrollbar', x: 250, itemA: true, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'screenshot', x: 290, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'shortcut', x: 330, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'sidebar', x: 370, itemA: false, itemB: true },
+    { y: 0, speed: 1.9, keyword: 'slider', x: 410, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'spam', x: 450, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'taskbar', x: 190, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'toolbar', x: 230, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'trash', x: 270, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'undo', x: 310, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'wallpaper', x: 350, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'widget', x: 390, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'wireless', x: 430, itemA: false, itemB: false },
   ]
   const debouncedDecreaseHeart = debounce(() => {
     bootstrap.gameNetwork.decreaseHeart(sessionId)
   }, 300)
   useEffect(() => {
     const updateMyWordsInterval = setInterval(() => {
+      if (!gameInProgress) {
+        clearInterval(updateMyWordsInterval)
+        return
+      }
+
       setMyGame((game) =>
         game.reduce((newGame, item) => {
           const newY = item.y + item.speed + myExtraSpeedRef.current
@@ -171,8 +288,11 @@ export function RainGame() {
       )
     }, 100)
     const meItemInterval = setInterval(() => {
+      if (!gameInProgress) {
+        clearInterval(meItemInterval)
+        return
+      }
       if (myState.item && myState.item.length > 0) {
-        console.log('나에게 아이템 적용')
         ItemToMe(myState.item[0])
         setMyState((prevState) => {
           // prevState.item 이 배열인 경우에만 slice 메서드를 사용
@@ -183,6 +303,10 @@ export function RainGame() {
       }
     }, 300)
     const updateYouWordsInterval = setInterval(() => {
+      if (!gameInProgress) {
+        clearInterval(updateYouWordsInterval)
+        return
+      }
       setYouGame((game) =>
         game.reduce((newGame, item) => {
           const newY = item.y + item.speed + youExtraSpeedRef.current
@@ -197,8 +321,11 @@ export function RainGame() {
     }, 100)
 
     const youItemInterval = setInterval(() => {
+      if (!gameInProgress) {
+        clearInterval(youItemInterval)
+        return
+      }
       if (youState.item && youState.item.length > 0) {
-        console.log('상대에게 아이템 적용')
         ItemToYou(youState.item[0])
         setYouState((prevState) => {
           // prevState.item 이 배열인 경우에만 slice 메서드를 사용
@@ -209,6 +336,8 @@ export function RainGame() {
       }
     }, 300)
 
+    
+
     return () => {
       clearInterval(updateYouWordsInterval)
       clearInterval(youItemInterval)
@@ -216,7 +345,6 @@ export function RainGame() {
       clearInterval(meItemInterval)
     }
   }, [raingame])
-
 
   useEffect(() => {
     setMyState({
@@ -232,11 +360,18 @@ export function RainGame() {
     })
   }, [raingame])
 
-  
-
   useEffect(() => {
     targetwordRef.current = targetword
   }, [targetword])
+
+  useEffect(() => {
+    if (!gameInProgress && winner) {
+
+      return () => {
+        handleClose();
+      };
+    }
+  }, [gameInProgress, winner])
 
   useEffect(() => {
     let currentWordIndex = 0
@@ -244,6 +379,10 @@ export function RainGame() {
     const youWords = username === host ? Bwords : Awords
 
     const createWordsInterval = setInterval(() => {
+      if (!gameInProgress) {
+        clearInterval(createWordsInterval)
+        return
+      }
       if (currentWordIndex < mywords.length) {
         const myKeyword = mywords[currentWordIndex]
         const youKeyword = youWords[currentWordIndex]
@@ -278,17 +417,24 @@ export function RainGame() {
 
     // 시간 측정
     const timeInterval = setInterval(() => {
+      if (!gameInProgress) {
+        clearInterval(timeInterval)
+        setTime(0);
+        return
+      }
       setTime((prevTime) => Math.max(prevTime - 1, 0))
+      WinnerCheck();
+      console.log(gameInProgress, winner,)
     }, 1000)
 
     return () => {
       clearInterval(timeInterval)
       clearInterval(createWordsInterval)
     }
-  }, [])
+  }, [gameInProgress])
 
-  const keydown = (keyCode: number) => {
-    if (keyCode === 13 && keywordInput.current) {
+  const keydown = (evnet: KeyboardEvent) => {
+    if (event.key === 'Enter' && keywordInput.current) {
       const inputKeyword = keywordInput.current.value
       const MyWord = myGame.find((word) => word.keyword === inputKeyword)
       if (MyWord) {
@@ -297,11 +443,9 @@ export function RainGame() {
 
         if (MyWord.itemA) {
           bootstrap.gameNetwork.useItem('A')
-          console.log('아이템 포착:A')
         }
         if (MyWord.itemB) {
           bootstrap.gameNetwork.useItem('B')
-          console.log('아이템포착:B')
         }
       } else {
         /* for 지원 : 입력이 틀렸을 때 로직 넣는 곳 */
@@ -322,8 +466,7 @@ export function RainGame() {
         }, 5000)
         break
       case 'B':
-        console.log('아이템 본인 적용 함수 호출됌')
-        setMyImage(true);
+        setMyImage(true)
         break
       // ... 다른 케이스들
     }
@@ -341,8 +484,7 @@ export function RainGame() {
         }, 5000)
         break
       case 'B':
-        console.log('아이템 상대 적용 함수 호출됌')
-        setYouImage(true);
+        setYouImage(true)
         break
       // ... 다른 케이스들
     }
@@ -363,6 +505,18 @@ export function RainGame() {
 
   return (
     <>
+       {/* winner 값이 있을 때만 RainGameEnd 컴포넌트를 렌더링 */}
+       {winner && (
+        <RainGameEnd
+          winner={winner}
+          reason={reason}
+          handleClose={() => handleClose()}
+        />
+      )}
+      
+      
+
+      
       <GameArea>
         <TimerArea>
           {time < 16 ? (
@@ -379,7 +533,7 @@ export function RainGame() {
         </TimerArea>
 
         <Left>
-        <RainGameItemB show={youImage} onHide={hideYouImage} />
+          <RainGameItemB show={youImage} onHide={hideYouImage} />
           {youGame.map((word, index) => (
             <h5
               key={index}
@@ -399,7 +553,7 @@ export function RainGame() {
         </Left>
 
         <Right>
-        <RainGameItemB show={myImage} onHide={hideMyImage} />
+          <RainGameItemB show={myImage} onHide={hideMyImage} />
           {myGame.map((word, index) => (
             <h5
               key={index}
@@ -444,7 +598,11 @@ export function RainGame() {
             <TextField
               focused
               inputRef={keywordInput}
-              onKeyPress={(e) => keydown(e.charCode)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  keydown(e)
+                }
+              }}
               fullWidth
               InputProps={{
                 style: {

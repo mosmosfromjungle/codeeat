@@ -23,6 +23,8 @@ export enum Message {
   RAIN_GAME_HEART_S,
   RAIN_GAME_ITEM_C,
   RAIN_GAME_ITEM_S,
+  RAIN_GAME_END_C,
+  RAIN_GAME_END_S,
 
   // ***** Brick Game *****
   // Client

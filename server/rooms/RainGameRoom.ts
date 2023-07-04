@@ -108,6 +108,18 @@ export class RainGameRoom extends Room<GameState> {
         )
       }
     )
+
+    this.onMessage(
+      Message.RAIN_GAME_END_C,
+      (client, data: { username: string; reason: string }) => {
+        console.log("승리 시그널 수신")
+        this.state.raingames.rainGameInProgress = false;
+        this.broadcast(
+          Message.RAIN_GAME_END_S,
+          data,{ afterNextPatch: true }
+        )
+      }
+    )
   }
 
   async onAuth(client: Client, options: { password: string | null }) {

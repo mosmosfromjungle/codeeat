@@ -41,6 +41,7 @@ import {
   setRainStateMe,
   setRainStateYou,
   RainGameStates,
+  setRainGameWinner
 } from '../stores/RainGameStore'
 
 export default class GameNetwork {
@@ -303,10 +304,13 @@ export default class GameNetwork {
   }
 
   useItem(item: string) {
-    console.log('useItem:', item)
     this.room?.send(Message.RAIN_GAME_ITEM_C, { item: item })
   }
 
+  endGame(username: string, reason: string) {
+    console.log("승리 시그널 전송")
+    this.room?.send(Message.RAIN_GAME_END_C, { username: username, reason: reason})
+  }
   
 
   /* RAIN GAME  */
@@ -383,7 +387,6 @@ export default class GameNetwork {
 
     this.room.onMessage(Message.RAIN_GAME_HEART_S, (data) => {
       const { states } = data
-      console.log('아이템 적용 메시지 수신:', states[this.mySessionId].item)
 
       Object.keys(states).forEach((id) => {
         if (id === this.mySessionId) {
@@ -404,6 +407,15 @@ export default class GameNetwork {
           )
         }
       })
+    })
+
+    this.room.onMessage(Message.RAIN_GAME_END_S, (data) => {
+      const { username, reason } = data
+      console.log("승리 메시지 수신")
+      store.dispatch(setRainGameWinner({
+        winner: username,
+        reason : reason
+      }))
     })
   }
 }
