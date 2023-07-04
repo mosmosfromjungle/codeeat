@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
@@ -17,7 +17,6 @@ import {
   RoomListResponse,
 } from '../../apicalls/DM/DM';
 
-/* DM목록을 불러온다.  */
 export const ConversationList = () => {
   const [rooms, setRooms] = useState<RoomListResponse[]>([]);
   const dispatch = useAppDispatch();
@@ -62,10 +61,8 @@ return (
         <DMList>
         {rooms.length !== 0 ? (
           rooms.map((room) => {
-            let unreadCount = room.unreadCount;
-
             if (newMessage?.message && newMessage?.senderName === room.receiverName && room.unreadCount === 0) {
-              unreadCount! += 1;
+              room.unreadCount! += 1;
             }
             if (newMessageCnt === 0) {
               room.unreadCount = 0
@@ -83,7 +80,7 @@ return (
                       {room.message}
                     </LastMessage>
                     <br></br>
-                    {room.unreadCount! > 0 ? <UnreadCnt>{unreadCount}</UnreadCnt> : null}
+                    {room.unreadCount! > 0 ? <UnreadCnt>{room.unreadCount}</UnreadCnt> : null}
                 </UserNamewithLastMessage>
               </ListTag>
             );
@@ -110,7 +107,7 @@ cursor: pointer;
 padding: 16px;
 margin-bottom: 10px;
 border-bottom: 2px solid black;
-min-height: 30px;
+min-height: 20px;
 `;
 const UserNamewithLastMessage = styled.div`
   display: flex;

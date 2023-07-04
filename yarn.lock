@@ -2264,6 +2264,11 @@ react-chat-ui@^0.4.0:
   dependencies:
     prop-types "^15.5.10"
 
+react-iconly@^2.2.10:
+  version "2.2.10"
+  resolved "https://registry.yarnpkg.com/react-iconly/-/react-iconly-2.2.10.tgz#da7719a2f99d52dff53e318aa6b9b2a02f274d12"
+  integrity sha512-AZYJRzXMj7yw+KIFUkom3cWhvfbrdlbOLbBDuFnPJrbrgynmNCcJhX8dIQ/JGKq5XDo1P9j8Gico0xZnV/bXWA==
+
 react-icons@^4.3.1:
   version "4.10.1"
   resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-4.10.1.tgz#3f3b5eec1f63c1796f6a26174a1091ca6437a500"
