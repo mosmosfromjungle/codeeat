@@ -59,6 +59,11 @@ export default class Bootstrap extends Phaser.Scene {
       frameHeight: 16,
     })
 
+    this.load.spritesheet('billboard', 'assets/items/billboard.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+
     this.load.spritesheet('buildings', 'assets/tileset/buildings.png', {
       frameWidth: 16,
       frameHeight: 16,
@@ -158,7 +163,7 @@ export default class Bootstrap extends Phaser.Scene {
 
   launchGame() {
     if (!this.preloadComplete) return
-    this.network.webRTC?.checkPreviousPermission()
+    // this.network.webRTC?.checkPreviousPermission()
     this.scene.launch('game', {
       network: this.network,
       dmNetwork: this.dmNetwork,

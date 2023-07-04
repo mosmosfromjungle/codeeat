@@ -37,13 +37,13 @@ import './BrickGame.css'
 const WRONG_OPERATION = '해당 자료구조에서 사용되지 않는 연산입니다!'
 const COMMON_MESSAGE = (
   <>
-    <span style={{ fontSize: '22px' }}>두 캐릭터를 더하려면 </span>
-    <span style={{ fontSize: '30px' }}>'sum' </span>
+    {/* <span style={{ fontSize: '22px' }}>두 캐릭터를 더하려면 </span>
+    <span style={{ fontSize: '30px' }}>'sum' </span> */}
 
-    <span style={{ fontSize: '22px' }}>| 처음으로 돌리려면 </span>
+    <span style={{ fontSize: '22px' }}>처음으로 돌리려면 </span>
     <span style={{ fontSize: '30px' }}>'reset' </span>
 
-    <span style={{ fontSize: '22px' }}>입력</span>
+    <span style={{ fontSize: '22px' }}>입력 후 엔터</span>
   </>
 )
 
@@ -58,8 +58,13 @@ export default function BrickGameDialog() {
   const character = useAppSelector((state) => state.user.character);
   const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}.png`;
 
+  // Friend information
+  const friendname = useAppSelector((state) => state.brickgame.oppName);
+  const friendcharacter = useAppSelector((state) => state.brickgame.oppCharacter);
+  const friendimgpath = `/assets/character/single/${capitalizeFirstLetter(friendcharacter)}_idle_anim_19.png`;
+  
   const gamePlayers = useAppSelector((state) => state.room.gamePlayers)
-  const currentQuiz  = useAppSelector((state) => state.brickgame.brickGameState.currentQuiz)
+  const problemType  = useAppSelector((state) => state.brickgame.brickGameState.problemType)
   const myCurrentImages = useAppSelector((state) => state.brickgame.myPlayerStatus.currentImages)
   const mySelectedOption = useAppSelector((state) => state.brickgame.myPlayerStatus.selectedOption)
   const myCommandArray = useAppSelector((state) => state.brickgame.myPlayerStatus.commandArray)
@@ -85,25 +90,18 @@ export default function BrickGameDialog() {
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
 
   /* FETCH PLAYERS IN ROOM */
-  useEffect(() => {
-    setPlayers(gamePlayers)
-    console.log('game player: ', gamePlayers)
-
-    gamePlayers.map((value, index) => {
-      if (value.name === username) {
-        // setMyCharacter(value.anim)
-      } else {
-        setOppUsername(value.name)
-      }
-    })
-
-  }, [gamePlayers])
-
-  // Update selected data structure option 
   // useEffect(() => {
-  //   setCurrentOption(mySelectedOption)
-  //   console.log('selected option: ', currentOption)
-  // }, [mySelectedOption])
+  //   setPlayers(gamePlayers)
+  //   console.log('game player: ', gamePlayers)
+
+  //   gamePlayers.map((value, index) => {
+  //     if (value.name === username) {
+  //       // setMyCharacter(value.anim)
+  //     } else {
+  //       setOppUsername(value.name)
+  //     }
+  //   })
+  // }, [gamePlayers])
 
   const imgsrc = [img1, img2, img3, img4, img5, img6]
 
@@ -125,17 +123,6 @@ export default function BrickGameDialog() {
     })));
   }, [oppCurrentImages]);
 
-
-  // const handleKeyDown = (event) => {
-  //   if (event.key === 'Enter') {
-  //     bootstrap.gameNetwork.brickGameCommand(command)
-  //   }
-  // }
-
-  const handleOptionClick = (option) => {
-    bootstrap.gameNetwork.brickGameCommand(option)
-  }
-
   const handleClose = () => {
     try {
       const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
@@ -147,13 +134,18 @@ export default function BrickGameDialog() {
     }
   }
 
+  const handleOptionClick = (option) => {
+    bootstrap.gameNetwork.brickGameCommand(option)
+  }
+
   const handleEnter = () => {
-    setCommand('');
     bootstrap.gameNetwork.brickGameCommand(command);
+    setCommand('');
   }
 
   const handleSubmit = () => {
-    // Todo: 정답, 실패 판별하는 코드
+    bootstrap.gameNetwork.brickGameCommand('submit');
+    setCommand('');
   }
 
   let oppLifeElements = [];
@@ -186,8 +178,8 @@ export default function BrickGameDialog() {
 
           <RoundWrapper>
             <div style={{ flex: 1, fontSize: '24px' }} className={`${oppUsername ? '' : 'start-game'}`}>
-              {oppUsername ? '친구가 들어왔어요,' : '친구가 아직 들어오지 않았어요 !'}<br />
-              {oppUsername ? '게임을 진행해주세요 !' : ''}
+              {/* {oppUsername ? '친구가 들어왔어요,' : '친구가 아직 들어오지 않았어요 !'}<br />
+              {oppUsername ? '게임을 진행해주세요 !' : ''} */}
             </div>
             <div className="title" style={{ flex: 'auto', textAlign: 'center', fontSize: '40px' }}>
               동물 멀리뛰기<br/>
@@ -217,12 +209,14 @@ export default function BrickGameDialog() {
                 <span style={{ fontSize: '32px', margin: '20px' }}>
                   {/* 숫자의 합이 <span style={{ fontSize: '36px', color: 'yellow' }}> {n} </span>이 되도록
                   몬스터 배열을 수정해주세요! */}
-                  {/* {currentQuiz} */}
+                  {/* {problemType} */}
 
-                  {oppUsername ? 
+                  {problem}
+
+                  {/* {oppUsername ? 
                     `${problem}` :
                     '친구가 들어오면 여기에 문제가 보일거예요!'
-                  }
+                  } */}
                 </span>
               </div>
 
@@ -252,8 +246,8 @@ export default function BrickGameDialog() {
               <ScoreWrapper>
                 <div style={{ flex: 1, color: 'white', fontSize: '25px', lineHeight: '1.5' }}>
                   <OppInfo>
-                    [{ oppUsername.toUpperCase() }]
-                    <img src={ imgpath } width="40px" id="my-character"></img>
+                    [{ friendname.toUpperCase() }]
+                    <img src={ friendimgpath } width="40px" id="friend-character" className={ friendname ? "" : "hidden" }></img>
                   </OppInfo>
                 </div>
                 <div style={{ flex: 1, color: 'white', fontSize: '25px', textAlign: 'right', lineHeight: '1.5' }}>
@@ -412,6 +406,7 @@ export default function BrickGameDialog() {
                     }}
                     fullWidth
                     InputProps={{
+                      autoComplete: 'off',
                       // 친구가 들어오기 전에는 입력할 수 없도록
                       readOnly: oppUsername === '',
                       style: { fontSize: '20px', height: '50px' },

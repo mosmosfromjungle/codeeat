@@ -55,7 +55,10 @@ export default class MoleGame extends Item {
     const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
     bootstrap.gameNetwork.joinLobbyRoom(RoomType.MOLELOBBY)
     store.dispatch(openMoleGameDialog())
-    store.dispatch(setDialogStatus(DIALOG_STATUS.GAME_LOBBY))
     // network.connectToMoleGame(this.id)
+
+    setTimeout(() => {
+      store.dispatch(setDialogStatus(DIALOG_STATUS.GAME_LOBBY))
+    }, 200)
   }
 }

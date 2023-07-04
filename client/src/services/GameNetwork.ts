@@ -5,23 +5,9 @@ import { Message } from '../../../types/Messages'
 import store from '../stores'
 import { setGameSessionId } from '../stores/UserStore'
 import {
-  setMoleGameFriendInfo,
-  setMoleGameFriendData,
-  setMoleGameProblem,
-  setMoleGameHost,
-} from '../stores/MoleGameStore'
-import {
-  setBrickGameState,
-  setMyPlayerScore,
-  setMyPlayerStatus,
-  setOppPlayerScore,
-  setOppPlayerStatus,
-} from '../stores/BrickGameStore'
-import {
   setLobbyJoined,
   setGameJoined,
   setJoinedGameRoomData,
-  setGamePlayers,
   setAvailableBrickRooms,
   setAvailableMoleRooms,
   setAvailableRainRooms,
@@ -30,11 +16,34 @@ import {
   clearAvailabelGameRooms,
 } from '../stores/RoomStore'
 import {
-  pushChatMessage,
-  pushPlayerJoinedMessage,
-  pushPlayerLeftMessage,
-} from '../stores/ChatStore'
-import { setRainGameMe, setRainGameYou, setRainGameMyState,setRainGameHost, setRainGameYouState, setRainGameReady, setRainGameInProgress } from '../stores/RainGameStore'
+  setMoleGameFriendInfo,
+  setMoleGameFriendData,
+  setMoleGameProblem,
+  setMoleGameHost,
+  setMoleGameLife,
+  clearMoleGameFriendInfo,
+ } from '../stores/MoleGameStore'
+import {
+  setBrickGameState,
+  setMyPlayerScore,
+  setMyPlayerStatus,
+  setOppPlayerScore,
+  setOppPlayerStatus,
+  setOppInfo,
+} from '../stores/BrickGameStore'
+import { 
+  setRainGameMe, 
+  setRainGameYou, 
+  setRainGameYouWord,
+  setRainGameHost, 
+  setRainGameReady, 
+  setRainGameInProgress,
+  setRainStateMe,
+  setRainStateYou ,
+  RainGameStates
+} from '../stores/RainGameStore'
+
+
 export default class GameNetwork {
   private client: Client
   private lobby?: Room | undefined
@@ -85,7 +94,7 @@ export default class GameNetwork {
       this.lobby.onMessage('rooms', (rooms) => {
         store.dispatch(setAvailableRainRooms(rooms))
       })
-    }
+    } 
 
     this.lobby.onMessage('+', ([roomId, room]) => {
       store.dispatch(addAvailableRooms({ roomId, room }))
@@ -98,13 +107,9 @@ export default class GameNetwork {
 
   async joinCustomById(roomId: string, password: string | null, username: string) {
     this.room = await this.client.joinById(roomId, { password, username })
-    if (this.room.name === RoomType.BRICK) {
-      this.brick_game_init()
-    } else if(this.room.name === RoomType.RAIN){
-      this.rain_game_init()
-    }else {
-      this.initialize()
-    }
+    if (this.room.name === RoomType.BRICK) this.brick_game_init()
+    if (this.room.name === RoomType.RAIN) this.rain_game_init()
+    if (this.room.name === RoomType.MOLE) this.mole_game_init()
   }
 
   async createBrickRoom(roomData: IGameRoomData) {
@@ -126,7 +131,7 @@ export default class GameNetwork {
       password,
       username,
     })
-    this.initialize()
+    this.mole_game_init()
   }
 
   async createRainRoom(roomData: IGameRoomData) {
@@ -140,19 +145,60 @@ export default class GameNetwork {
     this.rain_game_init()
   }
 
-  async createFaceChatRoom(roomData: IGameRoomData) {
-    const { name, description, password, username } = roomData
-    this.room = await this.client.create(RoomType.FACECHAT, {
-      name,
-      description,
-      password,
-      username,
+  /* BRICK GAME */
+
+  brick_game_init() {
+    if (!this.room) return
+
+    this.lobby.leave()
+    store.dispatch(setLobbyJoined(false))
+    this.mySessionId = this.room.sessionId
+    store.dispatch(setGameSessionId(this.room.sessionId))
+
+    this.room.onMessage(Message.SEND_ROOM_DATA, (content) => {
+      store.dispatch(setJoinedGameRoomData(content))
+      console.log('saved metadata')
     })
-    this.initialize()
+
+    this.room.onMessage(Message.BRICK_GAME_PLAYERS, (content) => {
+      if (content.length < 2) {
+        store.dispatch(setOppInfo({ name: '', character: '' }))
+      } else {
+        content.map((element) => {
+          const { sessionId, name, character } = element
+          if (sessionId !== this.mySessionId) {
+            store.dispatch(setOppInfo({ name, character }))
+          }
+        })
+      }
+    })
+
+    this.room.onMessage(Message.BRICK_GAME_STATE, (content) => {
+      store.dispatch(setBrickGameState(content))
+    })
+
+    this.room.onMessage(Message.BRICK_PLAYER_UPDATE, (content) => {
+      const { client, payload } = content
+      if (client.sessionId === this.mySessionId) {
+        console.log('update my player info')
+        store.dispatch(setMyPlayerScore(payload.playerScore))
+        store.dispatch(setMyPlayerStatus(payload.playerStatus))
+      } else {
+        console.log('update opponent player info')
+        store.dispatch(setOppPlayerScore(payload.playerScore))
+        store.dispatch(setOppPlayerStatus(payload.playerStatus))
+      }
+    })
   }
 
-  // set up all network listeners before the game starts
-  initialize() {
+  brickGameCommand(command: string) {
+    console.log('command: ', command)
+    this.room?.send(Message.BRICK_GAME_COMMAND, { command: command })
+  }
+
+  /* MOLE GAME  */
+
+  mole_game_init() {
     if (!this.room) return
     this.lobby.leave()
     store.dispatch(setLobbyJoined(false))
@@ -162,43 +208,6 @@ export default class GameNetwork {
     // when the server sends room data
     this.room.onMessage(Message.SEND_ROOM_DATA, (content) => {
       store.dispatch(setJoinedGameRoomData(content))
-    })
-
-    this.room.onMessage(Message.RAIN_GAME_USER, (data) => {
-
-      
-      for (let key in data) {
-          let user = data[key];
-          if (key === this.mySessionId) {
-              store.dispatch(setRainGameMe(user));
-          } else {
-              store.dispatch(setRainGameYou(user));
-          }
-      }
-  });
-
-  this.room.onMessage(Message.RAIN_GAME_START, () => {
-    store.dispatch(setRainGameInProgress(true));
-    
-    const mySessionId = this.mySessionId;
-    
-    // for (let key in keywordLists) {
-    //     const list = keywordLists[key];
-    //     if (key === mySessionId) {
-    //         store.dispatch(setRainGameMyWords(list));
-    //     } else {
-    //         store.dispatch(setRainGameYouWords(list));
-    //     }
-    // }
-});
-
-    this.room.onMessage(Message.RAIN_GAME_READY, () => {
-      store.dispatch(setRainGameReady(true))
-    })
-
-    // when the server sends data of players in this room
-    this.room.onMessage(Message.SEND_GAME_PLAYERS, (content) => {
-      store.dispatch(setGamePlayers(content))
     })
 
     // ↓ Mole Game
@@ -221,105 +230,16 @@ export default class GameNetwork {
     this.room.onMessage(Message.RECEIVE_HOST, (content) => {
       store.dispatch(setMoleGameHost(content))
     })
-  }
 
-  // method to send player updates to Colyseus server
-  updatePlayer(currentX: number, currentY: number, currentAnim: string) {
-    this.room?.send(Message.UPDATE_PLAYER, { x: currentX, y: currentY, anim: currentAnim })
-  }
-
-  // method to send player name to Colyseus server
-  updatePlayerName(currentName: string) {
-    this.room?.send(Message.UPDATE_PLAYER_NAME, { name: currentName })
-  }
-
-  // // method to send ready-to-connect signal to Colyseus server
-  // readyToConnect() {
-  //   this.room?.send(Message.READY_TO_CONNECT)
-  //   phaserEvents.emit(Event.MY_PLAYER_READY)
-  // }
-
-  brick_game_init() {
-    if (!this.room) return
-
-    this.lobby.leave()
-    store.dispatch(setLobbyJoined(false))
-    this.mySessionId = this.room.sessionId
-    store.dispatch(setGameSessionId(this.room.sessionId))
-
-    this.room.onMessage(Message.SEND_ROOM_DATA, (content) => {
-      store.dispatch(setJoinedGameRoomData(content))
-      console.log('saved metadata')
+    // method to receive life to friend in mole game
+    this.room.onMessage(Message.RECEIVE_YOUR_LIFE, (content) => {
+      store.dispatch(setMoleGameLife(content))
     })
 
-    this.room.onMessage(Message.SEND_GAME_PLAYERS, (content) => {
-      store.dispatch(setGamePlayers(content))
+    // method to clear friend info in mole game
+    this.room.onMessage(Message.CLEAR_FRIEND, () => {
+      store.dispatch(clearMoleGameFriendInfo())
     })
-
-    this.room.onMessage(Message.BRICK_GAME_STATE, (content) => {
-      store.dispatch(setBrickGameState(content))
-    })
-
-    this.room.onMessage(Message.BRICK_GAME_STATE, (content) => {
-      store.dispatch(setBrickGameState(content))
-    })
-
-    this.room.onMessage(Message.BRICK_PLAYER_UPDATE, (content) => {
-      const { client, payload } = content
-      if (client.sessionId === this.mySessionId) {
-        console.log('update my player info')
-        store.dispatch(setMyPlayerScore(payload.playerScore))
-        store.dispatch(setMyPlayerStatus(payload.playerStatus))
-      } else {
-        console.log('update opponent player info')
-        store.dispatch(setOppPlayerScore(payload.playerScore))
-        store.dispatch(setOppPlayerStatus(payload.playerStatus))
-      }
-    })
-
-    // // TODO: 이거 왜 안될까 ㅜㅜ
-    // this.room.state.brickgames.brickPlayers?.forEach((value: IBrickPlayer, key: string, map: Map<string, IBrickPlayer>) => {
-    //   this.brickPlayerListen(value, key)
-    // })
-
-    // this.room.state.brickgames.brickPlayers.onAdd = (player: IBrickPlayer, key: string) => {
-    //   this.brickPlayerListen(player, key)
-    // }
-  }
-
-  /* BRICK GAMES */
-  // brickPlayerListen(player: IBrickPlayer, key: string) {
-  //   if (key === this.mySessionId) {
-  //     player.onChange = (changes) => {
-  //       changes.forEach((change) => {
-  //         const { field, value } = change
-  //         if (field === 'playerScore') {
-  //           store.dispatch(setMyPlayerScore(value))
-  //         }
-  //         if (field === 'playerStatus') {
-  //           console.log('status change: ', value)
-  //           store.dispatch(setMyPlayerStatus(value))
-  //         }
-  //       })
-  //     }
-  //   } else {
-  //     player.onChange = (changes) => {
-  //       changes.forEach((change) => {
-  //         const { field, value } = change
-  //         if (field === 'playerScore') {
-  //           store.dispatch(setOppPlayerScore(value))
-  //         }
-  //         if (field === 'playerStatus') {
-  //           store.dispatch(setOppPlayerStatus(value))
-  //         }
-  //       })
-  //     }
-  //   }
-  // }
-
-  brickGameCommand(command: string) {
-    console.log('command: ', command)
-    this.room?.send(Message.BRICK_GAME_COMMAND, { command: command })
   }
 
   // ↓ Mole Game
@@ -343,23 +263,40 @@ export default class GameNetwork {
     this.room?.send(Message.SEND_HOST, { host: host })
   }
 
-  // Rain Game
-  startRainGame() {
-    console.log('startRainGame')
-    this.room?.send(Message.RAIN_GAME_START)
+  // method to send life count in mole game
+  sendMyLife(myLife: string) {
+    this.room?.send(Message.SEND_MY_LIFE, { life: myLife })
   }
 
-  // GetWordsList(username1, username2) {
-  //   console.log('GetWordsList')
-  //   this.room?.send(Message.RAIN_GAME_WORD, { username1, username2 })
-  // }
+  // method to clear friend info in mole game
+  clearFriendInfo() {
+    this.room?.send(Message.CLEAR_FRIEND)
+  }
+
+  /* RAIN GAME */
+
+  startRainGame() {
+    console.log('startRainGame')
+    this.room?.send(Message.RAIN_GAME_START_C)
+  }
+
+  removeWord(word: string, sessionId: string,states:RainGameStates ) {
+    console.log('점수 관련 상태변경 송신:',word)
+    this.room?.send(Message.RAIN_GAME_WORD_C, {word: word, sessionId: sessionId,states:states })
+  }
 
   sendMyInfoToServer(username: string, character: string) {
     console.log('sendMyInfoToServer')
     if (!this.room) return
-
-    this.room.send(Message.RAIN_GAME_USER, { username: username, character: character })
+    this.room.send(Message.RAIN_GAME_USER_C, { username: username, character: character })
   }
+
+  decreaseHeart(sessionId: string) {
+    console.log('하트 관련 상태변경 송신')
+    this.room?.send(Message.RAIN_GAME_HEART_C, {sessionId: sessionId})
+  }
+
+  /* RAIN GAME  */
 
   rain_game_init() {
     if (!this.room) return
@@ -371,42 +308,72 @@ export default class GameNetwork {
     // when the server sends room data
     this.room.onMessage(Message.SEND_ROOM_DATA, (content) => {
       const roomData = {
-        id : content.id,
+        id: content.id,
         name: content.name,
-        description: content.description
+        description: content.description,
       }
       store.dispatch(setJoinedGameRoomData(roomData))
       store.dispatch(setRainGameHost(content.host))
     })
 
-    this.room.onMessage(Message.RAIN_GAME_USER, (data) => {
+    this.room.onMessage(Message.RAIN_GAME_USER_S, (data) => {
+      const { user, state } = data;
 
-      
-      for (let key in data) {
-          let user = data[key];
-          if (key === this.mySessionId) {
-              store.dispatch(setRainGameMe(user));
-          } else {
-              store.dispatch(setRainGameYou(user));
-          }
+      for (let sessionId in user){
+        const rainGameUser = user[sessionId];
+        const rainGameState = state[sessionId];
+
+        if (sessionId === this.mySessionId) {
+          store.dispatch(setRainGameMe(rainGameUser));
+          store.dispatch(setRainStateMe(rainGameState));
+        } else {
+          store.dispatch(setRainGameYou(rainGameUser));
+          store.dispatch(setRainStateYou(rainGameState));
+        }
       }
-  });
+    });
 
-  this.room.onMessage(Message.RAIN_GAME_START, () => {
-    store.dispatch(setRainGameInProgress(true));
-    
-    const mySessionId = this.mySessionId;
-    
-  
-});
+    this.room.onMessage(Message.RAIN_GAME_START_S, () => {
+      store.dispatch(setRainGameInProgress(true))
+    })
 
-    this.room.onMessage(Message.RAIN_GAME_READY, () => {
+    this.room.onMessage(Message.RAIN_GAME_READY_S, () => {
       store.dispatch(setRainGameReady(true))
     })
 
-    // when the server sends data of players in this room
-    this.room.onMessage(Message.SEND_GAME_PLAYERS, (content) => {
-      store.dispatch(setGamePlayers(content))
-    })
+    this.room.onMessage(Message.RAIN_GAME_WORD_S, (data) => {
+      const{ word, states } = data;
+      console.log("상태변경 점수 관련 수신")
+      
+      Object.keys(states).forEach((id) => {
+        if (id === this.mySessionId) {
+            // 내 상태를 업데이트합니다.
+            store.dispatch(setRainStateMe({
+                point: states[id].point,
+                heart: states[id].heart
+            }));
+        } else {
+            // 상대방의 상태를 업데이트하고, 상대방의 단어도 설정합니다.
+            store.dispatch(setRainStateYou({
+                point: states[id].point,
+                heart: states[id].heart
+            }));
+            store.dispatch(setRainGameYouWord(word));
+        }
+    });
+    });
+    
+    this.room.onMessage(Message.RAIN_GAME_HEART_S, (data) => {
+      const { states } = data;
+      console.log("하트 관련 상태변경 수신")
+
+      Object.keys(states).forEach(id => {
+        if (id === this.mySessionId) {
+          store.dispatch(setRainStateMe({ point: states[id].point, heart: states[id].heart }));
+        } else {
+          store.dispatch(setRainStateYou({ point: states[id].point, heart: states[id].heart }));
+        }
+      });
+    });
   }
 }

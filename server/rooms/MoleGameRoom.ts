@@ -11,6 +11,7 @@ import {
   MoleGameAddPoint,
   MoleGameProblems,
   MoleGameChangeHost,
+  MoleGameChangeLife,
 } from './commands/MoleGameUpdateArrayCommand'
 
 export class MoleGameRoom extends Room<GameState> {
@@ -46,7 +47,6 @@ export class MoleGameRoom extends Room<GameState> {
           y: message.y,
           anim: message.anim,
         })
-        this.broadcastPlayersData(this)
       }
     )
 
@@ -56,7 +56,6 @@ export class MoleGameRoom extends Room<GameState> {
         client,
         name: message.name,
       })
-      this.broadcastPlayersData(this)
     })
 
     // ↓ Mole Game
@@ -68,6 +67,7 @@ export class MoleGameRoom extends Room<GameState> {
         point: '',
         problem: '',
         host: '',
+        life: '',
       })
       this.broadcast(Message.RECEIVE_MOLE, { name: message.name, character: message.character, host: this.state.host }, { except: client });
     })
@@ -80,6 +80,7 @@ export class MoleGameRoom extends Room<GameState> {
         point: message.point,
         problem: '',
         host: '',
+        life: '',
       })
       this.broadcast(Message.RECEIVE_YOUR_POINT, { point: message.point }, { except: client });
     })
@@ -92,6 +93,7 @@ export class MoleGameRoom extends Room<GameState> {
         point: '',
         problem: message.problem,
         host: '',
+        life: '',
       })
       this.broadcast(Message.RESPONSE_MOLE, { problem: message.problem });
     })
@@ -104,9 +106,23 @@ export class MoleGameRoom extends Room<GameState> {
         point: '',
         problem: '',
         host: message.host,
+        life: '',
       })
       this.state.host = message.host;
       this.broadcast(Message.RECEIVE_HOST, { host: message.host });
+    })
+
+    this.onMessage(Message.SEND_MY_LIFE, (client, message: { life: string }) => {
+      this.dispatcher.dispatch(new MoleGameChangeLife(), {
+        client,
+        name: '',
+        character: '',
+        point: '',
+        problem: '',
+        host: '',
+        life: message.life,
+      })
+      this.broadcast(Message.RECEIVE_YOUR_LIFE, { life: message.life }, { except: client });
     })
   }
 
@@ -129,28 +145,17 @@ export class MoleGameRoom extends Room<GameState> {
       description: this.description,
     })
 
-    this.broadcastPlayersData(this)
+    this.broadcast(Message.CLEAR_FRIEND);
   }
 
   onLeave(client: Client, consented: boolean) {
     if (this.state.players.has(client.sessionId)) {
       this.state.players.delete(client.sessionId)
     }
-    
-    this.broadcastPlayersData(this)
   }
 
   onDispose() {
     console.log('Mole game room', this.roomId, 'disposing ...')
     this.dispatcher.stop()
-  }
-
-  broadcastPlayersData(room: MoleGameRoom) {
-    const players = Array.from(room.state.players.values())
-      .map((player: GamePlayer) => ({
-        name: player.name,
-        anim: player.anim,
-      }))
-    room.broadcast(Message.SEND_GAME_PLAYERS, players)
   }
 }

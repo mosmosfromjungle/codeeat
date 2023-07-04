@@ -1,6 +1,7 @@
 export enum Message {
+
   // ***** MAIN ROOM *****
-  // Client
+  SEND_ROOM_DATA,
   UPDATE_PLAYER,
   UPDATE_PLAYER_NAME,
   READY_TO_CONNECT,
@@ -8,30 +9,27 @@ export enum Message {
   DISCONNECT_STREAM,
   STOP_SCREEN_SHARE,
   ADD_CHAT_MESSAGE,
-  
-  // Server
-  SEND_ROOM_DATA,
-
-  // ***** GAME ROOM *****
-  // Client
-  UPDATE_GAME_PLAY,
-  // Server
-  SEND_GAME_PLAYERS,
 
   // ***** RAIN GAME *****  
-  RAIN_GAME_USER,
-  RAIN_GAME_START,
-  RAIN_GAME_WORD, 
-  RAIN_GAME_READY,
- 
+  RAIN_GAME_USER_C,
+  RAIN_GAME_USER_S,
+  RAIN_GAME_START_C,
+  RAIN_GAME_START_S,
+  RAIN_GAME_WORD_C,
+  RAIN_GAME_WORD_S, 
+  RAIN_GAME_READY_C,
+  RAIN_GAME_READY_S, 
+  RAIN_GAME_HEART_C,
+  RAIN_GAME_HEART_S,
 
   // ***** Brick Game *****
   // Client
-  // BRICK_GAME_READY,  // 플레이어 준비 상태 한번 더 확인?
   BRICK_GAME_COMMAND,
+  BRICK_GAME_START,
   // Server
-  BRICK_GAME_ERROR,
+  BRICK_GAME_PLAYERS,
   BRICK_GAME_STATE,
+  BRICK_GAME_ERROR,
   BRICK_PLAYER_UPDATE,
   
   // ***** MOLE GAME *****
@@ -43,6 +41,9 @@ export enum Message {
   RESPONSE_MOLE,
   SEND_HOST,
   RECEIVE_HOST,
+  SEND_MY_LIFE,
+  RECEIVE_YOUR_LIFE,
+  CLEAR_FRIEND,
 
   // ***** NOT USED *****
   // CONNECT_TO_MOLEGAME,

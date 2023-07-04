@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import {
+  setNewMessage,
   setReceiverName,
   setRoomId,
   setShowDMList,
@@ -15,7 +16,7 @@ import {
 } from '../../apicalls/DM/DM';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
-import DefaultAvatar from '../../images/logo.png'
+import DefaultAvatar from '../../images/login/Lucy_login.png'
 
 /* DM목록을 불러온다.  */
 export const ConversationList = () => {
@@ -23,22 +24,21 @@ export const ConversationList = () => {
   const dispatch = useAppDispatch();
   const username = useAppSelector((state) => state.user.username);
   useEffect(() => {
-    console.log('내 아이디 기준으로 방 목록 가져옴. 방 목록 데이터:')
+    console.log('방가져온다',username)
     fetchRoomList(username)
     .then((data) => {
-      console.log(data)
         setRooms(data);
     });
   }, []);
 
   useEffect(() => {
-    console.log('방 목록 불러옴', rooms); // 🐱
+    console.log('방 목록 불러옴', rooms);
   }, [rooms]);
 
-const handleClick = async (room) => {
-  console.log(room, '방 클릭')
-  dispatch(setReceiverName(room.receiverName));
+const handleClick = (room) => {
+  dispatch(setReceiverName(room.receiverName == username ? room.senderName : room.receiverName));
   dispatch(setRoomId(room.roomId));
+  console.log('룸아이디설정',room.roomId)
   dispatch(setShowDMRoom(true))
 }
 return (
@@ -59,29 +59,25 @@ return (
         {rooms.length !== 0 ? (
           rooms.map((room) => {
             return (
-              <ListTag
+            <ListTag
                 key={room._id}
                 onClick={() => {
                   dispatch(setShowDMList(false))
                   handleClick(room);
                 }}
               >
-                <ProfileAvatarImage
-                  src={DefaultAvatar}
-                  alt={room.receiverName}
-                />
                 <UserNamewithLastMessage>
-                  <UserName>{room.receiverName}</UserName>
+                  <UserName>{room.senderName}</UserName>
                     <LastMessage>
                       {room.message}
                     </LastMessage>
                 </UserNamewithLastMessage>
               </ListTag>
-            );
+              )
           })
         ) : (
           <>
-            <NoDMMessage> <strong>아직 대화방이 없어요</strong><br></br> </NoDMMessage>
+            <NoDMMessage> <strong>📭 아직 대화방이 없어요</strong><br></br><br></br><br></br> </NoDMMessage>
             <NoDMMessage> <strong>다른 플레이어와 개인대화를 시작해보세요!</strong><br></br> </NoDMMessage>
           </>
         )}
@@ -90,13 +86,6 @@ return (
     </Backdrop>
   );
 };
-
-
-const ProfileAvatarImage = styled.img`
-  width: 50px;
-  height: 50px;
-  border-radius: 100%;
-`;
 
 const ListTag = styled.li`
   width: 335px;

@@ -257,6 +257,7 @@ export default function JoinDialog() {
               autoFocus
               fullWidth
               label="아이디"
+              autoComplete="off"
               variant="outlined"
               color="secondary"
               margin="dense"
@@ -281,6 +282,7 @@ export default function JoinDialog() {
                 id="outlined-adornment-password"
                 label="비밀번호"
                 type={showPassword ? 'text' : 'password'}
+                autoComplete="new-password"
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
@@ -335,6 +337,7 @@ export default function JoinDialog() {
             <TextField
               fullWidth
               label="닉네임"
+              autoComplete="off"
               variant="outlined"
               color="secondary"
               margin="dense"

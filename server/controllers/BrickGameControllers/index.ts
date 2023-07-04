@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import BrickGame from '../../models/BrickGame'
 import BrickGamePoint from '../../models/BrickGamePoint'
 
-const ProblemTypes = [
+const ProblemList = [
     {
         quizId: 1,
         quizType: 'same',
@@ -190,8 +190,8 @@ const ExtraPoints = [
     },
 ]
 
-// export async function insertProblemTypes() {
-//     BrickGame.insertMany(ProblemTypes)
+// export async function insertProblemList() {
+//     BrickGame.insertMany(ProblemList)
 //     .then(() => {
 //         console.log('Data inserted successfully')
 //     })

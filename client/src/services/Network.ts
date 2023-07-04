@@ -3,7 +3,7 @@ import { IOfficeState, IPlayer } from '../../../types/IOfficeState'
 import { Message } from '../../../types/Messages'
 import { IRoomData, RoomType } from '../../../types/Rooms'
 import { ItemType } from '../../../types/Items'
-import WebRTC from '../web/WebRTC'
+// import WebRTC from '../web/WebRTC'
 import { phaserEvents, Event } from '../events/EventCenter'
 import store from '../stores'
 import { setSessionId, setPlayerNameMap, removePlayerNameMap, setGameSessionId } from '../stores/UserStore'
@@ -13,7 +13,7 @@ import {
   setAvailableRooms,
   addAvailableRooms,
   removeAvailableRooms,
-  setRoomPlayers,
+  setMainPlayers,
 } from '../stores/RoomStore'
 import {
   pushChatMessage,
@@ -25,7 +25,7 @@ export default class Network {
   private client: Client
   private lobby!: Room
   private room?: Room<IOfficeState>
-  webRTC?: WebRTC
+  // webRTC?: WebRTC
   mySessionId!: string
 
   constructor() {
@@ -42,7 +42,7 @@ export default class Network {
     
     phaserEvents.on(Event.MY_PLAYER_NAME_CHANGE, this.updatePlayerName, this)
     phaserEvents.on(Event.MY_PLAYER_TEXTURE_CHANGE, this.updatePlayer, this)
-    phaserEvents.on(Event.PLAYER_DISCONNECTED, this.playerStreamDisconnect, this)
+    // phaserEvents.on(Event.PLAYER_DISCONNECTED, this.playerStreamDisconnect, this)
   }
 
   async leaveRoom() {
@@ -106,7 +106,7 @@ export default class Network {
     store.dispatch(setLobbyJoined(false))
     this.mySessionId = this.room.sessionId
     store.dispatch(setSessionId(this.room.sessionId)) 
-    this.webRTC = new WebRTC(this.mySessionId, this)
+    // this.webRTC = new WebRTC(this.mySessionId, this)
 
     // new instance added to the players MapSchema
     this.room.state.players.onAdd = (player: IPlayer, key: string) => {
@@ -132,8 +132,8 @@ export default class Network {
     // an instance removed from the players MapSchema
     this.room.state.players.onRemove = (player: IPlayer, key: string) => {
       phaserEvents.emit(Event.PLAYER_LEFT, key)
-      this.webRTC?.deleteVideoStream(key)
-      this.webRTC?.deleteOnCalledVideoStream(key)
+      // this.webRTC?.deleteVideoStream(key)
+      // this.webRTC?.deleteOnCalledVideoStream(key)
       store.dispatch(pushPlayerLeftMessage(player.name))
       store.dispatch(removePlayerNameMap(key))
     }
@@ -171,17 +171,6 @@ export default class Network {
     //   }
     // }
 
-    // new instance added to the facechats MapSchema
-    // this.room.state.faceChats.onAdd = (facechat: IFaceChat, key: string) => {
-    //   // track changes on every child object's connectedUser
-    //   facechat.connectedUser.onAdd = (item, index) => {
-    //     phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.FACECHAT)
-    //   }
-    //   facechat.connectedUser.onRemove = (item, index) => {
-    //     phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.FACECHAT)
-    //   }
-    // }
-
     // new instance added to the chatMessages ArraySchema
     this.room.state.chatMessages.onAdd = (item, index) => {
       store.dispatch(pushChatMessage(item))
@@ -198,16 +187,16 @@ export default class Network {
     })
 
     // when a peer disconnects with myPeer
-    this.room.onMessage(Message.DISCONNECT_STREAM, (clientId: string) => {
-      this.webRTC?.deleteOnCalledVideoStream(clientId)
-    })
+    // this.room.onMessage(Message.DISCONNECT_STREAM, (clientId: string) => {
+    //   this.webRTC?.deleteOnCalledVideoStream(clientId)
+    // })
 
     this.room.onStateChange((state) => {
       const players: any = [];
       this.room?.state.players.forEach((value) => {
         players.push(value);
       });
-      store.dispatch(setRoomPlayers(players));
+      store.dispatch(setMainPlayers(players));
     });
   }
 
@@ -248,9 +237,9 @@ export default class Network {
   }
 
   // method to register event listener and call back function when my video is connected
-  onMyPlayerVideoConnected(callback: (key: string) => void, context?: any) {
-    phaserEvents.on(Event.MY_PLAYER_VIDEO_CONNECTED, callback, context)
-  }
+  // onMyPlayerVideoConnected(callback: (key: string) => void, context?: any) {
+  //   phaserEvents.on(Event.MY_PLAYER_VIDEO_CONNECTED, callback, context)
+  // }
 
   // method to register event listener and call back function when a player updated
   onPlayerUpdated(
@@ -277,16 +266,16 @@ export default class Network {
   }
 
   // method to send ready-to-connect signal to Colyseus server
-  videoConnected() {
-    this.room?.send(Message.VIDEO_CONNECTED)
-    phaserEvents.emit(Event.MY_PLAYER_VIDEO_CONNECTED)
-  }
+  // videoConnected() {
+  //   this.room?.send(Message.VIDEO_CONNECTED)
+  //   phaserEvents.emit(Event.MY_PLAYER_VIDEO_CONNECTED)
+  // }
 
   // method to send stream-disconnection signal to Colyseus server
-  playerStreamDisconnect(id: string) {
-    this.room?.send(Message.DISCONNECT_STREAM, { clientId: id })
-    this.webRTC?.deleteVideoStream(id)
-  }
+  // playerStreamDisconnect(id: string) {
+  //   this.room?.send(Message.DISCONNECT_STREAM, { clientId: id })
+  //   this.webRTC?.deleteVideoStream(id)
+  // }
   
   addChatMessage(content: string) {
     this.room?.send(Message.ADD_CHAT_MESSAGE, { content: content })

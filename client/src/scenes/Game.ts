@@ -3,14 +3,14 @@ import Phaser from 'phaser'
 // import { debugDraw } from '../utils/debug'
 import Network from '../services/Network'
 import DMNetwork from '../services/DMNetwork'
-// import GameNetwork from '../services/GameNetwork'
 
 import Item from '../items/Item'
 import Chair from '../items/Chair'
 import MoleGame from '../items/MoleGame'
 import BrickGame from '../items/BrickGame'
 import RainGame from '../items/RainGame'
-import FaceChat from '../items/FaceChat'
+import RankingBoard from '../items/RankingBoard'
+// import FaceChat from '../items/FaceChat'
 import { ItemType } from '../../../types/Items'
 
 import '../players/MyPlayer'
@@ -23,9 +23,10 @@ import { PlayerBehavior } from '../../../types/PlayerBehavior'
 import { createCharacterAnims } from '../anims/CharacterAnims'
 
 import store from '../stores'
-import { setFocused, setShowChat } from '../stores/ChatStore'
+import { setFocused } from '../stores/ChatStore'
 import { setShowDMList, setShowDMRoom } from '../stores/DMStore'
 import { NavKeys, Keyboard } from '../../../types/KeyboardState'
+import { HELPER_STATUS, setHelperStatus } from '../stores/UserStore'
 
 export default class Game extends Phaser.Scene {
   network!: Network
@@ -41,7 +42,8 @@ export default class Game extends Phaser.Scene {
   private brickgameMap = new Map<String, BrickGame>()
   private molegameMap = new Map<String, MoleGame>()
   private raingameMap = new Map<string, RainGame>()
-  facechatMap = new Map<String, FaceChat>()
+  private rankingboardMap = new Map<String, RankingBoard>()
+  // facechatMap = new Map<String, FaceChat>()
 
   constructor() {
     super('game')
@@ -58,13 +60,12 @@ export default class Game extends Phaser.Scene {
     this.keyR = this.input.keyboard.addKey('R')
     this.input.keyboard.disableGlobalCapture()
     this.input.keyboard.on('keydown-ENTER', (event) => {
-      store.dispatch(setShowChat(true))
+      store.dispatch(setHelperStatus(HELPER_STATUS.CHAT))
       store.dispatch(setFocused(true))
     })
     this.input.keyboard.on('keydown-ESC', (event) => {
-      store.dispatch(setShowChat(false))
+      store.dispatch(setHelperStatus(HELPER_STATUS.NONE))
       store.dispatch(setShowDMRoom(false))
-      // store.dispatch(setShowDMRoom(false))
       store.dispatch(setShowDMList(false))
     })
   }
@@ -89,7 +90,6 @@ export default class Game extends Phaser.Scene {
     } else {
       this.dmNetwork = data.dmNetwork
     }
-
 
     createCharacterAnims(this.anims)
 
@@ -143,7 +143,6 @@ export default class Game extends Phaser.Scene {
     console.log('game scene created')
     console.log('set my player initial setting ', this.myPlayer)
 
-
     const chairs = this.physics.add.staticGroup({ classType: Chair })
     const chairLayer = this.map.getObjectLayer('chair')
     chairLayer.objects.forEach((Obj) => {
@@ -159,7 +158,7 @@ export default class Game extends Phaser.Scene {
       const item = this.addObjectFromTiled(brickgames, obj, 'picnic2', 'picnic2') as BrickGame
       // item.setDepth(item.y + item.height * 0.27)
       const id = `${i}`
-      // item.id = id   // TODO: 나중에 아이템 별로 지정된 별도의 방에 들어가게 하기 위해 필요 
+      // item.id = id   // TODO: 나중에 아이템 별로 지정된 별도의 방에 들어가게 하기 위해 필요
       this.brickgameMap.set(id, item)
     })
 
@@ -183,15 +182,24 @@ export default class Game extends Phaser.Scene {
       this.molegameMap.set(id, item)
     })
 
-    /* Face Chat */
-    const facechats = this.physics.add.staticGroup({ classType: FaceChat })
-    const facechatLayer = this.map.getObjectLayer('facechat')
-    facechatLayer.objects.forEach((obj, i) => {
-      const item = this.addObjectFromTiled(facechats, obj, 'bench', 'bench') as FaceChat
+    /* Ranking Board */
+    const rankingboards = this.physics.add.staticGroup({ classType: RankingBoard })
+    const rankingboardLayer = this.map.getObjectLayer('rankingboard')
+    rankingboardLayer.objects.forEach((obj, i) => {
+      const item = this.addObjectFromTiled(rankingboards, obj, 'billboard', 'billboard') as RankingBoard
       const id = `${i}`
-      item.faceChatId = id
-      this.facechatMap.set(id, item)
+      item.id = id
+      this.rankingboardMap.set(id, item)
     })
+    /* Face Chat */
+    // const facechats = this.physics.add.staticGroup({ classType: FaceChat })
+    // const facechatLayer = this.map.getObjectLayer('facechat')
+    // facechatLayer.objects.forEach((obj, i) => {
+    //   const item = this.addObjectFromTiled(facechats, obj, 'bench', 'bench') as FaceChat
+    //   const id = `${i}`
+    //   item.faceChatId = id
+    //   this.facechatMap.set(id, item)
+    // })
 
     // ************************************** (codeEat) //
 
@@ -212,7 +220,7 @@ export default class Game extends Phaser.Scene {
 
     this.physics.add.overlap(
       this.playerSelector,
-      [chairs, molegames, raingames, brickgames, facechats],
+      [chairs, molegames, raingames, brickgames, rankingboards],
       this.handleItemSelectorOverlap,
       undefined,
       this
@@ -230,7 +238,7 @@ export default class Game extends Phaser.Scene {
     this.network.onPlayerJoined(this.handlePlayerJoined, this)
     this.network.onPlayerLeft(this.handlePlayerLeft, this)
     this.network.onMyPlayerReady(this.handleMyPlayerReady, this)
-    this.network.onMyPlayerVideoConnected(this.handleMyVideoConnected, this)
+    // this.network.onMyPlayerVideoConnected(this.handleMyVideoConnected, this)
     this.network.onPlayerUpdated(this.handlePlayerUpdated, this)
     this.network.onItemUserAdded(this.handleItemUserAdded, this)
     this.network.onItemUserRemoved(this.handleItemUserRemoved, this)
@@ -289,13 +297,7 @@ export default class Game extends Phaser.Scene {
 
   // function to add new player to the otherPlayer group
   private handlePlayerJoined(newPlayer: IPlayer, id: string) {
-    const otherPlayer = this.add.otherPlayer(
-      newPlayer.x,
-      newPlayer.y,
-      'noah',
-      id,
-      newPlayer.name,
-      )
+    const otherPlayer = this.add.otherPlayer(newPlayer.x, newPlayer.y, 'noah', id, newPlayer.name)
     this.otherPlayers.add(otherPlayer)
     this.otherPlayerMap.set(id, otherPlayer)
   }
@@ -325,7 +327,7 @@ export default class Game extends Phaser.Scene {
   }
 
   private handlePlayersOverlap(myPlayer, otherPlayer) {
-    otherPlayer.makeCall(myPlayer, this.network?.webRTC)
+    // otherPlayer.makeCall(myPlayer, this.network?.webRTC)
   }
 
   private handleItemUserAdded(playerId: string, itemId: string, itemType: ItemType) {
@@ -338,10 +340,14 @@ export default class Game extends Phaser.Scene {
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.addCurrentUser(playerId)
-    } else if (itemType === ItemType.FACECHAT) {
-      const facechat = this.facechatMap.get(itemId)
-      facechat?.addCurrentUser(playerId)
+    } else if (itemType === ItemType.RANKINGBOARD) {
+      const rankingboard = this.rankingboardMap.get(itemId)
+      rankingboard?.addCurrentUser(playerId)
     }
+    // else if (itemType === ItemType.FACECHAT) {
+    //   const facechat = this.facechatMap.get(itemId)
+    //   facechat?.addCurrentUser(playerId)
+    // }
   }
 
   private handleItemUserRemoved(playerId: string, itemId: string, itemType: ItemType) {
@@ -354,10 +360,14 @@ export default class Game extends Phaser.Scene {
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.removeCurrentUser(playerId)
-    } else if (itemType === ItemType.FACECHAT) {
-      const facechat = this.facechatMap.get(itemId)
-      facechat?.removeCurrentUser(playerId)
+    } else if (itemType === ItemType.RANKINGBOARD) {
+      const rankingboard = this.rankingboardMap.get(itemId)
+      rankingboard?.addCurrentUser(playerId)
     }
+    // else if (itemType === ItemType.FACECHAT) {
+    //   const facechat = this.facechatMap.get(itemId)
+    //   facechat?.removeCurrentUser(playerId)
+    // }
   }
 
   private handleChatMessageAdded(playerId: string, content: string) {

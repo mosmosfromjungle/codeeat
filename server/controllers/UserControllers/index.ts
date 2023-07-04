@@ -102,8 +102,10 @@ export const signUp = async (req: Request, res: Response) => {
         userProfile: {
             character: user.character,
             userLevel: 0,
-            contactGit: '',
-            contactEmail: '',
+            currentExp: 0,
+            requiredExp: getRequiredExp(0),
+            grade: '',
+            school: '',
             profileMessage: '',
         },
         createdAt: new Date(),
@@ -220,8 +222,10 @@ export const myProfile = async (req: CustomRequest, res: Response) => {
                 username: foundUser.username,
                 character: foundUser.userProfile.character,
                 userLevel: foundUser.userProfile.userLevel,
-                contactGit: foundUser.userProfile.contactGit,
-                contactEmail: foundUser.userProfile.contactEmail,
+                currentExp: foundUser.userProfile.currentExp,
+                requiredExp: foundUser.userProfile.requiredExp,
+                grade: foundUser.userProfile.grade,
+                school: foundUser.userProfile.school,
                 profileMessage: foundUser.userProfile.profileMessage,
             }
         })
@@ -244,19 +248,9 @@ export const updateProfile = async (req: CustomRequest, res: Response) => {
         message: '유저 데이터 조회 실패'
     })
 
-    // 프로필 수정시에는 username을 변경하지 않기 때문에 오류가 발생하여 주석처리 했습니다.
-    // const existingUsername = await User.findOne({ username: newUserData.username })
-    // if (existingUsername) {
-    //     return res.status(410).json({
-    //         status: 410,
-    //         message: '이미 사용중인 닉네임입니다.'
-    //     })
-    // }
-
-    foundUser.username = newUserData.username
-    foundUser.userProfile!.character = newUserData.character
-    foundUser.userProfile!.contactGit = newUserData.contactGit
-    foundUser.userProfile!.contactEmail = newUserData.contactEmail
+    // foundUser.userProfile!.character = newUserData.character
+    foundUser.userProfile!.grade = newUserData.grade
+    foundUser.userProfile!.school = newUserData.school
     foundUser.userProfile!.profileMessage = newUserData.profileMessage
 
     const updateUser = await foundUser.save()
@@ -378,7 +372,7 @@ export const authenticateUser = async (req: CustomRequest, res: Response) => {
 
 /* 닉네임 기반 유저 정보 조회 */
 export const userProfile = async (req: Request, res: Response) => {
-    const foundUser = await User.collection.findOne({ userId: req.params.username })
+    const foundUser = await User.collection.findOne({ username: req.params.username })
     
     if (foundUser) {
         return res.status(200).json({
@@ -387,8 +381,10 @@ export const userProfile = async (req: Request, res: Response) => {
                 username: foundUser.username,
                 character: foundUser.userProfile.character,
                 userLevel: foundUser.userProfile.userLevel,
-                contactGit: foundUser.userProfile.contactGit,
-                contactEmail: foundUser.userProfile.contactEmail,
+                currentExp: foundUser.userProfile.currentExp,
+                requiredExp: foundUser.userProfile.requiredExp,
+                grade: foundUser.userProfile.grade,
+                school: foundUser.userProfile.school,
                 profileMessage: foundUser.userProfile.profileMessage,
             }
         })
@@ -399,3 +395,81 @@ export const userProfile = async (req: Request, res: Response) => {
         message: '유저 데이터 조회 실패'
     })
 }
+
+/* 유저 경험치 추가 */
+export const gainExp = async (req: CustomRequest, res: Response) => {
+    // const decoded = req.decoded
+    // if (!decoded) return res.status(405).json(AUTH_ERROR)
+    // const foundUser = await User.collection.findOne({ userId: decoded.userId })
+    const foundUser = await User.collection.findOne({ userId: req.body.username })
+    if (!foundUser) return res.status(404).json({ message: '유저 데이터 조회 실패' })
+
+    const oldUserLevel = foundUser.userProfile.userLevel
+    const oldUserExp = foundUser.userProfile.currentExp
+    const oldRequiredExp = foundUser.userProfile.requiredExp
+
+    foundUser.userProfile.currentExp += req.body.exp
+
+    let levelUp = 0
+    while (foundUser.userProfile.currentExp >= foundUser.userProfile.requiredExp) {
+        levelUp += 1
+        foundUser.userProfile.userLevel += 1
+        foundUser.userProfile.currentExp -= foundUser.userProfile.requiredExp
+        foundUser.userProfile.requiredExp = getRequiredExp(foundUser.userProfile.userLevel)
+    }
+
+    const updateUser = await foundUser.save()
+
+    if (!updateUser) return res.status(500).json({ message: '정보 변경 실패' })
+
+    return res.status(200).json({
+        status: 200,
+        payload: {
+            levelUp: levelUp,
+            oldUserLevel: oldUserLevel,
+            oldUserExp: oldUserExp,
+            oldRequiredExp: oldRequiredExp,
+            newUserLevel: foundUser.userProfile.userLevel,
+            newUserExp: foundUser.userProfile.currentExp,
+            newRequiredExp: foundUser.userProfile.requiredExp,
+        }
+    })
+}
+
+function getRequiredExp(level: number) {
+    return 10 + (level * 5)
+}
+
+export const getUserRankingsList = async (req: CustomRequest, res: Response) => {
+  try {
+    const users = await User.find()
+      .sort({ 'userProfile.userLevel': -1, 'userProfile.currentExp': -1 })
+      .limit(10)
+      .lean()
+      .exec()
+
+    const findUsersRanking = users.map((user) => ({
+      username: user.username,
+      character: user.userProfile.character,
+      userLevel: user.userProfile.userLevel,
+      currentExp: user.userProfile.currentExp,
+      profileMessage: user.userProfile.profileMessage,
+    }))
+    console.log(findUsersRanking)
+
+    res.status(200).json({ findUsersRanking })
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({
+      status: 500,
+      message: '유저 랭킹 조회 실패',
+    })
+  }
+}
+
+
+
+
+
+
+

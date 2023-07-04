@@ -3,9 +3,10 @@ import { AxiosResponse } from 'axios';
 import phaserGame from '../../PhaserGame';
 import Game from '../../scenes/Game'
 
-export const checkIfFirst = async (body: any) => {
+export const checkIfFirst = async (body: {senderName: string; receiverName: string}) => {
   try{
     const response = axios.post(`/lastdm/checkIfFirst`, body)
+    console.log(body)
     return response;
   } catch(err) {
     console.error(err)
@@ -21,9 +22,9 @@ export const fetchRoomList = async (username: string): Promise<any> => {
     console.error(error);
   }
 };
-export const insertLastDM = async (body: {senderName: string; receiverName: string; message: string}) => {
+export const getRoomId = async (body: {myName: string, targetName: string}) => {
   try {
-    const response = await axios.post(`/lastdm/injectLastDM`, body);
+    const response = await axios.post(`/lastdm/getRoom`, body);
     return response.data;
   } catch(err) {
     console.error(err)
@@ -43,8 +44,4 @@ export interface RoomListResponse {
   message: string;
   roomId: string;
   updatedAt: Date | null;
-}
-export interface FetchChattingRequest {
-  roomId: number;
-  cursor: number | null;
 }

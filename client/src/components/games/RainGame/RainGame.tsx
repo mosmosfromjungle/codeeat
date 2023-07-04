@@ -1,9 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
-import rain_Background from '../../../../public/assets/game/RainGame/blackboard.png'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
 import Bootstrap from '../../../scenes/Bootstrap'
 import phaserGame from '../../../PhaserGame'
-import { setRainGameMyState, setRainGameYouState} from '../../../stores/RainGameStore'
+import TextField from '@mui/material/TextField'
+import { 
+  CharacterArea, NameArea, Position, 
+  TimerArea, GameArea, Left, Right, PointArea, FriendPoint, MyPoint, 
+  InputArea, PlayArea, Comment, 
+} from './RainGameStyle'
+import eraser from '/assets/game/RainGame/eraser.png'
+import debounce from 'lodash/debounce';
 
 interface KeywordRain {
   y: number
@@ -16,22 +22,38 @@ interface KeywordRain {
   // multifly: boolean,
 }
 
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 export function RainGame() {
+
+  const initialState = useAppSelector((state) => state.raingame)
+  const canvasHeight = 50
+  const lineHeight = canvasHeight + 550
   const dispatch = useAppDispatch()
   const keywordInput = useRef<HTMLInputElement>(null)
-  const canvasHeight = 1000
-  const lineHeight = canvasHeight - 500
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
   const [time, setTime] = useState(100)
-  const [point, setPoint] = useState<number>(0)
   const host = useAppSelector((state) => state.raingame.host)
+  const sessionId = useAppSelector((state) => state.user.gameSessionId)
+
+  // My information
   const username = useAppSelector((state) => state.user.username)
+  const character = useAppSelector((state) => state.user.character)
+  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`;
+  
+  // Friend information
+  const you = useAppSelector((state) => state.raingame.you)
+  const friendimgpath = `/assets/character/single/${capitalizeFirstLetter(you.character)}_idle_anim_19.png`;
+
   const [myGame, setMyGame] = useState<KeywordRain[]>([])
   const [youGame, setYouGame] = useState<KeywordRain[]>([])
-  const myState = useAppSelector((state) => state.raingame.myState)
-  const youState = useAppSelector((state) => state.raingame.youState)
-  const me = useAppSelector((state) => state.raingame.me)
-  const you = useAppSelector((state) => state.raingame.you)
+  const [myState, setMyState] = useState({ heart: initialState.myState.heart, point: initialState.myState.point })
+  const [youState, setYouState] = useState({ heart: initialState.youState.heart, point: initialState.youState.point})
+  const targetword = useAppSelector((state) => state.raingame.words);
+  const targetwordRef = useRef(targetword);
+  const [dheart, setDheart] = useState(false);
 
   const Awords = [
     { y: 0, speed: 1, keyword: 'abs', x: 331 },
@@ -97,17 +119,27 @@ export function RainGame() {
     { y: 0, speed: 1.4, keyword: 'kite', x: 317 },
     { y: 0, speed: 1.5, keyword: 'jazz', x: 217 },
   ]
-  if (username === host) {
-  }
+
 
   useEffect(() => {
+    setMyState({ heart: initialState.myState.heart, point: initialState.myState.point });
+    setDheart(false);
+    setYouState({ heart: initialState.youState.heart, point: initialState.youState.point });
+  }, [initialState]);
+
+  useEffect(() => {
+    targetwordRef.current = targetword;
+  }, [targetword]);
+
+  useEffect(() => {
+ 
     let currentWordIndex = 0
-    const words = username === host ? Awords : Bwords
+    const mywords = username === host ? Awords : Bwords
     const youWords = username === host ? Bwords : Awords
 
     const createWordsInterval = setInterval(() => {
-      if (currentWordIndex < words.length) {
-        const myKeyword = words[currentWordIndex]
+      if (currentWordIndex < mywords.length) {
+        const myKeyword = mywords[currentWordIndex]
         const youKeyword = youWords[currentWordIndex]
 
         setMyGame((myGame) => [
@@ -134,25 +166,43 @@ export function RainGame() {
       }
     }, 2000)
 
+    // 데바운싱 적용
+    const debouncedDecreaseHeart = debounce(() => {
+      bootstrap.gameNetwork.decreaseHeart(sessionId);
+    }, 300);
+
     // 내 단어 위치 업데이트
     const updateMyWordsInterval = setInterval(() => {
       setMyGame((game) =>
-        game.map((item) => {
-          const newY = item.y + item.speed
-          return { ...item, y: newY }
-        })
-      )
-    }, 30)
+        game.reduce((newGame, item) => {
+          const newY = item.y + item.speed;
+
+          if (newY >= lineHeight && !dheart) {
+            console.log("하트 관련 상태변경 송신")
+            debouncedDecreaseHeart();
+            setDheart(true)
+          } else{
+          newGame.push({ ...item, y: newY });
+        }
+        return newGame
+      }, [])
+      );
+    }, 100);
 
     // 상대방 단어 위치 업데이트
     const updateYouWordsInterval = setInterval(() => {
       setYouGame((game) =>
-        game.map((item) => {
-          const newY = item.y + item.speed
-          return { ...item, y: newY }
-        })
-      )
-    }, 30)
+        game.reduce((newGame, item) => {
+          const newY = item.y + item.speed;
+
+          if(targetwordRef.current.length > 0 && targetwordRef.current === item.keyword) {
+          } else if (newY < lineHeight) {
+            newGame.push({ ...item, y: newY });
+          } 
+          return newGame
+        }, [])
+      );
+    }, 100)
 
     const timeInterval = setInterval(() => {
       setTime((prevTime) => Math.max(prevTime - 1, 0))
@@ -160,12 +210,10 @@ export function RainGame() {
 
     return () => {
       clearInterval(timeInterval)
-
       clearInterval(createWordsInterval)
       clearInterval(updateMyWordsInterval)
       clearInterval(updateYouWordsInterval)
-      bootstrap.gameNetwork.room.removeAllListeners()
-
+      // bootstrap.gameNetwork.room.removeAllListeners()
     }
   }, [])
 
@@ -175,53 +223,56 @@ export function RainGame() {
       const isMyWord = myGame.some((word) => word.keyword === inputKeyword)
       if (isMyWord) {
         setMyGame((prevGame) => prevGame.filter((word) => word.keyword !== inputKeyword))
-        setPoint((prevPoint) => prevPoint + 1)
+        console.log("입력 단어 전송:",inputKeyword)
+        bootstrap.gameNetwork.removeWord(inputKeyword,sessionId,initialState )
+      } else{
+        /* for 지원 : 입력이 틀렸을 때 로직 넣는 곳 */  
       }
       keywordInput.current.value = ''
     }
   }
 
+  // 친구 목숨, 내 목숨 표시
+
+  let friendLifeElements = [];
+  let myLifeElements = [];
+
+  for (let i = 0; i < youState.heart; i++) {
+    friendLifeElements.push(
+      <img src={ eraser } width="50px" style={{ margin: '5px' }}></img>
+    );
+  }
+
+  for (let i = 0; i < myState.heart; i++) {
+    myLifeElements.push(
+      <img src={ eraser } width="50px" style={{ margin: '5px' }}></img>
+    );
+  }
+
   return (
     <>
-      {/* Time Section */}
-      <div
-        id="timer"
-        style={{
-          position: 'absolute',
-          top: '10px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          fontSize: '20px',
-          zIndex: 1,
-          backgroundColor: 'rgba(0,0,0,0.5)',
-          padding: '10px',
-          borderRadius: '5px',
-          color: '#fff',
-        }}
-      >
-        {String(time).padStart(3, '0')}
-      </div>
+      <GameArea>
+        <TimerArea>
+          { time < 16 ?
+            (
+              <>
+                <div id="timer" style={{ color: 'red' }}>
+                  {String(time).padStart(3, '0')}
+                </div>
+              </>
+            )
+          :
+            (
+              <>
+                <div id="timer">
+                  {String(time).padStart(3, '0')}
+                </div>
+              </>
+            )
+          }
+        </TimerArea>
 
-      {/* Game Section */}
-      <div
-        style={{
-          display: 'flex',
-          position: 'relative',
-          height: 'calc(75vh - 6px)',
-        }}
-      >
-        {/* Left Side (상대편) */}
-        <div
-          style={{
-            width: '50vw',
-            backgroundImage: `url(${rain_Background})`,
-            backgroundSize: '100%',
-            backgroundRepeat: 'no-repeat',
-            position: 'relative',
-            overflow: 'hidden',
-            textAlign: 'center',
-          }}
-        >
+        <Left>
           {youGame.map((word, index) => (
             <h5
               key={index}
@@ -238,90 +289,79 @@ export function RainGame() {
               {word.keyword}
             </h5>
           ))}
-        </div>
+        </Left>
 
-        {/* Right Side (내것) */}
-        <div
-          style={{
-            width: '40%',
-            backgroundImage: `url(${rain_Background})`,
-            backgroundSize: '100%',
-            backgroundRepeat: 'no-repeat',
-            position: 'relative',
-            overflow: 'hidden',
-            textAlign: 'center',
-          }}
-        >
-          {myGame.map((word, index) => (
-            <h5
-              key={index}
-              style={{
-                position: 'absolute',
-                fontSize: '1.4vw',
-                letterSpacing: '0.3vw',
-                top: `${word.y}px`,
-                left: `${word.x + 250}px`,
-                color: '#FFFFFF',
-                zIndex: 2,
-              }}
-            >
-              {word.keyword}
-            </h5>
-          ))}
-        </div>
-      </div>
+        <Right>
+            {myGame.map((word, index) => (
+              <h5
+                key={index}
+                style={{
+                  position: 'absolute',
+                  fontSize: '1.4vw',
+                  letterSpacing: '0.3vw',
+                  top: `${word.y}px`,
+                  left: `${word.x + 120}px`,
+                  color: '#FFFFFF',
+                  zIndex: 2,
+                }}
+              >
+                {word.keyword}
+              </h5>
+            ))}
+        </Right>
+      </GameArea>
 
-      {/* Input Section - Text Field and Button */}
-      <div style={{ flex: 1, textAlign: 'center' }}>
-        <input
-          ref={keywordInput}
-          placeholder="text"
-          onKeyPress={(e) => keydown(e.charCode)}
-          style={{ marginRight: '1vw', fontSize: '1vw' }}
-        />
-        <button
-          onClick={() => keydown(13)}
-          style={{
-            fontSize: '1vw',
-            marginBottom: '3vw',
-            padding: '0.5vw 1vw',
-            fontWeight: 'bold',
-          }}
-        >
-          입력
-        </button>
-      </div>
+      <PointArea>
+        <FriendPoint>
+          <CharacterArea>
+            <img src={ friendimgpath } width="60px" id="friend-character"></img>
+          </CharacterArea>
+          <NameArea>
+            친구 [{you.username.toUpperCase()}] <br/>
+            { friendLifeElements }
+          </NameArea>
+        </FriendPoint>
 
-      {/* Points and Hearts */}
-      <div
-        style={{
-          display: 'flex',
-          fontSize: '1vw',
-          position: 'absolute',
-          bottom: '0',
-          left: '0',
-          right: '0',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: '0 20px',
-        }}
-      >
-        {/* Left Side - Opponent's Info */}
-        <div style={{ textAlign: 'left' }}>
-          <div style={{ fontSize: '1.2vw', fontWeight: 'bold' }}>{you.character}</div>
-          <div style={{ marginBottom: '4px' }}>이름: {you.username}</div>
-          <div>점수: {youState.point}</div>
-          <div>하트: {youState.heart}</div>
-        </div>
+        <PlayArea>
+          
+        </PlayArea>
 
-        {/* Right Side - My Info */}
-        <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: '1.2vw', fontWeight: 'bold' }}>{me.character}</div>
-          <div style={{ marginBottom: '4px' }}>이름: {me.username}</div>
-          <div>점수: {myState.point}</div>
-          <div>하트: {myState.heart}</div>
-        </div>
-      </div>
+        <InputArea>
+          <Position>
+            { youState.point }:{ myState.point }
+          </Position>
+        </InputArea>
+
+        <PlayArea>
+          <div>
+            <Comment>
+              명령어를 입력한 후 엔터를 쳐주세요 !
+            </Comment>
+            <TextField
+                focused
+                inputRef={keywordInput}
+                onKeyPress={(e) => keydown(e.charCode)}
+                fullWidth
+                InputProps={{
+                  style: {
+                    width: '300px',
+                  },
+                }}
+            />
+            <button onClick={() => keydown(13)} style={{ display: 'none' }}></button>
+          </div>
+        </PlayArea>
+
+        <MyPoint>
+          <NameArea>
+            나 [{ username.toUpperCase() }]<br/>
+            { myLifeElements }
+          </NameArea>
+          <CharacterArea>
+            <img src={ imgpath } width="60px" id="my-character"></img>
+          </CharacterArea>
+        </MyPoint>
+      </PointArea>
     </>
   )
 }

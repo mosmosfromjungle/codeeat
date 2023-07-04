@@ -127,6 +127,69 @@ export const getMyProfile = async (): Promise<any> => {
     return null;
 };
 
+export const getUserProfile = async (username): Promise<any> => {
+  const response = await axios.get(`/auth/profile/${username}`)
+  const { data } = response
+  console.log(data)
+  if (response.status == 200) {
+    return data.payload
+  }
+
+  if (response.status === 401) {
+    const refreshToken = cookies.get('refreshToken')
+
+    if (refreshToken) {
+      const issuedResponse = await refreshAccessToken({
+        refreshToken: refreshToken,
+      })
+
+      if (!issuedResponse) {
+        logout()
+        return
+      }
+
+      const response2 = await axios.get('/auth/myprofile')
+      const { data } = response2
+      if (response2.status == 200) {
+        return data.payload
+      }
+    }
+  }
+
+  return null
+}
+
+export const getUsersRanking = async (): Promise<any> => {
+  const response = await axios.get('/auth/ranking')
+  const { data } = response
+  if (response.status == 200) {
+    return data
+  }
+
+  if (response.status === 401) {
+    const refreshToken = cookies.get('refreshToken')
+
+    if (refreshToken) {
+      const issuedResponse = await refreshAccessToken({
+        refreshToken: refreshToken,
+      })
+
+      if (!issuedResponse) {
+        logout()
+        return
+      }
+
+      const response2 = await axios.get('/auth/ranking')
+      const { data } = response2
+      if (response2.status == 200) {
+        return data.payload
+      }
+    }
+  }
+
+  return null
+}
+
 export const updateMyProfile = async (body: UpdateRequest): Promise<any> => {
     try {
         const response = await axios.patch('/auth/update', body, {
@@ -196,9 +259,9 @@ export interface LoginRequest {
 }
 
 export interface UpdateRequest {
-  username: string
-  character: string
-  contactGit: string
-  contactEmail: string
+  // username: string
+  // character: string
+  grade: string
+  school: string
   profileMessage: string
 }
