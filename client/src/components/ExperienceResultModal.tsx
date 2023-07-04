@@ -4,42 +4,67 @@ import Button from '@mui/material/Button'
 import { getMyProfile } from '../apicalls/auth'
 import ExperienceBar from './ExperienceBar'
 
-const TextDiv = styled.div`
-  margin-bottom: 10px;
-`
-const Profile = styled.div`
-  color: white;
-  width: 200px;
-  font-size: 18px;
-  font-family: Font_DungGeun;
-  text-align: left;
+const Wrapper = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #222639;
+  border-radius: 24px;
+  box-shadow: 0px 10px 24px #0000006f;
+  padding: 50px;
+  z-index: 1000;
+  color: #eee;
+  text-align: center;
+  width: 40%;
 `
 
+const Title = styled.div`
+  color: #f9f871;
+  margin: 20px;
+  font-size: 35px;
+`
+
+const Content = styled.div`
+  margin: 40px;
+  font-size: 25px;
+  font-family: Font_DungGeun;
+`
+
+const Special = styled.span`
+  color: #f9f871;
+  font-height: bold;
+`
+
+const Experience = styled.div`
+  margin: 20px;
+`
+
+const Bottom = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  Button {
+    margin-top: 20px;
+    font-size: 20px;
+    font-family: Font_DungGeun;
+  }
+`
 
 const ExperienceResultModal = ({ open, handleClose }: { open: any; handleClose: any }) => {
+  const [userName, setUserName] = useState<string>()
   const [userLevel, setUserLevel] = useState<string>()
   const [currentExp, setCurrentExp] = useState<number>()
   const [requiredExp, setRequiredExp] = useState<number>()
-  // const [userLe, setIsModalOpen] = useState<boolean>(false)
-  // const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-  // const openModal = () => {
-  //   setTimeout(() => {
-  //     setIsModalOpen(true)
-  //   }, 200)
-  // }
-
-  // const closeModal = () => {
-  //   setIsModalOpen(false)
-  // }
 
   useEffect(() => {
     ;(async () => {
       getMyProfile()
         .then((response) => {
           if (!response) return
-          const { userLevel, currentExp, requiredExp } = response
-          console.log("유저레벨"+ userLevel)
-          console.log("현재경험치" + currentExp)
+          const { username, userLevel, currentExp, requiredExp } = response
+          setUserName(username);
           setUserLevel(userLevel)
           setCurrentExp(currentExp)
           setRequiredExp(requiredExp)
@@ -50,58 +75,31 @@ const ExperienceResultModal = ({ open, handleClose }: { open: any; handleClose: 
     })()
   }, [])
 
-
   return (
-    <div
-      style={{
-        position: 'fixed',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        backgroundColor: '#222639',
-        borderRadius: '24px',
-        boxShadow: '0px, 10px, 24px, #0000006f',
-        padding: '50px',
-        zIndex: 1000,
-        fontSize: '15px',
-        color: '#eee',
-        textAlign: 'center',
-        fontFamily: 'Font_DungGeun',
-      }}
-    >
-      <div>
-        <div>
-          {/* <img
-            src={`../../public/assets/character/single/${friendCharacter}_idle_anim_19.png`}
-            alt=""
-          /> */}
-          <div>
-            <h2>Lv: {userLevel}</h2>
-            <h2>현재경험치 : {currentExp}</h2>
-            <ExperienceBar currentExperience={currentExp} experienceToNextLevel={requiredExp} />
-          </div>
-        </div>
-        {/* <>
-          <TextDiv>
-            <Profile>
-              학년: 3 <br />
-              <br />
-              학교: 3 <br />
-              <br />
-              자기소개: 3 <br />
-              <br />
-            </Profile>
-          </TextDiv>
-        </> */}
-      </div>
-      <Button
-        variant="contained"
-        onClick={handleClose}
-        style={{ fontWeight: 'bold', margin: 'auto' }}
-      >
-        확인
-      </Button>
-    </div>
+    <Wrapper>
+      <Title>
+        Game Over!
+      </Title>
+
+      <Content>
+        [{ userName }]님의 현재 레벨과 경험치입니다.<br/><br/>
+        현재 레벨 : Level <Special>{userLevel}</Special><br/>
+        현재 경험치 : <Special>{currentExp}</Special> XP<br/>
+      </Content>
+
+      <Experience>
+        <ExperienceBar currentExperience={currentExp} experienceToNextLevel={requiredExp} />
+      </Experience>
+
+      <Bottom>
+        <Button variant="contained"
+          size="large"
+          onClick={ handleClose }
+        >
+          게임 종료
+        </Button>
+      </Bottom>
+    </Wrapper>
   )
 }
 
