@@ -25,8 +25,8 @@ button {
 
 .mole{
   float: left;
-  width: 30%;
-  height: 30%;
+  width: 29%;
+  height: 29%;
   margin: 1%;
   overflow: hidden;
   cursor : url('/assets/game/molegame/cursor_1.png'), pointer;
