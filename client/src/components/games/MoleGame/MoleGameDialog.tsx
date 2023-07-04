@@ -104,6 +104,7 @@ export default function MoleGameDialog() {
 
   const closeModal = () => {
     setIsModalOpen(false)
+    handleClose();
   }
 
   let randomNumber1 = 0
@@ -845,9 +846,11 @@ export default function MoleGameDialog() {
                   <br />
                   <br />
                 </IsWinner>
+
                 {isModalOpen && (
                   <ExperienceResultModal open={isModalOpen} handleClose={closeModal} />
                 )}
+
                 <IsHost>
                   {friendname && username === host ? '방장' : ''}
                   <br />
