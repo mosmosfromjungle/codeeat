@@ -4,6 +4,7 @@ import { BackgroundMode } from '../../../types/BackgroundMode'
 
 import phaserGame from '../PhaserGame'
 import Bootstrap from '../scenes/Bootstrap'
+import Game from '../scenes/Game'
 
 export function getInitialBackgroundMode() {
   const currentHour = new Date().getHours()
@@ -96,6 +97,8 @@ export const userSlice = createSlice({
       state.dialogStatus = action.payload
     },
     setHelperStatus: (state, action: PayloadAction<HELPER_STATUS>) => {
+      const game = phaserGame.scene.keys.game as Game
+      game.enableKeys()
       state.helperStatus = action.payload
     },
   },

@@ -186,6 +186,8 @@ export default function ChatDialog() {
       game.network.addChatMessage(val)
       game.myPlayer.updateDialogBubble(val)
     }
+
+    inputRef.current?.focus()
   }
 
   const scrollToBottom = () => {
