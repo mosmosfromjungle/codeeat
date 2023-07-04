@@ -3,7 +3,7 @@ import { Socket } from 'socket.io';
 import { v4 as uuidV4 } from 'uuid';
 import { Request, Response } from 'express';
 import LastDM from '../../models/LastDM';
-import { updateLastDM, updateRoomId,addLastDM, deleteLastDM } from '../LastDMControllers';
+import { updateLastDM, updateRoomId, addLastDM, deleteLastDM } from '../LastDMControllers';
 import { userMap } from '../..';
 const rooms: Record<string, string[]> = {}
 interface IRoomParams {
@@ -29,22 +29,28 @@ export const DMController = (socket: Socket) => {
       rooms[roomId].push(username);
       socket.join(roomId);
     } else {
-      if (roomId == 'first'){
-        roomId = createRoom();
-        console.log('생성')
-        updateRoomId({ roomId: roomId, senderName: username, receiverName: receiverName })
-        .then(() => {
-          rooms[roomId].push(username);
-        })  
-      } else {
-        roomId = createRoom();
-        addLastDM({senderName: username, receiverName: receiverName, message: ' ', roomId})
-        updateRoomId({ roomId: roomId, senderName: username, receiverName: receiverName })
-        .then(() => {
-          deleteLastDM({senderName: username, receiverName: receiverName, message: ' '})
-          rooms[roomId].push(username);
-        })
-      }
+      roomId = createRoom();
+      addLastDM({senderName: username, receiverName: receiverName, message: ' ', roomId})
+      updateRoomId({ senderName: username, receiverName: receiverName, roomId: roomId })
+      .then(() => {
+        rooms[roomId].push(username);
+      });
+      // if (roomId == 'first'){
+      //   roomId = createRoom();
+      //   console.log('생성')
+      //   updateRoomId({ roomId: roomId, senderName: username, receiverName: receiverName })
+      //   .then(() => {
+      //     rooms[roomId].push(username);
+      //   })  
+      // } else {
+      //   roomId = createRoom();
+      //   addLastDM({senderName: username, receiverName: receiverName, message: ' ', roomId})
+      //   updateRoomId({ roomId: roomId, senderName: username, receiverName: receiverName })
+      //   .then(() => {
+      //     deleteLastDM({senderName: username, receiverName: receiverName, message: ' '})
+      //     rooms[roomId].push(username);
+      //   })
+      // }
     }
     readMessage({ roomId, username, receiverName });
   };
@@ -81,20 +87,28 @@ export const DMController = (socket: Socket) => {
 }
 
 
-export const addDM = (message: {
+export const addDM = async (message: {
   senderName: string;
   receiverName: string;
   message: string;
 }) => {
+  try {
     let cur_date = new Date();
     let utc = cur_date.getTime() + cur_date.getTimezoneOffset() * 60 * 1000;
     let createdAt = utc + time_diff;
-    dm.collection.insertOne({
+    
+    await dm.collection.insertOne({
       senderName: message.senderName,
       receiverName: message.receiverName,
       message: message.message,
       createdAt: createdAt,
     });
+    
+    return true;
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
 };
 
   
@@ -107,7 +121,7 @@ export const getDMMessage = async (senderName: string, receiverName: string) => 
           { $and: [{ senderName: receiverName }, { receiverName: senderName }] },
         ],
       })
-      .limit(100)
+      .limit(50)
       .sort({ _id: 1 })
       .toArray()
       .then((elem) => {
@@ -115,5 +129,6 @@ export const getDMMessage = async (senderName: string, receiverName: string) => 
           result.push(json);
         });
       });
+    LastDM.collection.find();
     return result;
   };

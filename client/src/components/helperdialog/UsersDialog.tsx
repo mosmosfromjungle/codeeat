@@ -112,16 +112,7 @@ export default function UsersDialog() {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
-
-  const checkFirstChat = async (receiverName) => {
-    try {
-      const first = await checkIfFirst({ senderName: username, receiverName: receiverName});
-      console.log('첫 디엠인지 아닌지 체크, 첫디엠이면 status:200 && undefined')
-      return first?.status
-    } catch(err) {
-      console.error('check first chat error: ',err)
-    }
-  }
+  
   const getRoooom = async (username, playerName) => {
     getRoomId({myName : username, targetName: playerName})
     .then((roomId) => {
