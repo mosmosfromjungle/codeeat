@@ -37,7 +37,7 @@ export default class MyPlayer extends Player {
     // this.playerTexture = texture // 플레이어 인스턴스를 생성할 떄 바로 캐릭터 이미지를 지정해줄 수 있다.
 
     // playerName이 오브젝트와 충돌 시 이탈하는 문제를 막기 위해 추가한 코드
-    this.playerName = this.scene.add.text(this.x, this.y, 'Player Name', { fontSize: '9px', color: 'black'});
+    // this.playerName = this.scene.add.text(this.x, this.y, 'Player Name', { fontSize: '9px', color: 'black'});
   }
 
   setPlayerName(name: string) {
@@ -179,7 +179,7 @@ export default class MyPlayer extends Player {
         if (vx !== 0 || vy !== 0) network.updatePlayer(this.x, this.y, this.anims.currentAnim.key)
 
         // playerName이 오브젝트와 충돌 시 이탈하는 문제를 막기 위해 추가한 코드
-        this.playerName.setPosition(this.x - 14, this.y - this.height + 11)
+        // this.playerName.setPosition(this.x - 14, this.y - this.height + 11)
 
         if (vx > 0) {
           this.play(`${this.playerTexture}_run_right`, true)
