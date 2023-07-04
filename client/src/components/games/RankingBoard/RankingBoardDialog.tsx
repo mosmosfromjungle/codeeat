@@ -233,7 +233,7 @@ export default function RankingBoardDialog() {
   // My information
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
-  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`
+  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}.png`
 
   // Send my info to friend (client -> server)
   bootstrap.gameNetwork.sendMyInfo(username, character)
@@ -243,7 +243,7 @@ export default function RankingBoardDialog() {
   const friendcharacter = useAppSelector((state) => state.molegame.friendCharacter)
   const friendimgpath = `/assets/character/single/${capitalizeFirstLetter(
     friendcharacter
-  )}_idle_anim_19.png`
+  )}.png`
 
   // Get room host information
   const host = useAppSelector((state) => state.molegame.host)

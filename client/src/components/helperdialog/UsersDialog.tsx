@@ -96,7 +96,7 @@ export default function UsersDialog() {
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
   const helperStatus = useAppSelector((state) => state.user.helperStatus)
-  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`
+  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}.png`
   const players = useAppSelector((state) => state.room.mainPlayers)
   const [otherPlayers, setOtherPlayers] = useState<IPlayer[]>()
   const [friendUsername, setFriendUsername] = useState<string>('')

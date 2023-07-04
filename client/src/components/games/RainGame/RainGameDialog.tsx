@@ -25,11 +25,11 @@ const RainGameDialog = () => {
   // My information
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
-  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`;
+  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}.png`;
 
   // Friend information
   const you = useAppSelector((state) => state.raingame.you)
-  const friendimgpath = `/assets/character/single/${capitalizeFirstLetter(you.character)}_idle_anim_19.png`;
+  const friendimgpath = `/assets/character/single/${capitalizeFirstLetter(you.character)}.png`;
 
   const isReady = useAppSelector((state) => state.raingame.rainGameReady)
   const inProgress = useAppSelector((state) => state.raingame.rainGameInProgress)

@@ -244,7 +244,7 @@ export default function ProfileDialog() {
               <ListItem>
                 <ListItemAvatar>
                   {/* <Avatar src={imgpath} /> */}
-                  <img src={imgpath} />
+                  <img src={imgpath} style={{ width: '40px', height: '70px', objectFit: 'cover'}} />
                 </ListItemAvatar>
                 <NameProfile>
                   <Level>Lv. {userLevel}</Level>

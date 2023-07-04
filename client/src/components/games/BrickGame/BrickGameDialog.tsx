@@ -61,7 +61,7 @@ export default function BrickGameDialog() {
   // Friend information
   const friendname = useAppSelector((state) => state.brickgame.oppName);
   const friendcharacter = useAppSelector((state) => state.brickgame.oppCharacter);
-  const friendimgpath = `/assets/character/single/${capitalizeFirstLetter(friendcharacter)}_idle_anim_19.png`;
+  const friendimgpath = `/assets/character/single/${capitalizeFirstLetter(friendcharacter)}.png`;
   
   const gamePlayers = useAppSelector((state) => state.room.gamePlayers)
   const problemType  = useAppSelector((state) => state.brickgame.brickGameState.problemType)
