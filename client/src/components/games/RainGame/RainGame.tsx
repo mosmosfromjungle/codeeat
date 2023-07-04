@@ -6,7 +6,7 @@ import TextField from '@mui/material/TextField'
 import { 
   CharacterArea, NameArea, Position, 
   TimerArea, GameArea, Left, Right, PointArea, FriendPoint, MyPoint, 
-  InputArea, PlayArea, Comment, 
+  InputArea, PlayArea, Comment, Item, 
 } from './RainGameStyle'
 import eraser from '/assets/game/RainGame/eraser.png'
 import debounce from 'lodash/debounce';
@@ -270,6 +270,13 @@ export function RainGame() {
               </>
             )
           }
+          <Comment>
+              <p className={`friend-comment ${you.username ? '' : 'start-game'}`}>
+                {you.username ? '친구가 들어왔어요,' : '친구가 아직 들어오지 않았어요 !'}
+                <br />
+                {you.username ? '방장은 Start 버튼을 눌러주세요 !' : '친구가 들어와야 게임이 시작돼요.'}
+              </p>
+          </Comment>
         </TimerArea>
 
         <Left>
@@ -323,7 +330,11 @@ export function RainGame() {
         </FriendPoint>
 
         <PlayArea>
-          
+          <Item>
+            💡 특별한 색의 단어를 성공하면 아이템을 사용할 수 있어요 !<br/><br/>
+            <span style={{ color: 'red' }}>빨간색</span> - 상대방 단어 가리기<br/>
+            <span style={{ color: 'blue' }}>파란색</span> - 상대방 속도 키우기
+          </Item>
         </PlayArea>
 
         <InputArea>
@@ -334,9 +345,7 @@ export function RainGame() {
 
         <PlayArea>
           <div>
-            <Comment>
-              명령어를 입력한 후 엔터를 쳐주세요 !
-            </Comment>
+            명령어를 입력한 후 엔터를 쳐주세요 !
             <TextField
                 focused
                 inputRef={keywordInput}
@@ -345,6 +354,7 @@ export function RainGame() {
                 InputProps={{
                   style: {
                     width: '300px',
+                    marginTop: '5px',
                   },
                 }}
             />
