@@ -33,7 +33,7 @@ const Backdrop = styled.div`
   position: fixed;
   display: flex;
   gap: 10px;
-  bottom: 16px;
+  bottom: 24px;
   right: 16px;
   align-items: flex-end;
 `
@@ -90,6 +90,9 @@ const ProfileButton = styled.div`
   flex-direction: row;
   Button {
     color: black;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: Font_DungGeun;
   }
 `
 const TextDiv = styled.div`
@@ -394,7 +397,7 @@ export default function FriendsDialog() {
                     }}
                     color="primary"
                   >
-                    친구 싫어
+                    싫어
                   </Button>
                   <Button
                     onClick={() => {
@@ -403,7 +406,7 @@ export default function FriendsDialog() {
                     }}
                     color="primary"
                   >
-                    친구 좋아
+                    좋아
                   </Button>
                 </ProfileButton>
               </ListItem>

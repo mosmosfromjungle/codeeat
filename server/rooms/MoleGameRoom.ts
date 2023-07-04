@@ -137,8 +137,8 @@ export class MoleGameRoom extends Room<GameState> {
   }
 
   onJoin(client: Client, options: any) {
-    const { username } = options
-    this.state.players.set(client.sessionId, new GamePlayer(username))
+    const { username, character } = options
+    this.state.players.set(client.sessionId, new GamePlayer(username, character))
     client.send(Message.SEND_ROOM_DATA, {
       id: this.roomId,
       name: this.name,

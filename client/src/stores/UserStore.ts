@@ -23,6 +23,7 @@ export enum DIALOG_STATUS {
 
 export enum HELPER_STATUS {
   NONE = 'none',
+  PROFILE = 'profile',
   CHAT = 'chat',
   DM = 'dm',
   USERS = 'users',
@@ -51,7 +52,6 @@ export const userSlice = createSlice({
     dialogStatus: DIALOG_STATUS.ENTRY,
     helperStatus: HELPER_STATUS.NONE,
     // showQuit: false, // game 퇴장 dialog...
-    showProfile: false,
   },
   reducers: {
     toggleBackgroundMode: (state) => {
@@ -98,9 +98,6 @@ export const userSlice = createSlice({
     setHelperStatus: (state, action: PayloadAction<HELPER_STATUS>) => {
       state.helperStatus = action.payload
     },
-    setShowProfile: (state, action: PayloadAction<boolean>) => {
-      state.showProfile = action.payload
-    },
   },
 })
 
@@ -118,7 +115,6 @@ export const {
   removePlayerNameMap,
   setDialogStatus,
   setHelperStatus,
-  setShowProfile,
 } = userSlice.actions
 
 export default userSlice.reducer
