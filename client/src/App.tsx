@@ -17,6 +17,7 @@ import GameWelcomeDialog from './components/gamedialog/GameWelcomeDialog'
 import MoleGameDialog from './components/games/MoleGame/MoleGameDialog'
 import BrickGameDialog from './components/games/BrickGame/BrickGameDialog'
 import RainGameDialog from './components/games/RainGame/RainGameDialog'
+import RankingBoardDialog from './components/games/RankingBoard/RankingBoardDialog'
 // import FaceChatDialog from './components/games/FaceChatDialog'
 
 // ↓ HelperButtonGroup Dialog
@@ -61,6 +62,7 @@ function App() {
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
   const rainGameOpen = useAppSelector((state) => state.rainGameDialog.rainGameOpen)
+  const rankingBoardOpen = useAppSelector((state) => state.rankingboard.rankingBoardOpen)
   // const faceChatOpen = useAppSelector((state) => state.facechat.faceChatOpen)
 
   // ↓ HelperButtonGroup Dialog
@@ -105,6 +107,7 @@ function App() {
         {showDMList && <ConversationList />}
         {showDMRoom && <DMRoom />}
         {showProfile && <ProfileDialog />}
+        {rankingBoardOpen && <RankingBoardDialog />}
         <MobileVirtualJoystick />
         <HelperButtonGroup />
         <ProfileButton />

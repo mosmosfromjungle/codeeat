@@ -74,7 +74,7 @@ export const roomSlice = createSlice({
       state.gameRoomDescription = action.payload.description
     },
     setMainPlayers: (state, action: PayloadAction<IPlayer[]>) => {
-      state.mainPlayers = action.payload;
+      state.mainPlayers = action.payload
     },
     setAvailableRooms: (state, action: PayloadAction<RoomAvailable[]>) => {
       state.availableRooms.generalRooms = action.payload.filter((room) => isCustomRoom(room))
@@ -128,8 +128,8 @@ export const roomSlice = createSlice({
         } else {
           state.availableRooms.rainRooms.push(action.payload.room)
         }
-      } 
-      // else if (isFaceChatRoom(action.payload.room)) {
+      }
+      // } else if (isFaceChatRoom(action.payload.room)) {
       //   const roomIndex = state.availableRooms.faceChatRooms.findIndex(
       //     (room) => room.roomId === action.payload.roomId
       //   )

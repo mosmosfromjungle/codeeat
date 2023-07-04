@@ -9,6 +9,7 @@ import Chair from '../items/Chair'
 import BrickGame from '../items/BrickGame'
 import RainGame from '../items/RainGame'
 import MoleGame from '../items/MoleGame'
+import RankingBoard from '../items/RankingBoard'
 // import FaceChat from '../items/FaceChat'
 
 import { phaserEvents, Event } from '../events/EventCenter'
@@ -76,6 +77,11 @@ export default class MyPlayer extends Player {
         case ItemType.MOLEGAME:
           const molegame = item as MoleGame
           molegame.openDialog(network)
+          break
+        
+        case ItemType.RANKINGBOARD:
+          const rankingboard = item as RankingBoard
+          rankingboard.openDialog()
           break
         // case ItemType.FACECHAT:
         //   const faceChat = item as FaceChat
