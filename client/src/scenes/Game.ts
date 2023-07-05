@@ -186,7 +186,7 @@ export default class Game extends Phaser.Scene {
     const rankingboards = this.physics.add.staticGroup({ classType: RankingBoard })
     const rankingboardLayer = this.map.getObjectLayer('rankingboard')
     rankingboardLayer.objects.forEach((obj, i) => {
-      const item = this.addObjectFromTiled(rankingboards, obj, 'billboard', 'billboard') as RankingBoard
+      const item = this.addObjectFromTiled(rankingboards, obj, 'gamesign', 'gamesign') as RankingBoard
       const id = `${i}`
       item.id = id
       this.rankingboardMap.set(id, item)
