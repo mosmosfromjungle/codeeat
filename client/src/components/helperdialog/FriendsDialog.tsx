@@ -325,8 +325,8 @@ export default function FriendsDialog() {
         <div>
           <div>
             <img
-              src={`../../public/assets/character/single/${friendCharacter}.png`}
-              alt=""
+              src={`../../public/assets/character/single/${capitalizeFirstLetter(friendCharacter)}.png`}
+              style={{ width: '40x', height: '70px', objectFit: 'cover' }}
             />
             <div>
               <h2>Lv: {friendUserLevel}</h2>
@@ -336,9 +336,12 @@ export default function FriendsDialog() {
           <>
             <TextDiv>
               <Profile>
-                학년: {grade} <br /><br />
-                학교: {school} <br /><br />
-                자기소개: {message} <br /><br />
+                학년: {grade} <br />
+                <br />
+                학교: {school} <br />
+                <br />
+                자기소개: {message} <br />
+                <br />
               </Profile>
             </TextDiv>
           </>
@@ -384,7 +387,7 @@ export default function FriendsDialog() {
                 <NameWrapper>
                   <ListItemAvatar>
                     <Avatar
-                      src={`../../public/assets/character/single/${value.character}.png`}
+                      src={`../../public/assets/character/single/${capitalizeFirstLetter(value.character)}.png`}
                     />
                   </ListItemAvatar>
                   <NameProfile>
@@ -427,7 +430,7 @@ export default function FriendsDialog() {
                 <NameWrapper>
                   <ListItemAvatar>
                     <Avatar
-                      src={`../../public/assets/character/single/${value.character}.png`}
+                      src={`../../public/assets/character/single/${capitalizeFirstLetter(value.character)}.png`}
                     />
                   </ListItemAvatar>
                   <NameProfile>

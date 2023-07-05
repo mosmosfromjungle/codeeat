@@ -30,10 +30,10 @@ const app = express()
 const allowedOrigins = [
   'http://localhost:5173',
   'http://127.0.0.1:5173',
-  'http://43.200.172.83:5173',
-  'http://43.200.172.83',
-  'http://3.35.25.114:5173',
-];
+  'http://13.125.205.26:5173',
+  'http://13.125.205.26',
+  // 'http://13.209.87.246:5173',
+]
 
 const options: cors.CorsOptions = {
   allowedHeaders: [
