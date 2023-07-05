@@ -72,7 +72,7 @@ export const DMController = (socket: Socket) => {
 
   const readMessage = async (message: { roomId: string; username: string; receiverName: string; }) => {
     const { roomId, username, receiverName } = message;
-    console.log('읽어')
+    // console.log('읽어들임')
     getDMMessage(username,receiverName)
     .then((dmMessage) => {
       socket.emit('old-messages', dmMessage);
