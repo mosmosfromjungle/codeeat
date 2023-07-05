@@ -173,15 +173,26 @@ export class BrickGameRoom extends Room<IGameState> {
           break
         default:
           if (lowercaseCommand === DATA_STRUCTURE.LIST) {
-            this.dispatcher.dispatch(new BrickGameCommand(), { client, command: DATA_STRUCTURE.LIST, commandText: command })
+            // this.dispatcher.dispatch(new BrickGameCommand(), { client, command: DATA_STRUCTURE.LIST, commandText: command })
+            playerStatus.selectedOption = DATA_STRUCTURE.LIST
+            playerStatus.commandArray.push(command + ' ')       
           } else if (lowercaseCommand === DATA_STRUCTURE.SET) {
-            this.dispatcher.dispatch(new BrickGameCommand(), { client, command: DATA_STRUCTURE.SET, commandText: command })
+            // this.dispatcher.dispatch(new BrickGameCommand(), { client, command: DATA_STRUCTURE.SET, commandText: command })
+            playerStatus.selectedOption = DATA_STRUCTURE.SET
+            playerStatus.commandArray.push(command + ' ')
+            // TODO: Set 로직 
           } else if (lowercaseCommand === DATA_STRUCTURE.STACK) {
-            this.dispatcher.dispatch(new BrickGameCommand(), { client, command: DATA_STRUCTURE.STACK, commandText: command })
+            // this.dispatcher.dispatch(new BrickGameCommand(), { client, command: DATA_STRUCTURE.STACK, commandText: command })
+            playerStatus.selectedOption = DATA_STRUCTURE.STACK
+            playerStatus.commandArray.push(command + ' ')
           } else if (lowercaseCommand === DATA_STRUCTURE.QUEUE) {
-            this.dispatcher.dispatch(new BrickGameCommand(), { client, command: DATA_STRUCTURE.QUEUE, commandText: command })
+            // this.dispatcher.dispatch(new BrickGameCommand(), { client, command: DATA_STRUCTURE.QUEUE, commandText: command })
+            playerStatus.selectedOption = DATA_STRUCTURE.QUEUE
+            playerStatus.commandArray.push(command + ' ')
           } else if (lowercaseCommand === DATA_STRUCTURE.DEQUE) {
-            this.dispatcher.dispatch(new BrickGameCommand(), { client, command: DATA_STRUCTURE.DEQUE, commandText: command })
+            // this.dispatcher.dispatch(new BrickGameCommand(), { client, command: DATA_STRUCTURE.DEQUE, commandText: command })
+            playerStatus.selectedOption = DATA_STRUCTURE.DEQUE
+            playerStatus.commandArray.push(command + ' ')
           } else {
             this.sendError(client, OPTION_ERROR)
           }
