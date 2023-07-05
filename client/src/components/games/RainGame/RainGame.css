@@ -1,3 +1,7 @@
 .start-game {
     animation: blink-effect 3s step-end infinite;
 }
+
+.hidden {
+  display: none;
+}

@@ -30,6 +30,7 @@ import {
   setOppPlayerScore,
   setOppPlayerStatus,
   setOppInfo,
+  setGameMessage,
 } from '../stores/BrickGameStore'
 import {
   setRainGameMe,
@@ -191,6 +192,18 @@ export default class GameNetwork {
         store.dispatch(setOppPlayerStatus(payload.playerStatus))
       }
     })
+
+    this.room.onMessage(Message.BRICK_GAME_ERROR, (content) => {
+      console.log('error message: ', content)
+      store.dispatch(setGameMessage(content))
+      setTimeout(() => {
+        store.dispatch(setGameMessage(''))
+      }, 2000);
+    })
+
+    // this.room.onMessage(Message.BRICK_ROUND_WINNER, (content) => {
+
+    // })
   }
 
   brickGameCommand(command: string) {
@@ -198,11 +211,9 @@ export default class GameNetwork {
     this.room?.send(Message.BRICK_GAME_COMMAND, { command: command })
   }
 
-
   brickGameStart() {
     this.room?.send(Message.BRICK_GAME_START)
   }
-
 
   /* MOLE GAME  */
 
@@ -349,8 +360,7 @@ export default class GameNetwork {
     })
 
     this.room.onMessage(Message.RAIN_GAME_START_S, (content) => {
-      const value = content
-      store.dispatch(setRainGameInProgress(value))
+      store.dispatch(setRainGameInProgress())
     })
 
     // this.room.onMessage(Message.RAIN_GAME_READY_S, () => {
