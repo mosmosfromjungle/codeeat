@@ -85,6 +85,19 @@ export default function BrickGameDialog() {
   const [number, setNumber] = useState<number>(0)
   const [showProblem, setShowProblem] = useState<boolean>(false)
 
+  // 라운드 승자 표시
+  const [winnerModalOpen, setWinnerModalOpen] = useState<boolean>(false)
+  useEffect(() => {
+    if (roundWinner === '') {
+      setWinnerModalOpen(false)
+    } else {
+      setWinnerModalOpen(true)
+      setTimeout(() => {
+        setWinnerModalOpen(false)
+      }, 2000)
+    }
+  }, [roundWinner])
+
   // 문제 출제
   useEffect(() => {
     if (problemType === QUIZ_TYPE.NONE) {
@@ -164,10 +177,33 @@ export default function BrickGameDialog() {
     );
   }
 
+  const roundWinnerModal = (
+      <div
+        style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          backgroundColor: '#222639',
+          borderRadius: '24px',
+          boxShadow: '0px, 10px, 24px, #0000006f',
+          padding: '50px',
+          zIndex: 1000,
+          fontSize: '15px',
+          color: '#eee',
+          textAlign: 'center',
+          fontFamily: 'Font_DungGeun',
+        }}
+      >
+        <h2>{roundWinner}</h2>
+      </div>
+    )
+
   return (
     <>
      <GlobalStyle />
       <Backdrop>
+        {winnerModalOpen && roundWinnerModal}
         <Wrapper>
           <IconButton
             aria-label="close dialog"

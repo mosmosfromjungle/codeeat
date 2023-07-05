@@ -193,7 +193,9 @@ export class BrickGameRoom extends Room<IGameState> {
 
     if (playerScore.chance <= 0) {
       this.setRoundWinner(false, client)
-      this.endGame()
+      setTimeout(() => {
+        this.endGame()
+      }, 2000);
     }
 
     /* 해당 클라이언트가 이긴 경우 라운드 초기화 후 새로운 라운드 시작 */
@@ -302,6 +304,7 @@ export class BrickGameRoom extends Room<IGameState> {
     }
     this.state.brickgames.hasRoundWinner = true
     this.state.brickgames.roundWinner = winnerUsername
+    this.broadcastGameState()
   }
 
   // broadcastRoundWinner(client: Client) {
@@ -324,6 +327,8 @@ export class BrickGameRoom extends Room<IGameState> {
       gameInProgress: this.state.brickgames.gameInProgress,
       gameStarting: this.state.brickgames.gameStarting,
       currentRound: this.state.brickgames.currentRound,
+      hasRoundWinner: this.state.brickgames.hasRoundWinner,
+      roundWinner: this.state.brickgames.roundWinner,
     }
     if (!client) {
       this.broadcast(Message.BRICK_GAME_STATE, gameState)
