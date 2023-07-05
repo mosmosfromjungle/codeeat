@@ -422,8 +422,22 @@ export class BrickGameRoom extends Room<IGameState> {
     this.state.brickgames.hasRoundWinner = false
     this.state.brickgames.roundWinner = ''
     this.state.brickgames.currentRound += 1
-    const newProblem = this.getRandomProblem()
-    console.log('problem: ', newProblem)
+    // const newProblem = this.getRandomProblem()
+    // console.log('problem: ', newProblem)
+    let newProblem
+    if (this.state.brickgames.currentRound === 1) {
+      newProblem = {
+        problemId: 3,
+        problemType: QUIZ_TYPE.SAME2,
+        generateKey: 'middle',
+      }
+    } else {
+      newProblem = {
+        problemId: 10,
+        problemType: QUIZ_TYPE.DIFF3,
+        generateKey: 2,
+      }
+    }
     this.state.brickgames.problemId = newProblem.problemId
     this.state.brickgames.problemType = newProblem.problemType
 
