@@ -30,9 +30,16 @@ export class RainGameRoom extends Room<GameState> {
     this.setState(new GameState())
     this.state.host = username
 
-    this.onMessage(Message.RAIN_GAME_START_C, (client, content) =>
-      this.handleRainGameStart(client, content)
-    )
+    this.onMessage(Message.RAIN_GAME_START_C, (client, content) => {
+      const { value } = content
+      this.state.raingames.rainGameInProgress = value
+      
+      this.broadcast(
+        Message.RAIN_GAME_START_S,
+        { value : value },
+        { afterNextPatch: true}
+      )
+    })
 
     this.onMessage(Message.RAIN_GAME_WORD_C, (client, content) => {
       const { word, sessionId, states } = content
@@ -64,17 +71,64 @@ export class RainGameRoom extends Room<GameState> {
       )
     })
 
-    this.onMessage(Message.RAIN_GAME_USER_C, (client, data: { username: string, character: string}) => {
-        
-    this.state.raingames.rainGameUsers.set(client.sessionId, new RainGameUser(data.username, data.character))
-    this.state.raingames.rainGameStates.set(client.sessionId, new RainGameState())
+    this.onMessage(Message.RAIN_GAME_ITEM_C, (client, data) => {
+      const { item } = data
+      this.state.raingames.rainGameStates.forEach((gameState, sessionId) => {
+        if (sessionId !== client.sessionId) {
+          if (item === 'A') {
+            gameState.item.push('A')
+            console.log(gameState.item)
+          }
+          if (item === 'B') {
+            gameState.item.push('B')
+          }
+          if (item === 'NA') {
+            gameState.item.shift();
+          }
+        }
+      })
 
-    this.broadcast(
-      Message.RAIN_GAME_USER_S,
-      { user: this.state.raingames.rainGameUsers, state: this.state.raingames.rainGameStates, host: this.state.host  },
-      { afterNextPatch: true }
+      this.broadcast(
+        Message.RAIN_GAME_HEART_S,
+        { states: this.state.raingames.rainGameStates },
+        { afterNextPatch: true }
+      )
+    })
+
+    this.onMessage(
+      Message.RAIN_GAME_USER_C,
+      (client, data: { username: string; character: string }) => {
+        this.state.raingames.rainGameUsers.set(
+          client.sessionId,
+          new RainGameUser(data.username, data.character)
+        )
+        this.state.raingames.rainGameStates.set(client.sessionId, new RainGameState())
+        if ( this.state.raingames.rainGameUsers.size === 2) {
+          this.state.raingames.rainGameReady = true;
+        }
+
+        this.broadcast(
+          Message.RAIN_GAME_USER_S,
+          {
+            user: this.state.raingames.rainGameUsers,
+            state: this.state.raingames.rainGameStates,
+            host: this.state.host,
+          },
+          { afterNextPatch: true }
+        )
+      }
     )
-  })
+
+    this.onMessage(
+      Message.RAIN_GAME_END_C,
+      (client, data: { username: string }) => {
+        console.log("승리 시그널 수신")
+        this.broadcast(
+          Message.RAIN_GAME_END_S,
+          data,{ afterNextPatch: true }
+        )
+      }
+    )
   }
 
   async onAuth(client: Client, options: { password: string | null }) {
@@ -99,10 +153,7 @@ export class RainGameRoom extends Room<GameState> {
       host: this.state.host,
     })
 
-    if (this.clients.length === 2) {
-      this.state.raingames.rainGameReady = true
-      this.broadcast(Message.RAIN_GAME_READY_S)
-    }
+    // this.broadcast(Message.RAIN_GAME_READY_S)
   }
 
   onLeave(client: Client, consented: boolean) {
@@ -124,12 +175,5 @@ export class RainGameRoom extends Room<GameState> {
   onDispose() {
     console.log('room', this.roomId, 'disposing...')
     this.dispatcher.stop()
-  }
-  // Handle RAIN_GAME_START message
-  private handleRainGameStart(client: Client, content: any) {
-    console.log('handleRainGameStart')
-    this.state.raingames.rainGameInProgress = true
-    this.broadcast(Message.RAIN_GAME_START_S)
-    // this.handleRainGameWord(this)
   }
 }
