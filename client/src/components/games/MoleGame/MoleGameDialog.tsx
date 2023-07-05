@@ -305,7 +305,7 @@ export default function MoleGameDialog() {
 
   const showingMole = () => {
     // 임시
-    if (turn < 5) {
+    if (turn < 3) {
       let luckyMoles = randomHole()
 
       randomNumber1 = luckyMoles[0]
@@ -695,7 +695,7 @@ export default function MoleGameDialog() {
           <CloseIcon />
         </IconButton>
 
-        <RoundArea>Round {turn}/5</RoundArea>
+        <RoundArea>Round {turn}/3</RoundArea>
 
         <body>
           <Header>
