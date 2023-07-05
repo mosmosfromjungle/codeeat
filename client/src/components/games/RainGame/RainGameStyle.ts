@@ -18,7 +18,6 @@ export const Wrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  min-width: max-content;
 
   .close {
     position: absolute;
@@ -176,7 +175,7 @@ export const MyPoint = styled.div`
     width: 20%;
     margin-top: 10px;
     text-align: center;
-    border: 3px solid yellow;
+    border: 5px solid yellow;
     border-radius: 16px;
     box-shadow: 0px 10px 24px #0000006f;
 `
