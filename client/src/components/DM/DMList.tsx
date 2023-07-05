@@ -119,7 +119,7 @@ const UserNamewithLastMessage = styled.div`
   border-bottom: 0.7px solid gray;
   cursor: pointer;
   font-size: 10px;
-  height: 40px;
+  height: 30px;
   font-family: Font_DungGeun;
   flex-grow: 1;
 
@@ -142,7 +142,7 @@ const LastMessage = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  width: 180px;
+  width: 220px;
   height: 20px;
   flex-shrink: 1;
 `;
@@ -179,7 +179,7 @@ const UnreadCnt = styled.div`
   border-radius: 100%;
   background-color: red;
   color: white;
-  font-size: 12px;
+  font-size: 15px;
 `;
 
 const NoDMMessage = styled.div`
