@@ -60,7 +60,7 @@ export function RainGame() {
   const dispatch = useAppDispatch()
   const keywordInput = useRef<HTMLInputElement>(null)
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-  const [time, setTime] = useState(10)
+  const [time, setTime] = useState(100)
   const host = useAppSelector((state) => state.raingame.host)
   const sessionId = useAppSelector((state) => state.user.gameSessionId)
   const winner = useAppSelector((state) => state.raingame.winner)

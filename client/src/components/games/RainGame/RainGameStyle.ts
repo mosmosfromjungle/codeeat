@@ -89,7 +89,7 @@ export const StartButton = styled.div`
 
 export const TimerArea = styled.div`
   position: absolute;
-  top: 20px;
+  top: 40px;
   left: 46%;
   trans-form: translateX(-50%);
   font-size: 35px;
@@ -106,7 +106,7 @@ export const GameArea = styled.div`
   height: 85%;
 
   box-shadow: 0px 0px 5px #0000006f;
-  background: no-repeat center/cover url('/assets/game/RainGame/blackboard.png');
+  background: no-repeat center/cover url('/assets/game/RainGame/blackboard.jpg');
   background-size: 100% 100%;
   border-radius: 20px;
 `
