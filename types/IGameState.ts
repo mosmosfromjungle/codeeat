@@ -66,6 +66,7 @@ export interface IBrickGameState extends Schema {
   gameStarting: boolean
   currentRound: number
   hasRoundWinner: boolean
+  roundWinner: string
 }
 
 /* GAME ROOM SCHEMA */

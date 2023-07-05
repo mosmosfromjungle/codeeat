@@ -109,6 +109,7 @@ export class BrickGameState extends Schema implements IBrickGameState {
   @type('boolean') gameStarting = false
   @type('number') currentRound = 0
   @type('boolean') hasRoundWinner = false
+  @type('string') roundWinner = ''
 }
 
 /* GAME ROOM SCHEMA */

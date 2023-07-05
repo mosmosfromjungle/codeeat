@@ -30,6 +30,7 @@ import {
   setOppPlayerScore,
   setOppPlayerStatus,
   setOppInfo,
+  setGameMessage,
 } from '../stores/BrickGameStore'
 import {
   setRainGameMe,
@@ -191,6 +192,18 @@ export default class GameNetwork {
         store.dispatch(setOppPlayerStatus(payload.playerStatus))
       }
     })
+
+    this.room.onMessage(Message.BRICK_GAME_ERROR, (content) => {
+      console.log('error message: ', content)
+      store.dispatch(setGameMessage(content))
+      setTimeout(() => {
+        store.dispatch(setGameMessage(''))
+      }, 2000);
+    })
+
+    // this.room.onMessage(Message.BRICK_ROUND_WINNER, (content) => {
+
+    // })
   }
 
   brickGameCommand(command: string) {
