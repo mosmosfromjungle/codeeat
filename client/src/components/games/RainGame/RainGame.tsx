@@ -17,12 +17,10 @@ import {
   InputArea,
   PlayArea,
   Comment,
-  ResultArea,
 } from './RainGameStyle'
 import eraser from '/assets/game/RainGame/eraser.png'
 import debounce from 'lodash/debounce'
 import RainGameItemB from './RainGameItemB'
-import RainGameEnd from './RainGameEnd'
 import { DIALOG_STATUS, setDialogStatus } from '../../../stores/UserStore'
 import { closeRainGameDialog } from '../../../stores/RainGameDialogStore'
 
@@ -46,9 +44,11 @@ export function RainGame() {
   const dispatch = useAppDispatch()
   const keywordInput = useRef<HTMLInputElement>(null)
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
+  bootstrap.gameNetwork.startRainGame(true)
   const [time, setTime] = useState(10)
   const host = useAppSelector((state) => state.raingame.host)
   const sessionId = useAppSelector((state) => state.user.gameSessionId)
+  const inProgress = 
 
   // My information
   const username = useAppSelector((state) => state.user.username)
@@ -82,8 +82,6 @@ export function RainGame() {
   const you = useAppSelector((state) => state.raingame.you)
   const [myImage, setMyImage] = useState(false)
   const [youImage, setYouImage] = useState(false)
-  const winner = useAppSelector((state) => state.raingame.winner)
-  const reason = useAppSelector((state) => state.raingame.reason)
   const [gameInProgress, setGameInProgress] = useState(true)
 
   const hideMyImage = useCallback(() => {
@@ -99,32 +97,30 @@ export function RainGame() {
   const WinnerCheck = () => {
     // 상대가 나갔을 때
     if (you.username === '') {
-      bootstrap.gameNetwork.endGame(me.username, '상대가 퇴장하였습니다!')
+      bootstrap.gameNetwork.endGame(me.username);
 
       // 둘 중 하나의 heart가 0일 때
     } else if (youState.heart === 0 || myState.heart === 0) {
       if (youState.heart === 0) {
-        bootstrap.gameNetwork.endGame(me.username, '홀로 살아남았습니다!')
+        bootstrap.gameNetwork.endGame(me.username);
       } else if (myState.heart === 0) {
-        bootstrap.gameNetwork.endGame(you.username, '홀로 살아남았습니다!')
+        bootstrap.gameNetwork.endGame(you.username);
       }
 
       // 시간이 0이 되었을 때
     } else if (time === 0) {
-      console.log("시간 0 감지")
+      console.log("시간 0 감지");
       if (myState.point > youState.point) {
-        console.log("나의 승리 조건 만족")
+        console.log("나의 승리 조건 만족");
         bootstrap.gameNetwork.endGame(
-          me.username,
-          '${myState.point} 대 ${youState.point} 으로 더 높은 점수를 기록하였습니다!'
+          me.username
         )
       } else if (myState.point < youState.point) {
         bootstrap.gameNetwork.endGame(
-          me.username,
-          '${youState.point} 대 ${myState.point} 으로 더 높은 점수를 기록하였습니다!'
+          me.username
         )
       } else {
-        bootstrap.gameNetwork.endGame('draw', '무승부입니다! 최선을 다 한 두 사람 모두 승자!')
+        bootstrap.gameNetwork.endGame('draw')
       }
     }
   }
@@ -280,6 +276,9 @@ export function RainGame() {
           if (newY >= lineHeight && !dheart) {
             debouncedDecreaseHeart()
             setDheart(true)
+            if (myState.heart === 0) {
+              bootstrap.gameNetwork.startRainGame(false);
+            }
           } else {
             newGame.push({ ...item, y: newY })
           }
@@ -365,15 +364,6 @@ export function RainGame() {
   }, [targetword])
 
   useEffect(() => {
-    if (!gameInProgress && winner) {
-
-      return () => {
-        handleClose();
-      };
-    }
-  }, [gameInProgress, winner])
-
-  useEffect(() => {
     let currentWordIndex = 0
     const mywords = username === host ? Awords : Bwords
     const youWords = username === host ? Bwords : Awords
@@ -416,22 +406,18 @@ export function RainGame() {
     }, 2000)
 
     // 시간 측정
-    const timeInterval = setInterval(() => {
-      if (!gameInProgress) {
-        clearInterval(timeInterval)
-        setTime(0);
-        return
-      }
+    const timeInterval = setInterval(() => {  
       setTime((prevTime) => Math.max(prevTime - 1, 0))
-      WinnerCheck();
-      console.log(gameInProgress, winner,)
+      if (time === 0 ) {
+        bootstrap.gameNetwork.startRainGame(false);
+      } 
     }, 1000)
 
     return () => {
       clearInterval(timeInterval)
       clearInterval(createWordsInterval)
     }
-  }, [gameInProgress])
+  }, [])
 
   const keydown = (evnet: KeyboardEvent) => {
     if (event.key === 'Enter' && keywordInput.current) {
@@ -504,19 +490,7 @@ export function RainGame() {
   }
 
   return (
-    <>
-       {/* winner 값이 있을 때만 RainGameEnd 컴포넌트를 렌더링 */}
-       {winner && (
-        <RainGameEnd
-          winner={winner}
-          reason={reason}
-          handleClose={() => handleClose()}
-        />
-      )}
-      
-      
-
-      
+    <> 
       <GameArea>
         <TimerArea>
           {time < 16 ? (

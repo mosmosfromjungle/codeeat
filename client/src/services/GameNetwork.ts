@@ -41,7 +41,6 @@ import {
   setRainStateMe,
   setRainStateYou,
   RainGameStates,
-  setRainGameWinner
 } from '../stores/RainGameStore'
 
 export default class GameNetwork {
@@ -286,9 +285,9 @@ export default class GameNetwork {
 
   /* RAIN GAME */
 
-  // startRainGame() {
-  //   this.room?.send(Message.RAIN_GAME_START_C)
-  // }
+  startRainGame(content: boolean) {
+    this.room?.send(Message.RAIN_GAME_START_C, { content: true })
+  }
 
   removeWord(word: string, sessionId: string, states: RainGameStates) {
     this.room?.send(Message.RAIN_GAME_WORD_C, { word: word, sessionId: sessionId, states: states })
@@ -307,12 +306,11 @@ export default class GameNetwork {
     this.room?.send(Message.RAIN_GAME_ITEM_C, { item: item })
   }
 
-  endGame(username: string, reason: string) {
+  endGame(username: string) {
     console.log("승리 시그널 전송")
-    this.room?.send(Message.RAIN_GAME_END_C, { username: username, reason: reason})
+    this.room?.send(Message.RAIN_GAME_END_C, { username: username })
   }
   
-
   /* RAIN GAME  */
 
   rain_game_init() {
@@ -350,9 +348,10 @@ export default class GameNetwork {
       }
     })
 
-    // this.room.onMessage(Message.RAIN_GAME_START_S, () => {
-    //   store.dispatch(setRainGameInProgress(true))
-    // })
+    this.room.onMessage(Message.RAIN_GAME_START_S, (content) => {
+      const value = content
+      store.dispatch(setRainGameInProgress(value))
+    })
 
     // this.room.onMessage(Message.RAIN_GAME_READY_S, () => {
     //   store.dispatch(setRainGameReady(true))
@@ -410,12 +409,9 @@ export default class GameNetwork {
     })
 
     this.room.onMessage(Message.RAIN_GAME_END_S, (data) => {
-      const { username, reason } = data
+      const { prog } = data
       console.log("승리 메시지 수신")
-      store.dispatch(setRainGameWinner({
-        winner: username,
-        reason : reason
-      }))
+      store.dispatch(setRainGameInProgress(prog))
     })
   }
 }

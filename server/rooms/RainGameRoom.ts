@@ -30,9 +30,16 @@ export class RainGameRoom extends Room<GameState> {
     this.setState(new GameState())
     this.state.host = username
 
-    // this.onMessage(Message.RAIN_GAME_START_C, (client, content) =>
-    //   this.handleRainGameStart(client, content)
-    // )
+    this.onMessage(Message.RAIN_GAME_START_C, (client, content) => {
+      const { value } = content
+      this.state.raingames.rainGameInProgress = value
+      
+      this.broadcast(
+        Message.RAIN_GAME_START_S,
+        { value : value },
+        { afterNextPatch: true}
+      )
+    })
 
     this.onMessage(Message.RAIN_GAME_WORD_C, (client, content) => {
       const { word, sessionId, states } = content
@@ -93,9 +100,12 @@ export class RainGameRoom extends Room<GameState> {
       (client, data: { username: string; character: string }) => {
         this.state.raingames.rainGameUsers.set(
           client.sessionId,
-          new RainGameUser(data.username, data.character, [])
+          new RainGameUser(data.username, data.character)
         )
         this.state.raingames.rainGameStates.set(client.sessionId, new RainGameState())
+        if ( this.state.raingames.rainGameUsers.size === 2) {
+          this.state.raingames.rainGameReady = true;
+        }
 
         this.broadcast(
           Message.RAIN_GAME_USER_S,
@@ -111,9 +121,8 @@ export class RainGameRoom extends Room<GameState> {
 
     this.onMessage(
       Message.RAIN_GAME_END_C,
-      (client, data: { username: string; reason: string }) => {
+      (client, data: { username: string }) => {
         console.log("승리 시그널 수신")
-        this.state.raingames.rainGameInProgress = false;
         this.broadcast(
           Message.RAIN_GAME_END_S,
           data,{ afterNextPatch: true }
@@ -167,9 +176,4 @@ export class RainGameRoom extends Room<GameState> {
     console.log('room', this.roomId, 'disposing...')
     this.dispatcher.stop()
   }
-  // Handle RAIN_GAME_START message
-  // private handleRainGameStart(client: Client, content: any) {
-  // this.broadcast(Message.RAIN_GAME_START_S)
-  // this.handleRainGameWord(this)
-  // }
 }

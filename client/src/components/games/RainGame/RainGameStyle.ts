@@ -176,35 +176,3 @@ export const MyPoint = styled.div`
   border-radius: 16px;
   box-shadow: 0px 10px 24px #0000006f;
 `
-
-export const ResultArea = styled.div`
-position: fixed;
-z-index: 2
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-width: 80%;
-max-width: 500px;
-padding: 20px;
-background-color: #000000;
-text-align: center;
-margin-top: 50px;
-height: 10%;
-font-size: 20px;
-font-weight: bold;
-color: #ffffff;
-font-family: Font_DungGeun;
-
-& .winner {
-  color: gold;
-  font-size: 24px;
-}
-
-& button {
-  display: block;
-  margin: 20px auto 0;
-  padding: 10px 20px;
-  font-size: 18px;
-  cursor: pointer;
-}
-`;

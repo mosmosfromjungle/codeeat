@@ -53,19 +53,15 @@ export class RainGameRoomState extends Schema implements IRainGameRoomState {
   @type('string')
   host = ''
   @type('boolean')
-  rainGameReady: true
+  rainGameReady: boolean = false;
   @type('boolean')
-  rainGameInProgress: true
+  rainGameInProgress: boolean = false;
   @type({ map: RainGameState })
   rainGameStates = new MapSchema<RainGameState>()
   @type({ map: RainGameUser })
   rainGameUsers = new MapSchema<RainGameUser>()
   @type({ map: KeywordRain })
   keywordLists = new MapSchema<KeywordRain>()
-  @type('string')
-  winner = ''
-  @type('string')
-  reason = ''
 }
 
 /* BRICK GAME ROOM SCHEMA */
