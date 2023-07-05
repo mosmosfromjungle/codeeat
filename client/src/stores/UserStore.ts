@@ -47,7 +47,10 @@ export const userSlice = createSlice({
     username: '',
     character: '',
     userLevel: '',
+    currentExp: 0,
+    requiredExp: 0,
     playerNameMap: new Map<string, string>(),
+    playerCharacterMap: new Map<string, string>(),
     
     /* Status regarding screen dialog */
     dialogStatus: DIALOG_STATUS.ENTRY,
@@ -93,6 +96,13 @@ export const userSlice = createSlice({
     removePlayerNameMap: (state, action: PayloadAction<string>) => {
       state.playerNameMap.delete(sanitizeId(action.payload))
     },
+    setPlayerCharacterMap: (state, action: PayloadAction<{ id: string; anim: string }>) => {
+      const character = action.payload.anim.split('_')[0]
+      state.playerCharacterMap.set(sanitizeId(action.payload.id), character)
+    },
+    removePlayerCharacterMap: (state, action: PayloadAction<string>) => {
+      state.playerCharacterMap.delete(sanitizeId(action.payload))
+    },
     setDialogStatus: (state, action: PayloadAction<DIALOG_STATUS>) => {
       state.dialogStatus = action.payload
     },
@@ -116,6 +126,8 @@ export const {
   setUserLevel,
   setPlayerNameMap,
   removePlayerNameMap,
+  setPlayerCharacterMap,
+  removePlayerCharacterMap,
   setDialogStatus,
   setHelperStatus,
 } = userSlice.actions

@@ -94,11 +94,11 @@ export default function UsersDialog() {
   const chatMessages = useAppSelector((state) => state.chat.chatMessages)
   const focused = useAppSelector((state) => state.chat.focused)
   const username = useAppSelector((state) => state.user.username)
-  const character = useAppSelector((state) => state.user.character)
   const helperStatus = useAppSelector((state) => state.user.helperStatus)
-  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}.png`
-  const players = useAppSelector((state) => state.room.mainPlayers)
-  const [otherPlayers, setOtherPlayers] = useState<IPlayer[]>()
+  const playerNames = useAppSelector((state) => Array.from(state.user.playerNameMap.values()))
+  const playerCharacters = useAppSelector((state) => Array.from(state.user.playerCharacterMap.values()))
+
+  // 친구 프로필 조회 
   const [friendUsername, setFriendUsername] = useState<string>('')
   const [friendCharacter, setFriendCharacter] = useState<string>('')
   const [friendUserLevel, setFriendUserLevel] = useState<string>('')
@@ -124,9 +124,9 @@ export default function UsersDialog() {
     })
     
   }
-  const handleClick = (player) => {
-    getRoooom(username,player.name)
-    dispatch(setReceiverName(player.name))
+  const handleClick = (name) => {
+    getRoooom(username,name)
+    dispatch(setReceiverName(name))
     dispatch(setShowDMRoom(true))
     dispatch(setHelperStatus(HELPER_STATUS.NONE))
   }
@@ -136,10 +136,6 @@ export default function UsersDialog() {
       inputRef.current?.focus()
     }
   }, [focused])
-
-  useEffect(() => {
-    setOtherPlayers(players)
-  }, [players.length])
 
   useEffect(() => {
     scrollToBottom()
@@ -289,7 +285,7 @@ export default function UsersDialog() {
         <Content>
           <Header>
             <HeaderTitle>
-              <span  style={{ color: 'green', fontSize: '24px' }}> {players.length} </span>
+              <span  style={{ color: 'green', fontSize: '24px' }}> {playerNames.length + 1} </span>
                명 접속중
             </HeaderTitle>
             <IconButton
@@ -302,34 +298,33 @@ export default function UsersDialog() {
             </IconButton>
           </Header>
           <Body>
-            {otherPlayers?.map((player, i: number) => {
-              if (player.name === username) return
+            {playerNames.map((name, key) => {
+              if (name === username) return
               return (
-                <ListItem divider key={i} style={{ padding: '16px'}}>
+                <ListItem divider key={key} style={{ padding: '16px'}}>
                   <Button onClick={() => {
-                    getFriendProfile(player.name)
+                    getFriendProfile(name)
                     openProfileModal()
                   }}>
                   <NameWrapper>
                     <ListItemAvatar>
-                      <Avatar src={imgpath} />
-                      {/* <img src={imgpath} /> */}
+                      <Avatar src={`/assets/character/single/${capitalizeFirstLetter(playerCharacters[key])}.png`} />
                     </ListItemAvatar>
                     <NameProfile>
-                      <Username>{player.name}</Username>
+                      <Username>{name}</Username>
                     </NameProfile>
                   </NameWrapper>
                   </Button>
                   <ProfileButton>
                     <Button onClick={() => {
-                        sendFriendRequest(username, player.name)
+                        sendFriendRequest(username, name)
                         openResModal()
                     }}>
                       <PersonAddAltOutlined fontSize='large' />
                     </Button>
                     <Button onClick={(e) => {
                         e.preventDefault();
-                        handleClick(player)
+                        handleClick(name)
                       }}
                     >
                       <MailOutlineRounded fontSize='large' />
