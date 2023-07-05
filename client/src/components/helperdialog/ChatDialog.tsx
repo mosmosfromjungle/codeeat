@@ -182,7 +182,7 @@ export default function ChatDialog() {
     setInputValue('')
     
     if (val) {
-      console.log(val)
+      // console.log(val)
       game.network.addChatMessage(val)
       game.myPlayer.updateDialogBubble(val)
     }
