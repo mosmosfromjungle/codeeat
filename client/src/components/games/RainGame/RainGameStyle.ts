@@ -116,6 +116,7 @@ export const Left = styled.div`
   position: relative;
   overflow: hidden;
   textalign: center;
+  font-family: Font_DungGeun;
 `
 
 export const Right = styled.div`
@@ -123,6 +124,7 @@ export const Right = styled.div`
   position: relative;
   overflow: hidden;
   textalign: center;
+  font-family: Font_DungGeun;
 `
 
 export const PointArea = styled.div`
