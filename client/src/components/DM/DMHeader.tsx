@@ -36,7 +36,7 @@ export function DMHeader() {
 const Wrapper = styled.div`
   position: relative;
   height: 40px;
-  background: #000000a7;
+  background: #004755;
   border-radius: 10px 10px 0px 0px;
 
   .close {
