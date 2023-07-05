@@ -45,7 +45,7 @@ const Wrapper = styled.form`
   transform: translate(-50%, -50%);
   background: #222639;
   border-radius: 16px;
-  padding: 36px 40px;
+  padding: 36px 50px;
   box-shadow: 0px 0px 5px #0000006f;
   width: 75%;
 `
@@ -60,13 +60,16 @@ const Content = styled.div`
   margin: 36px 0;
 `
 const Left = styled.div`
+  display: flex;
+  align-items: center;
+  justify-context: center;
   width: 50%;
   font-color: 20px;
   font-size: 20px;
 `
 const Right = styled.div`
   width: 50%;
-  margin: 0 0 0 30px;
+  margin: 0 0 0 60px;
   color: white;
   display: flex;
   flex-direction: column;
@@ -90,6 +93,7 @@ const Special = styled.span`
 const Description = styled.span`
   color: white;
   font-size: 26px;
+  line-height: 1.5;
 `
 const GameDescription = styled.div`
   margin-top: 40px;
