@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { useAppSelector, useAppDispatch } from '../../../hooks'
 import { closeBrickGameDialog } from '../../../stores/BrickGameStore'
 import { DIALOG_STATUS, setDialogStatus } from '../../../stores/UserStore'
-import { PlayersInterface } from '../../../stores/RoomStore'
+import { QUIZ_TYPE } from '../../../../../types/IGameState'
 
 import phaserGame from '../../../PhaserGame'
 import Bootstrap from '../../../scenes/Bootstrap'
@@ -71,6 +71,7 @@ export default function BrickGameDialog() {
   const myCurrentImages = useAppSelector((state) => state.brickgame.myPlayerStatus.currentImages)
   const mySelectedOption = useAppSelector((state) => state.brickgame.myPlayerStatus.selectedOption)
   const myCommandArray = useAppSelector((state) => state.brickgame.myPlayerStatus.commandArray)
+  const gameMessage = useAppSelector((state) => state.brickgame.gameMessage)
 
   // Friend information
   const oppUsername = useAppSelector((state) => state.brickgame.oppUsername)
@@ -85,8 +86,43 @@ export default function BrickGameDialog() {
   // Game state
   const problemType  = useAppSelector((state) => state.brickgame.brickGameState.problemType)
   const round  = useAppSelector((state) => state.brickgame.brickGameState.currentRound)
-  const hasRoundWinner  = useAppSelector((state) => state.brickgame.brickGameState.hasRoundWinner)
-  const [problem, setProblem] = useState<string>('같은 동물 2마리만 남겨주세요!');
+  const hasRoundWinner = useAppSelector((state) => state.brickgame.brickGameState.hasRoundWinner)
+  const roundWinner = useAppSelector((state) => state.brickgame.brickGameState.roundWinner)
+  const [problem, setProblem] = useState<string>('')
+  const [number, setNumber] = useState<number>(0)
+  const [showProblem, setShowProblem] = useState<boolean>(false)
+
+  // 라운드 승자 표시
+  const [winnerModalOpen, setWinnerModalOpen] = useState<boolean>(false)
+  useEffect(() => {
+    if (roundWinner === '') {
+      setWinnerModalOpen(false)
+    } else {
+      setWinnerModalOpen(true)
+      setTimeout(() => {
+        setWinnerModalOpen(false)
+      }, 2000)
+    }
+  }, [roundWinner])
+
+  // 문제 출제
+  useEffect(() => {
+    if (problemType === QUIZ_TYPE.NONE) {
+      setShowProblem(false)
+    } else if (problemType === QUIZ_TYPE.SAME2) {
+      setShowProblem(true)
+      setProblem('같은 동물')
+      setNumber(2)
+    } else if (problemType === QUIZ_TYPE.SAME3) {
+      setShowProblem(true)
+      setProblem('같은 동물 ')
+      setNumber(3)
+    } else if (problemType === QUIZ_TYPE.DIFF3) {
+      setShowProblem(true)
+      setProblem('서로 다른 동물')
+      setNumber(3)
+    }
+  }, [problemType])
 
   // 이미지 배열 배치
   const imgsrc = [img1, img2, img3, img4, img5, img6]
@@ -192,10 +228,33 @@ export default function BrickGameDialog() {
     );
   }
 
+  const roundWinnerModal = (
+      <div
+        style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          backgroundColor: '#222639',
+          borderRadius: '24px',
+          boxShadow: '0px, 10px, 24px, #0000006f',
+          padding: '50px',
+          zIndex: 1000,
+          fontSize: '15px',
+          color: '#eee',
+          textAlign: 'center',
+          fontFamily: 'Font_DungGeun',
+        }}
+      >
+        <h2>{roundWinner}</h2>
+      </div>
+    )
+
   return (
     <>
      <GlobalStyle />
       <Backdrop>
+        {winnerModalOpen && roundWinnerModal}
         <Wrapper>
           <IconButton
             aria-label="close dialog"
@@ -239,22 +298,23 @@ export default function BrickGameDialog() {
 
             <QuizWrapper>
               <div style={{ fontSize: '40px', display: 'flex', alignItems: 'center' }}>
-                <span style={{ fontSize: '36px', margin: '20px' }}>
-                  {/* 숫자의 합이 <span style={{ fontSize: '36px', color: 'yellow' }}> {n} </span>이 되도록
-                  몬스터 배열을 수정해주세요! */}
-                  {/* {problemType} */}
-
-                  {oppUsername ? 
-                    `${problem}` :
+                <span style={{ fontSize: '32px', margin: '20px' }}>
+                  {oppUsername ? (
+                    showProblem && (
+                      <span>
+                        {problem} <span style={{ fontSize: '36px', color: 'yellow' }}> {number} </span> 마리만 남겨주세요!
+                      </span>
+                    )
+                  ) : (
                     '친구가 들어오면 여기에 문제가 보일거예요!'
-                  }
+                  )}
+                  {oppUsername && (
+                    <OppOption>
+                      {COMMON_MESSAGE}
+                    </OppOption>
+                  )}
                 </span>
               </div>
-
-              <OppOption>
-                {COMMON_MESSAGE}
-              </OppOption>
-
               {/* <ImageArrayWrapper>
                 <MyBracket>&#91;</MyBracket>
                 {myImages.map((image, index) => (
@@ -363,6 +423,7 @@ export default function BrickGameDialog() {
                     </CharacterArea>
                 </MyInfo>
                 </div>
+                <div style={{ color: 'white' }}>{gameMessage}</div>
                 <div style={{ flex: 1, color: 'white', fontSize: '25px', textAlign: 'right', lineHeight: '1.5' }}>
                     { myLifeElements }
                     <br/>

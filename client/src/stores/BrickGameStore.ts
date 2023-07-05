@@ -13,6 +13,7 @@ export interface BrickGameStateInterface {
   gameStarting: boolean
   currentRound: number
   hasRoundWinner: boolean
+  roundWinner: string
 }
 
 const brickGameState: BrickGameStateInterface = {
@@ -22,7 +23,8 @@ const brickGameState: BrickGameStateInterface = {
   gameInProgress: false,
   gameStarting: false,
   currentRound: 0,
-  hasRoundWinner: false
+  hasRoundWinner: false,
+  roundWinner: ''
 }
 
 export interface PlayerScoreInterface {
@@ -73,6 +75,7 @@ export const brickGameSlice = createSlice({
     oppPlayerStatus,
     oppUsername: '',
     oppCharacter: '',
+    gameMessage: '',
   },
   reducers: {
     openBrickGameDialog: (state) => {
@@ -94,6 +97,7 @@ export const brickGameSlice = createSlice({
       state.brickGameState.gameStarting = action.payload.gameStarting
       state.brickGameState.currentRound = action.payload.currentRound
       state.brickGameState.hasRoundWinner = action.payload.hasRoundWinner
+      state.brickGameState.roundWinner = action.payload.roundWinner
     },
     setMyPlayerScore: (state, action: PayloadAction<PlayerScoreInterface>) => {
       state.myPlayerScore = action.payload
@@ -110,7 +114,10 @@ export const brickGameSlice = createSlice({
     setOppInfo: (state, action: PayloadAction<{ username: string, character: string }>) => {
       state.oppUsername = action.payload.username
       state.oppCharacter = action.payload.character
-    }
+    },
+    setGameMessage: (state, action: PayloadAction<string>) => {
+      state.gameMessage = action.payload
+    },
   },
 })
 
@@ -123,6 +130,7 @@ export const {
   setOppPlayerScore,
   setOppPlayerStatus,
   setOppInfo,
+  setGameMessage,
 } = brickGameSlice.actions
 
 export default brickGameSlice.reducer
