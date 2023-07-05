@@ -249,7 +249,7 @@ export default function BrickGameDialog() {
   const roundWinnerModal = (
     <RoundWinnerModal>
       <span style={{ color: 'yellow' }}>{roundWinner}</span>님이 정답을 맞췄습니다!<br/>
-      { round === 5 ? '결과창으로 넘어갑니다.' : '다음 문제로 넘어갑니다.' }
+      { round === 2 ? '결과창으로 넘어갑니다.' : '다음 문제로 넘어갑니다.' }
     </RoundWinnerModal>
   )
 
@@ -299,7 +299,7 @@ export default function BrickGameDialog() {
               </Button>)
               : ''
               }
-              ROUND {round}/5
+              ROUND {round}/2
             </div>
           </RoundWrapper>
 

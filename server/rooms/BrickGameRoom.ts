@@ -217,7 +217,7 @@ export class BrickGameRoom extends Room<IGameState> {
     if (endRound) {
       this.endRound()
       setTimeout(() => {
-        if (this.state.brickgames.currentRound === 5) {
+        if (this.state.brickgames.currentRound === 2) {
           let winnerKey: string | null = null
           let winnerPoint = 0
           this.state.brickgames.brickPlayers.forEach((player, key) => {
