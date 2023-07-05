@@ -20,7 +20,6 @@ export function DMHeader() {
                 }}
               ><ChevronLeft
               set="bold"
-              className="back"
               primaryColor="white"/></IconButton>
               <IconButton
                 aria-label="close dialog"
@@ -47,8 +46,8 @@ const Wrapper = styled.div`
   }
   .back {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 2px;
+    left: -2px;
   }
 `
 const Title = styled.div`
