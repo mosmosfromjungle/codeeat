@@ -46,8 +46,7 @@ export const Wrapper = styled.div`
 export const RoundWrapper = styled.div`
   color: black;
   font-size: 30px;
-  margin: 16px 16px 8px 16px;
-  padding: 8px;
+  margin: 16px 16px 16px 16px;
   position: relative;
   display: flex;
   flex-direction: row;
@@ -66,7 +65,7 @@ export const MidWrapper = styled.div`
 `
 
 export const HelperWrapper = styled.div`
-  width: 40%;
+  width: 30%;
   border-radius: 20px;
   background-color: gray;
   color: white;
@@ -84,7 +83,7 @@ export const HelperWrapper = styled.div`
 `
 
 export const QuizWrapper = styled.div`
-  width: 60%;
+  width: 70%;
   background-color: #666666;
   border-radius: 20px;
   margin: 0 0 0 8px;
@@ -92,6 +91,7 @@ export const QuizWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  border: 7px solid yellow;
 `
 
 export const BottomWrapper = styled.div`
@@ -126,27 +126,27 @@ export const ScoreWrapper = styled.div`
 `
 
 export const OppInfo = styled.div`
-  width: 100px;
+  width: 40%;
   position: relative;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  // flex-direction: column;
+  // justify-content: center;
   align-items: center;
 `
 
 export const MyInfo = styled.div`
-  width: 100px;
+  width: 40%;
   position: relative;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  // flex-direction: column;
+  // justify-content: center;
   align-items: center;
 `
 
 export const MyWrapper = styled.div`
   width: 50%;
   border-radius: 20px;
-  background-color: gray;
+  background-color: #666666;
   color: gray;
   position: relative;
   display: flex;
@@ -156,6 +156,7 @@ export const MyWrapper = styled.div`
   align-items: center;
   margin: 0 8px 0 0;
   padding: 32px;
+  border: 7px solid green;
 `
 
 export const ImageArrayWrapper = styled.div`
@@ -303,11 +304,12 @@ export const Right = styled.div`
 `
 
 export const CharacterArea = styled.div`
-  height: 50%;
 `
 
 export const NameArea = styled.div`
-  height: 50%;
+  width: 100%;
+  text-align: center;
+  font-size: 25px;
 `
 
 export const Special = styled.span`

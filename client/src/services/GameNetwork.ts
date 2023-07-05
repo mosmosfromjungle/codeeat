@@ -198,11 +198,9 @@ export default class GameNetwork {
     this.room?.send(Message.BRICK_GAME_COMMAND, { command: command })
   }
 
-
   brickGameStart() {
     this.room?.send(Message.BRICK_GAME_START)
   }
-
 
   /* MOLE GAME  */
 
