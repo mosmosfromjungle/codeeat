@@ -18,7 +18,6 @@ export const Wrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  min-width: max-content;
 
   .close {
     position: absolute;
@@ -89,7 +88,7 @@ export const StartButton = styled.div`
 
 export const TimerArea = styled.div`
   position: absolute;
-  top: 20px;
+  top: 40px;
   left: 46%;
   trans-form: translateX(-50%);
   font-size: 35px;
@@ -106,7 +105,7 @@ export const GameArea = styled.div`
   height: 85%;
 
   box-shadow: 0px 0px 5px #0000006f;
-  background: no-repeat center/cover url('/assets/game/RainGame/blackboard.png');
+  background: no-repeat center/cover url('/assets/game/RainGame/blackboard.jpg');
   background-size: 100% 100%;
   border-radius: 20px;
 `
@@ -116,13 +115,15 @@ export const Left = styled.div`
   position: relative;
   overflow: hidden;
   textalign: center;
+  font-family: Font_DungGeun;
 `
 
 export const Right = styled.div`
-  width: 50%;
+  width: 43%;
   position: relative;
   overflow: hidden;
   textalign: center;
+  font-family: Font_DungGeun;
 `
 
 export const PointArea = styled.div`
@@ -174,7 +175,7 @@ export const MyPoint = styled.div`
     width: 20%;
     margin-top: 10px;
     text-align: center;
-    border: 1px solid #00000029;
+    border: 5px solid yellow;
     border-radius: 16px;
     box-shadow: 0px 10px 24px #0000006f;
 `

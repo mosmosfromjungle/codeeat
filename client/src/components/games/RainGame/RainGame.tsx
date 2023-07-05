@@ -60,7 +60,7 @@ export function RainGame() {
   const dispatch = useAppDispatch()
   const keywordInput = useRef<HTMLInputElement>(null)
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-  const [time, setTime] = useState(10)
+  const [time, setTime] = useState(100)
   const host = useAppSelector((state) => state.raingame.host)
   const sessionId = useAppSelector((state) => state.user.gameSessionId)
   const winner = useAppSelector((state) => state.raingame.winner)
@@ -607,11 +607,11 @@ export function RainGame() {
               key={index}
               style={{
                 position: 'absolute',
-                fontSize: '1.4vw',
-                letterSpacing: '0.3vw',
+                fontSize: '50px',
+                letterSpacing: '0.1vw',
                 top: `${word.y}px`,
                 left: `${word.x}px`,
-                color: '#FF7F00',
+                color: word.itemA ? 'red' : (word.itemB ? 'blue' : '#FFFFFF'),
                 zIndex: 2,
               }}
             >
@@ -627,11 +627,11 @@ export function RainGame() {
               key={index}
               style={{
                 position: 'absolute',
-                fontSize: '1.4vw',
-                letterSpacing: '0.3vw',
+                fontSize: '50px',
+                letterSpacing: '0.1vw',
                 top: `${word.y}px`,
                 left: `${word.x + 120}px`,
-                color: '#FFFFFF',
+                color: word.itemA ? 'red' : (word.itemB ? 'blue' : '#FFFFFF'),
                 zIndex: 2,
               }}
             >
@@ -661,9 +661,9 @@ export function RainGame() {
           <Item>
             💡 특별한 색의 단어를 성공하면 아이템을 사용할 수 있어요 !<br />
             <br />
-            <span style={{ color: 'red' }}>빨간색</span> - 상대방 단어 가리기
+            <span style={{ color: 'red' }}>빨간색</span> - 상대방 속도 키우기
             <br />
-            <span style={{ color: 'blue' }}>파란색</span> - 상대방 속도 키우기
+            <span style={{ color: 'blue' }}>파란색</span> - 상대방 단어 가리기
           </Item>
         </PlayArea>
 
@@ -684,7 +684,7 @@ export function RainGame() {
               InputProps={{
                 style: {
                   width: '300px',
-                  marginTop: '5px',
+                  marginTop: '10px',
                 },
               }}
             />
@@ -694,7 +694,7 @@ export function RainGame() {
 
         <MyPoint>
           <NameArea>
-            나 [{username.toUpperCase()}]<br />
+            <span style={{ color: 'yellow' }}>나</span> [{username.toUpperCase()}]<br />
             {myLifeElements}
           </NameArea>
           <CharacterArea>
