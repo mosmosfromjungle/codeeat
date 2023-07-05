@@ -1,9 +1,9 @@
 .experience-bar {
-  width: 100%;
-  height: 20px;
+  width: 160px;
+  height: 5px;
   background: #ddd;
-  border-radius: 10px;
-  overflow: hidden;
+  /* border-radius: 10px;
+  overflow: hidden; */
   margin: 0 auto;
 }
 
