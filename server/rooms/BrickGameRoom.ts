@@ -133,8 +133,8 @@ export class BrickGameRoom extends Room<IGameState> {
           }
           break
         case DATA_STRUCTURE.SET:
-          if (lowercaseCommand.startsWith('remove') || lowercaseCommand.startsWith('discard')) {
-            const match = command.match(/remove\((\d+)\)/) || command.match(/discard\((\d+)\)/);
+          if (lowercaseCommand.startsWith('remove')) {
+            const match = command.match(/remove\((\d+)\)/)
             if (match) {
               const number = match[1];
               const index = playerStatus.currentImages.findIndex((image) => image.text === number);
