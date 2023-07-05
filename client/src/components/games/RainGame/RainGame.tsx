@@ -34,7 +34,6 @@ export function RainGame() {
   const dispatch = useAppDispatch()
   const keywordInput = useRef<HTMLInputElement>(null)
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-  bootstrap.gameNetwork.startRainGame(true)
   const [time, setTime] = useState(10)
   const host = useAppSelector((state) => state.raingame.host)
   const sessionId = useAppSelector((state) => state.user.gameSessionId)
@@ -468,11 +467,15 @@ export function RainGame() {
   let myLifeElements = []
 
   for (let i = 0; i < youState.heart; i++) {
-    friendLifeElements.push(<img src={eraser} width="50px" style={{ margin: '5px' }}></img>)
+    friendLifeElements.push(
+      <img key={{ i }} src={eraser} width="50px" style={{ margin: '5px' }}></img>
+    )
   }
 
   for (let i = 0; i < myState.heart; i++) {
-    myLifeElements.push(<img src={eraser} width="50px" style={{ margin: '5px' }}></img>)
+    myLifeElements.push(
+      <img key={{ i }} src={eraser} width="50px" style={{ margin: '5px' }}></img>
+    )
   }
 
   return (

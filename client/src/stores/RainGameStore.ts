@@ -64,8 +64,8 @@ export const rainGameSlice = createSlice({
       state.rainGameReady = action.payload
     },
 
-    setRainGameInProgress: (state, action: PayloadAction<boolean>) => {
-      state.rainGameInProgress = action.payload
+    setRainGameInProgress: (state) => {
+      state.rainGameInProgress = true
     },
 
     setRainGameYou: (state, action: PayloadAction<RainGameUser>) => {
