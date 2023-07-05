@@ -1,15 +1,27 @@
 import styled from 'styled-components';
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
+import { ChevronLeft } from 'react-iconly'
 import { useAppDispatch, useAppSelector } from '../../hooks'
-import { setShowDMRoom } from '../../stores/DMStore';
+import { setShowDMList, setShowDMRoom } from '../../stores/DMStore';
 
 export function DMHeader() {
   const dispatch = useAppDispatch();
   const friendName = useAppSelector((state) => state.dm.receiverName)
   return (
     <Wrapper>
-              <Title> {friendName}님과의 채팅 </Title>
+              <Title>{friendName}</Title>
+              <IconButton
+                aria-label="close dialog"
+                className="back"
+                onClick={() => {
+                  dispatch(setShowDMList(true));
+                  dispatch(setShowDMRoom(false));
+                }}
+              ><ChevronLeft
+              set="bold"
+              classname="back"
+              primaryColor="white"/></IconButton>
               <IconButton
                 aria-label="close dialog"
                 className="close"
@@ -33,13 +45,18 @@ const Wrapper = styled.div`
     top: 0;
     right: 0;
   }
+  .back {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
 `
 const Title = styled.div`
   position: absolute;
   color: white;
   font-size: 20px;
   font-weight: bold;
-  top: 10px;
-  left: 10px;
+  top: 9px;
+  left: 40px;
   font-family: Font_DungGeun;
 `
