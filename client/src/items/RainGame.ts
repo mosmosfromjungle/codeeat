@@ -31,11 +31,7 @@ export default class RainGame extends Item {
   }
 
   onOverlapDialog() {
-    if (this.currentUsers.size === 0) {
-      this.setDialogBox('R을 눌러 코드비 참가하기')
-    } else {
-      this.setDialogBox('R 눌러서 참가하기')
-    }
+    this.setDialogBox('R 눌러 산성비 게임 플레이!')
   }
 
   addCurrentUser(userId: string) {

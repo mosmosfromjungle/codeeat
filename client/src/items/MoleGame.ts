@@ -31,11 +31,7 @@ export default class MoleGame extends Item {
   }
 
   onOverlapDialog() {
-    if (this.currentUsers.size === 0) {
-      this.setDialogBox('R 눌러서 두더지게임 참가하기')
-    } else {
-      this.setDialogBox('R 눌러서 참가하기')
-    }
+    this.setDialogBox('R 눌러 두더지 게임 플레이!')
   }
 
   addCurrentUser(userId: string) {
