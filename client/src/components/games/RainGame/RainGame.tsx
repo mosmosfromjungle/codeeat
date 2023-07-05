@@ -2,15 +2,22 @@ import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
 import Bootstrap from '../../../scenes/Bootstrap'
 import phaserGame from '../../../PhaserGame'
+
 import TextField from '@mui/material/TextField'
+import Button from '@mui/material/Button'
+
 import { 
   CharacterArea, NameArea, Position, 
   TimerArea, GameArea, Left, Right, PointArea, FriendPoint, MyPoint, 
-  InputArea, PlayArea, Comment, Item, 
+  InputArea, PlayArea, Comment, StartButton, Item, 
 } from './RainGameStyle'
+import './RainGame.css'
+
 import eraser from '/assets/game/RainGame/eraser.png'
+
 import debounce from 'lodash/debounce'
 import RainGameItemB from './RainGameItemB'
+
 import { DIALOG_STATUS, setDialogStatus } from '../../../stores/UserStore'
 import { closeRainGameDialog } from '../../../stores/RainGameDialogStore'
 
@@ -28,6 +35,9 @@ function capitalizeFirstLetter(string) {
 }
 
 export function RainGame() {
+  const rainGameInProgress = useAppSelector((state) => state.raingame.rainGameInProgress)
+  const rainGameReady = useAppSelector((state) => state.raingame.rainGameReady)
+
   const raingame = useAppSelector((state) => state.raingame)
   const canvasHeight = 50
   const lineHeight = canvasHeight + 550
@@ -244,18 +254,22 @@ export function RainGame() {
     { y: 0, speed: 1.7, keyword: 'widget', x: 390, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'wireless', x: 430, itemA: false, itemB: false },
   ]
+
   const debouncedDecreaseHeart = debounce(() => {
     bootstrap.gameNetwork.decreaseHeart(sessionId)
   }, 300)
+
   useEffect(() => {
+    
     const updateMyWordsInterval = setInterval(() => {
       if (!gameInProgress) {
         clearInterval(updateMyWordsInterval)
         return
       }
 
+      // 내 단어 생성, 위치 업데이트
       setMyGame((game) =>
-        game.reduce((newGame, item) => {
+        game.reduce((newGame, item) => {          
           const newY = item.y + item.speed + myExtraSpeedRef.current
 
           if (newY >= lineHeight && !dheart) {
@@ -271,6 +285,7 @@ export function RainGame() {
         }, [])
       )
     }, 100)
+
     const meItemInterval = setInterval(() => {
       if (!gameInProgress) {
         clearInterval(meItemInterval)
@@ -286,6 +301,7 @@ export function RainGame() {
         })
       }
     }, 300)
+
     const updateYouWordsInterval = setInterval(() => {
       if (!gameInProgress) {
         clearInterval(updateYouWordsInterval)
@@ -349,6 +365,11 @@ export function RainGame() {
   }, [targetword])
 
   useEffect(() => {
+    // 아직 준비상태면, 단어 떨어지지 않음
+    if ( !rainGameInProgress || !rainGameReady ) {
+      return
+    }
+
     let currentWordIndex = 0
     const mywords = username === host ? Awords : Bwords
     const youWords = username === host ? Bwords : Awords
@@ -461,6 +482,10 @@ export function RainGame() {
     }
   }
 
+  const handleStart = () => {
+    alert("here");
+  }
+
   // 친구 목숨, 내 목숨 표시
 
   let friendLifeElements = []
@@ -481,6 +506,40 @@ export function RainGame() {
   return (
     <> 
       <GameArea>
+        <Comment>
+            <p className={`friend-comment ${you.username ? '' : 'start-game'}`}>
+              {you.username ? '친구가 들어왔어요,' : '친구가 아직 들어오지 않았어요 !'}
+              <br />
+              {you.username ? '방장은 Start 버튼을 눌러주세요 !' : '친구가 들어와야 게임이 시작돼요.'}
+            </p>
+        </Comment>
+        
+        {you.username ? 
+          (<StartButton>
+            <div id="start-button-div" className={`point-box clearfix ${username === host ? '' : 'hidden'}`}>
+              <div className="btn-wrap">
+                <Button
+                  type="button"
+                  onClick={() => handleStart() }
+                  style={{ 
+                    position: 'absolute',
+                    fontSize: '20px',
+                    fontFamily: 'Font_DungGeun', 
+                    width: '160px',
+                    background: 'white',
+                    color: 'black',
+                    top: '0px',
+                    right: '80px',
+                    borderRadius: '20px', 
+                  }}
+                >
+                  게임 시작
+                </Button>
+              </div>
+            </div>
+          </StartButton>)
+          : '' }
+
         <TimerArea>
           { time < 16 ?
             (
@@ -499,13 +558,6 @@ export function RainGame() {
               </>
             )
           }
-          <Comment>
-              <p className={`friend-comment ${you.username ? '' : 'start-game'}`}>
-                {you.username ? '친구가 들어왔어요,' : '친구가 아직 들어오지 않았어요 !'}
-                <br />
-                {you.username ? '방장은 Start 버튼을 눌러주세요 !' : '친구가 들어와야 게임이 시작돼요.'}
-              </p>
-          </Comment>
         </TimerArea>
 
         <Left>
@@ -552,15 +604,13 @@ export function RainGame() {
       <PointArea>
         <FriendPoint>
           <CharacterArea>
-            <img src={ friendimgpath } width="50px" id="friend-character"></img>
+            <img src={ friendimgpath } width="50px" id="friend-character" className={you.username ? '' : 'hidden'}></img>
           </CharacterArea>
           <NameArea>
             친구 [{you.username.toUpperCase()}] <br />
             {friendLifeElements}
           </NameArea>
         </FriendPoint>
-
-
 
         <PlayArea>
           <Item>
@@ -570,7 +620,6 @@ export function RainGame() {
           </Item>
         </PlayArea>
 
-
         <InputArea>
           <Position>
             {youState.point}:{myState.point}
@@ -579,7 +628,6 @@ export function RainGame() {
 
         <PlayArea>
           <div>
-
             명령어를 입력한 후 엔터를 쳐주세요 !
             <TextField
                 focused

@@ -22,23 +22,14 @@ export const Wrapper = styled.div`
 
   .close {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 20px;
+    right: 20px;
     z-index: 1;
   }
 `
 
 export const WaitWrapper = styled.div`
   height: 200px;
-`
-
-export const StartButton = styled.button`
-  width: 120px;
-  height: 40px;
-  margin: auto;
-  font-size: 18px;
-  font-weight: bold;
-  transition: opacity 0.3s;
 `
 
 export const FriendInfo = styled.div`
@@ -82,10 +73,16 @@ export const NameArea = styled.div`
 
 export const Comment = styled.div`
   position: absolute;
-  left: -130%;
-  trans-form: translateX(-50%);
-  width: 500px;
-  text-align: center;
+  top: 20px;
+  left: 50px;
+  font-size: 25px;
+  font-family: Font_DungGeun;
+`
+
+export const StartButton = styled.div`
+  position: absolute;
+  top: 40px;
+  right: -30px;
   font-size: 25px;
   font-family: Font_DungGeun;
 `

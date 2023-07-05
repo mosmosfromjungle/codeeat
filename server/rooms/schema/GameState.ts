@@ -55,7 +55,7 @@ export class RainGameRoomState extends Schema implements IRainGameRoomState {
   @type('boolean')
   rainGameReady: boolean = false;
   @type('boolean')
-  rainGameInProgress: boolean = true;
+  rainGameInProgress: boolean = false;
   @type({ map: RainGameState })
   rainGameStates = new MapSchema<RainGameState>()
   @type({ map: RainGameUser })
