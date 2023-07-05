@@ -20,7 +20,7 @@ export function DMHeader() {
                 }}
               ><ChevronLeft
               set="bold"
-              classname="back"
+              className="back"
               primaryColor="white"/></IconButton>
               <IconButton
                 aria-label="close dialog"
