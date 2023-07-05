@@ -21,6 +21,9 @@ import RainGameItemB from './RainGameItemB'
 import { DIALOG_STATUS, setDialogStatus } from '../../../stores/UserStore'
 import { closeRainGameDialog } from '../../../stores/RainGameDialogStore'
 
+import { updateLevel, UpdateLevelReqest } from '../../../apicalls/auth'
+import ExperienceResultModal from '../../ExperienceResultModal'
+
 interface KeywordRain {
   y: number
   speed: number
@@ -87,6 +90,18 @@ export function RainGame() {
     setYouImage(false)
   }, [])
 
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+  const openModal = () => {
+    setTimeout(() => {
+      setIsModalOpen(true)
+    }, 200)
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false)
+    handleClose();
+  }
+
   // 승리자 체크
 
   const WinnerCheck = () => {
@@ -119,6 +134,34 @@ export function RainGame() {
       }
     }
   }
+
+  // 경험치 보내주기
+  const gainExpUpdateLevel = (username: string, exp: number) => {
+    const body: UpdateLevelReqest = {
+      username: username,
+      exp: exp,
+    }
+    updateLevel(body)
+      .then((response) => {
+        if (!response) return
+      })
+      .catch((error) => {
+        if (error.response) {
+          const { status, message } = error.response.data
+        }
+      })
+  }
+
+  // useEffect(() => {
+  //   if (winner == username) {
+  //     gainExpUpdateLevel(username, 7)
+  //   } else if (winner == you.username) {
+  //     gainExpUpdateLevel(username, 3)
+  //   }
+  //   if (winner) {
+  //     openModal()
+  //   }
+  // }, [winner])
 
   const handleClose = () => {
     try {
@@ -506,6 +549,10 @@ export function RainGame() {
   return (
     <> 
       <GameArea>
+        {isModalOpen && (
+          <ExperienceResultModal open={isModalOpen} handleClose={closeModal} />
+        )}
+
         <Comment>
             <p className={`friend-comment ${you.username ? '' : 'start-game'}`}>
               {you.username ? '친구가 들어왔어요,' : '친구가 아직 들어오지 않았어요 !'}
