@@ -31,6 +31,7 @@ export interface IRainGameRoomState extends Schema {
   rainGameStates: MapSchema<IRainGameState>
   rainGameUsers: MapSchema<IRainGameUser>
   keywordLists: MapSchema<IKeywordRain>
+  winner: string
 }
 
 /* BRICK GAME ROOM SCHEMA */

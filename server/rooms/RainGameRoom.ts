@@ -31,9 +31,10 @@ export class RainGameRoom extends Room<GameState> {
     this.state.host = username
 
     this.onMessage(Message.RAIN_GAME_START_C, (client, content) => {
-      
+      const { value } = content
+      this.state.raingames.rainGameInProgress = value
       this.broadcast(
-        Message.RAIN_GAME_START_S,
+        Message.RAIN_GAME_START_S,{ progress : value },
         { afterNextPatch: true}
       )
     })
@@ -117,9 +118,8 @@ export class RainGameRoom extends Room<GameState> {
     )
 
     this.onMessage(
-      Message.RAIN_GAME_END_C,
-      (client, data: { username: string }) => {
-        console.log("승리 시그널 수신")
+      Message.RAIN_GAME_END_C, (client, data : {username : string;}) => { 
+        this.state.raingames.winner = username
         this.broadcast(
           Message.RAIN_GAME_END_S,
           data,{ afterNextPatch: true }

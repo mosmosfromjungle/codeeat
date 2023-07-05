@@ -6,10 +6,22 @@ import phaserGame from '../../../PhaserGame'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 
-import { 
-  CharacterArea, NameArea, Position, 
-  TimerArea, GameArea, Left, Right, PointArea, FriendPoint, MyPoint, 
-  InputArea, PlayArea, Comment, StartButton, Item, 
+import {
+  CharacterArea,
+  NameArea,
+  Position,
+  TimerArea,
+  GameArea,
+  Left,
+  Right,
+  PointArea,
+  FriendPoint,
+  MyPoint,
+  InputArea,
+  PlayArea,
+  Comment,
+  StartButton,
+  Item,
 } from './RainGameStyle'
 import './RainGame.css'
 
@@ -39,6 +51,7 @@ function capitalizeFirstLetter(string) {
 
 export function RainGame() {
   const rainGameInProgress = useAppSelector((state) => state.raingame.rainGameInProgress)
+  const rainGameInProgressRef = useRef(rainGameInProgress)
   const rainGameReady = useAppSelector((state) => state.raingame.rainGameReady)
 
   const raingame = useAppSelector((state) => state.raingame)
@@ -50,16 +63,17 @@ export function RainGame() {
   const [time, setTime] = useState(10)
   const host = useAppSelector((state) => state.raingame.host)
   const sessionId = useAppSelector((state) => state.user.gameSessionId)
-  // const inProgress = 
+  const winner = useAppSelector((state) => state.raingame.winner)
+
 
   // My information
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
-  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}.png`;
-  
+  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}.png`
+
   // Friend information
   const you = useAppSelector((state) => state.raingame.you)
-  const friendimgpath = `/assets/character/single/${capitalizeFirstLetter(you.character)}.png`;
+  const friendimgpath = `/assets/character/single/${capitalizeFirstLetter(you.character)}.png`
   const [myGame, setMyGame] = useState<KeywordRain[]>([])
   const [youGame, setYouGame] = useState<KeywordRain[]>([])
   const [myState, setMyState] = useState({
@@ -80,7 +94,6 @@ export function RainGame() {
   const me = useAppSelector((state) => state.raingame.me)
   const [myImage, setMyImage] = useState(false)
   const [youImage, setYouImage] = useState(false)
-  const [gameInProgress, setGameInProgress] = useState(true)
 
   const hideMyImage = useCallback(() => {
     setMyImage(false)
@@ -92,6 +105,7 @@ export function RainGame() {
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const openModal = () => {
+    console.log("openModal")
     setTimeout(() => {
       setIsModalOpen(true)
     }, 200)
@@ -99,40 +113,7 @@ export function RainGame() {
 
   const closeModal = () => {
     setIsModalOpen(false)
-    handleClose();
-  }
-
-  // 승리자 체크
-
-  const WinnerCheck = () => {
-    // 상대가 나갔을 때
-    if (you.username === '') {
-      bootstrap.gameNetwork.endGame(me.username);
-
-      // 둘 중 하나의 heart가 0일 때
-    } else if (youState.heart === 0 || myState.heart === 0) {
-      if (youState.heart === 0) {
-        bootstrap.gameNetwork.endGame(me.username);
-      } else if (myState.heart === 0) {
-        bootstrap.gameNetwork.endGame(you.username);
-      }
-
-      // 시간이 0이 되었을 때
-    } else if (time === 0) {
-      console.log("시간 0 감지");
-      if (myState.point > youState.point) {
-        console.log("나의 승리 조건 만족");
-        bootstrap.gameNetwork.endGame(
-          me.username
-        )
-      } else if (myState.point < youState.point) {
-        bootstrap.gameNetwork.endGame(
-          me.username
-        )
-      } else {
-        bootstrap.gameNetwork.endGame('draw')
-      }
-    }
+    handleClose()
   }
 
   // 경험치 보내주기
@@ -152,16 +133,18 @@ export function RainGame() {
       })
   }
 
-  // useEffect(() => {
-  //   if (winner == username) {
-  //     gainExpUpdateLevel(username, 7)
-  //   } else if (winner == you.username) {
-  //     gainExpUpdateLevel(username, 3)
-  //   }
-  //   if (winner) {
-  //     openModal()
-  //   }
-  // }, [winner])
+  useEffect(() => {
+    console.log('승자를 감지했다:',winner)
+    if (winner == username) {
+      gainExpUpdateLevel(username, 7)
+    } else if (winner == you.username) {
+      gainExpUpdateLevel(username, 3)
+    }
+    if (winner) {
+      openModal()
+      bootstrap.gameNetwork.startRainGame(false)
+    }
+  }, [winner])
 
   const handleClose = () => {
     try {
@@ -303,23 +286,22 @@ export function RainGame() {
   }, 300)
 
   useEffect(() => {
-    
     const updateMyWordsInterval = setInterval(() => {
-      if (!gameInProgress) {
+      if (!rainGameInProgressRef.current) {
         clearInterval(updateMyWordsInterval)
         return
       }
 
       // 내 단어 생성, 위치 업데이트
       setMyGame((game) =>
-        game.reduce((newGame, item) => {          
+        game.reduce((newGame, item) => {
           const newY = item.y + item.speed + myExtraSpeedRef.current
 
           if (newY >= lineHeight && !dheart) {
             debouncedDecreaseHeart()
             setDheart(true)
             if (myState.heart === 0) {
-              bootstrap.gameNetwork.startRainGame();
+              bootstrap.gameNetwork.endGame(me.username)
             }
           } else {
             newGame.push({ ...item, y: newY })
@@ -330,7 +312,7 @@ export function RainGame() {
     }, 100)
 
     const meItemInterval = setInterval(() => {
-      if (!gameInProgress) {
+      if (!rainGameInProgressRef.current) {
         clearInterval(meItemInterval)
         return
       }
@@ -346,7 +328,7 @@ export function RainGame() {
     }, 300)
 
     const updateYouWordsInterval = setInterval(() => {
-      if (!gameInProgress) {
+      if (!rainGameInProgressRef.current) {
         clearInterval(updateYouWordsInterval)
         return
       }
@@ -364,7 +346,7 @@ export function RainGame() {
     }, 100)
 
     const youItemInterval = setInterval(() => {
-      if (!gameInProgress) {
+      if (!rainGameInProgressRef.current) {
         clearInterval(youItemInterval)
         return
       }
@@ -378,8 +360,6 @@ export function RainGame() {
         })
       }
     }, 300)
-
-    
 
     return () => {
       clearInterval(updateYouWordsInterval)
@@ -401,15 +381,19 @@ export function RainGame() {
       point: raingame.youState.point,
       item: raingame.youState.item,
     })
-  }, [raingame])
+  }, [raingame.myState, raingame.youState])
 
   useEffect(() => {
     targetwordRef.current = targetword
   }, [targetword])
 
   useEffect(() => {
+    rainGameInProgressRef.current = rainGameInProgress
+  }, [rainGameInProgress])
+
+  useEffect(() => {
     // 아직 준비상태면, 단어 떨어지지 않음
-    if ( !rainGameInProgress || !rainGameReady ) {
+    if (!rainGameInProgressRef.current || !rainGameReady) {
       return
     }
 
@@ -418,7 +402,7 @@ export function RainGame() {
     const youWords = username === host ? Bwords : Awords
 
     const createWordsInterval = setInterval(() => {
-      if (!gameInProgress) {
+      if (!rainGameInProgressRef.current) {
         clearInterval(createWordsInterval)
         return
       }
@@ -455,18 +439,25 @@ export function RainGame() {
     }, 2000)
 
     // 시간 측정
-    const timeInterval = setInterval(() => {  
-      setTime((prevTime) => Math.max(prevTime - 1, 0))
-      if (time === 0 ) {
-        bootstrap.gameNetwork.startRainGame();
-      } 
+    const timeInterval = setInterval(() => {
+      setTime((prevTime) => {
+        const newTime = Math.max(prevTime - 1, 0)
+        if (newTime === 0) {
+          if (myState.point > youState.point) {
+            bootstrap.gameNetwork.endGame(me.username)
+          } else if (myState.point === youState.point) {
+            bootstrap.gameNetwork.endGame('draw')
+          }
+        }
+        return newTime
+      })
     }, 1000)
 
     return () => {
       clearInterval(timeInterval)
       clearInterval(createWordsInterval)
     }
-  }, [])
+  }, [rainGameInProgressRef.current])
 
   const keydown = (evnet: KeyboardEvent) => {
     if (event.key === 'Enter' && keywordInput.current) {
@@ -526,7 +517,9 @@ export function RainGame() {
   }
 
   const handleStart = () => {
-    alert("here");
+    if (rainGameReady) {
+      bootstrap.gameNetwork.startRainGame(true)
+    }
   }
 
   // 친구 목숨, 내 목숨 표시
@@ -540,71 +533,71 @@ export function RainGame() {
     )
   }
 
-  for (let i = 0; i < myState.heart; i++) {
-    myLifeElements.push(
-      <img key={{ i }} src={eraser} width="50px" style={{ margin: '5px' }}></img>
-    )
+  for (let j = 0; j < myState.heart; j++) {
+    myLifeElements.push(<img key={{ j }} src={eraser} width="50px" style={{ margin: '5px' }}></img>)
   }
 
   return (
-    <> 
+    <>
       <GameArea>
-        {isModalOpen && (
-          <ExperienceResultModal open={isModalOpen} handleClose={closeModal} />
-        )}
-
-        <Comment>
-            <p className={`friend-comment ${you.username ? '' : 'start-game'}`}>
+        {isModalOpen && <ExperienceResultModal open={isModalOpen} handleClose={closeModal} />}
+        {!rainGameInProgressRef.current && (
+          <Comment>
+            <p
+              className={`friend-comment ${
+                you.username && !rainGameInProgressRef.current ? '' : 'start-game'
+              }`}
+            >
               {you.username ? '친구가 들어왔어요,' : '친구가 아직 들어오지 않았어요 !'}
               <br />
-              {you.username ? '방장은 Start 버튼을 눌러주세요 !' : '친구가 들어와야 게임이 시작돼요.'}
+              {you.username
+                ? '방장은 Start 버튼을 눌러주세요 !'
+                : '친구가 들어와야 게임이 시작돼요.'}
             </p>
-        </Comment>
-        
-        {you.username ? 
-          (<StartButton>
-            <div id="start-button-div" className={`point-box clearfix ${username === host ? '' : 'hidden'}`}>
+          </Comment>
+        )}
+
+        {you.username && !rainGameInProgressRef.current && username === host ? (
+          <StartButton>
+            <div id="start-button-div">
               <div className="btn-wrap">
                 <Button
                   type="button"
-                  onClick={() => handleStart() }
-                  style={{ 
+                  onClick={() => handleStart()}
+                  style={{
                     position: 'absolute',
                     fontSize: '20px',
-                    fontFamily: 'Font_DungGeun', 
+                    fontFamily: 'Font_DungGeun',
                     width: '160px',
                     background: 'white',
                     color: 'black',
                     top: '0px',
                     right: '80px',
-                    borderRadius: '20px', 
+                    borderRadius: '20px',
+                    zIndex: 3,
                   }}
                 >
                   게임 시작
                 </Button>
               </div>
             </div>
-          </StartButton>)
-          : '' }
+          </StartButton>
+        ) : (
+          ''
+        )}
 
         <TimerArea>
-          { time < 16 ?
-            (
-              <>
-                <div id="timer" style={{ color: 'red' }}>
-                  {String(time).padStart(3, '0')}
-                </div>
-              </>
-            )
-          :
-            (
-              <>
-                <div id="timer">
-                  {String(time).padStart(3, '0')}
-                </div>
-              </>
-            )
-          }
+          {time < 16 ? (
+            <>
+              <div id="timer" style={{ color: 'red' }}>
+                {String(time).padStart(3, '0')}
+              </div>
+            </>
+          ) : (
+            <>
+              <div id="timer">{String(time).padStart(3, '0')}</div>
+            </>
+          )}
         </TimerArea>
 
         <Left>
@@ -651,7 +644,12 @@ export function RainGame() {
       <PointArea>
         <FriendPoint>
           <CharacterArea>
-            <img src={ friendimgpath } width="50px" id="friend-character" className={you.username ? '' : 'hidden'}></img>
+            <img
+              src={friendimgpath}
+              width="50px"
+              id="friend-character"
+              className={you.username ? '' : 'hidden'}
+            ></img>
           </CharacterArea>
           <NameArea>
             친구 [{you.username.toUpperCase()}] <br />
@@ -661,8 +659,10 @@ export function RainGame() {
 
         <PlayArea>
           <Item>
-            💡 특별한 색의 단어를 성공하면 아이템을 사용할 수 있어요 !<br/><br/>
-            <span style={{ color: 'red' }}>빨간색</span> - 상대방 단어 가리기<br/>
+            💡 특별한 색의 단어를 성공하면 아이템을 사용할 수 있어요 !<br />
+            <br />
+            <span style={{ color: 'red' }}>빨간색</span> - 상대방 단어 가리기
+            <br />
             <span style={{ color: 'blue' }}>파란색</span> - 상대방 속도 키우기
           </Item>
         </PlayArea>
@@ -677,16 +677,16 @@ export function RainGame() {
           <div>
             명령어를 입력한 후 엔터를 쳐주세요 !
             <TextField
-                focused
-                inputRef={keywordInput}
-                onKeyPress={(e) => keydown(e.charCode)}
-                fullWidth
-                InputProps={{
-                  style: {
-                    width: '300px',
-                    marginTop: '5px',
-                  },
-                }}
+              focused
+              inputRef={keywordInput}
+              onKeyPress={(e) => keydown(e.charCode)}
+              fullWidth
+              InputProps={{
+                style: {
+                  width: '300px',
+                  marginTop: '5px',
+                },
+              }}
             />
             <button onClick={() => keydown(13)} style={{ display: 'none' }}></button>
           </div>
@@ -698,7 +698,7 @@ export function RainGame() {
             {myLifeElements}
           </NameArea>
           <CharacterArea>
-            <img src={ imgpath } width="50px" id="my-character"></img>
+            <img src={imgpath} width="50px" id="my-character"></img>
           </CharacterArea>
         </MyPoint>
       </PointArea>
