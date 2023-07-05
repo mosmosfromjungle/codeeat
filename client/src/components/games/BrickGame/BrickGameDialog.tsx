@@ -89,6 +89,7 @@ export default function BrickGameDialog() {
   const round  = useAppSelector((state) => state.brickgame.brickGameState.currentRound)
   const hasRoundWinner = useAppSelector((state) => state.brickgame.brickGameState.hasRoundWinner)
   const roundWinner = useAppSelector((state) => state.brickgame.brickGameState.roundWinner)
+  const gameWinner = useAppSelector((state) => state.brickgame.brickGameState.gameWinner)
   const [problem, setProblem] = useState<string>('')
   const [number, setNumber] = useState<number>(0)
   const [showProblem, setShowProblem] = useState<boolean>(false)
@@ -106,6 +107,18 @@ export default function BrickGameDialog() {
       }, 2000)
     }
   }, [roundWinner])
+
+  // 게임 승자 표시 
+  useEffect(() => {
+    if (gameWinner === '') {
+      setWinnerModalOpen(false)
+    } else {
+      setWinnerModalOpen(true)
+      setTimeout(() => {
+        setWinnerModalOpen(false)
+      }, 2000)
+    }
+  }, [gameWinner])
 
   // 문제 출제
   useEffect(() => {
@@ -161,16 +174,18 @@ export default function BrickGameDialog() {
       })
   }
 
-  // useEffect(() => {
-  //   if (winner == username) {
-  //     gainExpUpdateLevel(username, 7)
-  //   } else if (winner == friendname) {
-  //     gainExpUpdateLevel(username, 3)
-  //   }
-  //   if (winner) {
-  //     openModal()
-  //   }
-  // }, [winner])
+  useEffect(() => {
+    if (gameWinner == username) {
+      gainExpUpdateLevel(username, 7)
+    } else if (gameWinner == oppUsername) {
+      gainExpUpdateLevel(username, 3)
+    } else {
+      gainExpUpdateLevel(username, 5)
+    }
+    if (gameWinner) {
+      openModal()
+    }
+  }, [gameWinner])
 
   useEffect(() => {
     setMyImages(myCurrentImages.map((value, index) => ({
@@ -209,10 +224,6 @@ export default function BrickGameDialog() {
   const handleSubmit = () => {
     bootstrap.gameNetwork.brickGameCommand('submit');
     setCommand('');
-
-    // 여기에 임시로 경험치 모달 열리게 해둠, 이후 구현 시 아래 두줄 주석 처리 필.
-    gainExpUpdateLevel(username, 7);
-    setIsModalOpen(true);
   }
 
   let oppLifeElements = [];
@@ -238,7 +249,7 @@ export default function BrickGameDialog() {
   const roundWinnerModal = (
     <RoundWinnerModal>
       <span style={{ color: 'yellow' }}>{roundWinner}</span>님이 정답을 맞췄습니다!<br/>
-      다음 문제로 넘어갑니다.
+      { round === 5 ? '결과창으로 넘어갑니다.' : '다음 문제로 넘어갑니다.' }
     </RoundWinnerModal>
   )
 

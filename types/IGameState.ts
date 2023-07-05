@@ -31,6 +31,7 @@ export interface IRainGameRoomState extends Schema {
   rainGameStates: MapSchema<IRainGameState>
   rainGameUsers: MapSchema<IRainGameUser>
   keywordLists: MapSchema<IKeywordRain>
+  winner: string
 }
 
 /* BRICK GAME ROOM SCHEMA */
@@ -67,6 +68,7 @@ export interface IBrickGameState extends Schema {
   currentRound: number
   hasRoundWinner: boolean
   roundWinner: string
+  gameWinner: string
 }
 
 /* GAME ROOM SCHEMA */

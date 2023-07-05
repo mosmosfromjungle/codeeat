@@ -133,8 +133,8 @@ export class BrickGameRoom extends Room<IGameState> {
           }
           break
         case DATA_STRUCTURE.SET:
-          if (lowercaseCommand.startsWith('remove') || lowercaseCommand.startsWith('discard')) {
-            const match = command.match(/remove\((\d+)\)/) || command.match(/discard\((\d+)\)/);
+          if (lowercaseCommand.startsWith('remove')) {
+            const match = command.match(/remove\((\d+)\)/)
             if (match) {
               const number = match[1];
               const index = playerStatus.currentImages.findIndex((image) => image.text === number);
@@ -200,32 +200,50 @@ export class BrickGameRoom extends Room<IGameState> {
       }
     }
 
+    /* 이 플레이어의 커맨트 결과값을 broadcast */
     this.broadcastPlayerUpdate(client)
 
+    /* 이 플레이어의 기회가 모두 소진된 경우 라운드 승자 broadcast, 라운드 종료, 게임 종료 */
     if (playerScore.chance <= 0) {
       this.setRoundWinner(false, client)
+      this.endRound()
       setTimeout(() => {
+        this.setGameWinner(false, client)
         this.endGame()
-      }, 2000);
+      }, 3000);
     }
 
     /* 해당 클라이언트가 이긴 경우 라운드 초기화 후 새로운 라운드 시작 */
     if (endRound) {
-      // this.broadcastRoundWinner(client)  
       this.endRound()
       setTimeout(() => {
         if (this.state.brickgames.currentRound === 5) {
+          let winnerKey: string | null = null
+          let winnerPoint = 0
+          this.state.brickgames.brickPlayers.forEach((player, key) => {
+            const playerPoint = player.playerScore.totalPoint
+            if (playerPoint > 0) {
+              if (playerPoint === winnerPoint) {
+                this.state.brickgames.gameWinner = 'both'
+              } else if (playerPoint >= winnerPoint) {
+                winnerKey = key
+                winnerPoint = playerPoint
+              }
+            }
+          })
+          if (this.state.brickgames.gameWinner !== 'both' && winnerKey !== null) {
+            this.state.brickgames.gameWinner = this.state.players.get(winnerKey)!.username
+          }
           this.endGame()
         } else {
           this.newRound()
         }
-      }, 2000);
+      }, 3000)
     }
   }
 
   filterDuplicate(currentArray: ArraySchema<ImageContainer>) {
-    const uniqueNumbers = new Set();
-
+    const uniqueNumbers = new Set()
     const filteredList = new ArraySchema<ImageContainer>()
     currentArray.forEach((elem) => {
       if (!uniqueNumbers.has(elem.imgidx)) {
@@ -243,7 +261,7 @@ export class BrickGameRoom extends Room<IGameState> {
     const playerScore = player.playerScore
     const problemType = this.state.brickgames.problemType
     const problemId = this.state.brickgames.problemId
-    let winner = false
+    let endRound = false
     let roundPoint = 0
 
     // 0. 다른 사람이 먼저 맞춘 경우 에러 전달
@@ -291,12 +309,12 @@ export class BrickGameRoom extends Room<IGameState> {
 
     // 2. 먼저 맞췄는지 확인 (이겼는지)
     if (this.state.brickgames.hasRoundWinner === false) {
-      // console.log('먼저 맞춘 사람이 1점 더 획득')
       this.setRoundWinner(true, client)
-      // this.state.brickgames.hasRoundWinner = true
-      // this.state.brickgames.roundWinner = username
-      winner = true
+      endRound = true
       roundPoint += 1
+    } else {
+      this.sendError(client, '이미 정답을 맞췄어요!')
+      return false
     }
 
     // 3. 추가 점수를 획득할 수 있는지 확인
@@ -311,10 +329,11 @@ export class BrickGameRoom extends Room<IGameState> {
     playerScore.totalPoint += roundPoint
     playerScore.pointArray.push(roundPoint)
 
-    return winner
+    return endRound
   }
 
   setRoundWinner(isWinner: boolean, client: Client) {
+    // TODO: 두 플레이어 모두 5초 카운트다운, 먼저 맞추지 못한 플레이어는 5초 이내에만 제출할 수 있음
     let winnerUsername
     if (isWinner) {
       winnerUsername = this.state.players.get(client.sessionId)?.username
@@ -328,13 +347,22 @@ export class BrickGameRoom extends Room<IGameState> {
     }
     this.state.brickgames.hasRoundWinner = true
     this.state.brickgames.roundWinner = winnerUsername
-    this.broadcastGameState()
   }
 
-  // broadcastRoundWinner(client: Client) {
-  //   // TODO: 두 플레이어 모두 5초 카운트다운, 먼저 맞추지 못한 플레이어는 5초 이내에만 제출할 수 있음
-  //   this.broadcast(Message.BRICK_ROUND_WINNER, this.state.players.get(client.sessionId)?.username)
-  // }
+  setGameWinner(isWinner: boolean, client: Client) {
+    let winnerUsername
+    if (isWinner) {
+      winnerUsername = this.state.players.get(client.sessionId)?.username
+      if (!winnerUsername) throw new Error('serRoundWinner - no client')
+    } else {
+      this.state.players.forEach((value, key) => {
+        if (key !== client.sessionId) {
+          winnerUsername = value.username
+        }
+      })
+    }
+    this.state.brickgames.gameWinner = winnerUsername
+  }
 
   sendError(client: Client, message: string) {
     client.send(Message.BRICK_GAME_ERROR, message)
@@ -353,6 +381,7 @@ export class BrickGameRoom extends Room<IGameState> {
       currentRound: this.state.brickgames.currentRound,
       hasRoundWinner: this.state.brickgames.hasRoundWinner,
       roundWinner: this.state.brickgames.roundWinner,
+      gameWinner: this.state.brickgames.gameWinner,
     }
     if (!client) {
       this.broadcast(Message.BRICK_GAME_STATE, gameState)
@@ -452,7 +481,7 @@ export class BrickGameRoom extends Room<IGameState> {
     this.state.brickgames.gameInProgress = false
     this.state.brickgames.hasRoundWinner = false
     this.state.brickgames.roundWinner = ''
-    this.endRound()
+    this.broadcastGameState()
 
     setTimeout(() => {
       for (const client of this.clients.values()) {
