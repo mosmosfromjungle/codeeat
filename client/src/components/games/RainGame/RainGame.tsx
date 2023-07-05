@@ -3,20 +3,10 @@ import { useAppDispatch, useAppSelector } from '../../../hooks'
 import Bootstrap from '../../../scenes/Bootstrap'
 import phaserGame from '../../../PhaserGame'
 import TextField from '@mui/material/TextField'
-import {
-  CharacterArea,
-  NameArea,
-  Position,
-  TimerArea,
-  GameArea,
-  Left,
-  Right,
-  PointArea,
-  FriendPoint,
-  MyPoint,
-  InputArea,
-  PlayArea,
-  Comment,
+import { 
+  CharacterArea, NameArea, Position, 
+  TimerArea, GameArea, Left, Right, PointArea, FriendPoint, MyPoint, 
+  InputArea, PlayArea, Comment, Item, 
 } from './RainGameStyle'
 import eraser from '/assets/game/RainGame/eraser.png'
 import debounce from 'lodash/debounce'
@@ -53,14 +43,11 @@ export function RainGame() {
   // My information
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
-  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`
-
+  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}.png`;
+  
   // Friend information
-  const youInfo = useAppSelector((state) => state.raingame.you)
-  const friendimgpath = `/assets/character/single/${capitalizeFirstLetter(
-    youInfo.character
-  )}_idle_anim_19.png`
-
+  const you = useAppSelector((state) => state.raingame.you)
+  const friendimgpath = `/assets/character/single/${capitalizeFirstLetter(you.character)}.png`;
   const [myGame, setMyGame] = useState<KeywordRain[]>([])
   const [youGame, setYouGame] = useState<KeywordRain[]>([])
   const [myState, setMyState] = useState({
@@ -493,17 +480,30 @@ export function RainGame() {
     <> 
       <GameArea>
         <TimerArea>
-          {time < 16 ? (
-            <>
-              <div id="timer" style={{ color: 'red' }}>
-                {String(time).padStart(3, '0')}
-              </div>
-            </>
-          ) : (
-            <>
-              <div id="timer">{String(time).padStart(3, '0')}</div>
-            </>
-          )}
+          { time < 16 ?
+            (
+              <>
+                <div id="timer" style={{ color: 'red' }}>
+                  {String(time).padStart(3, '0')}
+                </div>
+              </>
+            )
+          :
+            (
+              <>
+                <div id="timer">
+                  {String(time).padStart(3, '0')}
+                </div>
+              </>
+            )
+          }
+          <Comment>
+              <p className={`friend-comment ${you.username ? '' : 'start-game'}`}>
+                {you.username ? '친구가 들어왔어요,' : '친구가 아직 들어오지 않았어요 !'}
+                <br />
+                {you.username ? '방장은 Start 버튼을 눌러주세요 !' : '친구가 들어와야 게임이 시작돼요.'}
+              </p>
+          </Comment>
         </TimerArea>
 
         <Left>
@@ -550,7 +550,7 @@ export function RainGame() {
       <PointArea>
         <FriendPoint>
           <CharacterArea>
-            <img src={friendimgpath} width="60px" id="friend-character"></img>
+            <img src={ friendimgpath } width="50px" id="friend-character"></img>
           </CharacterArea>
           <NameArea>
             친구 [{you.username.toUpperCase()}] <br />
@@ -558,7 +558,16 @@ export function RainGame() {
           </NameArea>
         </FriendPoint>
 
-        <PlayArea></PlayArea>
+
+
+        <PlayArea>
+          <Item>
+            💡 특별한 색의 단어를 성공하면 아이템을 사용할 수 있어요 !<br/><br/>
+            <span style={{ color: 'red' }}>빨간색</span> - 상대방 단어 가리기<br/>
+            <span style={{ color: 'blue' }}>파란색</span> - 상대방 속도 키우기
+          </Item>
+        </PlayArea>
+
 
         <InputArea>
           <Position>
@@ -568,21 +577,19 @@ export function RainGame() {
 
         <PlayArea>
           <div>
-            <Comment>명령어를 입력한 후 엔터를 쳐주세요 !</Comment>
+
+            명령어를 입력한 후 엔터를 쳐주세요 !
             <TextField
-              focused
-              inputRef={keywordInput}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  keydown(e)
-                }
-              }}
-              fullWidth
-              InputProps={{
-                style: {
-                  width: '300px',
-                },
-              }}
+                focused
+                inputRef={keywordInput}
+                onKeyPress={(e) => keydown(e.charCode)}
+                fullWidth
+                InputProps={{
+                  style: {
+                    width: '300px',
+                    marginTop: '5px',
+                  },
+                }}
             />
             <button onClick={() => keydown(13)} style={{ display: 'none' }}></button>
           </div>
@@ -594,7 +601,7 @@ export function RainGame() {
             {myLifeElements}
           </NameArea>
           <CharacterArea>
-            <img src={imgpath} width="60px" id="my-character"></img>
+            <img src={ imgpath } width="50px" id="my-character"></img>
           </CharacterArea>
         </MyPoint>
       </PointArea>

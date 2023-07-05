@@ -11,7 +11,7 @@ import { PersonAddAltOutlined, MailOutlineRounded } from '@mui/icons-material'
 import { Content, Header, HeaderTitle } from '../GlobalStyle'
 
 import { IPlayer } from '../../../../types/IOfficeState'
-import { insertLastDM } from '../../apicalls/DM/DM'
+import { getRoomId } from '../../apicalls/DM/DM'
 import { HELPER_STATUS, setHelperStatus } from '../../stores/UserStore'
 import { setReceiverName, setShowDMList, setShowDMRoom, setRoomId } from '../../stores/DMStore'
 import { useAppSelector, useAppDispatch } from '../../hooks'
@@ -23,7 +23,7 @@ const Backdrop = styled.div`
   position: fixed;
   display: flex;
   gap: 10px;
-  bottom: 16px;
+  bottom: 24px;
   right: 16px;
   align-items: flex-end;
 `
@@ -96,7 +96,7 @@ export default function UsersDialog() {
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
   const helperStatus = useAppSelector((state) => state.user.helperStatus)
-  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}_idle_anim_19.png`
+  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}.png`
   const players = useAppSelector((state) => state.room.mainPlayers)
   const [otherPlayers, setOtherPlayers] = useState<IPlayer[]>()
   const [friendUsername, setFriendUsername] = useState<string>('')
@@ -112,13 +112,24 @@ export default function UsersDialog() {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
-
-  const handleClick = async (player) => {
-    dispatch(setRoomId('first'))
+  
+  const getRoooom = async (username, playerName) => {
+    getRoomId({myName : username, targetName: playerName})
+    .then((roomId) => {
+      if (roomId !== null) {
+        dispatch(setRoomId(roomId))
+      } else {
+        dispatch(setRoomId('first'))
+      }
+    })
+    
+  }
+  const handleClick = (player) => {
+    getRoooom(username,player.name)
     dispatch(setReceiverName(player.name))
     dispatch(setShowDMRoom(true))
     dispatch(setHelperStatus(HELPER_STATUS.NONE))
-}
+  }
 
   useEffect(() => {
     if (focused) {

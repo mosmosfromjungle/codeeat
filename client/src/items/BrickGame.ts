@@ -31,11 +31,7 @@ export default class BrickGame extends Item {
   }
 
   onOverlapDialog() {
-    if (this.currentUsers.size === 0) {
-      this.setDialogBox('Press R to play the Brick Game')
-    } else {
-      this.setDialogBox('Press R join')
-    }
+    this.setDialogBox('R 눌러 자료구조 게임 플레이!')
   }
 
   addCurrentUser(userId: string) {

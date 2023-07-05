@@ -51,6 +51,7 @@ export const CreateRoomForm = () => {
     description: '',
     password: null,
     username: username,
+    character: character,
   })
 
   const handleChange = (prop: keyof IGameRoomData) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,7 +75,7 @@ export const CreateRoomForm = () => {
         if (moleGameOpen) await bootstrap.gameNetwork.createMoleRoom(values)
         if (rainGameOpen) await bootstrap.gameNetwork.createRainRoom(values)
         // if (faceChatOpen) await bootstrap.gameNetwork.createFaceChatRoom(values)
-        dispatch(setDialogStatus(DIALOG_STATUS.GAME_WELCOME))
+        dispatch(setDialogStatus(DIALOG_STATUS.IN_GAME))
       } catch (error) {
         console.error(error)
       }

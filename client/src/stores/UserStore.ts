@@ -4,6 +4,7 @@ import { BackgroundMode } from '../../../types/BackgroundMode'
 
 import phaserGame from '../PhaserGame'
 import Bootstrap from '../scenes/Bootstrap'
+import Game from '../scenes/Game'
 
 export function getInitialBackgroundMode() {
   const currentHour = new Date().getHours()
@@ -23,6 +24,7 @@ export enum DIALOG_STATUS {
 
 export enum HELPER_STATUS {
   NONE = 'none',
+  PROFILE = 'profile',
   CHAT = 'chat',
   DM = 'dm',
   USERS = 'users',
@@ -51,7 +53,6 @@ export const userSlice = createSlice({
     dialogStatus: DIALOG_STATUS.ENTRY,
     helperStatus: HELPER_STATUS.NONE,
     // showQuit: false, // game 퇴장 dialog...
-    showProfile: false,
   },
   reducers: {
     toggleBackgroundMode: (state) => {
@@ -96,10 +97,9 @@ export const userSlice = createSlice({
       state.dialogStatus = action.payload
     },
     setHelperStatus: (state, action: PayloadAction<HELPER_STATUS>) => {
+      const game = phaserGame.scene.keys.game as Game
+      game.enableKeys()
       state.helperStatus = action.payload
-    },
-    setShowProfile: (state, action: PayloadAction<boolean>) => {
-      state.showProfile = action.payload
     },
   },
 })
@@ -118,7 +118,6 @@ export const {
   removePlayerNameMap,
   setDialogStatus,
   setHelperStatus,
-  setShowProfile,
 } = userSlice.actions
 
 export default userSlice.reducer

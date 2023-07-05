@@ -33,7 +33,7 @@ const Backdrop = styled.div`
   position: fixed;
   display: flex;
   gap: 10px;
-  bottom: 16px;
+  bottom: 24px;
   right: 16px;
   align-items: flex-end;
 `
@@ -90,6 +90,9 @@ const ProfileButton = styled.div`
   flex-direction: row;
   Button {
     color: black;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: Font_DungGeun;
   }
 `
 const TextDiv = styled.div`
@@ -102,6 +105,10 @@ const Profile = styled.div`
   font-family: Font_DungGeun;
   text-align: left;
 `
+
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1)
+}
 
 export default function FriendsDialog() {
   const dispatch = useAppDispatch()
@@ -318,7 +325,7 @@ export default function FriendsDialog() {
         <div>
           <div>
             <img
-              src={`../../public/assets/character/single/${friendCharacter}_idle_anim_19.png`}
+              src={`../../public/assets/character/single/${friendCharacter}.png`}
               alt=""
             />
             <div>
@@ -377,7 +384,7 @@ export default function FriendsDialog() {
                 <NameWrapper>
                   <ListItemAvatar>
                     <Avatar
-                      src={`../../public/assets/character/single/${value.character}_idle_anim_19.png`}
+                      src={`../../public/assets/character/single/${value.character}.png`}
                     />
                   </ListItemAvatar>
                   <NameProfile>
@@ -394,7 +401,7 @@ export default function FriendsDialog() {
                     }}
                     color="primary"
                   >
-                    친구 싫어
+                    싫어
                   </Button>
                   <Button
                     onClick={() => {
@@ -403,7 +410,7 @@ export default function FriendsDialog() {
                     }}
                     color="primary"
                   >
-                    친구 좋아
+                    좋아
                   </Button>
                 </ProfileButton>
               </ListItem>
@@ -420,7 +427,7 @@ export default function FriendsDialog() {
                 <NameWrapper>
                   <ListItemAvatar>
                     <Avatar
-                      src={`../../public/assets/character/single/${value.character}_idle_anim_19.png`}
+                      src={`../../public/assets/character/single/${value.character}.png`}
                     />
                   </ListItemAvatar>
                   <NameProfile>

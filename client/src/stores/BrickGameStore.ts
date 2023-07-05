@@ -6,22 +6,29 @@ import phaserGame from '../PhaserGame'
 import Game from '../scenes/Game'
 
 export interface BrickGameStateInterface {
+  problemId: number
   problemType: QUIZ_TYPE
   problemImages: ArraySchema<IImageContainer>
   gameInProgress: boolean
   gameStarting: boolean
+  currentRound: number
+  hasRoundWinner: boolean
 }
 
 const brickGameState: BrickGameStateInterface = {
+  problemId: 0,
   problemType: QUIZ_TYPE.NONE,
   problemImages: new ArraySchema<IImageContainer>(),
   gameInProgress: false,
   gameStarting: false,
+  currentRound: 0,
+  hasRoundWinner: false
 }
 
 export interface PlayerScoreInterface {
   pointArray: ArraySchema<number>
   totalPoint: number
+  chance: number
 }
 
 export interface PlayerStatusInterface {
@@ -33,6 +40,7 @@ export interface PlayerStatusInterface {
 const myPlayerScore: PlayerScoreInterface = {
   pointArray: new ArraySchema<number>(),
   totalPoint: 0,
+  chance: 3,
 }
 
 const myPlayerStatus: PlayerStatusInterface = {
@@ -44,6 +52,7 @@ const myPlayerStatus: PlayerStatusInterface = {
 const oppPlayerScore: PlayerScoreInterface = {
   pointArray: new ArraySchema<number>(),
   totalPoint: 0,
+  chance: 3,
 }
 
 const oppPlayerStatus: PlayerStatusInterface = {
@@ -62,7 +71,7 @@ export const brickGameSlice = createSlice({
     myPlayerStatus,
     oppPlayerScore,
     oppPlayerStatus,
-    oppName: '',
+    oppUsername: '',
     oppCharacter: '',
   },
   reducers: {
@@ -78,10 +87,13 @@ export const brickGameSlice = createSlice({
       state.brickGameOpen = false
     },
     setBrickGameState: (state, action: PayloadAction<BrickGameStateInterface>) => {
+      state.brickGameState.problemId = action.payload.problemId
       state.brickGameState.problemType = action.payload.problemType
       state.brickGameState.problemImages = action.payload.problemImages
       state.brickGameState.gameInProgress = action.payload.gameInProgress
       state.brickGameState.gameStarting = action.payload.gameStarting
+      state.brickGameState.currentRound = action.payload.currentRound
+      state.brickGameState.hasRoundWinner = action.payload.hasRoundWinner
     },
     setMyPlayerScore: (state, action: PayloadAction<PlayerScoreInterface>) => {
       state.myPlayerScore = action.payload
@@ -95,8 +107,8 @@ export const brickGameSlice = createSlice({
     setOppPlayerStatus: (state, action: PayloadAction<PlayerStatusInterface>) => {
       state.oppPlayerStatus = action.payload
     },
-    setOppInfo: (state, action: PayloadAction<{ name: string, character: string }>) => {
-      state.oppName = action.payload.name
+    setOppInfo: (state, action: PayloadAction<{ username: string, character: string }>) => {
+      state.oppUsername = action.payload.username
       state.oppCharacter = action.payload.character
     }
   },

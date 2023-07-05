@@ -145,7 +145,7 @@ export class RainGameRoom extends Room<GameState> {
 
   onJoin(client: Client, options: any) {
     const { username } = options
-    this.state.raingames.rainGameStates.set(client.sessionId, new RainGameState(username))
+    this.state.raingames.rainGameStates.set(client.sessionId, new RainGameState())
     client.send(Message.SEND_ROOM_DATA, {
       id: this.roomId,
       name: this.name,

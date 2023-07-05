@@ -3,7 +3,7 @@ import TextField from '@mui/material/TextField';
 import { setFocused } from '../../stores/ChatStore';
 import { Message } from 'react-chat-ui';
 import IconButton from '@mui/material/IconButton';
-import SendIcon from '@mui/icons-material/Send';
+import { Send } from 'react-iconly'
 import InputAdornment from '@mui/material/InputAdornment';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import styled from 'styled-components';
@@ -64,7 +64,7 @@ export default function DMBottom(props) {
           endAdornment: (
             <InputAdornment position="end">
               <IconButton color="primary" sx={{ p: '15px' }} onClick={handleSubmit} edge="end">
-                <SendIcon />
+              <Send set="bulk" primaryColor="blue"/>
               </IconButton>
             </InputAdornment>
           ),

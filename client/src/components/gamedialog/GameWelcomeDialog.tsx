@@ -7,10 +7,20 @@ import AlertTitle from '@mui/material/AlertTitle'
 import { useAppSelector, useAppDispatch } from '../../hooks'
 import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore'
 
-import Adam from '../../images/login/Adam_login.png'
-import Ash from '../../images/login/Ash_login.png'
-import Lucy from '../../images/login/Lucy_login.png'
-import Nancy from '../../images/login/Nancy_login.png'
+// import Adam from '../../images/login/Adam_login.png'
+// import Ash from '../../images/login/Ash_login.png'
+// import Lucy from '../../images/login/Lucy_login.png'
+// import Nancy from '../../images/login/Nancy_login.png'
+
+// ***새롭게 16px 캐릭터로 변경하기 위한 코드***
+import Noah from '../../images/login/Noah_login.png'
+import Nora from '../../images/login/Nora_login.png'
+import Owen from '../../images/login/Owen_login.png'
+import Maya from '../../images/login/Maya_login.png'
+import Jiji from '../../images/login/Jiji_login.png'
+import John from '../../images/login/John_login.png'
+import Mina from '../../images/login/Mina_login.png'
+import Ryan from '../../images/login/Ryan_login.png'
 
 import phaserGame from '../../PhaserGame'
 import Game from '../../scenes/Game'
@@ -96,10 +106,20 @@ const Warning = styled.div`
 `
 
 const avatars = [
-  { name: 'adam', img: Adam },
-  { name: 'ash', img: Ash },
-  { name: 'lucy', img: Lucy },
-  { name: 'nancy', img: Nancy },
+  // { name: 'adam', img: Adam },
+  // { name: 'ash', img: Ash },
+  // { name: 'lucy', img: Lucy },
+  // { name: 'nancy', img: Nancy },
+
+  // ***새롭게 16px 캐릭터로 변경하기 위한 코드***
+  { name: 'noah', img: Noah },
+  { name: 'nora', img: Nora },
+  { name: 'maya', img: Maya },
+  { name: 'owen', img: Owen },
+  { name: 'jiji', img: Jiji },
+  { name: 'john', img: John },
+  { name: 'mina', img: Mina },
+  { name: 'ryan', img: Ryan },
 ]
 
 export default function GameWelcomeDialog() {

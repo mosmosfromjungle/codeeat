@@ -7,20 +7,25 @@ import AlertTitle from '@mui/material/AlertTitle'
 import { useAppSelector, useAppDispatch } from '../../hooks'
 import { DIALOG_STATUS, setCharacter, setDialogStatus, setUsername } from '../../stores/UserStore'
 
-import Adam from '../../images/login/Adam_login.png'
-import Ash from '../../images/login/Ash_login.png'
-import Lucy from '../../images/login/Lucy_login.png'
-import Nancy from '../../images/login/Nancy_login.png'
+// import Adam from '../../images/login/Adam_login.png'
+// import Ash from '../../images/login/Ash_login.png'
+// import Lucy from '../../images/login/Lucy_login.png'
+// import Nancy from '../../images/login/Nancy_login.png'
 
 // ***새롭게 16px 캐릭터로 변경하기 위한 코드*** //
-// import Logan from '../../images/login/Logan_login.png'
-// import Kevin from '../../images/login/Kevin_login.png'
-// import Zoey from '../../images/login/Zoey_login.png'
-// import Emma from '../../images/login/Emma_login.png'
+import Noah from '../../images/login/Noah_login.png'
+import Nora from '../../images/login/Nora_login.png'
+import Owen from '../../images/login/Owen_login.png'
+import Maya from '../../images/login/Maya_login.png'
+import Jiji from '../../images/login/Jiji_login.png'
+import John from '../../images/login/John_login.png'
+import Mina from '../../images/login/Mina_login.png'
+import Ryan from '../../images/login/Ryan_login.png'
 
 import phaserGame from '../../PhaserGame'
 import Game from '../../scenes/Game'
 
+import welcome from '../../../public/assets/background/welcome.png'
 
 const GlobalStyle = createGlobalStyle`
   @font-face {
@@ -40,8 +45,9 @@ const Wrapper = styled.form`
   transform: translate(-50%, -50%);
   background: #222639;
   border-radius: 16px;
-  padding: 36px 60px;
+  padding: 36px 40px;
   box-shadow: 0px 0px 5px #0000006f;
+  width: 40%;
 `
 const Title = styled.h3`
   margin: 5px;
@@ -54,30 +60,17 @@ const Content = styled.div`
   margin: 36px 0;
 `
 const Left = styled.div`
-  margin-right: 48px;
-`
-const ImgContainer = styled.div`
-    width: 160px;
-    height: 220px;
-    background: #dbdbe0;
-    border-radius: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;  
-
-    img {
-        display: block;
-        width: 95px;
-        height: 136px;
-        object-fit: contain;
-    }
+  width: 50%;
+  font-color: 20px;
+  font-size: 20px;
 `
 const Right = styled.div`
-  width: 310px;
-
-  h1 {
-    margin: 10px 0 0 10px;
-  }
+  width: 50%;
+  margin: 0 0 0 30px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 const Bottom = styled.div`
   display: flex;
@@ -89,25 +82,38 @@ const Bottom = styled.div`
     font-family: Font_DungGeun;
   }
 `
-const Warning = styled.div`
-  margin-top: 30px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+const Special = styled.span`
+  color: #f9f871;
+  font-height: bold;
 `
-
+const Description = styled.span`
+  color: white;
+  font-size: 18px;
+`
+const Image = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  img {
+    width: 100%;
+  }
+`
 const avatars = [
-  { name: 'adam', img: Adam },
-  { name: 'ash', img: Ash },
-  { name: 'lucy', img: Lucy },
-  { name: 'nancy', img: Nancy },
+  // { name: 'adam', img: Adam },
+  // { name: 'ash', img: Ash },
+  // { name: 'lucy', img: Lucy },
+  // { name: 'nancy', img: Nancy },
 
   // ***새롭게 16px 캐릭터로 변경하기 위한 코드***
-  // { name: 'logan', img: Logan },
-  // { name: 'kevin', img: Kevin },
-  // { name: 'zoey', img: Zoey },
-  // { name: 'emma', img: Emma },
+  { name: 'noah', img: Noah },
+  { name: 'nora', img: Nora },
+  { name: 'maya', img: Maya },
+  { name: 'owen', img: Owen },
+  { name: 'jiji', img: Jiji },
+  { name: 'john', img: John },
+  { name: 'mina', img: Mina },
+  { name: 'ryan', img: Ryan },
 ]
 
 export default function WelcomeDialog() {
@@ -139,39 +145,21 @@ export default function WelcomeDialog() {
     <>
     <GlobalStyle />
     <Wrapper onSubmit={handleSubmit}>
-      <Title>코드잇에 온 걸 환영합니다!</Title>
+      <Title><Special>코드잇</Special>에 온 걸 환영합니다!</Title>
       <Content>
         <Left>
-          <ImgContainer>
-            <img className="character-avatar" 
-                src={avatars[index].img} 
-                alt={avatars[index].name} /> 
-          </ImgContainer>
+          <Image>
+            <img src={ welcome }></img>
+          </Image>
         </Left>
         <Right>
-            <h1 style={{ fontSize: '24px' }}>{username} 님</h1>
-          {/* {!videoConnected && (
-            <Warning>
-              <Alert variant="outlined" severity="warning">
-                <AlertTitle>아차!</AlertTitle>
-                비디오와 마이크가 연결되지 않았어요.<br></br>
-                <strong>연결하면 친구들과 대화할 수 있어요!</strong>
-              </Alert>
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={() => {
-                  game.network.webRTC?.getUserMedia()
-                }}>
-                비디오 연결하기
-              </Button>
-            </Warning>
-          )}
-          {videoConnected && (
-            <Warning>
-              <Alert variant="outlined"> 마이크도 쓸 수 있어요!</Alert>
-            </Warning>
-          )} */}
+          <Description>
+            { username.toUpperCase() } 님, 안녕하세요! <br/>
+            여기는 키즈들의 코딩공간, 코드잇입니다. <br/><br/>
+
+            저희 코드잇에는 세가지 게임이 있어요. <br/>
+            왼쪽 맵을 확인하여 원하는 게임을 플레이해보세요 !<br/>
+          </Description>
         </Right>
       </Content>
       <Bottom>

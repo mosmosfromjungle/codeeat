@@ -9,6 +9,7 @@ import Chair from '../items/Chair'
 import MoleGame from '../items/MoleGame'
 import BrickGame from '../items/BrickGame'
 import RainGame from '../items/RainGame'
+import RankingBoard from '../items/RankingBoard'
 // import FaceChat from '../items/FaceChat'
 import { ItemType } from '../../../types/Items'
 
@@ -41,6 +42,7 @@ export default class Game extends Phaser.Scene {
   private brickgameMap = new Map<String, BrickGame>()
   private molegameMap = new Map<String, MoleGame>()
   private raingameMap = new Map<string, RainGame>()
+  private rankingboardMap = new Map<String, RankingBoard>()
   // facechatMap = new Map<String, FaceChat>()
 
   constructor() {
@@ -89,7 +91,6 @@ export default class Game extends Phaser.Scene {
       this.dmNetwork = data.dmNetwork
     }
 
-
     createCharacterAnims(this.anims)
 
     this.map = this.make.tilemap({ key: 'tilemap' })
@@ -128,7 +129,6 @@ export default class Game extends Phaser.Scene {
       // ***새롭게 16px 캐릭터로 변경하기 위한 코드***
       this.myPlayer = this.add.myPlayer(
       Phaser.Math.RND.between(400, 900),
-      Phaser.Math.RND.between(400, 900),
       'kevin',
       this.network.mySessionId,
       // userId,
@@ -137,12 +137,11 @@ export default class Game extends Phaser.Scene {
     );
     */
 
-    // this.myPlayer = this.add.myPlayer(400, 900, 'kevin', this.network.mySessionId)
-    this.myPlayer = this.add.myPlayer(705, 500, 'adam', this.network.mySessionId) // TODO: 캐릭터 시작 위치 수정 가능 -> 서버와 통일해야함
+    this.myPlayer = this.add.myPlayer(705, 600, 'noah', this.network.mySessionId)
+    // this.myPlayer = this.add.myPlayer(705, 500, 'adam', this.network.mySessionId) // TODO: 캐릭터 시작 위치 수정 가능 -> 서버와 통일해야함
     this.playerSelector = new PlayerSelector(this, 0, 0, 32, 32)  // TODO: 아이템과 상호작용할 수 있는 면적 
     console.log('game scene created')
     console.log('set my player initial setting ', this.myPlayer)
-
 
     const chairs = this.physics.add.staticGroup({ classType: Chair })
     const chairLayer = this.map.getObjectLayer('chair')
@@ -159,7 +158,7 @@ export default class Game extends Phaser.Scene {
       const item = this.addObjectFromTiled(brickgames, obj, 'picnic2', 'picnic2') as BrickGame
       // item.setDepth(item.y + item.height * 0.27)
       const id = `${i}`
-      // item.id = id   // TODO: 나중에 아이템 별로 지정된 별도의 방에 들어가게 하기 위해 필요 
+      // item.id = id   // TODO: 나중에 아이템 별로 지정된 별도의 방에 들어가게 하기 위해 필요
       this.brickgameMap.set(id, item)
     })
 
@@ -183,6 +182,15 @@ export default class Game extends Phaser.Scene {
       this.molegameMap.set(id, item)
     })
 
+    /* Ranking Board */
+    const rankingboards = this.physics.add.staticGroup({ classType: RankingBoard })
+    const rankingboardLayer = this.map.getObjectLayer('rankingboard')
+    rankingboardLayer.objects.forEach((obj, i) => {
+      const item = this.addObjectFromTiled(rankingboards, obj, 'billboard', 'billboard') as RankingBoard
+      const id = `${i}`
+      item.id = id
+      this.rankingboardMap.set(id, item)
+    })
     /* Face Chat */
     // const facechats = this.physics.add.staticGroup({ classType: FaceChat })
     // const facechatLayer = this.map.getObjectLayer('facechat')
@@ -205,14 +213,14 @@ export default class Game extends Phaser.Scene {
 
     this.otherPlayers = this.physics.add.group({ classType: OtherPlayer })
 
-    this.cameras.main.zoom = 1.5
+    this.cameras.main.zoom = 2.2
     this.cameras.main.startFollow(this.myPlayer, true)
     this.physics.add.collider([this.myPlayer, this.myPlayer.playerContainer], secondGroundLayer)
     this.physics.add.collider([this.myPlayer, this.myPlayer.playerContainer], fenceLayer)
 
     this.physics.add.overlap(
       this.playerSelector,
-      [chairs, molegames, raingames, brickgames],
+      [chairs, molegames, raingames, brickgames, rankingboards],
       this.handleItemSelectorOverlap,
       undefined,
       this
@@ -289,13 +297,7 @@ export default class Game extends Phaser.Scene {
 
   // function to add new player to the otherPlayer group
   private handlePlayerJoined(newPlayer: IPlayer, id: string) {
-    const otherPlayer = this.add.otherPlayer(
-      newPlayer.x,
-      newPlayer.y,
-      'adam',
-      id,
-      newPlayer.name,
-      )
+    const otherPlayer = this.add.otherPlayer(newPlayer.x, newPlayer.y, 'noah', id, newPlayer.name)
     this.otherPlayers.add(otherPlayer)
     this.otherPlayerMap.set(id, otherPlayer)
   }
@@ -338,7 +340,10 @@ export default class Game extends Phaser.Scene {
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.addCurrentUser(playerId)
-    } 
+    } else if (itemType === ItemType.RANKINGBOARD) {
+      const rankingboard = this.rankingboardMap.get(itemId)
+      rankingboard?.addCurrentUser(playerId)
+    }
     // else if (itemType === ItemType.FACECHAT) {
     //   const facechat = this.facechatMap.get(itemId)
     //   facechat?.addCurrentUser(playerId)
@@ -355,7 +360,10 @@ export default class Game extends Phaser.Scene {
     } else if (itemType === ItemType.MOLEGAME) {
       const molegame = this.molegameMap.get(itemId)
       molegame?.removeCurrentUser(playerId)
-    } 
+    } else if (itemType === ItemType.RANKINGBOARD) {
+      const rankingboard = this.rankingboardMap.get(itemId)
+      rankingboard?.addCurrentUser(playerId)
+    }
     // else if (itemType === ItemType.FACECHAT) {
     //   const facechat = this.facechatMap.get(itemId)
     //   facechat?.removeCurrentUser(playerId)

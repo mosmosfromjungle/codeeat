@@ -81,8 +81,13 @@ export const NameArea = styled.div`
 `
 
 export const Comment = styled.div`
-  font-size: 18px;
-  padding-bottom: 10px;
+    position: absolute;
+    left: -130%;
+    trans-form: translateX(-50%);
+    width: 500px;
+    text-align: center;
+    font-size: 25px;
+    font-family: Font_DungGeun;
 `
 
 export const TimerArea = styled.div`
@@ -103,10 +108,10 @@ export const GameArea = styled.div`
   position: relative;
   height: 85%;
 
-  box-shadow: 0px 0px 5px #0000006f;
-  background: no-repeat center/cover url('/assets/game/RainGame/blackboard_crop.png');
-  background-size: 100% 100%;
-  border-radius: 20px;
+    box-shadow: 0px 0px 5px #0000006f;
+    background: no-repeat center/cover url('/assets/game/RainGame/blackboard_final.png');
+    background-size: 100% 100%;
+    border-radius: 20px;
 `
 
 export const Left = styled.div`
@@ -166,13 +171,18 @@ export const PlayArea = styled.div`
 `
 
 export const MyPoint = styled.div`
-  display: flex;
-  position: relative;
-  right: 30px;
-  width: 20%;
-  margin-top: 10px;
-  text-align: center;
-  border: 1px solid #00000029;
-  border-radius: 16px;
-  box-shadow: 0px 10px 24px #0000006f;
+    display: flex;
+    position: relative;
+    right: 30px;
+    width: 20%;
+    margin-top: 10px;
+    text-align: center;
+    border: 1px solid #00000029;
+    border-radius: 16px;
+    box-shadow: 0px 10px 24px #0000006f;
 `
+
+export const Item = styled.div`
+    margin-left: 60px;
+`
+

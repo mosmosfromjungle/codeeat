@@ -109,6 +109,7 @@ export const CustomRoomTable = () => {
   const moleGameOpen = useAppSelector((state) => state.molegame.moleGameOpen)
   // const faceChatOpen = useAppSelector((state) => state.facechat.faceChatOpen)
   const rainGameOpen = useAppSelector((state) => state.rainGameDialog.rainGameOpen)
+  
   const availableRooms = useAppSelector((state) => {
     if (brickGameOpen) return state.room.availableRooms.brickRooms
     if (moleGameOpen) return state.room.availableRooms.moleRooms
@@ -122,8 +123,8 @@ export const CustomRoomTable = () => {
   const handleJoinClick = (roomId: string, password: string | null) => {
     if (!lobbyJoined) return
     const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-    bootstrap.gameNetwork.joinCustomById(roomId, password, username).then(() => {
-      dispatch(setDialogStatus(DIALOG_STATUS.GAME_WELCOME))
+    bootstrap.gameNetwork.joinCustomById(roomId, password, username, character).then(() => {
+      dispatch(setDialogStatus(DIALOG_STATUS.IN_GAME))
     }).catch((error) => {
         console.error(error)
         if (password) setShowPasswordError(true)

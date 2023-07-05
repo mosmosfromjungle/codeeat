@@ -62,6 +62,12 @@ export class RainGameRoomState extends Schema implements IRainGameRoomState {
   rainGameUsers = new MapSchema<RainGameUser>()
   @type({ map: KeywordRain })
   keywordLists = new MapSchema<KeywordRain>()
+
+  constructor() {
+    super()
+    this.rainGameInProgress = false
+    this.rainGameReady = false
+  }
 }
 
 /* BRICK GAME ROOM SCHEMA */
@@ -101,19 +107,20 @@ export class BrickGameState extends Schema implements IBrickGameState {
   @type([ImageContainer]) problemImages = new ArraySchema<ImageContainer>()
   @type('boolean') gameInProgress = false
   @type('boolean') gameStarting = false
-  @type('number') currnetRound = 0
+  @type('number') currentRound = 0
   @type('boolean') hasRoundWinner = false
 }
 
 /* GAME ROOM SCHEMA */
 
 export class GamePlayer extends Schema implements IGamePlayer {
-  @type('string') name = ''
-  @type('string') anim = 'adam_idle_down'
+  @type('string') username = ''
+  @type('string') character = ''
 
-  constructor(name: string) {
+  constructor(username: string, character: string) {
     super()
-    this.name = name
+    this.username = username
+    this.character = character
   }
 }
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import store from '../stores'
 import { Message } from '../../../types/Messages'
-import { setNewMessage } from '../stores/DMStore';
+import { setNewMessage, setNewMessageCnt } from '../stores/DMStore';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 interface OldMessage{
@@ -33,7 +33,9 @@ export default class DMNetwork {
     })
     this.socketClient.on('message', (data) => {
       console.log(data,'라고 받음')
+      data.id = 1;
       store.dispatch(setNewMessage(data))
+      store.dispatch(setNewMessageCnt(1))
     })
   }
 

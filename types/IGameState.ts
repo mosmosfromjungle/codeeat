@@ -64,15 +64,15 @@ export interface IBrickGameState extends Schema {
   problemImages: ArraySchema<IImageContainer>
   gameInProgress: boolean
   gameStarting: boolean
-  currnetRound: number
+  currentRound: number
   hasRoundWinner: boolean
 }
 
 /* GAME ROOM SCHEMA */
 
 export interface IGamePlayer extends Schema {
-  name: string
-  anim: string
+  username: string
+  character: string
 }
 
 export interface IGameState extends Schema {
