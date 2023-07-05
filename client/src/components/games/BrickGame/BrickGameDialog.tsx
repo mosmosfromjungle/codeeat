@@ -88,6 +88,7 @@ export default function BrickGameDialog() {
   const round  = useAppSelector((state) => state.brickgame.brickGameState.currentRound)
   const hasRoundWinner = useAppSelector((state) => state.brickgame.brickGameState.hasRoundWinner)
   const roundWinner = useAppSelector((state) => state.brickgame.brickGameState.roundWinner)
+  const gameWinner = useAppSelector((state) => state.brickgame.brickGameState.gameWinner)
   const [problem, setProblem] = useState<string>('')
   const [number, setNumber] = useState<number>(0)
   const [showProblem, setShowProblem] = useState<boolean>(false)
@@ -104,6 +105,18 @@ export default function BrickGameDialog() {
       }, 2000)
     }
   }, [roundWinner])
+
+  // 게임 승자 표시 
+  useEffect(() => {
+    if (gameWinner === '') {
+      setWinnerModalOpen(false)
+    } else {
+      setWinnerModalOpen(true)
+      setTimeout(() => {
+        setWinnerModalOpen(false)
+      }, 2000)
+    }
+  }, [gameWinner])
 
   // 문제 출제
   useEffect(() => {
@@ -251,7 +264,8 @@ export default function BrickGameDialog() {
           fontFamily: 'Font_DungGeun',
         }}
       >
-        <h2>{roundWinner}</h2>
+        <h2>라운드 승자 : {roundWinner}</h2>
+        <h2>게임 승자 : {gameWinner}</h2>
       </div>
     )
 
