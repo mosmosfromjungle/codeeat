@@ -32,13 +32,13 @@ export const ConversationList = () => {
   }, []);
 
   useEffect(() => {
-    console.log('방 목록 불러옴', rooms);
+    // console.log('방 목록 불러옴', rooms);
   }, [rooms]);
 
 const handleClick = (room) => {
   dispatch(setReceiverName(room.receiverName));
   dispatch(setRoomId(room.roomId));
-  console.log('룸아이디설정',room.roomId)
+  // console.log('룸아이디설정',room.roomId)
 
   dispatch(setNewMessageCnt(-1 * room.unreadCount))
   dispatch(setNewMessage({ message: '' }))
@@ -105,7 +105,7 @@ align-items: center;
 justify-content: flex-start;
 cursor: pointer;
 padding: 16px;
-margin-bottom: 10px;
+margin-bottom: 0px;
 border-bottom: 2px solid black;
 min-height: 20px;
 `;
@@ -116,10 +116,10 @@ const UserNamewithLastMessage = styled.div`
   color: black;
   justify-content: space-between;
   padding: 0px 0px 0px 0px;
-  border-bottom: 1px solid gray;
+  border-bottom: 0.7px solid gray;
   cursor: pointer;
   font-size: 10px;
-  height: 60px;
+  height: 30px;
   font-family: Font_DungGeun;
   flex-grow: 1;
 
@@ -137,12 +137,12 @@ const LastMessage = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  font-size: 20px;
+  font-size: 17px;
   margin: 0px 0px 0px 0px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  width: 180px;
+  width: 220px;
   height: 20px;
   flex-shrink: 1;
 `;
@@ -158,7 +158,7 @@ const DMList = styled.div`
 flex: 1;
   height: calc(100% - 76px);
   overflow: auto;
-  padding: 10px 0 0 20px;
+  padding: 10px 0px 0 20px;
   display: flex;
   flex-direction: column;
   
@@ -174,12 +174,12 @@ const UnreadCnt = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 100%;
   background-color: red;
   color: white;
-  font-size: 12px;
+  font-size: 15px;
 `;
 
 const NoDMMessage = styled.div`

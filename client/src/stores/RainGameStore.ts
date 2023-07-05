@@ -23,11 +23,12 @@ export interface RainGameStates {
   you: RainGameUser
   words: string
   dheart: boolean
+  winner: string
 }
 
 export const initialState: RainGameStates = {
   host: '',
-  rainGameReady: false,
+  rainGameReady: true, /* 지금은 필요없는데 나중에 준비버튼 만들려고 냅뒀음 */
   rainGameInProgress: false,
   myState: {
     point: 0,
@@ -49,6 +50,7 @@ export const initialState: RainGameStates = {
   },
   words: '',
   dheart: false,
+  winner: ''
 }
 
 // Define Slice
@@ -64,8 +66,8 @@ export const rainGameSlice = createSlice({
       state.rainGameReady = action.payload
     },
 
-    setRainGameInProgress: (state) => {
-      state.rainGameInProgress = true
+    setRainGameInProgress: (state, action: PayloadAction<boolean>) => {
+      state.rainGameInProgress = action.payload
     },
 
     setRainGameYou: (state, action: PayloadAction<RainGameUser>) => {
@@ -101,6 +103,10 @@ export const rainGameSlice = createSlice({
     setRainGameYouWord: (state, action: PayloadAction<string>) => {
       state.words = action.payload
     },
+
+    setRainGameWinner: (state, action: PayloadAction<string>) => {
+      state.winner = action.payload
+    }
   },
 })
 
@@ -114,6 +120,7 @@ export const {
   setRainGameYouWord,
   setRainStateMe,
   setRainStateYou,
+  setRainGameWinner
 } = rainGameSlice.actions
 
 export default rainGameSlice.reducer

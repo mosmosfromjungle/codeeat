@@ -22,7 +22,7 @@ export default function DMBottom(props) {
       setValue('');
       return;
     }
-      console.log('보냄');
+      // console.log('보냄');
     const newMessage = new Message({
       id: 0,
       message: Rvalue,
@@ -51,11 +51,10 @@ export default function DMBottom(props) {
         
         value={value}
         fullWidth
+        variant='standard'
         margin="dense"
         id="outlined-multiline-static"
-        label="메세지 보내기"
-        multiline
-        maxRows={2}
+        maxRows={1}
         onChange={(event) => {
           setValue(event.target.value);
         }}
@@ -63,11 +62,12 @@ export default function DMBottom(props) {
         InputProps={{style: {fontFamily: 'Font-Dungeun', color: 'black'},
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton color="primary" sx={{ p: '15px' }} onClick={handleSubmit} edge="end">
-              <Send set="bulk" primaryColor="blue"/>
+              <IconButton sx={{ p: '15px' }} onClick={handleSubmit} edge="end">
+              <Send set="bulk" primaryColor="#00b0a7"/>
               </IconButton>
             </InputAdornment>
           ),
+          disableUnderline:true,
         }}
         />
     </DMbottom>
@@ -78,9 +78,9 @@ const DMbottom = styled.div`
   font-size: 35px;
   font-weight: bold;
   display: flex;
-  height: 70px;
+  height: 50px;
   flex-direction: row;
   alsign-items: center;
   justify-content: space-between;
-  
+  border: 2px solid #3ED0C8;
 `;

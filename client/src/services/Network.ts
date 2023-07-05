@@ -6,14 +6,13 @@ import { ItemType } from '../../../types/Items'
 // import WebRTC from '../web/WebRTC'
 import { phaserEvents, Event } from '../events/EventCenter'
 import store from '../stores'
-import { setSessionId, setPlayerNameMap, removePlayerNameMap, setGameSessionId } from '../stores/UserStore'
+import { setSessionId, setPlayerNameMap, removePlayerNameMap, setGameSessionId, removePlayerCharacterMap, setPlayerCharacterMap } from '../stores/UserStore'
 import {
   setLobbyJoined,
   setJoinedRoomData,
   setAvailableRooms,
   addAvailableRooms,
   removeAvailableRooms,
-  setMainPlayers,
 } from '../stores/RoomStore'
 import {
   pushChatMessage,
@@ -25,7 +24,6 @@ export default class Network {
   private client: Client
   private lobby!: Room
   private room?: Room<IOfficeState>
-  // webRTC?: WebRTC
   mySessionId!: string
 
   constructor() {
@@ -125,6 +123,9 @@ export default class Network {
             store.dispatch(setPlayerNameMap({ id: key, name: value }))
             store.dispatch(pushPlayerJoinedMessage(value))
           }
+          if (field === 'anim' && value !== '') {
+            store.dispatch(setPlayerCharacterMap({ id: key, anim: value }))
+          }
         })
       }
     }
@@ -136,6 +137,7 @@ export default class Network {
       // this.webRTC?.deleteOnCalledVideoStream(key)
       store.dispatch(pushPlayerLeftMessage(player.name))
       store.dispatch(removePlayerNameMap(key))
+      store.dispatch(removePlayerCharacterMap(key))
     }
 
     // new instance added to the brickgames MapSchema
@@ -191,13 +193,13 @@ export default class Network {
     //   this.webRTC?.deleteOnCalledVideoStream(clientId)
     // })
 
-    this.room.onStateChange((state) => {
-      const players: any = [];
-      this.room?.state.players.forEach((value) => {
-        players.push(value);
-      });
-      store.dispatch(setMainPlayers(players));
-    });
+    // this.room.onStateChange((state) => {
+    //   const players: any = [];
+    //   this.room?.state.players.forEach((value) => {
+    //     players.push(value);
+    //   });
+    //   store.dispatch(setMainPlayers(players));
+    // });
   }
 
   // method to register event listener and call back function when a item user added
