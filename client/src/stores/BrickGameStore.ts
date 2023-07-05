@@ -14,6 +14,7 @@ export interface BrickGameStateInterface {
   currentRound: number
   hasRoundWinner: boolean
   roundWinner: string
+  gameWinner: string
 }
 
 const brickGameState: BrickGameStateInterface = {
@@ -24,7 +25,8 @@ const brickGameState: BrickGameStateInterface = {
   gameStarting: false,
   currentRound: 0,
   hasRoundWinner: false,
-  roundWinner: ''
+  roundWinner: '',
+  gameWinner: ''
 }
 
 export interface PlayerScoreInterface {
@@ -98,6 +100,7 @@ export const brickGameSlice = createSlice({
       state.brickGameState.currentRound = action.payload.currentRound
       state.brickGameState.hasRoundWinner = action.payload.hasRoundWinner
       state.brickGameState.roundWinner = action.payload.roundWinner
+      state.brickGameState.gameWinner = action.payload.gameWinner
     },
     setMyPlayerScore: (state, action: PayloadAction<PlayerScoreInterface>) => {
       state.myPlayerScore = action.payload
