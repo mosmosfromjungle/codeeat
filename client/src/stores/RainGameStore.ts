@@ -27,8 +27,8 @@ export interface RainGameStates {
 
 export const initialState: RainGameStates = {
   host: '',
-  rainGameReady: true,
-  rainGameInProgress: true,
+  rainGameReady: false,
+  rainGameInProgress: false,
   myState: {
     point: 0,
     heart: 3,
@@ -64,8 +64,8 @@ export const rainGameSlice = createSlice({
       state.rainGameReady = action.payload
     },
 
-    setRainGameInProgress: (state, action: PayloadAction<boolean>) => {
-      state.rainGameInProgress = action.payload
+    setRainGameInProgress: (state) => {
+      state.rainGameInProgress = true
     },
 
     setRainGameYou: (state, action: PayloadAction<RainGameUser>) => {

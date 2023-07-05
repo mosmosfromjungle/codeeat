@@ -22,23 +22,14 @@ export const Wrapper = styled.div`
 
   .close {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 20px;
+    right: 20px;
     z-index: 1;
   }
 `
 
 export const WaitWrapper = styled.div`
   height: 200px;
-`
-
-export const StartButton = styled.button`
-  width: 120px;
-  height: 40px;
-  margin: auto;
-  font-size: 18px;
-  font-weight: bold;
-  transition: opacity 0.3s;
 `
 
 export const FriendInfo = styled.div`
@@ -81,13 +72,19 @@ export const NameArea = styled.div`
 `
 
 export const Comment = styled.div`
-    position: absolute;
-    left: -130%;
-    trans-form: translateX(-50%);
-    width: 500px;
-    text-align: center;
-    font-size: 25px;
-    font-family: Font_DungGeun;
+  position: absolute;
+  top: 20px;
+  left: 50px;
+  font-size: 25px;
+  font-family: Font_DungGeun;
+`
+
+export const StartButton = styled.div`
+  position: absolute;
+  top: 40px;
+  right: -30px;
+  font-size: 25px;
+  font-family: Font_DungGeun;
 `
 
 export const TimerArea = styled.div`
@@ -108,10 +105,10 @@ export const GameArea = styled.div`
   position: relative;
   height: 85%;
 
-    box-shadow: 0px 0px 5px #0000006f;
-    background: no-repeat center/cover url('/assets/game/RainGame/blackboard_final.png');
-    background-size: 100% 100%;
-    border-radius: 20px;
+  box-shadow: 0px 0px 5px #0000006f;
+  background: no-repeat center/cover url('/assets/game/RainGame/blackboard.png');
+  background-size: 100% 100%;
+  border-radius: 20px;
 `
 
 export const Left = styled.div`

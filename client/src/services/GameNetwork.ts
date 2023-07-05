@@ -211,11 +211,9 @@ export default class GameNetwork {
     this.room?.send(Message.BRICK_GAME_COMMAND, { command: command })
   }
 
-
   brickGameStart() {
     this.room?.send(Message.BRICK_GAME_START)
   }
-
 
   /* MOLE GAME  */
 
@@ -362,8 +360,7 @@ export default class GameNetwork {
     })
 
     this.room.onMessage(Message.RAIN_GAME_START_S, (content) => {
-      const value = content
-      store.dispatch(setRainGameInProgress(value))
+      store.dispatch(setRainGameInProgress())
     })
 
     // this.room.onMessage(Message.RAIN_GAME_READY_S, () => {

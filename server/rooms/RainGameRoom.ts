@@ -31,12 +31,9 @@ export class RainGameRoom extends Room<GameState> {
     this.state.host = username
 
     this.onMessage(Message.RAIN_GAME_START_C, (client, content) => {
-      const { value } = content
-      this.state.raingames.rainGameInProgress = value
       
       this.broadcast(
         Message.RAIN_GAME_START_S,
-        { value : value },
         { afterNextPatch: true}
       )
     })
