@@ -47,11 +47,11 @@ const Wrapper = styled.form`
   border-radius: 16px;
   padding: 36px 40px;
   box-shadow: 0px 0px 5px #0000006f;
-  width: 40%;
+  width: 75%;
 `
 const Title = styled.h3`
   margin: 5px;
-  font-size: 30px;
+  font-size: 50px;
   color: #c2c2c2;
   text-align: center;
 `
@@ -69,6 +69,7 @@ const Right = styled.div`
   margin: 0 0 0 30px;
   color: white;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 `
@@ -88,15 +89,31 @@ const Special = styled.span`
 `
 const Description = styled.span`
   color: white;
-  font-size: 18px;
+  font-size: 26px;
 `
+const GameDescription = styled.div`
+  margin-top: 40px;
+  // display: flex;
+  // flex-direction: row;
+  // text-align: left;
+
+  h3 {
+    text-align: left;
+    font-size: 26px;
+    margin: 0 15px;
+    line-height: 1.5;
+  }
+`
+
 const Image = styled.span`
+  // border: 5px solid red;
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   img {
     width: 100%;
+    border-radius: 15px;
   }
 `
 const avatars = [
@@ -124,50 +141,58 @@ export default function WelcomeDialog() {
   // const videoConnected = useAppSelector((state) => state.user.videoConnected)
 
   const index = avatars.findIndex((avatar) => avatar.name === character)
-  
+
   const game = phaserGame.scene.keys.game as Game
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     game.myPlayer.setPlayerName(username)
     game.myPlayer.setPlayerTexture(character)
-    game.network.readyToConnect() 
+    game.network.readyToConnect()
     dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
   }
-  
+
   useEffect(() => {
-    if (roomJoined) {    
+    if (roomJoined) {
       game.registerKeys()
     }
   })
 
   return (
     <>
-    <GlobalStyle />
-    <Wrapper onSubmit={handleSubmit}>
-      <Title><Special>코드잇</Special>에 온 걸 환영합니다!</Title>
-      <Content>
-        <Left>
-          <Image>
-            <img src={ welcome }></img>
-          </Image>
-        </Left>
-        <Right>
-          <Description>
-            { username.toUpperCase() } 님, 안녕하세요! <br/>
-            여기는 키즈들의 코딩공간, 코드잇입니다. <br/><br/>
-
-            저희 코드잇에는 세가지 게임이 있어요. <br/>
-            왼쪽 맵을 확인하여 원하는 게임을 플레이해보세요 !<br/>
-          </Description>
-        </Right>
-      </Content>
-      <Bottom>
-        <Button variant="contained" size="large" type="submit">
-          입장하기
-        </Button>
-      </Bottom>
-    </Wrapper>
+      <GlobalStyle />
+      <Wrapper onSubmit={handleSubmit}>
+        <Title>
+          <Special>코드잇</Special>에 온 걸 환영합니다!
+        </Title>
+        <Content>
+          <Left>
+            <Image>
+              <img src={welcome}></img>
+            </Image>
+          </Left>
+          <Right>
+            <Description>
+              <span style={{ fontSize: '40px', color: '#f9f871' }}>{username.toUpperCase()}</span>{' '}
+              님, 안녕하세요! <br />
+              여기는 키즈들의 코딩공간, 코드잇입니다. <br />
+              <br />
+              저희 코드잇에는 세가지 게임이 있어요. <br />
+              왼쪽 맵을 확인하여 원하는 게임을 플레이해보세요 !<br />
+            </Description>
+            <GameDescription>
+              <h3 style={{ color: '#e46c0a' }}>주황: 두더지 게임</h3>
+              <h3 style={{ color: '#e1e100' }}>노랑: 산성비 게임</h3>
+              <h3 style={{ color: '#00de1a' }}>초록: 자료구조 게임</h3>
+            </GameDescription>
+          </Right>
+        </Content>
+        <Bottom>
+          <Button variant="contained" size="large" type="submit">
+            입장하기
+          </Button>
+        </Bottom>
+      </Wrapper>
     </>
   )
 }
