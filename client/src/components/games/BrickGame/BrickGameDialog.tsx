@@ -34,6 +34,7 @@ import {
   CustomButton, CustomResetButton, CustomList, CommandArrayWrapper, OppBracket, OppOption, ImageArrayWrapper, 
   Answer, Left, Right, 
   CharacterArea, NameArea, Special, 
+  RoundWinnerModal, 
 } from './BrickGameStyle'
 
 import './BrickGame.css'
@@ -91,6 +92,7 @@ export default function BrickGameDialog() {
   const [problem, setProblem] = useState<string>('')
   const [number, setNumber] = useState<number>(0)
   const [showProblem, setShowProblem] = useState<boolean>(false)
+  const gameInProgress = useAppSelector((state) => state.brickgame.brickGameState.gameInProgress)
 
   // 라운드 승자 표시
   const [winnerModalOpen, setWinnerModalOpen] = useState<boolean>(false)
@@ -230,36 +232,22 @@ export default function BrickGameDialog() {
 
   const startBrickGame = () => {
     const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-    bootstrap.gameNetwork.startRainGame()
+    bootstrap.gameNetwork.brickGameStart()
   }
   
   const roundWinnerModal = (
-      <div
-        style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          backgroundColor: '#222639',
-          borderRadius: '24px',
-          boxShadow: '0px, 10px, 24px, #0000006f',
-          padding: '50px',
-          zIndex: 1000,
-          fontSize: '15px',
-          color: '#eee',
-          textAlign: 'center',
-          fontFamily: 'Font_DungGeun',
-        }}
-      >
-        <h2>{roundWinner}</h2>
-      </div>
-    )
+    <RoundWinnerModal>
+      <span style={{ color: 'yellow' }}>{roundWinner}</span>님이 정답을 맞췄습니다!<br/>
+      다음 문제로 넘어갑니다.
+    </RoundWinnerModal>
+  )
 
   return (
     <>
      <GlobalStyle />
       <Backdrop>
         {winnerModalOpen && roundWinnerModal}
+
         <Wrapper>
           <IconButton
             aria-label="close dialog"
@@ -277,7 +265,7 @@ export default function BrickGameDialog() {
             <div style={{ flex: 1, fontSize: '24px' }} className={`${oppUsername ? '' : 'start-game'}`}>
               {oppUsername ? '친구가 들어왔어요,' : '친구가 아직 들어오지 않았어요 !'}
               <br />
-              {oppUsername ? '방장은 Start 버튼을 눌러주세요 !' : '친구가 들어와야 게임이 시작돼요.'}
+              {oppUsername ? '게임 시작 버튼을 눌러주세요 !' : '친구가 들어와야 게임이 시작돼요.'}
             </div>
             <div className="title" style={{ flex: 'auto', textAlign: 'center', fontSize: '40px' }}>
               자료구조 게임<br/>
@@ -286,7 +274,8 @@ export default function BrickGameDialog() {
               </div>
             </div>
             <div style={{ flex: 1, textAlign: 'right' }}>
-              <Button 
+              { oppUsername && !gameInProgress ?
+              (<Button 
                 fullWidth
                 onClick={() => startBrickGame()}
                 style={{ 
@@ -296,7 +285,9 @@ export default function BrickGameDialog() {
               }}
               >
                 게임 시작
-              </Button>
+              </Button>)
+              : ''
+              }
               ROUND {round}/5
             </div>
           </RoundWrapper>
@@ -315,21 +306,20 @@ export default function BrickGameDialog() {
             </HelperWrapper>
 
             <QuizWrapper>
-              <div style={{ fontSize: '40px', display: 'flex', alignItems: 'center' }}>
-                <span style={{ fontSize: '32px', margin: '20px' }}>
-                  {oppUsername ? (
-                    showProblem && (
+              <div style={{ fontSize: '40px', display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+                <span style={{ fontSize: '45px', margin: '20px' }}>
+                  {oppUsername && showProblem ? (
                       <span>
-                        {problem} <span style={{ fontSize: '36px', color: 'yellow' }}> {number} </span> 마리만 남겨주세요!
+                        <span style={{ fontSize: '50px', color: 'yellow' }}> {problem} {number} </span> 마리만 남겨주세요!
                       </span>
-                    )
                   ) : (
-                    '친구가 들어오면 여기에 문제가 보일거예요!'
+                    '게임이 시작되면 여기에 문제가 보일거예요!'
                   )}
-                  {oppUsername && (
-                    <OppOption>
+
+                  {oppUsername && gameInProgress && (
+                    <div style={{ marginTop: '10px' }}>
                       {COMMON_MESSAGE}
-                    </OppOption>
+                    </div>
                   )}
                 </span>
               </div>
@@ -388,7 +378,7 @@ export default function BrickGameDialog() {
               </ImageArrayWrapper>
               ) : ''}
 
-              { oppUsername ? (
+              { oppUsername && gameInProgress ? (
               <OptionWrapper>
                 {oppSelectedOption === 'list' ? (
                   <CustomList>
@@ -398,7 +388,7 @@ export default function BrickGameDialog() {
                 ) : oppSelectedOption === 'set' ? (
                   <CustomList>
                     <span style={{ fontSize: '32px', color: 'yellow' }}>Set</span> - 
-                    remove(숫자), discard(숫자)<br />
+                    remove(숫자)<br />
                   </CustomList>
                 ) : oppSelectedOption === 'stack' ? (
                   <CustomList>
@@ -423,7 +413,7 @@ export default function BrickGameDialog() {
               </OptionWrapper>
               ) : ''}
               
-              { oppUsername ? (
+              { oppUsername && gameInProgress ? (
               <CommandArrayWrapper>
                 {oppCommandArray}
               </CommandArrayWrapper>
@@ -441,13 +431,15 @@ export default function BrickGameDialog() {
                       나 <br/>
                       [{ username.toUpperCase() }]
                     </NameArea>
-                </MyInfo>
+                  </MyInfo>
                 </div>
-                <div style={{ color: 'white' }}>{gameMessage}</div>
-                <div style={{ flex: 1, color: 'white', fontSize: '25px', textAlign: 'right', lineHeight: '1.5' }}>
-                    { myLifeElements }
-                    <br/>
-                    { myPoint } Point <br/>
+                <div style={{ flex: 1, color: 'white', fontSize: '25px', textAlign: 'center' }}>
+                  {gameMessage}
+                </div>
+                <div style={{ flex: 1, color: 'white', fontSize: '30px', textAlign: 'right' }}>
+                  { myLifeElements }
+                  <br/>
+                  { myPoint } Point <br/>
                 </div>
               </ScoreWrapper>
 
@@ -468,7 +460,7 @@ export default function BrickGameDialog() {
               </ImageArrayWrapper>
               ) : ''}
 
-              { oppUsername ? (
+              { oppUsername ? gameInProgress && (
               <OptionWrapper>
                 {mySelectedOption === 'list' ? (
                   <CustomList>
@@ -478,7 +470,7 @@ export default function BrickGameDialog() {
                 ) : mySelectedOption === 'set' ? (
                   <CustomList>
                     <span style={{ fontSize: '32px', color: 'yellow' }}>Set</span> - 
-                    remove(숫자), discard(숫자)<br />
+                    remove(숫자)<br />
                   </CustomList>
                 ) : mySelectedOption === 'stack' ? (
                   <CustomList>
@@ -507,7 +499,7 @@ export default function BrickGameDialog() {
               </OptionWrapper>
               ) : ''}
 
-              { oppUsername ? (
+              { oppUsername ? gameInProgress && (
               <CommandArrayWrapper>
                 {myCommandArray}
               </CommandArrayWrapper>
@@ -521,13 +513,13 @@ export default function BrickGameDialog() {
                 style={{ margin: '10px' }}
               /> */}
               
-              { oppUsername ? (
+              { oppUsername ? gameInProgress && (
               <div style={{ color: 'white', textAlign: 'right', padding: '10px' }}>
                 잘못 제출하면 목숨이 줄어들어요!
               </div>
               ) : ''}
               <Answer>
-                { oppUsername ? (
+                { oppUsername ? gameInProgress && (
                 <Left>
                   <TextField
                     label="명령어 입력 후 엔터"
@@ -549,7 +541,7 @@ export default function BrickGameDialog() {
                   />
                 </Left>
                 ) : ''}
-                { oppUsername ? (
+                { oppUsername ? gameInProgress && (
                 <Right>
                   <Button 
                       fullWidth

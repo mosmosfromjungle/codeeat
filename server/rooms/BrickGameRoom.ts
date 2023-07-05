@@ -76,9 +76,9 @@ export class BrickGameRoom extends Room<IGameState> {
     this.broadcastPlayersData()
 
     // 임시
-    if (this.clients.length >= this.maxClients) {
-      this.startGame()
-    }
+    // if (this.clients.length >= this.maxClients) {
+    //   this.startGame()
+    // }
   }
 
   /* 플레이어가 퇴장할 때 아직 게임이 진행중인 상태라면 5초 후 게임을 강제 종료 */
