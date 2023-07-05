@@ -32,12 +32,12 @@ export const initialState: RainGameStates = {
   rainGameInProgress: false,
   myState: {
     point: 0,
-    heart: 3,
+    heart: 2,
     item: [],
   },
   youState: {
     point: 0,
-    heart: 3,
+    heart: 2,
     item: [],
   },
   me: {
