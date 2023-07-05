@@ -74,10 +74,10 @@ export default function DMBubbles(props) {
               marginBottom: 1,
               marginLeft: 15,
               wordBreak: 'break-all',
-              backgroundColor: '#147814',
+              backgroundColor: '#005b65',
             },
             userBubble: {
-              backgroundColor: '#3ED0C8',
+              backgroundColor: '#00b0a7',
             },
           }}
         />

@@ -12,12 +12,12 @@ const Backdrop = styled.div`
   position: fixed;
   display: flex;
   gap: 10px;
-  bottom: 70px;
+  bottom: 90px;
   right: 17px;
   align-items: flex-end;
 `
 const DMwrapper = styled(Box)`
-  height: 593px;
+  height: 570px;
   width: 385px;
   background: #F6F6F6;
   border: 10px solid #FFFFF5;
