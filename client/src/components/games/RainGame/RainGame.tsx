@@ -38,7 +38,7 @@ export function RainGame() {
   const [time, setTime] = useState(10)
   const host = useAppSelector((state) => state.raingame.host)
   const sessionId = useAppSelector((state) => state.user.gameSessionId)
-  const inProgress = 
+  // const inProgress = 
 
   // My information
   const username = useAppSelector((state) => state.user.username)
@@ -66,7 +66,6 @@ export function RainGame() {
   const myExtraSpeedRef = useRef(0)
   const youExtraSpeedRef = useRef(0)
   const me = useAppSelector((state) => state.raingame.me)
-  const you = useAppSelector((state) => state.raingame.you)
   const [myImage, setMyImage] = useState(false)
   const [youImage, setYouImage] = useState(false)
   const [gameInProgress, setGameInProgress] = useState(true)
@@ -264,7 +263,7 @@ export function RainGame() {
             debouncedDecreaseHeart()
             setDheart(true)
             if (myState.heart === 0) {
-              bootstrap.gameNetwork.startRainGame(false);
+              bootstrap.gameNetwork.startRainGame();
             }
           } else {
             newGame.push({ ...item, y: newY })
@@ -396,7 +395,7 @@ export function RainGame() {
     const timeInterval = setInterval(() => {  
       setTime((prevTime) => Math.max(prevTime - 1, 0))
       if (time === 0 ) {
-        bootstrap.gameNetwork.startRainGame(false);
+        bootstrap.gameNetwork.startRainGame();
       } 
     }, 1000)
 
