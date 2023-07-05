@@ -180,7 +180,7 @@ export class BrickGameRoom extends Room<IGameState> {
             // this.dispatcher.dispatch(new BrickGameCommand(), { client, command: DATA_STRUCTURE.SET, commandText: command })
             playerStatus.selectedOption = DATA_STRUCTURE.SET
             playerStatus.commandArray.push(command + ' ')
-            // TODO: Set 로직 
+            playerStatus.currentImages = this.filterDuplicate(playerStatus.currentImages)
           } else if (lowercaseCommand === DATA_STRUCTURE.STACK) {
             // this.dispatcher.dispatch(new BrickGameCommand(), { client, command: DATA_STRUCTURE.STACK, commandText: command })
             playerStatus.selectedOption = DATA_STRUCTURE.STACK
@@ -221,6 +221,19 @@ export class BrickGameRoom extends Room<IGameState> {
         }
       }, 2000);
     }
+  }
+
+  filterDuplicate(currentArray: ArraySchema<ImageContainer>) {
+    const uniqueNumbers = new Set();
+
+    const filteredList = new ArraySchema<ImageContainer>()
+    currentArray.forEach((elem) => {
+      if (!uniqueNumbers.has(elem.imgidx)) {
+        filteredList.push(elem)
+        uniqueNumbers.add(elem.imgidx)
+      }
+    })
+    return filteredList
   }
 
   checkSubmission(client: Client) {
