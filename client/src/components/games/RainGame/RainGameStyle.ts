@@ -120,7 +120,7 @@ export const Left = styled.div`
 `
 
 export const Right = styled.div`
-  width: 50%;
+  width: 43%;
   position: relative;
   overflow: hidden;
   textalign: center;
@@ -176,7 +176,7 @@ export const MyPoint = styled.div`
     width: 20%;
     margin-top: 10px;
     text-align: center;
-    border: 1px solid #00000029;
+    border: 3px solid yellow;
     border-radius: 16px;
     box-shadow: 0px 10px 24px #0000006f;
 `

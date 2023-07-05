@@ -694,7 +694,7 @@ export function RainGame() {
 
         <MyPoint>
           <NameArea>
-            나 [{username.toUpperCase()}]<br />
+            <span style={{ color: 'yellow' }}>나</span> [{username.toUpperCase()}]<br />
             {myLifeElements}
           </NameArea>
           <CharacterArea>
