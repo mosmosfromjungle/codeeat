@@ -231,24 +231,24 @@ export function RainGame() {
     { y: 0, speed: 1.9, keyword: 'wiFi', x: 300, itemA: false, itemB: false },
   ]
   const Bwords = [
-    { y: 0, speed: 3.9, keyword: 'upload', x: 60, itemA: false, itemB: false },
-    { y: 0, speed: 3.7, keyword: 'folder', x: 600, itemA: false, itemB: false },
-    { y: 0, speed: 3.5, keyword: 'file', x: 60, itemA: false, itemB: false },
-    { y: 0, speed: 3.9, keyword: 'cut', x: 600, itemA: false, itemB: true },
-    { y: 0, speed: 3.7, keyword: 'copy', x: 60, itemA: false, itemB: false },
-    { y: 0, speed: 3.5, keyword: 'paste', x: 600, itemA: false, itemB: false },
-    { y: 0, speed: 3.9, keyword: 'print', x: 60, itemA: false, itemB: false },
-    { y: 0, speed: 3.7, keyword: 'camera', x: 600, itemA: false, itemB: false },
-    { y: 0, speed: 3.5, keyword: 'microphone', x: 60, itemA: false, itemB: false },
-    { y: 0, speed: 3.9, keyword: 'speaker', x: 600, itemA: false, itemB: false },
-    { y: 0, speed: 3.7, keyword: 'text', x: 60, itemA: false, itemB: false },
-    { y: 0, speed: 3.5, keyword: 'font', x: 600, itemA: false, itemB: false },
-    { y: 0, speed: 3.9, keyword: 'color', x: 60, itemA: false, itemB: false },
-    { y: 0, speed: 3.7, keyword: 'paint', x: 600, itemA: false, itemB: false },
-    { y: 0, speed: 3.5, keyword: 'draw', x: 60, itemA: false, itemB: false },
-    { y: 0, speed: 3.9, keyword: 'icon', x: 600, itemA: false, itemB: false },
-    { y: 0, speed: 2.7, keyword: 'search', x: 60, itemA: false, itemB: false },
-    { y: 0, speed: 2.5, keyword: 'window', x: 600, itemA: false, itemB: false },
+    { y: 0, speed: 3.9, keyword: 'upload', x: 100, itemA: false, itemB: false },
+    { y: 0, speed: 3.7, keyword: 'folder', x: 200, itemA: false, itemB: true },
+    { y: 0, speed: 3.5, keyword: 'file', x: 200, itemA: false, itemB: false },
+    { y: 0, speed: 3.9, keyword: 'cut', x: 200, itemA: false, itemB: true },
+    { y: 0, speed: 3.7, keyword: 'copy', x: 378, itemA: false, itemB: false },
+    { y: 0, speed: 3.5, keyword: 'paste', x: 420, itemA: false, itemB: false },
+    { y: 0, speed: 3.9, keyword: 'print', x: 489, itemA: false, itemB: false },
+    { y: 0, speed: 3.7, keyword: 'camera', x: 444, itemA: false, itemB: true },
+    { y: 0, speed: 3.5, keyword: 'microphone', x: 430, itemA: false, itemB: false },
+    { y: 0, speed: 3.9, keyword: 'speaker', x: 350, itemA: false, itemB: false },
+    { y: 0, speed: 3.7, keyword: 'text', x: 225, itemA: false, itemB: false },
+    { y: 0, speed: 3.5, keyword: 'font', x: 432, itemA: false, itemB: false },
+    { y: 0, speed: 3.9, keyword: 'color', x: 350, itemA: false, itemB: false },
+    { y: 0, speed: 3.7, keyword: 'paint', x: 390, itemA: false, itemB: false },
+    { y: 0, speed: 3.5, keyword: 'draw', x: 430, itemA: false, itemB: false },
+    { y: 0, speed: 3.9, keyword: 'icon', x: 470, itemA: false, itemB: false },
+    { y: 0, speed: 2.7, keyword: 'search', x: 210, itemA: false, itemB: false },
+    { y: 0, speed: 2.5, keyword: 'window', x: 250, itemA: false, itemB: false },
     { y: 0, speed: 2.9, keyword: 'minimize', x: 290, itemA: false, itemB: false },
     { y: 0, speed: 2.7, keyword: 'maximize', x: 330, itemA: false, itemB: false },
     { y: 0, speed: 2.5, keyword: 'close', x: 370, itemA: false, itemB: false },
@@ -630,8 +630,8 @@ export function RainGame() {
                 fontSize: '50px',
                 letterSpacing: '0.1vw',
                 top: `${word.y}px`,
-                left: `${word.x + 40}px`,
-                color: '#FFFFFF',
+                left: `${word.x + 60}px`,
+                color: word.itemA ? 'red' : (word.itemB ? 'blue' : '#FFFFFF'),
                 zIndex: 2,
               }}
             >
@@ -681,6 +681,7 @@ export function RainGame() {
               inputRef={keywordInput}
               onKeyPress={(e) => keydown(e.charCode)}
               fullWidth
+              autoComplete='off'
               InputProps={{
                 style: {
                   width: '300px',
