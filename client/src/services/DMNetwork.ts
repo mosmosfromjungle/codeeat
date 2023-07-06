@@ -69,4 +69,6 @@ export default class DMNetwork {
   async whoAmI(username: string){
     this.socketClient.emit('whoAmI', username);
   };
+
+
 }
