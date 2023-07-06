@@ -727,11 +727,11 @@ export default function MoleGameDialog() {
 
             <Content>
               <YourPoint>
-                <IsWinner>
+                {/* <IsWinner>
                   {friendname && !startGame && winner === friendname ? 'WINNER' : ''}
                   <br />
                   <br />
-                </IsWinner>
+                </IsWinner> */}
                 <IsHost>
                   {friendname && friendname === host ? '방장' : ''}
                   <br />
@@ -751,7 +751,7 @@ export default function MoleGameDialog() {
                 </NameArea>
                 <LifeArea>{friendLifeElements}</LifeArea>
                 <PointArea>
-                  <span id="friend-point-current">{friendPoint ? friendPoint : '0'}</span>/10
+                  <span id="friend-point-current">{friendPoint ? friendPoint : '0'}</span>/3
                 </PointArea>
               </YourPoint>
 
@@ -842,11 +842,11 @@ export default function MoleGameDialog() {
               </Moles>
 
               <MyPoint>
-                <IsWinner>
+                {/* <IsWinner>
                   {winner === username && !startGame ? 'WINNER' : ''}
                   <br />
                   <br />
-                </IsWinner>
+                </IsWinner> */}
 
                 {isModalOpen && (
                   <ExperienceResultModal
@@ -870,7 +870,7 @@ export default function MoleGameDialog() {
                 </NameArea>
                 <LifeArea>{myLifeElements}</LifeArea>
                 <PointArea>
-                  <span id="point-current">{myPoint}</span>/10
+                  <span id="point-current">{myPoint}</span>/3
                 </PointArea>
               </MyPoint>
             </Content>
