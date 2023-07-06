@@ -119,7 +119,7 @@ export const Left = styled.div`
 `
 
 export const Right = styled.div`
-  width: 43%;
+  width: 50%;
   position: relative;
   overflow: hidden;
   textalign: center;
