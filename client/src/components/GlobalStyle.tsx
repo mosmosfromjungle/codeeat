@@ -14,8 +14,8 @@ export const Content = styled.div`
   no-repeat center center;
   background-size: cover;
 `
-// stroke="%23ffffff"
-// stroke="%23e2f0ea"
+// ffffff
+// e2f0ea
 export const Header = styled.div`
   position: relative;
   height: 60px;
