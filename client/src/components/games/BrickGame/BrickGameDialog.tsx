@@ -233,13 +233,13 @@ export default function BrickGameDialog() {
 
   for (let i = 0; i < oppLife; i++) {
     oppLifeElements.push(
-      <img key={ i } src={ ball } width="45px"></img>
+      <img key={ i } src={ ball } width="38px"></img>
     );
   }
 
   for (let i = 0; i < myLife; i++) {
     myLifeElements.push(
-      <img key={ i } src={ ball } width="45px"></img>
+      <img key={ i } src={ ball } width="38px"></img>
     );
   }
 
@@ -275,10 +275,9 @@ export default function BrickGameDialog() {
           )}
 
           <RoundWrapper>
-            <div style={{ flex: 1, fontSize: '24px' }} className={`${oppUsername ? '' : 'start-game'}`}>
-              {oppUsername ? '친구가 들어왔어요,' : '친구가 아직 들어오지 않았어요 !'}
-              <br />
-              {oppUsername ? '게임 시작 버튼을 눌러주세요 !' : '친구가 들어와야 게임이 시작돼요.'}
+            <div 
+              style={{ flex: 1, minWidth: '200px' ,fontSize: '22px', lineHeight: '1.2', paddingRight: '8px' }} className={`${oppUsername ? '' : 'start-game'}`}>
+              {oppUsername ? '친구가 들어왔어요, 게임 시작 버튼을 눌러주세요 !' : '친구가 들어와야 게임이 시작돼요!'}
             </div>
             <div className="title" style={{ flex: 'auto', textAlign: 'center', fontSize: '40px' }}>
               자료구조 게임<br/>
@@ -286,30 +285,29 @@ export default function BrickGameDialog() {
                 문제에 맞는 적절한 자료구조와 명령어를 입력하여 포켓몬들을 구출해주세요 !
               </div>
             </div>
-            <div style={{ flex: 1, textAlign: 'right' }}>
-              { oppUsername && !gameInProgress ?
-              (<Button 
+            <div style={{ flex: 1,  minWidth: '200px', textAlign: 'right' }}>
+              { oppUsername && !gameInProgress ? (
+              <Button 
                 fullWidth
                 onClick={() => startBrickGame()}
                 style={{ 
                   fontSize: '20px', fontFamily: 'CustomFont', 
                   borderRadius: '20px', backgroundColor: 'yellow',
-                  width: '160px', right: '70px'
+                  width: '160px', right: '16px'
               }}
               >
                 게임 시작
-              </Button>)
-              : ''
-              }
-              ROUND {round}/2
+              </Button>
+              ) : <div>ROUND {round}/2</ div> }
             </div>
           </RoundWrapper>
 
           <MidWrapper>
             <HelperWrapper>
-              💡 TIP: 문제에 <Special>알맞은 자료구조</Special>를 선택하여 <Special>추가 점수</Special>를 얻어보세요!
+              {/* 💡 TIP: 문제에 <Special>알맞은 자료구조</Special>를 선택해 <Special>추가 점수</Special>를 얻어보세요! */}
+              💡 TIP: 문제에 <Special>알맞은 자료구조</Special>를 선택해 풀어보세요!
               <br />
-              <div style={{ fontSize: '24px ', textAlign: 'left', marginTop: '10px' }}>
+              <div style={{ fontSize: '22px', textAlign: 'left', marginTop: '16px' }}>
                 <Special>List</Special> : remove(숫자)<br />
                 <Special>Set</Special> : remove(숫자) + 중복 제거<br />
                 <Special>Stack</Special> : pop<br />
@@ -319,37 +317,22 @@ export default function BrickGameDialog() {
             </HelperWrapper>
 
             <QuizWrapper>
-              <div style={{ fontSize: '40px', display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-                <span style={{ fontSize: '45px', margin: '20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+                <span style={{ fontSize: '40px' }}>
                   {oppUsername && showProblem ? (
                       <span>
-                        <span style={{ fontSize: '50px', color: 'yellow' }}> {problem} {number} </span> 마리만 남겨주세요!
+                        <span style={{ fontSize: '46px', color: 'yellow' }}> {problem} {number} </span> 마리만 남겨주세요!
                       </span>
                   ) : (
                     '게임이 시작되면 여기에 문제가 보일거예요!'
                   )}
-
-                  {oppUsername && gameInProgress && (
-                    <div style={{ marginTop: '10px' }}>
-                      {COMMON_MESSAGE}
-                    </div>
-                  )}
                 </span>
               </div>
-              {/* <ImageArrayWrapper>
-                <MyBracket>&#91;</MyBracket>
-                {myImages.map((image, index) => (
-                  <ImageContainer key={index}>
-                    <img
-                      src={image.src}
-                      alt={`Image ${index + 1}`}
-                      style={{ width: '100px', height: '100px' }}
-                    />
-                    <ImageText>{image.text}</ImageText>
-                  </ImageContainer>
-                ))}
-                <MyBracket>&#93;</MyBracket>
-              </ImageArrayWrapper> */}
+              {oppUsername && gameInProgress && (
+                <div style={{ marginTop: '16px' }}>
+                  {COMMON_MESSAGE}
+                </div>
+              )}
             </QuizWrapper>
           </MidWrapper>
 
@@ -359,7 +342,7 @@ export default function BrickGameDialog() {
                 <div style={{ flex: 1, color: 'white', fontSize: '20px', lineHeight: '1.5' }}>
                   <OppInfo>
                     <CharacterArea>
-                      <img src={ oppImgpath } width="50px" id="friend-character" className={oppUsername ? '' : 'hidden'}></img>
+                      <img src={ oppImgpath } width="40px" id="friend-character" className={oppUsername ? '' : 'hidden'}></img>
                     </CharacterArea>
                     <NameArea>
                       친구 <br/>
@@ -382,7 +365,7 @@ export default function BrickGameDialog() {
                     <img
                       src={image.src}
                       alt={`Image ${index + 1}`}
-                      style={{ width: '80px', height: '80px' }}
+                      style={{ width: '70px', height: '70px' }}
                     />
                     {/* <ImageText>{image.text}</ImageText> */}
                   </ImageContainer>
@@ -464,7 +447,7 @@ export default function BrickGameDialog() {
                     <img
                       src={image.src}
                       alt={`Image ${index + 1}`}
-                      style={{ width: '80px', height: '80px' }}
+                      style={{ width: '70px', height: '70px' }}
                     />
                     <ImageText>{image.text}</ImageText>
                   </ImageContainer>
@@ -527,7 +510,7 @@ export default function BrickGameDialog() {
               /> */}
               
               { oppUsername ? gameInProgress && (
-              <div style={{ color: 'white', textAlign: 'right', padding: '10px' }}>
+              <div style={{ color: 'white', textAlign: 'right', padding: '8px', margin: '16px 0 8px 0' }}>
                 잘못 제출하면 목숨이 줄어들어요!
               </div>
               ) : ''}
@@ -559,7 +542,7 @@ export default function BrickGameDialog() {
                   <Button 
                       fullWidth
                       onClick={() => handleSubmit()}
-                      style={{ height: '50px' }}>
+                      style={{ height: '50px', borderRadius: '10px'}}>
                     제출
                   </Button>
                 </Right>
