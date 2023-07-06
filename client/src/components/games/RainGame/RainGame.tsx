@@ -540,7 +540,7 @@ export function RainGame() {
   return (
     <>
       <GameArea>
-        {isModalOpen && <ExperienceResultModal open={isModalOpen} handleClose={closeModal} />}
+        {isModalOpen && <ExperienceResultModal open={isModalOpen} handleClose={closeModal} winner={ winner === username} />}
         {!rainGameInProgressRef.current && (
           <Comment>
             <p

@@ -634,6 +634,8 @@ export default function MoleGameDialog() {
       gainExpUpdateLevel(username, 7)
     } else if (winner == friendname) {
       gainExpUpdateLevel(username, 3)
+    } else if (winner == 'both') {
+      gainExpUpdateLevel(username, 5)
     }
     if (winner) {
       openModal()
@@ -847,7 +849,11 @@ export default function MoleGameDialog() {
                 </IsWinner>
 
                 {isModalOpen && (
-                  <ExperienceResultModal open={isModalOpen} handleClose={closeModal} />
+                  <ExperienceResultModal
+                    open={isModalOpen}
+                    handleClose={closeModal}
+                    winner={ winner === username }
+                  />
                 )}
 
                 <IsHost>
