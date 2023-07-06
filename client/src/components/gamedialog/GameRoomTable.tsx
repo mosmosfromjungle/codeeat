@@ -22,6 +22,7 @@ const GameRoomList = styled.div`
   position: relative;
   width: 100%;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
 `
@@ -35,11 +36,12 @@ const Card = styled.div`
   border-radius: 20px;
   height: 160px;
   width: 380px;
+  margin: 10px;
 `
 
 const ImageArea = styled.div`
-  width: 100px;
-  height: 100px;
+  width: 110px;
+  height: 110px;
   margin-left: 10px;
   border-radius: 20px;
   display: flex;
@@ -115,7 +117,10 @@ const PasswordDialog = styled(Dialog)`
   }
 `
 
-export const CustomRoomTable = () => {
+export const CustomRoomTable = (props) => {
+  console.log('props: '+props);
+  console.log('props.type: '+props.type);
+
   const [password, setPassword] = useState('')
   const [selectedRoom, setSelectedRoom] = useState('')
   const [showPasswordDialog, setShowPasswordDialog] = useState(false)
