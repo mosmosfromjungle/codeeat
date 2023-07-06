@@ -64,7 +64,7 @@ export function RainGame() {
   const host = useAppSelector((state) => state.raingame.host)
   const sessionId = useAppSelector((state) => state.user.gameSessionId)
   const winner = useAppSelector((state) => state.raingame.winner)
-
+  
 
   // My information
   const username = useAppSelector((state) => state.user.username)
@@ -142,12 +142,13 @@ export function RainGame() {
     }
     if (winner) {
       openModal()
-      bootstrap.gameNetwork.startRainGame(false)
+      
     }
   }, [winner])
 
   const handleClose = () => {
     try {
+      bootstrap.gameNetwork.startRainGame(false)
       bootstrap.gameNetwork.leaveGameRoom()
       dispatch(closeRainGameDialog())
       dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
@@ -157,30 +158,30 @@ export function RainGame() {
   }
 
   const Awords = [
-    { y: 0, speed: 1.7, keyword: 'computer', x: 190, itemA: false, itemB: true },
-    { y: 0, speed: 1.5, keyword: 'code', x: 240, itemA: false, itemB: false },
-    { y: 0, speed: 1.9, keyword: 'program', x: 280, itemA: false, itemB: false },
-    { y: 0, speed: 1.7, keyword: 'button', x: 320, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'screen', x: 360, itemA: true, itemB: false },
-    { y: 0, speed: 1.9, keyword: 'click', x: 400, itemA: false, itemB: false },
-    { y: 0, speed: 1.7, keyword: 'type', x: 440, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'game', x: 480, itemA: false, itemB: false },
-    { y: 0, speed: 1.9, keyword: 'save', x: 220, itemA: false, itemB: false },
-    { y: 0, speed: 1.7, keyword: 'picture', x: 260, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'sound', x: 310, itemA: false, itemB: false },
-    { y: 0, speed: 1.9, keyword: 'play', x: 350, itemA: false, itemB: false },
-    { y: 0, speed: 1.7, keyword: 'stop', x: 390, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'go', x: 430, itemA: false, itemB: false },
+    { y: 0, speed: 2.1, keyword: 'computer', x: 103, itemA: false, itemB: false },
+    { y: 0, speed: 2.4, keyword: 'code', x: 245, itemA: false, itemB: false },
+    { y: 0, speed: 2.3, keyword: 'program', x: 376, itemA: false, itemB: false },
+    { y: 0, speed: 2.0, keyword: 'button', x: 439, itemA: false, itemB: false },
+    { y: 0, speed: 2.1, keyword: 'screen', x: 329, itemA: false, itemB: false },
+    { y: 0, speed: 2.1, keyword: 'click', x: 278, itemA: true, itemB: false },
+    { y: 0, speed: 2.2, keyword: 'type', x: 163, itemA: false, itemB: true },
+    { y: 0, speed: 2.4, keyword: 'game', x: 106, itemA: true, itemB: false },
+    { y: 0, speed: 2.3, keyword: 'save', x: 227, itemA: false, itemB: true },
+    { y: 0, speed: 2.3, keyword: 'picture', x: 291, itemA: true, itemB: false },
+    { y: 0, speed: 2.3, keyword: 'sound', x: 336, itemA: true, itemB: false },
+    { y: 0, speed: 2.3, keyword: 'play', x: 389, itemA: false, itemB: true },
+    { y: 0, speed: 2.3, keyword: 'stop', x: 428, itemA: true, itemB: false },
+    { y: 0, speed: 2.4, keyword: 'go', x: 430, itemA: true, itemB: true },
     { y: 0, speed: 1.9, keyword: 'back', x: 470, itemA: false, itemB: false },
-    { y: 0, speed: 1.7, keyword: 'web', x: 210, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'internet', x: 250, itemA: false, itemB: false },
-    { y: 0, speed: 1.9, keyword: 'link', x: 290, itemA: false, itemB: false },
-    { y: 0, speed: 1.7, keyword: 'password', x: 330, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'mouse', x: 370, itemA: false, itemB: true },
-    { y: 0, speed: 1.9, keyword: 'keyboard', x: 410, itemA: false, itemB: false },
+    { y: 0, speed: 2.0, keyword: 'web', x: 210, itemA: false, itemB: false },
+    { y: 0, speed: 2.1, keyword: 'internet', x: 250, itemA: true, itemB: false },
+    { y: 0, speed: 2.3, keyword: 'link', x: 290, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'password', x: 330, itemA: true, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'mouse', x: 370, itemA: false, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'keyboard', x: 410, itemA: true, itemB: false },
     { y: 0, speed: 1.7, keyword: 'app', x: 450, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'scroll', x: 200, itemA: false, itemB: false },
-    { y: 0, speed: 1.9, keyword: 'drag', x: 240, itemA: true, itemB: false },
+    { y: 0, speed: 1.9, keyword: 'drag', x: 240, itemA: false, itemB: false },
     { y: 0, speed: 1.7, keyword: 'drop', x: 280, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'zoom', x: 320, itemA: false, itemB: false },
     { y: 0, speed: 1.9, keyword: 'chat', x: 360, itemA: false, itemB: false },
@@ -200,7 +201,7 @@ export function RainGame() {
     { y: 0, speed: 1.5, keyword: 'filter', x: 410, itemA: false, itemB: false },
     { y: 0, speed: 1.9, keyword: 'firewall', x: 450, itemA: false, itemB: false },
     { y: 0, speed: 1.7, keyword: 'flash drive', x: 200, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'folder', x: 240, itemA: true, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'folder', x: 240, itemA: false, itemB: false },
     { y: 0, speed: 1.9, keyword: 'graph', x: 280, itemA: false, itemB: false },
     { y: 0, speed: 1.7, keyword: 'hacker', x: 320, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'hyperlink', x: 360, itemA: false, itemB: false },
@@ -219,36 +220,36 @@ export function RainGame() {
     { y: 0, speed: 1.9, keyword: 'wiFi', x: 300, itemA: false, itemB: false },
   ]
   const Bwords = [
-    { y: 0, speed: 1.9, keyword: 'upload', x: 170, itemA: false, itemB: false },
-    { y: 0, speed: 1.7, keyword: 'folder', x: 210, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'file', x: 260, itemA: true, itemB: false },
-    { y: 0, speed: 1.9, keyword: 'cut', x: 310, itemA: false, itemB: false },
-    { y: 0, speed: 1.7, keyword: 'copy', x: 350, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'paste', x: 390, itemA: false, itemB: false },
-    { y: 0, speed: 1.9, keyword: 'print', x: 430, itemA: false, itemB: false },
-    { y: 0, speed: 1.7, keyword: 'camera', x: 470, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'microphone', x: 190, itemA: false, itemB: false },
-    { y: 0, speed: 1.9, keyword: 'speaker', x: 230, itemA: false, itemB: false },
-    { y: 0, speed: 1.7, keyword: 'text', x: 270, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'font', x: 310, itemA: false, itemB: false },
-    { y: 0, speed: 1.9, keyword: 'color', x: 350, itemA: false, itemB: false },
-    { y: 0, speed: 1.7, keyword: 'paint', x: 390, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'draw', x: 430, itemA: false, itemB: false },
-    { y: 0, speed: 1.9, keyword: 'icon', x: 470, itemA: false, itemB: false },
-    { y: 0, speed: 1.7, keyword: 'search', x: 210, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'window', x: 250, itemA: false, itemB: false },
-    { y: 0, speed: 1.9, keyword: 'minimize', x: 290, itemA: false, itemB: false },
-    { y: 0, speed: 1.7, keyword: 'maximize', x: 330, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'close', x: 370, itemA: false, itemB: false },
-    { y: 0, speed: 1.9, keyword: 'refresh', x: 410, itemA: false, itemB: false },
-    { y: 0, speed: 1.7, keyword: 'sign in', x: 450, itemA: true, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'sign out', x: 190, itemA: false, itemB: false },
+    { y: 0, speed: 3.9, keyword: 'upload', x: 40, itemA: false, itemB: false },
+    { y: 0, speed: 3.7, keyword: 'folder', x: 123, itemA: false, itemB: true },
+    { y: 0, speed: 3.5, keyword: 'file', x: 245, itemA: false, itemB: false },
+    { y: 0, speed: 3.9, keyword: 'cut', x: 309, itemA: false, itemB: true },
+    { y: 0, speed: 3.7, keyword: 'copy', x: 378, itemA: false, itemB: false },
+    { y: 0, speed: 3.5, keyword: 'paste', x: 420, itemA: false, itemB: false },
+    { y: 0, speed: 3.9, keyword: 'print', x: 489, itemA: false, itemB: false },
+    { y: 0, speed: 3.7, keyword: 'camera', x: 444, itemA: false, itemB: true },
+    { y: 0, speed: 3.5, keyword: 'microphone', x: 130, itemA: false, itemB: false },
+    { y: 0, speed: 3.9, keyword: 'speaker', x: 350, itemA: false, itemB: false },
+    { y: 0, speed: 3.7, keyword: 'text', x: 225, itemA: false, itemB: false },
+    { y: 0, speed: 3.5, keyword: 'font', x: 432, itemA: false, itemB: false },
+    { y: 0, speed: 3.9, keyword: 'color', x: 350, itemA: false, itemB: false },
+    { y: 0, speed: 3.7, keyword: 'paint', x: 390, itemA: false, itemB: false },
+    { y: 0, speed: 3.5, keyword: 'draw', x: 430, itemA: false, itemB: false },
+    { y: 0, speed: 3.9, keyword: 'icon', x: 470, itemA: false, itemB: false },
+    { y: 0, speed: 2.7, keyword: 'search', x: 210, itemA: false, itemB: false },
+    { y: 0, speed: 2.5, keyword: 'window', x: 250, itemA: false, itemB: false },
+    { y: 0, speed: 2.9, keyword: 'minimize', x: 290, itemA: false, itemB: false },
+    { y: 0, speed: 2.7, keyword: 'maximize', x: 330, itemA: false, itemB: false },
+    { y: 0, speed: 2.5, keyword: 'close', x: 370, itemA: false, itemB: false },
+    { y: 0, speed: 2.9, keyword: 'refresh', x: 410, itemA: false, itemB: false },
+    { y: 0, speed: 2.7, keyword: 'sign in', x: 450, itemA: false, itemB: false },
+    { y: 0, speed: 2.5, keyword: 'sign out', x: 190, itemA: false, itemB: false },
     { y: 0, speed: 1.9, keyword: 'username', x: 230, itemA: false, itemB: false },
     { y: 0, speed: 1.7, keyword: 'error', x: 270, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'pop-up', x: 310, itemA: false, itemB: false },
     { y: 0, speed: 1.9, keyword: 'menu', x: 350, itemA: false, itemB: false },
     { y: 0, speed: 1.7, keyword: 'settings', x: 390, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'tab', x: 430, itemA: false, itemB: true },
+    { y: 0, speed: 1.5, keyword: 'tab', x: 430, itemA: false, itemB: false },
     { y: 0, speed: 1.9, keyword: 'animation', x: 470, itemA: false, itemB: false },
     { y: 0, speed: 1.7, keyword: 'bookmark', x: 210, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'browser', x: 250, itemA: false, itemB: false },
@@ -256,7 +257,7 @@ export function RainGame() {
     { y: 0, speed: 1.7, keyword: 'cursor', x: 330, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'desktop', x: 370, itemA: false, itemB: false },
     { y: 0, speed: 1.9, keyword: 'highlight', x: 410, itemA: false, itemB: false },
-    { y: 0, speed: 1.7, keyword: 'home page', x: 450, itemA: false, itemB: true },
+    { y: 0, speed: 1.7, keyword: 'home page', x: 450, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'inbox', x: 190, itemA: false, itemB: false },
     { y: 0, speed: 1.9, keyword: 'install', x: 230, itemA: false, itemB: false },
     { y: 0, speed: 1.7, keyword: 'uninstall', x: 270, itemA: false, itemB: false },
@@ -266,10 +267,10 @@ export function RainGame() {
     { y: 0, speed: 1.5, keyword: 'online', x: 430, itemA: false, itemB: false },
     { y: 0, speed: 1.9, keyword: 'password', x: 470, itemA: false, itemB: false },
     { y: 0, speed: 1.7, keyword: 'profile', x: 210, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'scrollbar', x: 250, itemA: true, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'scrollbar', x: 250, itemA: false, itemB: false },
     { y: 0, speed: 1.9, keyword: 'screenshot', x: 290, itemA: false, itemB: false },
     { y: 0, speed: 1.7, keyword: 'shortcut', x: 330, itemA: false, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'sidebar', x: 370, itemA: false, itemB: true },
+    { y: 0, speed: 1.5, keyword: 'sidebar', x: 370, itemA: false, itemB: false },
     { y: 0, speed: 1.9, keyword: 'slider', x: 410, itemA: false, itemB: false },
     { y: 0, speed: 1.7, keyword: 'spam', x: 450, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'taskbar', x: 190, itemA: false, itemB: false },
@@ -489,7 +490,7 @@ export function RainGame() {
         // 5초 후에 extraSpeed를 0으로 되돌리기
         setTimeout(() => {
           myExtraSpeedRef.current = 0
-        }, 5000)
+        }, 7000)
         break
       case 'B':
         setMyImage(true)
@@ -502,12 +503,12 @@ export function RainGame() {
     switch (item) {
       case 'A':
         // extraSpeed를 2로 설정
-        youExtraSpeedRef.current = 5
+        youExtraSpeedRef.current = 4
 
         // 5초 후에 extraSpeed를 0으로 되돌리기
         setTimeout(() => {
           youExtraSpeedRef.current = 0
-        }, 5000)
+        }, 7000)
         break
       case 'B':
         setYouImage(true)
@@ -540,7 +541,7 @@ export function RainGame() {
   return (
     <>
       <GameArea>
-        {isModalOpen && <ExperienceResultModal open={isModalOpen} handleClose={closeModal} />}
+        {isModalOpen && <ExperienceResultModal open={isModalOpen} handleClose={closeModal} winner={ winner === username} />}
         {!rainGameInProgressRef.current && (
           <Comment>
             <p

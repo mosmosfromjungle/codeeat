@@ -179,7 +179,7 @@ export default function BrickGameDialog() {
       gainExpUpdateLevel(username, 7)
     } else if (gameWinner == oppUsername) {
       gainExpUpdateLevel(username, 3)
-    } else {
+    } else if (gameWinner == 'both') {
       gainExpUpdateLevel(username, 5)
     }
     if (gameWinner) {
@@ -269,7 +269,7 @@ export default function BrickGameDialog() {
           </IconButton>
 
           {isModalOpen && (
-            <ExperienceResultModal open={isModalOpen} handleClose={closeModal} />
+            <ExperienceResultModal open={isModalOpen} handleClose={closeModal} winner={gameWinner === username} />
           )}
 
           <RoundWrapper>

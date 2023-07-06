@@ -142,7 +142,7 @@ export default function ProfileButton() {
                   <span style={{ fontSize: '24px', lineHeight: '1' }}>{username}</span>
                 </Profile>
               </ListItem>
-              <ExperienceBar currentExperience={currentExp} experienceToNextLevel={requiredExp} />
+              <ExperienceBar oldExperience={0} currentExperience={currentExp} experienceToNextLevel={requiredExp} />
             </ProfileButtonWrapper>
           </CustomButton>
         </ContentWrapper>

@@ -144,7 +144,7 @@ export const FriendPoint = styled.div`
   text-align: center;
   border: 1px solid #00000029;
   border-radius: 16px;
-  box-shadow: 0px 10px 24px #0000006f;
+  box-shadow: 0px 3px 6px #0000006f;
 `
 
 export const InputArea = styled.div`
@@ -177,7 +177,7 @@ export const MyPoint = styled.div`
     text-align: center;
     border: 5px solid yellow;
     border-radius: 16px;
-    box-shadow: 0px 10px 24px #0000006f;
+    box-shadow: 0px 3px 6px #0000006f;
 `
 
 export const Item = styled.div`

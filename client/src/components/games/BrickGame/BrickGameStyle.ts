@@ -136,7 +136,7 @@ export const OppInfo = styled.div`
 `
 
 export const MyInfo = styled.div`
-  width: 40%;
+  width: 60%;
   position: relative;
   display: flex;
   // flex-direction: column;
@@ -306,6 +306,7 @@ export const Right = styled.div`
 `
 
 export const CharacterArea = styled.div`
+  width: 30%;
 `
 
 export const NameArea = styled.div`
