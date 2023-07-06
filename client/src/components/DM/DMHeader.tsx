@@ -12,7 +12,7 @@ export function DMHeader() {
     <Wrapper>
               <Title>{friendName}</Title>
               <IconButton
-                aria-label="close dialog"
+                aria-label="previous page"
                 className="back"
                 onClick={() => {
                   dispatch(setShowDMList(true));
@@ -20,7 +20,7 @@ export function DMHeader() {
                 }}
               ><ChevronLeft
               set="bold"
-              primaryColor="white"/></IconButton>
+              primaryColor="black"/></IconButton>
               <IconButton
                 aria-label="close dialog"
                 className="close"
@@ -36,13 +36,14 @@ export function DMHeader() {
 const Wrapper = styled.div`
   position: relative;
   height: 40px;
-  background: #000000a7;
+  background: #FFFFFF;
   border-radius: 10px 10px 0px 0px;
 
   .close {
     position: absolute;
     top: 0;
     right: 0;
+    color: black;
   }
   .back {
     position: absolute;
@@ -52,10 +53,10 @@ const Wrapper = styled.div`
 `
 const Title = styled.div`
   position: absolute;
-  color: white;
-  font-size: 20px;
-  font-weight: bold;
+  color: black;
   top: 9px;
   left: 40px;
+  font-size: 20px;
   font-family: Font_DungGeun;
+  font-weight: bold;
 `

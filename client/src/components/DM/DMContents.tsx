@@ -26,7 +26,7 @@ export default function DMBubbles(props) {
     };
 
   useEffect(() => {
-    console.log('채팅방 들어감, roomId:' , roomId)
+    // console.log('채팅방 들어감, roomId:' , roomId)
     socketNetwork.joinRoom(roomId, username, receiverName, _joinRoom);
   }, []);
 

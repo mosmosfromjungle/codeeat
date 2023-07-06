@@ -16,8 +16,8 @@ export class Player extends Schema implements IPlayer {
   @type('number') x = 705
   @type('number') y = 500
   @type('string') anim = 'noah_idle_down'
-  @type('boolean') readyToConnect = false
-  @type('boolean') videoConnected = false
+  // @type('boolean') readyToConnect = false
+  // @type('boolean') videoConnected = false
 }
 
 // export class BrickGame extends Schema implements IBrickGame {

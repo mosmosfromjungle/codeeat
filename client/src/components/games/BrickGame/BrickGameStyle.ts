@@ -135,7 +135,7 @@ export const OppInfo = styled.div`
 `
 
 export const MyInfo = styled.div`
-  width: 40%;
+  width: 60%;
   position: relative;
   display: flex;
   // flex-direction: column;
@@ -304,14 +304,33 @@ export const Right = styled.div`
 `
 
 export const CharacterArea = styled.div`
+  width: 30%;
 `
 
 export const NameArea = styled.div`
-  width: 100%;
+  width: 70%;
   text-align: center;
   font-size: 25px;
 `
 
 export const Special = styled.span`
   color: yellow;
+`
+
+export const RoundWinnerModal = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #222639;
+  border-radius: 24px;
+  box-shadow: 0px 10px 24px #0000006f;
+  padding: 50px;
+  z-index: 1000;
+  font-size: 15px;
+  color: #eee;
+  text-align: center;
+  font-family: Font_DungGeun;
+  font-size: 30px;
+  line-height: 1.5;
 `

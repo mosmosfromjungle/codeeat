@@ -38,7 +38,7 @@ export const roomSlice = createSlice({
     gameRoomId: '',
     gameRoomName: '',
     gameRoomDescription: '',
-    mainPlayers: new Array<IPlayer>(),
+    // mainPlayers: new Array<IPlayer>(),
     availableRooms: {
       generalRooms: new Array<RoomAvailable>(),
       brickRooms: new Array<RoomAvailable>(),
@@ -73,9 +73,9 @@ export const roomSlice = createSlice({
       state.gameRoomName = action.payload.name
       state.gameRoomDescription = action.payload.description
     },
-    setMainPlayers: (state, action: PayloadAction<IPlayer[]>) => {
-      state.mainPlayers = action.payload
-    },
+    // setMainPlayers: (state, action: PayloadAction<IPlayer[]>) => {
+    //   state.mainPlayers = action.payload
+    // },
     setAvailableRooms: (state, action: PayloadAction<RoomAvailable[]>) => {
       state.availableRooms.generalRooms = action.payload.filter((room) => isCustomRoom(room))
     },
@@ -162,7 +162,7 @@ export const {
   setGameJoined,
   setJoinedRoomData,
   setJoinedGameRoomData,
-  setMainPlayers,
+  // setMainPlayers,
   setAvailableRooms,
   setAvailableBrickRooms,
   setAvailableMoleRooms,
