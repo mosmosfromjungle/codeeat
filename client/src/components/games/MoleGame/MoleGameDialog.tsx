@@ -17,7 +17,7 @@ import hammer from '/assets/game/molegame/hammer.png';
 import { 
   Backdrop, Wrapper, RoundArea, Header, 
   Comment, Problem, ProblemText, TipArea, Content, 
-  Moles, MyPoint, YourPoint, IsWinner, IsHost, CharacterArea, NameArea, LifeArea, PointArea, 
+  Moles, MyPoint, YourPoint, IsWinner, IsHost, CharacterArea, NameArea, LifeArea, PointArea, YourWrapper, MyWrapper, 
 } from './MoleGameStyle'
 import './MoleGame.css'
 
@@ -697,7 +697,18 @@ export default function MoleGameDialog() {
           <CloseIcon />
         </IconButton>
 
-        <RoundArea>Round {turn}/3</RoundArea>
+        { startGame ? (
+          <RoundArea>Round {turn}/3</RoundArea>
+        ) : (
+          <Comment>
+            <p className={`friend-comment ${friendname ? '' : 'start-game'}`}>
+              {friendname ? '친구가 들어왔어요, 방장은 Start 버튼을 눌러주세요 !' : '친구가 아직 들어오지 않았어요! 친구가 들어와야 게임이 시작돼요.'}
+              {/* <br />
+              {friendname ? '방장은 Start 버튼을 눌러주세요 !' : '친구가 들어와야 게임이 시작돼요.'} */}
+            </p>
+          </Comment>
+          )
+        }
 
         <body>
           <Header>
@@ -706,26 +717,19 @@ export default function MoleGameDialog() {
             </div>
           </Header>
 
-          <Comment>
-            <p className={`friend-comment ${friendname ? '' : 'start-game'}`}>
-              {friendname ? '친구가 들어왔어요,' : '친구가 아직 들어오지 않았어요 !'}
-              <br />
-              {friendname ? '방장은 Start 버튼을 눌러주세요 !' : '친구가 들어와야 게임이 시작돼요.'}
-            </p>
-          </Comment>
-
           <div className="main">
             <Problem>
               <ProblemText>{problemText}</ProblemText>
             </Problem>
 
             <TipArea>
-              틀린 답을 외치는 두더지를 잡으면 목숨이 깎여요!
-              <br />
-              💡 TIP: 두더지를 빨리 잡으려고 하는 것보다, 문제를 잘 읽고 푸는 게 더 중요할 거예요.
+              💡 TIP: 틀린 답을 외치는 두더지를 잡으면 목숨이 깎여요!
+              {/* <br />
+              💡 TIP: 두더지를 빨리 잡으려고 하는 것보다, 문제를 잘 읽고 푸는 게 더 중요할 거예요. */}
             </TipArea>
 
             <Content>
+              <YourWrapper>
               <YourPoint>
                 {/* <IsWinner>
                   {friendname && !startGame && winner === friendname ? 'WINNER' : ''}
@@ -754,6 +758,7 @@ export default function MoleGameDialog() {
                   <span id="friend-point-current">{friendPoint ? friendPoint : '0'}</span>/3
                 </PointArea>
               </YourPoint>
+              </YourWrapper>
 
               <Moles>
                 <ul className="whack-a-mole">
@@ -841,6 +846,7 @@ export default function MoleGameDialog() {
                 </ul>
               </Moles>
 
+              <MyWrapper>
               <MyPoint>
                 {/* <IsWinner>
                   {winner === username && !startGame ? 'WINNER' : ''}
@@ -873,6 +879,7 @@ export default function MoleGameDialog() {
                   <span id="point-current">{myPoint}</span>/3
                 </PointArea>
               </MyPoint>
+              </MyWrapper>
             </Content>
 
             <div id="start-button-div" className="point-box clearfix hidden">
@@ -880,7 +887,7 @@ export default function MoleGameDialog() {
                 <button
                   type="button"
                   className="start-btn"
-                  style={{ color: startButtonColor }}
+                  style={{ color: startButtonColor, margin: '32px' }}
                   disabled={!startButton}
                   onClick={startButton ? () => startMole() : null}
                   onMouseEnter={handleMouseOver}
