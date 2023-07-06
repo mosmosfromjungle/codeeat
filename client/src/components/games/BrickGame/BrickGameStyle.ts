@@ -65,7 +65,7 @@ export const MidWrapper = styled.div`
 `
 
 export const HelperWrapper = styled.div`
-  width: 30%;
+  width: 35%;
   border-radius: 20px;
   background-color: gray;
   color: white;
@@ -77,16 +77,16 @@ export const HelperWrapper = styled.div`
   text-align: center;
   margin: 0 8px 0 0;
   padding: 32px;
-
-  font-size: 25px;
+  font-size: clamp(16px, 5vw, 24px);
   line-height: 1.15;
 `
 
 export const QuizWrapper = styled.div`
-  width: 70%;
+  width: 65%;
   background-color: #666666;
   border-radius: 20px;
   margin: 0 0 0 8px;
+  padding: 40px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -123,6 +123,7 @@ export const ScoreWrapper = styled.div`
   position: relative;
   display: flex;
   justify-content: center;
+  margin: 0 0 8px 0;
 `
 
 export const OppInfo = styled.div`
@@ -155,7 +156,7 @@ export const MyWrapper = styled.div`
   // justify-content: center;
   align-items: center;
   margin: 0 8px 0 0;
-  padding: 32px;
+  padding: 25px;
   border: 7px solid green;
 `
 
@@ -170,7 +171,7 @@ export const OptionWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  // margin-bottom: 20px;
+  margin-bottom: 8px;
   font-family: 'CustomFont', sans-serif;
   font-size: 32px;
   color: white;
@@ -277,6 +278,7 @@ export const Answer = styled.div`
   display: flex;
   flex-direction: row;
   position: relative;
+  // margin: 8px 0 0 0;
 `
 
 export const Left = styled.div`
@@ -307,9 +309,10 @@ export const CharacterArea = styled.div`
 `
 
 export const NameArea = styled.div`
-  width: 100%;
+  // width: 100%;
   text-align: center;
   font-size: 25px;
+  margin: 0 0 0 8px;
 `
 
 export const Special = styled.span`
