@@ -48,12 +48,12 @@ export default function DMBottom(props) {
         onBlur={() => {
           dispatch(setFocused(false));
         }}
-        
         value={value}
         fullWidth
         variant='standard'
         margin="dense"
         id="outlined-multiline-static"
+        autoComplete='off'
         maxRows={1}
         onChange={(event) => {
           setValue(event.target.value);
@@ -64,7 +64,7 @@ export default function DMBottom(props) {
           endAdornment: (
             <InputAdornment position="end">
               <IconButton sx={{ p: '15px' }} onClick={handleSubmit} edge="end">
-              <Send set="bulk" primaryColor="#00b0a7"/>
+              <Send set="bulk" primaryColor="#5cac8c"/>
               </IconButton>
             </InputAdornment>
           ),
@@ -72,8 +72,9 @@ export default function DMBottom(props) {
         }}
         />
     </DMbottom>
-  );
+  )
 }
+
 const DMbottom = styled.div`
   background: #e2f0ea;
   padding: 4px 16px;
@@ -84,7 +85,7 @@ const DMbottom = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  border: 2px solid #3ED0C8;
+  border: 2px solid #5cac8c;
   border-radius: 3px;
   input {
     padding: 5px;
