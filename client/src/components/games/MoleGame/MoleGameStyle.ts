@@ -41,7 +41,7 @@ export const Header = styled.div`
   color: #f2ecff;
   text-align: center;
   line-height: 1.5;
-  font-size: 30px;
+  font-size: 28px;
 `
 
 export const Comment = styled.div`
@@ -56,15 +56,18 @@ export const Problem = styled.div`
   border-width: 5px;
   border-color: white;
   border-style: dashed;
+  border-radius: 10px;
   text-align: center;
   width: 50%;
   height: 100px;
   margin: 10px auto 10px auto;
+  padding: 8px;
 `
 
 export const ProblemText = styled.div`
+  color: yellow;
   margin-top: 10px;
-  font-size: 25px;
+  font-size: 28px;
   font-family: Font_DungGeun;
 `
 
