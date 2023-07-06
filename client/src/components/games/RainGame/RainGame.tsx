@@ -56,14 +56,14 @@ export function RainGame() {
 
   const raingame = useAppSelector((state) => state.raingame)
 
-  const lineHeight = 500
+  const lineHeight = 380
   const dispatch = useAppDispatch()
   const keywordInput = useRef<HTMLInputElement>(null)
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
   const [time, setTime] = useState(100)
   const host = useAppSelector((state) => state.raingame.host)
   const sessionId = useAppSelector((state) => state.user.gameSessionId)
-  const winner = useAppSelector((state) => state.raingame.winner)
+  const gamewinner = useAppSelector((state) => state.raingame.winner)
   
 
   // My information
@@ -104,7 +104,7 @@ export function RainGame() {
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const openModal = () => {
-    console.log("openModal")
+    console.log("openModal:",gamewinner)
     setTimeout(() => {
       setIsModalOpen(true)
     }, 200)
@@ -146,16 +146,16 @@ export function RainGame() {
   }, [raingame.myState, raingame.youState])
 
   useEffect(() => {
-    if (winner == username) {
+    if (gamewinner === username) {
       gainExpUpdateLevel(username, 7)
-    } else if (winner == you.username) {
+    } else if (gamewinner === you.username) {
       gainExpUpdateLevel(username, 3)
     }
-    if (winner) {
+    if (gamewinner) {
       openModal()
       
     }
-  }, [winner])
+  }, [gamewinner])
 
   const handleClose = () => {
     try {
@@ -314,7 +314,7 @@ export function RainGame() {
 
             if (myState.heart <= 0) {
               console.log("목숨 0되는거 감지됨")
-              bootstrap.gameNetwork.endGame(me.username)
+              bootstrap.gameNetwork.endGame(you.username)
             }
           } else {
             newGame.push({ ...item, y: newY })
@@ -540,7 +540,7 @@ export function RainGame() {
   return (
     <>
       <GameArea>
-        {isModalOpen && <ExperienceResultModal open={isModalOpen} handleClose={closeModal} winner={ winner === username} />}
+        {isModalOpen && <ExperienceResultModal open={isModalOpen} handleClose={closeModal} winner={ gamewinner === username} />}
         {!rainGameInProgressRef.current && (
           <Comment>
             <p

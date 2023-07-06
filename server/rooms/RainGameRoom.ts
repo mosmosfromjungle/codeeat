@@ -56,29 +56,42 @@ export class RainGameRoom extends Room<GameState> {
 
     this.onMessage(Message.RAIN_GAME_HEART_C, (client, content) => {
       const { sessionId } = content
-      this.state.raingames.rainGameStates.forEach((gameState, sessionId) => {
-        if (sessionId === client.sessionId) {
+      this.state.raingames.rainGameStates.forEach((gameState, currentSessionId) => {
+        if (currentSessionId === client.sessionId) {
           gameState.heart -= 1
         
-          if (gameState.heart === 0){
-            const winnerUsername = this.state.raingames.rainGameUsers[sessionId].username;
-            this.state.raingames.winner = winnerUsername;
+          if (gameState.heart === 0) {
+            // Find the other session ID
+            let otherSessionId = null;
+            this.state.raingames.rainGameStates.forEach((_, sid) => {
+                if (sid !== currentSessionId) {
+                    otherSessionId = sid;
+                }
+            });
 
-            this.broadcast(
-              Message.RAIN_GAME_END_S,
-              { username: winnerUsername },
-              { afterNextPatch: true}
-            );
-          }
+            // Set the winnerUsername to the username corresponding to the other sessionId
+            if (otherSessionId) {
+                const winnerUsername = this.state.raingames.rainGameUsers[otherSessionId].username;
+                this.state.raingames.winner = winnerUsername;
+
+                this.broadcast(
+                    Message.RAIN_GAME_END_S,
+                    { username: winnerUsername },
+                    { afterNextPatch: true }
+                );
+            }
         }
-    });
+    }
+});
 
-      this.broadcast(
-        Message.RAIN_GAME_HEART_S,
-        { states: this.state.raingames.rainGameStates },
-        { afterNextPatch: true }
-      )
-    })
+
+this.broadcast(
+    Message.RAIN_GAME_HEART_S,
+    { states: this.state.raingames.rainGameStates },
+    { afterNextPatch: true }
+);
+});
+
 
     this.onMessage(Message.RAIN_GAME_ITEM_C, (client, data) => {
       const { item } = data
