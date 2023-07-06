@@ -93,6 +93,7 @@ export function RainGame() {
   const me = useAppSelector((state) => state.raingame.me)
   const [myImage, setMyImage] = useState(false)
   const [youImage, setYouImage] = useState(false)
+  const [expUpdated, setExpUpdated] = useState(false)
 
   const hideMyImage = useCallback(() => {
     setMyImage(false)
@@ -146,16 +147,16 @@ export function RainGame() {
   }, [raingame.myState, raingame.youState])
 
   useEffect(() => {
-    if (gamewinner === username) {
-      gainExpUpdateLevel(username, 7)
-    } else if (gamewinner === you.username) {
-      gainExpUpdateLevel(username, 3)
-    }
-    if (gamewinner) {
+    if (gamewinner && !expUpdated) {
+      if (gamewinner === username) {
+        gainExpUpdateLevel(username, 7)
+      } else if (gamewinner === you.username) {
+        gainExpUpdateLevel(username, 3)
+      } 
+      setExpUpdated(true)
       openModal()
-      
     }
-  }, [gamewinner])
+  }, [gamewinner, expUpdated])
 
   const handleClose = () => {
     try {

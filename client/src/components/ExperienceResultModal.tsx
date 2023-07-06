@@ -102,7 +102,6 @@ const ExperienceResultModal =
             requiredExp,
           } = response
           
-          console.log("0레벨 현재경험치들어와" + currentExp)
           setUserName(username)
           setUserLevel(userLevel)
           setCurrentExp(currentExp)

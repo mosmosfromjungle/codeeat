@@ -82,6 +82,7 @@ export default function MoleGameDialog() {
   const [turn, setTurn] = useState(0)
 
   const [winner, setWinner] = useState(String)
+  const [expUpdated, setExpUpdated] = useState(false)
 
   const [moleCatch, setMoleCatch] = useState(0)
 
@@ -628,19 +629,20 @@ export default function MoleGameDialog() {
         }
       })
   }
-
+  
   useEffect(() => {
-    if (winner == username) {
-      gainExpUpdateLevel(username, 7)
-    } else if (winner == friendname) {
-      gainExpUpdateLevel(username, 3)
-    } else if (winner == 'both') {
-      gainExpUpdateLevel(username, 5)
-    }
-    if (winner) {
+    if (winner && !expUpdated) {
+      if (winner === username) {
+        gainExpUpdateLevel(username, 7)
+      } else if (winner === friendname) {
+        gainExpUpdateLevel(username, 3)
+      } else if (winner === 'both') {
+        gainExpUpdateLevel(username, 5)
+      }
+      setExpUpdated(true)
       openModal()
     }
-  }, [winner])
+  }, [winner, expUpdated])
 
   // Change with problem
   useEffect(() => {

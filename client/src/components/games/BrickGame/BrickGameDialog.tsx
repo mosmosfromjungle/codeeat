@@ -90,6 +90,7 @@ export default function BrickGameDialog() {
   const hasRoundWinner = useAppSelector((state) => state.brickgame.brickGameState.hasRoundWinner)
   const roundWinner = useAppSelector((state) => state.brickgame.brickGameState.roundWinner)
   const gameWinner = useAppSelector((state) => state.brickgame.brickGameState.gameWinner)
+  const [expUpdated, setExpUpdated] = useState(false)
   const [problem, setProblem] = useState<string>('')
   const [number, setNumber] = useState<number>(0)
   const [showProblem, setShowProblem] = useState<boolean>(false)
@@ -175,17 +176,18 @@ export default function BrickGameDialog() {
   }
 
   useEffect(() => {
-    if (gameWinner == username) {
-      gainExpUpdateLevel(username, 7)
-    } else if (gameWinner == oppUsername) {
-      gainExpUpdateLevel(username, 3)
-    } else if (gameWinner == 'both') {
-      gainExpUpdateLevel(username, 5)
-    }
-    if (gameWinner) {
+    if (gameWinner && !expUpdated) {
+      if (gameWinner == username) {
+        gainExpUpdateLevel(username, 7)
+      } else if (gameWinner == oppUsername) {
+        gainExpUpdateLevel(username, 3)
+      } else if (gameWinner == 'both') {
+        gainExpUpdateLevel(username, 5)
+      }
+      setExpUpdated(true)
       openModal()
     }
-  }, [gameWinner])
+  }, [gameWinner, expUpdated])
 
   useEffect(() => {
     setMyImages(myCurrentImages.map((value, index) => ({
