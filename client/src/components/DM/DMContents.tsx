@@ -7,7 +7,7 @@ import phaserGame from '../../PhaserGame';
 import { setNewMessageCnt } from '../../stores/DMStore';
 
 const Wrapper = styled.div`
-  height: 450px;
+  height: 456px;
   width: 370px;
 `;
 
@@ -54,12 +54,12 @@ export default function DMBubbles(props) {
     <>
       <Wrapper>
         <ChatFeed
-          maxHeight={400}
+          maxHeight={446}
           messages={messageList || []}
           bubblesCentered={false}
           bubbleStyles={{
             text: {
-              fontFamily: 'Font-Dungeun',
+              fontFamily: 'Font_DungGeun',
               fontSize: 20,
               color: 'white',
               fontWeight: 'bold'
@@ -74,10 +74,10 @@ export default function DMBubbles(props) {
               marginBottom: 1,
               marginLeft: 15,
               wordBreak: 'break-all',
-              backgroundColor: '#005b65',
+              backgroundColor: 'green',
             },
             userBubble: {
-              backgroundColor: '#00b0a7',
+              backgroundColor: 'yellowgreen',
             },
           }}
         />
