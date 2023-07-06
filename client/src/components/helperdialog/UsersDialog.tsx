@@ -101,7 +101,7 @@ export default function UsersDialog() {
   // 친구 프로필 조회 
   const [friendUsername, setFriendUsername] = useState<string>('')
   const [friendCharacter, setFriendCharacter] = useState<string>('')
-  const [friendUserLevel, setFriendUserLevel] = useState<string>('')
+  const [friendUserLevel, setFriendUserLevel] = useState<number>('')
   const [grade, setGrade] = useState<string>('')
   const [school, setSchool] = useState<string>('')
   const [message, setMessage] = useState<string>('')
