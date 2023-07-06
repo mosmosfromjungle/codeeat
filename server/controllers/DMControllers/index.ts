@@ -20,37 +20,24 @@ export const createRoom = () => {
 }
 
 export const DMController = (socket: Socket) => {
-  const joinRoom = (host: { roomId: string; username: string; receiverName: string }) => {
-    let { roomId } = host;
-    const { username, receiverName } = host;
-  
+  const joinRoom = async (host: { roomId: string; username: string; receiverName: string }) => {
+    const { roomId, username, receiverName } = host;
+
     if (rooms[roomId]) {
-      console.log('대화방 유저 입장')
+      console.log('대화방 유저 입장');
       rooms[roomId].push(username);
       socket.join(roomId);
     } else {
-      roomId = createRoom();
-      addLastDM({senderName: username, receiverName: receiverName, message: ' ', roomId})
-      updateRoomId({ senderName: username, receiverName: receiverName, roomId: roomId })
-      .then(() => {
-        rooms[roomId].push(username);
-      });
-      // if (roomId == 'first'){
-      //   roomId = createRoom();
-      //   console.log('생성')
-      //   updateRoomId({ roomId: roomId, senderName: username, receiverName: receiverName })
-      //   .then(() => {
-      //     rooms[roomId].push(username);
-      //   })  
-      // } else {
-      //   roomId = createRoom();
-      //   addLastDM({senderName: username, receiverName: receiverName, message: ' ', roomId})
-      //   updateRoomId({ roomId: roomId, senderName: username, receiverName: receiverName })
-      //   .then(() => {
-      //     deleteLastDM({senderName: username, receiverName: receiverName, message: ' '})
-      //     rooms[roomId].push(username);
-      //   })
-      // }
+      try {
+        const newRoomId = await createRoom();
+        await addLastDM({ senderName: username, receiverName: receiverName, message: ' ', roomId: newRoomId });
+        await updateRoomId({ senderName: username, receiverName: receiverName, roomId: newRoomId });
+        rooms[newRoomId] = [username];
+        socket.join(newRoomId);
+      } catch (error) {
+        console.error('joinRoom', error);
+        return;
+      }
     }
     readMessage({ roomId, username, receiverName });
   };
@@ -93,42 +80,39 @@ export const addDM = async (message: {
   message: string;
 }) => {
   try {
-    let cur_date = new Date();
-    let utc = cur_date.getTime() + cur_date.getTimezoneOffset() * 60 * 1000;
-    let createdAt = utc + time_diff;
-    
+    const createdAt = Date.now() + time_diff;
+
     await dm.collection.insertOne({
-      senderName: message.senderName,
-      receiverName: message.receiverName,
-      message: message.message,
-      createdAt: createdAt,
+      ...message,
+      createdAt,
     });
-    
+
     return true;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error('addDM', error);
     return false;
   }
 };
 
   
 export const getDMMessage = async (senderName: string, receiverName: string) => {
-    let result = new Array();
-    await dm.collection
-      .find({
-        $or: [
-          { $and: [{ senderName: senderName }, { receiverName: receiverName }] },
-          { $and: [{ senderName: receiverName }, { receiverName: senderName }] },
-        ],
-      })
-      .limit(50)
+  try {
+    const query = {
+      $or: [
+        { senderName, receiverName },
+        { senderName: receiverName, receiverName: senderName },
+      ],
+    };
+
+    const messages = await dm.collection
+      .find(query)
       .sort({ _id: 1 })
-      .toArray()
-      .then((elem) => {
-        elem.forEach((json) => {
-          result.push(json);
-        });
-      });
-    LastDM.collection.find();
-    return result;
-  };
+      .limit(50)
+      .toArray();
+
+    return messages;
+  } catch (error) {
+    console.error('getDMMessage', error);
+    return [];
+  }
+};
