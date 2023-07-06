@@ -22,6 +22,7 @@ import {
   Comment,
   StartButton,
   Item,
+  Name,
 } from './RainGameStyle'
 import './RainGame.css'
 
@@ -646,24 +647,30 @@ export function RainGame() {
           <CharacterArea>
             <img
               src={friendimgpath}
-              width="50px"
+              width="40px"
               id="friend-character"
               className={you.username ? '' : 'hidden'}
             ></img>
           </CharacterArea>
           <NameArea>
+            <Name>
             친구 [{you.username.toUpperCase()}] <br />
+            </Name>
+            <div>
             {friendLifeElements}
+            </div>
           </NameArea>
         </FriendPoint>
 
         <PlayArea>
           <Item>
-            💡 특별한 색의 단어를 성공하면 아이템을 사용할 수 있어요 !<br />
-            <br />
-            <span style={{ color: 'red' }}>빨간색</span> - 상대방 속도 키우기
-            <br />
+            <div>
+            💡 아이템을 사용해보세요!
+            </div>
+            <div style={{ marginTop: '8px' }}>
+            <span style={{ color: 'red' }}>빨간색</span> - 상대방 속도 키우기<br />
             <span style={{ color: 'blue' }}>파란색</span> - 상대방 단어 가리기
+            </div>
           </Item>
         </PlayArea>
 
@@ -674,32 +681,37 @@ export function RainGame() {
         </InputArea>
 
         <PlayArea>
-          <div>
-            명령어를 입력한 후 엔터를 쳐주세요 !
-            <TextField
-              focused
-              inputRef={keywordInput}
-              onKeyPress={(e) => keydown(e.charCode)}
-              fullWidth
-              autoComplete='off'
-              InputProps={{
-                style: {
-                  width: '300px',
-                  marginTop: '10px',
-                },
-              }}
-            />
-            <button onClick={() => keydown(13)} style={{ display: 'none' }}></button>
+          <div style={{ textAlign: 'center', padding: '0 0 10px 0', fontSize: '20px' }}>
+            키워드 입력:
+          {/* 명령어를 입력한 후 엔터를 쳐주세요 ! */}
           </div>
+          <TextField
+            // focused
+            autoFocus
+            fullWidth
+            label="키워드 입력 후 엔터를 눌러주세요!"
+            variant="outlined"
+            autoComplete='off'
+            inputRef={keywordInput}
+            onKeyPress={(e) => keydown(e.charCode)}
+            InputProps={{
+              // style: { marginTop: '10px' },
+            }}
+          />
+          <button onClick={() => keydown(13)} style={{ display: 'none' }}></button>
         </PlayArea>
 
         <MyPoint>
           <NameArea>
-            <span style={{ color: 'yellow' }}>나</span> [{username.toUpperCase()}]<br />
-            {myLifeElements}
+            <Name>
+              <span style={{ color: 'yellow' }}>나</span> [{username.toUpperCase()}]<br />
+            </Name>
+            <div>
+              {myLifeElements}
+            </div>
           </NameArea>
           <CharacterArea>
-            <img src={imgpath} width="50px" id="my-character"></img>
+            <img src={imgpath} width="40px" id="my-character"></img>
           </CharacterArea>
         </MyPoint>
       </PointArea>
