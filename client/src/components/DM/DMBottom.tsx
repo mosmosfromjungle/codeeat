@@ -48,22 +48,23 @@ export default function DMBottom(props) {
         onBlur={() => {
           dispatch(setFocused(false));
         }}
-        
         value={value}
         fullWidth
         variant='standard'
         margin="dense"
         id="outlined-multiline-static"
+        autoComplete='off'
         maxRows={1}
         onChange={(event) => {
           setValue(event.target.value);
         }}
         onKeyDown={handleOnKeyDown}
         InputProps={{style: {fontFamily: 'Font-Dungeun', color: 'black'},
+          autoComplete: 'off',
           endAdornment: (
             <InputAdornment position="end">
               <IconButton sx={{ p: '15px' }} onClick={handleSubmit} edge="end">
-              <Send set="bulk" primaryColor="#00b0a7"/>
+              <Send set="bulk" primaryColor="#5cac8c"/>
               </IconButton>
             </InputAdornment>
           ),
@@ -71,16 +72,25 @@ export default function DMBottom(props) {
         }}
         />
     </DMbottom>
-  );
+  )
 }
+
 const DMbottom = styled.div`
-  background: white;
+  background: #e2f0ea;
+  padding: 4px 16px;
   font-size: 35px;
   font-weight: bold;
   display: flex;
   height: 50px;
   flex-direction: row;
-  alsign-items: center;
+  align-items: center;
   justify-content: space-between;
-  border: 2px solid #3ED0C8;
+  border: 2px solid #5cac8c;
+  border-radius: 3px;
+  input {
+    padding: 5px;
+    font-family: Font_DungGeun;
+    font-size: 18px;
+    color: black
+  }
 `;

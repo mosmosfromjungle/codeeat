@@ -46,7 +46,7 @@ export const userSlice = createSlice({
     userId: '',
     username: '',
     character: '',
-    userLevel: '',
+    userLevel: 0,
     currentExp: 0,
     requiredExp: 0,
     playerNameMap: new Map<string, string>(),
@@ -87,7 +87,7 @@ export const userSlice = createSlice({
     setCharacter: (state, action: PayloadAction<string>) => {
       state.character = action.payload
     },
-    setUserLevel: (state, action: PayloadAction<string>) => {
+    setUserLevel: (state, action: PayloadAction<number>) => {
       state.userLevel = action.payload
     },
     setPlayerNameMap: (state, action: PayloadAction<{ id: string; name: string }>) => {
