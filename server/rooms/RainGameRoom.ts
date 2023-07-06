@@ -59,8 +59,19 @@ export class RainGameRoom extends Room<GameState> {
       this.state.raingames.rainGameStates.forEach((gameState, sessionId) => {
         if (sessionId === client.sessionId) {
           gameState.heart -= 1
+        
+          if (gameState.heart === 0){
+            const winnerUsername = this.state.raingames.rainGameUsers[sessionId].username;
+            this.state.raingames.winner = winnerUsername;
+
+            this.broadcast(
+              Message.RAIN_GAME_END_S,
+              { username: winnerUsername },
+              { afterNextPatch: true}
+            );
+          }
         }
-      })
+    });
 
       this.broadcast(
         Message.RAIN_GAME_HEART_S,

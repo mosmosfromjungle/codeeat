@@ -55,8 +55,8 @@ export function RainGame() {
   const rainGameReady = useAppSelector((state) => state.raingame.rainGameReady)
 
   const raingame = useAppSelector((state) => state.raingame)
-  const canvasHeight = 50
-  const lineHeight = canvasHeight + 550
+
+  const lineHeight = 500
   const dispatch = useAppDispatch()
   const keywordInput = useRef<HTMLInputElement>(null)
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
@@ -88,7 +88,6 @@ export function RainGame() {
   })
   const targetword = useAppSelector((state) => state.raingame.words)
   const targetwordRef = useRef(targetword)
-  const [dheart, setDheart] = useState(false)
   const myExtraSpeedRef = useRef(0)
   const youExtraSpeedRef = useRef(0)
   const me = useAppSelector((state) => state.raingame.me)
@@ -134,7 +133,19 @@ export function RainGame() {
   }
 
   useEffect(() => {
-    console.log('승자를 감지했다:',winner)
+    setMyState({
+      heart: raingame.myState.heart,
+      point: raingame.myState.point,
+      item: raingame.myState.item,
+    })
+    setYouState({
+      heart: raingame.youState.heart,
+      point: raingame.youState.point,
+      item: raingame.youState.item,
+    })
+  }, [raingame.myState, raingame.youState])
+
+  useEffect(() => {
     if (winner == username) {
       gainExpUpdateLevel(username, 7)
     } else if (winner == you.username) {
@@ -159,25 +170,25 @@ export function RainGame() {
 /* 오른쪽 x : 60~600 */
   const Awords = [
     { y: 0, speed: 2.1, keyword: 'computer', x: 60, itemA: false, itemB: false },
-    { y: 0, speed: 2.4, keyword: 'code', x: 60, itemA: false, itemB: false },
+    { y: 0, speed: 2.4, keyword: 'code', x: 600, itemA: false, itemB: false },
     { y: 0, speed: 2.3, keyword: 'program', x: 60, itemA: false, itemB: false },
-    { y: 0, speed: 2.0, keyword: 'button', x: 60, itemA: false, itemB: false },
-    { y: 0, speed: 2.1, keyword: 'screen', x: 600, itemA: false, itemB: false },
-    { y: 0, speed: 2.1, keyword: 'click', x: 620, itemA: true, itemB: false },
-    { y: 0, speed: 2.2, keyword: 'type', x: 580, itemA: false, itemB: true },
-    { y: 0, speed: 2.4, keyword: 'game', x: 640, itemA: true, itemB: false },
-    { y: 0, speed: 2.3, keyword: 'save', x: 660, itemA: false, itemB: true },
-    { y: 0, speed: 2.3, keyword: 'picture', x: 700, itemA: true, itemB: false },
-    { y: 0, speed: 2.3, keyword: 'sound', x: 500, itemA: true, itemB: false },
-    { y: 0, speed: 2.3, keyword: 'play', x: 540, itemA: false, itemB: true },
-    { y: 0, speed: 2.3, keyword: 'stop', x: 600, itemA: true, itemB: false },
-    { y: 0, speed: 2.4, keyword: 'go', x: 60, itemA: true, itemB: true },
-    { y: 0, speed: 1.9, keyword: 'back', x: 280, itemA: false, itemB: false },
-    { y: 0, speed: 2.0, keyword: 'web', x: 300, itemA: false, itemB: false },
-    { y: 0, speed: 2.1, keyword: 'internet', x: 320, itemA: true, itemB: false },
-    { y: 0, speed: 2.3, keyword: 'link', x: 290, itemA: false, itemB: false },
-    { y: 0, speed: 1.7, keyword: 'password', x: 330, itemA: true, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'mouse', x: 370, itemA: false, itemB: false },
+    { y: 0, speed: 2.0, keyword: 'button', x: 600, itemA: false, itemB: false },
+    { y: 0, speed: 2.1, keyword: 'screen', x: 60, itemA: false, itemB: false },
+    { y: 0, speed: 2.1, keyword: 'click', x: 600, itemA: true, itemB: false },
+    { y: 0, speed: 2.2, keyword: 'type', x: 60, itemA: false, itemB: true },
+    { y: 0, speed: 2.4, keyword: 'game', x: 600, itemA: true, itemB: false },
+    { y: 0, speed: 2.3, keyword: 'save', x: 60, itemA: false, itemB: true },
+    { y: 0, speed: 2.3, keyword: 'picture', x: 600, itemA: true, itemB: false },
+    { y: 0, speed: 2.3, keyword: 'sound', x: 60, itemA: true, itemB: false },
+    { y: 0, speed: 2.3, keyword: 'play', x: 600, itemA: false, itemB: true },
+    { y: 0, speed: 2.3, keyword: 'stop', x: 60, itemA: true, itemB: false },
+    { y: 0, speed: 2.4, keyword: 'go', x: 600, itemA: true, itemB: true },
+    { y: 0, speed: 1.9, keyword: 'back', x: 60, itemA: false, itemB: false },
+    { y: 0, speed: 2.0, keyword: 'web', x: 600, itemA: false, itemB: false },
+    { y: 0, speed: 2.1, keyword: 'internet', x: 60, itemA: true, itemB: false },
+    { y: 0, speed: 2.3, keyword: 'link', x: 600, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'password', x: 60, itemA: true, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'mouse', x: 600, itemA: false, itemB: false },
     { y: 0, speed: 1.9, keyword: 'keyboard', x: 410, itemA: true, itemB: false },
     { y: 0, speed: 1.7, keyword: 'app', x: 450, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'scroll', x: 200, itemA: false, itemB: false },
@@ -228,16 +239,16 @@ export function RainGame() {
     { y: 0, speed: 3.5, keyword: 'paste', x: 600, itemA: false, itemB: false },
     { y: 0, speed: 3.9, keyword: 'print', x: 60, itemA: false, itemB: false },
     { y: 0, speed: 3.7, keyword: 'camera', x: 600, itemA: false, itemB: true },
-    { y: 0, speed: 3.5, keyword: 'microphone', x: 130, itemA: false, itemB: false },
-    { y: 0, speed: 3.9, keyword: 'speaker', x: 350, itemA: false, itemB: false },
-    { y: 0, speed: 3.7, keyword: 'text', x: 225, itemA: false, itemB: false },
-    { y: 0, speed: 3.5, keyword: 'font', x: 432, itemA: false, itemB: false },
-    { y: 0, speed: 3.9, keyword: 'color', x: 350, itemA: false, itemB: false },
-    { y: 0, speed: 3.7, keyword: 'paint', x: 390, itemA: false, itemB: false },
-    { y: 0, speed: 3.5, keyword: 'draw', x: 430, itemA: false, itemB: false },
-    { y: 0, speed: 3.9, keyword: 'icon', x: 470, itemA: false, itemB: false },
-    { y: 0, speed: 2.7, keyword: 'search', x: 210, itemA: false, itemB: false },
-    { y: 0, speed: 2.5, keyword: 'window', x: 250, itemA: false, itemB: false },
+    { y: 0, speed: 3.5, keyword: 'microphone', x: 60, itemA: false, itemB: false },
+    { y: 0, speed: 3.9, keyword: 'speaker', x: 600, itemA: false, itemB: false },
+    { y: 0, speed: 3.7, keyword: 'text', x: 60, itemA: false, itemB: false },
+    { y: 0, speed: 3.5, keyword: 'font', x: 600, itemA: false, itemB: false },
+    { y: 0, speed: 3.9, keyword: 'color', x: 60, itemA: false, itemB: false },
+    { y: 0, speed: 3.7, keyword: 'paint', x: 600, itemA: false, itemB: false },
+    { y: 0, speed: 3.5, keyword: 'draw', x: 60, itemA: false, itemB: false },
+    { y: 0, speed: 3.9, keyword: 'icon', x: 600, itemA: false, itemB: false },
+    { y: 0, speed: 2.7, keyword: 'search', x: 60, itemA: false, itemB: false },
+    { y: 0, speed: 2.5, keyword: 'window', x: 600, itemA: false, itemB: false },
     { y: 0, speed: 2.9, keyword: 'minimize', x: 290, itemA: false, itemB: false },
     { y: 0, speed: 2.7, keyword: 'maximize', x: 330, itemA: false, itemB: false },
     { y: 0, speed: 2.5, keyword: 'close', x: 370, itemA: false, itemB: false },
@@ -297,11 +308,12 @@ export function RainGame() {
       setMyGame((game) =>
         game.reduce((newGame, item) => {
           const newY = item.y + item.speed + myExtraSpeedRef.current
-
-          if (newY >= lineHeight && !dheart) {
+          if (newY >= lineHeight) {
+            console.log("목숨 깎임")
             debouncedDecreaseHeart()
-            setDheart(true)
-            if (myState.heart === 0) {
+
+            if (myState.heart <= 0) {
+              console.log("목숨 0되는거 감지됨")
               bootstrap.gameNetwork.endGame(me.username)
             }
           } else {
@@ -370,20 +382,7 @@ export function RainGame() {
     }
   }, [raingame])
 
-  useEffect(() => {
-    setMyState({
-      heart: raingame.myState.heart,
-      point: raingame.myState.point,
-      item: raingame.myState.item,
-    })
-    setDheart(false)
-    setYouState({
-      heart: raingame.youState.heart,
-      point: raingame.youState.point,
-      item: raingame.youState.item,
-    })
-  }, [raingame.myState, raingame.youState])
-
+  
   useEffect(() => {
     targetwordRef.current = targetword
   }, [targetword])
@@ -631,7 +630,7 @@ export function RainGame() {
                 fontSize: '50px',
                 letterSpacing: '0.1vw',
                 top: `${word.y}px`,
-                left: `${word.x + 120}px`,
+                left: `${word.x + 40}px`,
                 color: '#FFFFFF',
                 zIndex: 2,
               }}
