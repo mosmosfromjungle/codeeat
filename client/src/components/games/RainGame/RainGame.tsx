@@ -220,15 +220,15 @@ export function RainGame() {
     { y: 0, speed: 1.9, keyword: 'wiFi', x: 300, itemA: false, itemB: false },
   ]
   const Bwords = [
-    { y: 0, speed: 3.9, keyword: 'upload', x: 40, itemA: false, itemB: false },
-    { y: 0, speed: 3.7, keyword: 'folder', x: 123, itemA: false, itemB: true },
-    { y: 0, speed: 3.5, keyword: 'file', x: 245, itemA: false, itemB: false },
-    { y: 0, speed: 3.9, keyword: 'cut', x: 309, itemA: false, itemB: true },
+    { y: 0, speed: 3.9, keyword: 'upload', x: 100, itemA: false, itemB: false },
+    { y: 0, speed: 3.7, keyword: 'folder', x: 200, itemA: false, itemB: true },
+    { y: 0, speed: 3.5, keyword: 'file', x: 200, itemA: false, itemB: false },
+    { y: 0, speed: 3.9, keyword: 'cut', x: 200, itemA: false, itemB: true },
     { y: 0, speed: 3.7, keyword: 'copy', x: 378, itemA: false, itemB: false },
     { y: 0, speed: 3.5, keyword: 'paste', x: 420, itemA: false, itemB: false },
     { y: 0, speed: 3.9, keyword: 'print', x: 489, itemA: false, itemB: false },
     { y: 0, speed: 3.7, keyword: 'camera', x: 444, itemA: false, itemB: true },
-    { y: 0, speed: 3.5, keyword: 'microphone', x: 130, itemA: false, itemB: false },
+    { y: 0, speed: 3.5, keyword: 'microphone', x: 430, itemA: false, itemB: false },
     { y: 0, speed: 3.9, keyword: 'speaker', x: 350, itemA: false, itemB: false },
     { y: 0, speed: 3.7, keyword: 'text', x: 225, itemA: false, itemB: false },
     { y: 0, speed: 3.5, keyword: 'font', x: 432, itemA: false, itemB: false },
@@ -631,7 +631,7 @@ export function RainGame() {
                 fontSize: '50px',
                 letterSpacing: '0.1vw',
                 top: `${word.y}px`,
-                left: `${word.x + 120}px`,
+                left: `${word.x + 60}px`,
                 color: word.itemA ? 'red' : (word.itemB ? 'blue' : '#FFFFFF'),
                 zIndex: 2,
               }}
@@ -682,6 +682,7 @@ export function RainGame() {
               inputRef={keywordInput}
               onKeyPress={(e) => keydown(e.charCode)}
               fullWidth
+              autoComplete='off'
               InputProps={{
                 style: {
                   width: '300px',
