@@ -407,7 +407,7 @@ export const gainExp = async (req: CustomRequest, res: Response) => {
     const oldUserLevel = foundUser.userProfile.userLevel
     const oldUserExp = foundUser.userProfile.currentExp
     const oldRequiredExp = foundUser.userProfile.requiredExp
-
+    
     foundUser.userProfile.currentExp += req.body.exp
 
     let levelUp = 0
