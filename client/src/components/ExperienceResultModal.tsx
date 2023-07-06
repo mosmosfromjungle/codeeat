@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import Button from '@mui/material/Button'
 import { getMyProfile } from '../apicalls/auth'
-import ExperienceBar from './ExperienceBar'
+import ExperienceBarResult from './ExperienceBarResult'
 
 const Wrapper = styled.div`
   position: fixed;
@@ -34,6 +34,12 @@ const Content = styled.div`
 
 const Special = styled.span`
   color: #f9f871;
+  font-height: bold;
+  margin-bottom: 10px;
+`
+
+const SpecialExp = styled.span`
+  color: rgb(138, 206, 1);
   font-height: bold;
   margin-bottom: 10px;
 `
@@ -125,19 +131,20 @@ const ExperienceResultModal =
         {winnerResult}
       </Title>
       <Content>
-        <Special>[{ userName }]</Special>님의 현재 레벨과 남은 경험치입니다.<br/><br/>
-         <Description>
+        <span style={{ lineHeight: '1.3' }}>
+          <Special>[{ userName }]</Special>님의 현재 레벨과<br/>
+          남은 경험치입니다.
+        </span>
+        <br/><br/>
+        <Description>
           현재 레벨 : Level <Special>{userLevel}</Special><br/>
           남은 경험치 : <Special>{requiredExp - currentExp}</Special> XP<br/>
+          획득 경험치 : <SpecialExp>{currentExp - oldUserExp}</SpecialExp> XP<br/>
         </Description>
-        <GameDescription>
-          <h3 style={{ color: 'yellowgreen' }}>초록: 기존 XP</h3>
-          <h3 style={{ color: '#00b4d8' }}>파랑: 획득 XP</h3>
-        </GameDescription>
       </Content>
 
       <Experience>
-        <ExperienceBar oldExperience={oldUserExp} currentExperience={currentExp} experienceToNextLevel={requiredExp} />
+        <ExperienceBarResult oldExperience={oldUserExp} currentExperience={currentExp} experienceToNextLevel={requiredExp} />
       </Experience>
 
       <Bottom>
