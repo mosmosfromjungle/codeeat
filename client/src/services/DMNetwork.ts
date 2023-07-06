@@ -70,4 +70,4 @@ export default class DMNetwork {
     this.socketClient.emit('whoAmI', username);
   };
 
- }
+}
