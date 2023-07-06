@@ -10,12 +10,16 @@
 
 .experience-bar__fill {
   height: 100%;
-  background: yellowgreen;
+  /* background: yellowgreen; */
+  background: #6dacb8;
   transition: width 0.4s ease-out;
 }
 
 .experience-bar__fill2 {
   height: 100%;
-  background: #00b4d8;
+  /* background: #00b4d8; */
+  /* background: yellowgreen; */
+  background: rgb(138, 206, 1);
+  /* background: blue; */
   transition: width 0.4s ease-out;
 }
