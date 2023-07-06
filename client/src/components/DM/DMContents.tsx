@@ -61,23 +61,22 @@ export default function DMBubbles(props) {
             text: {
               fontFamily: 'Font_DungGeun',
               fontSize: 20,
-              color: 'white',
+              color: 'black',
               fontWeight: 'bold'
             },
             chatbubble: {
-              borderRadius: 8,
-              padding: 10,
+              borderRadius: '8px',
+              padding: '8px 16px',
               maxWidth: 200,
               width: 'fit-content',
-              marginTop: 2,
-              marginRight: 15,
-              marginBottom: 1,
-              marginLeft: 15,
+              margin: '8px 4px 0 16px',
+              borderRight: '3px solid #b2c1bb',
+              borderBottom: '3px solid #b2c1bb',
+              backgroundColor: 'white',
               wordBreak: 'break-all',
-              backgroundColor: 'green',
             },
             userBubble: {
-              backgroundColor: 'yellowgreen',
+              backgroundColor: '#b6d4c8',
             },
           }}
         />
