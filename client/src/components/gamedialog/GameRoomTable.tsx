@@ -1,80 +1,100 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import Button from '@mui/material/Button'
-import Paper from '@mui/material/Paper'
-import TableContainer from '@mui/material/TableContainer'
-import Table from '@mui/material/Table'
-import TableRow from '@mui/material/TableRow'
-import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
-import TableBody from '@mui/material/TableBody'
-import Tooltip from '@mui/material/Tooltip'
 import TextField from '@mui/material/TextField'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import Alert from '@mui/material/Alert'
-import Avatar from '@mui/material/Avatar'
+
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
-import LockIcon from '@mui/icons-material/Lock'
+
+import { useTheme } from '@mui/material/styles';
+import CardContent from '@mui/material/CardContent';
 
 import { useAppSelector, useAppDispatch } from '../../hooks'
-import { getAvatarString, getColorByString } from '../../util'
 
 import phaserGame from '../../PhaserGame'
 import Bootstrap from '../../scenes/Bootstrap'
 import { DIALOG_STATUS, setDialogStatus } from '../../stores/UserStore'
 
-const MessageText = styled.p`
-  margin: 10px;
-  color: #eee;
-  text-align: center;
+const GameRoomList = styled.div`
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+const Card = styled.div`
+  background-color: black;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  height: 160px;
+  width: 380px;
+`
+
+const ImageArea = styled.div`
+  width: 100px;
+  height: 100px;
+  margin-left: 10px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+const TextArea = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+  
+const TopArea = styled.div`
+  height: 50%;
+  font-size: 20px;
+  font-family: Font_DungGeun;
+`
+  
+const BottomArea = styled.div`
+  height: 50%;
   font-size: 20px;
   font-family: Font_DungGeun;
 `
 
-const CustomRoomTableContainer = styled(TableContainer) <{component: React.ElementType}>`
-  max-height: 500px;
-
-  table {
-    min-width: 650px;
-  }
+const Title = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 25px;
+  font-family: Font_DungGeun;
 `
 
-const TableRowWrapper = styled(TableRow)`
-  &:last-child td,
-  &:last-child th {
-    border: 0;
-    font-size: 15px;
-    font-family: Font_DungGeun;
-  }
+const Description = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  font-family: Font_DungGeun;
+`
 
-  .avatar {
-    height: 30px;
-    width: 30px;
-    font-size: 20px;
-    font-family: Font_DungGeun;
-  }
+const Footer = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+  background-color: gray;
+  border-radius: 5px;
+  padding: 0 10px 0 10px;
+  margin: 0 5px 0 5px;
+  font-family: Font_DungGeun;
+`
 
-  .name {
-    min-width: 100px;
-    overflow-wrap: anywhere;
-  }
-
-  .description {
-    min-width: 120px;
-    overflow-wrap: anywhere;
-  }
-
-  .join-wrapper {
-    display: flex;
-    gap: 3px;
-    align-items: center;
-  }
-
-  .lock-icon {
-    font-size: 18px;
-  }
+const MessageText = styled.p`
+  margin: 30px;
+  color: #eee;
+  text-align: center;
+  font-size: 25px;
+  font-family: Font_DungGeun;
 `
 
 const PasswordDialog = styled(Dialog)`
@@ -87,11 +107,10 @@ const PasswordDialog = styled(Dialog)`
   .MuiDialog-paper {
     background: #222639;
   }
-`
 
-const JoinButton = styled.div`
   Button {
-    font-size: 15px;
+    margin: 10px;
+    font-size: 20px;
     font-family: Font_DungGeun;
   }
 `
@@ -146,85 +165,71 @@ export const CustomRoomTable = () => {
     setShowPasswordError(false)
   }
 
+  const theme = useTheme();
+
   return availableRooms.length === 0 ? (
     <MessageText>
       아직 만들어진 방이 없어요. 방을 만들어 친구들과 게임을 시작하세요 !
     </MessageText>
-    ) : (
+  ) : (
     <>
-      <CustomRoomTableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRowWrapper>
-              <TableCell></TableCell>
-              <TableCell>방 이름</TableCell>
-              <TableCell>방 설명</TableCell>
-              <TableCell>만든 사람</TableCell>
-              <TableCell align="center">
-                <PeopleAltIcon />
-              </TableCell>
-              <TableCell align="right"></TableCell>
-            </TableRowWrapper>
-          </TableHead>
-          <TableBody>
-            {availableRooms.map((room) => {
-              const { roomId, metadata, clients } = room
-              const { name, description, hasPassword } = metadata
-              return (
-                <TableRowWrapper key={roomId}>
-                  <TableCell>
-                    <Avatar className="avatar" style={{ background: getColorByString(name) }}>
-                      {getAvatarString(name)}
-                    </Avatar>
-                  </TableCell>
-                  <TableCell>
-                    <div className="name">{name}</div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="description">{description}</div>
-                  </TableCell>
-                  <TableCell>{roomId}</TableCell>
-                  <TableCell align="center">{clients}</TableCell>
-                  <TableCell align="center">
-                    <Tooltip title={hasPassword ? 'Password required' : ''}>
-                      <JoinButton>
-                        <Button
-                          variant="outlined"
-                          color="secondary"
-                          onClick={() => {
-                            if (hasPassword) {
-                              setShowPasswordDialog(true)
-                              setSelectedRoom(roomId)
-                            } else {
-                              handleJoinClick(roomId, null)
-                            }
-                          }}
-                        >
-                          <div className="join-wrapper">
-                            {hasPassword && <LockIcon className="lock-icon" />}
-                            참여하기
-                          </div>
-                        </Button>
-                      </JoinButton>
-                    </Tooltip>
-                  </TableCell>
-                </TableRowWrapper>
-              )
-            })}
-          </TableBody>
-        </Table>
-      </CustomRoomTableContainer>
+      <GameRoomList>
+        {availableRooms.map((room) => {
+          const { roomId, metadata, clients } = room
+          const { name, description, hasPassword } = metadata
+          return (
+            <Button 
+              sx={{ width: '50%' }} 
+              disabled={ clients === 2 }
+              onClick={() => {
+                if (hasPassword) {
+                  setShowPasswordDialog(true)
+                  setSelectedRoom(roomId)
+                } else {
+                  handleJoinClick(roomId, null)
+                }
+              }}
+            >
+              <Card>
+                <ImageArea>
+                  <img
+                    src="/assets/game/common/thumbnail_mole.png"
+                    style={{ width: '100%', height: '100%', borderRadius: '20px', backgroundColor: 'green' }}
+                  />
+                </ImageArea>
+
+                <TextArea>
+                  <CardContent style={{ flex: '1 0 auto' }}>
+                    <TopArea>
+                      <Title>{name}</Title>
+                      <Description>{description}</Description>
+                    </TopArea>
+
+                    <BottomArea>
+                      <hr style={{ width: '220px' }} />
+                      <div style={{ display: 'flex' }}>
+                        <Footer style={{ color: 'yellow' }}>{clients === 2 ? 'Playing' : 'Waiting'}</Footer>
+                        <Footer><PeopleAltIcon />{clients}/2</Footer>
+                      </div>
+                    </BottomArea>
+                  </CardContent>
+                </TextArea>
+              </Card>
+            </Button>
+          )
+        })}
+      </GameRoomList>
       <PasswordDialog open={showPasswordDialog} onClose={resetPasswordDialog}>
         <form onSubmit={handlePasswordSubmit}>
           <DialogContent className="dialog-content">
-            <MessageText>This a private room, please enter password:</MessageText>
+            <MessageText>이 방에는 비밀번호가 걸려있네요. <br/>비밀번호를 입력해주세요 !</MessageText>
             <TextField
               autoFocus
               fullWidth
               error={passwordFieldEmpty}
               helperText={passwordFieldEmpty && 'Required'}
               value={password}
-              label="Password"
+              label="비밀번호"
               type="password"
               variant="outlined"
               color="secondary"
@@ -234,16 +239,16 @@ export const CustomRoomTable = () => {
             />
             {showPasswordError && (
               <Alert severity="error" variant="outlined">
-                Incorrect Password!
+                올바르지 않은 비밀번호입니다.
               </Alert>
             )}
           </DialogContent>
           <DialogActions>
-            <Button color="secondary" onClick={resetPasswordDialog}>
-              Cancel
-            </Button>
             <Button color="secondary" type="submit">
-              Join
+              입장하기
+            </Button>
+            <Button color="secondary" onClick={resetPasswordDialog}>
+              취소하기
             </Button>
           </DialogActions>
         </form>

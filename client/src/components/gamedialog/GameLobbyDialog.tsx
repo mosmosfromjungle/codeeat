@@ -157,7 +157,7 @@ export default function GameLobbyDialog() {
                   size="large" 
                   onClick={() => setShowCreateRoomForm(true)}
                 >
-                  게임방 만들기
+                  새 게임방 만들기
                 </Button>
               </RoomButton>
             </CustomRoomWrapper>
