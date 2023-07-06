@@ -8,6 +8,7 @@ import UserIcon from '@mui/icons-material/SupervisorAccount'
 import LogoutIcon from '@mui/icons-material/ExitToApp';
 import HelpIcon from '@mui/icons-material/Help';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt'
+import BGMController from '../BGMController'
 
 import { setFocused } from '../../stores/ChatStore'
 import { setShowDMList, setShowDMRoom } from '../../stores/DMStore'
@@ -83,6 +84,7 @@ export default function HelperButtonGroup() {
   return (
     <Backdrop>
       <ButtonGroup>
+        <BGMController/>
         <Wrapper>
           {roomJoined && (
             <FabWrapper>
