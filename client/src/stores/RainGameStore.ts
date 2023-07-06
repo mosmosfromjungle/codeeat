@@ -22,7 +22,6 @@ export interface RainGameStates {
   me: RainGameUser
   you: RainGameUser
   words: string
-  dheart: boolean
   winner: string
 }
 
@@ -49,7 +48,6 @@ export const initialState: RainGameStates = {
     character: '',
   },
   words: '',
-  dheart: false,
   winner: ''
 }
 
@@ -95,11 +93,6 @@ export const rainGameSlice = createSlice({
       state.youState.heart = heart
       state.youState.item = item
     },
-
-    setRainGameYouHeart: (state, action: PayloadAction<boolean>) => {
-      state.dheart = action.payload
-    },
-
     setRainGameYouWord: (state, action: PayloadAction<string>) => {
       state.words = action.payload
     },
@@ -116,7 +109,6 @@ export const {
   setRainGameInProgress,
   setRainGameYou,
   setRainGameMe,
-  setRainGameYouHeart,
   setRainGameYouWord,
   setRainStateMe,
   setRainStateYou,
