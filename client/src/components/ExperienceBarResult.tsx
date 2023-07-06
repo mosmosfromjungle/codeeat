@@ -8,7 +8,7 @@ const ExperienceBarResult = ({ oldExperience, currentExperience, experienceToNex
 
   return (
     <div className="experienceResult-bar">
-      {(oldExperience < 0) ? (
+      {(oldExperience <= 0) ? (
         <div className="experienceResult-bar__fill2" style={{ width: `${percentage}%` }} />
       ) : (
         <>

@@ -85,7 +85,7 @@ const ExperienceResultModal =
 
   const [userName, setUserName] = useState<string>()
   const [oldUserExp, setOldUserExp] = useState<number>()
-  const [userLevel, setUserLevel] = useState<string>()
+  const [userLevel, setUserLevel] = useState<number>()
   const [currentExp, setCurrentExp] = useState<number>()
   const [requiredExp, setRequiredExp] = useState<number>()
   const [winnerResult, setWinnerResult] = useState<string>()
@@ -102,7 +102,6 @@ const ExperienceResultModal =
             requiredExp,
           } = response
           
-
           setUserName(username)
           setUserLevel(userLevel)
           setCurrentExp(currentExp)
