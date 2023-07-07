@@ -3,47 +3,57 @@ import styled from 'styled-components';
 import VolumeUpOutlinedIcon from '@mui/icons-material/VolumeUpOutlined';
 import VolumeOffOutlinedIcon from '@mui/icons-material/VolumeOffOutlined';
 import { useState, useEffect } from 'react';
-import BGM from '../../public/assets/audios/BGM.mp3';
+import { useAppSelector, useAppDispatch } from '../hooks';
+import { toggleMainBgm } from '../stores/AudioStore';
 
-export default function () {
-  const [BGMstate, setBGMstate] = useState<boolean>(true);
-  const [audio] = useState<HTMLAudioElement | null>(
-    typeof Audio === 'undefined' ? null : new Audio(BGM)
-  );
+export default function BGMController() {
+  const dispatch = useAppDispatch();
+  const MainBgmPath = useAppSelector((state) => state.audio.MainBgmPath);
+
+  const [audio] = useState(new Audio(MainBgmPath));
+  const [playing, setPlaying] = useState(true);
 
   useEffect(() => {
-    if (!audio) return;
-    audio.addEventListener(
-      'ended',
-      function () {
+    audio.addEventListener('ended', function () {
+      audio.currentTime = 0;
+      audio.play();
+    });
+
+    if (playing) {
+      audio.play();
+    } else {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+
+    return () => {
+      audio.removeEventListener('ended', function () {
         audio.currentTime = 0;
         audio.play();
-      },
-      false
-    );
-  }, []);
+      });
+    };
+  }, [playing, MainBgmPath]);
 
-  useEffect(() => {
-    BGMstate ? audio?.play() : audio?.pause();
-  }, [BGMstate]);
-
-  const handleBGM = () => {
-    setBGMstate(!BGMstate);
-  };
+  const handleToggle = () => {
+    setPlaying(!playing);
+    dispatch(toggleMainBgm());
+  }
 
   return (
     <Wrapper>
-        <FabWrapper>
-      <CustomFab onClick={handleBGM}>
-        {BGMstate ? (
-          <VolumeUpOutlinedIcon fontSize="large" sx={{ color: 'black' }} />
-        ) : (
-          <VolumeOffOutlinedIcon fontSize="large" sx={{ color: 'black' }} />
-        )}
-      </CustomFab>
+      <FabWrapper>
+        <CustomFab onClick={handleToggle}>
+          {playing ? (
+            <VolumeUpOutlinedIcon fontSize="large" sx={{ color: 'black' }} />
+            ) : (
+            <VolumeOffOutlinedIcon fontSize="large" sx={{ color: 'black' }} />
+          )}
+        </CustomFab>
       </FabWrapper>
     </Wrapper>
-  );
+    );
+    
+    
 }
 
 const Wrapper = styled.div`

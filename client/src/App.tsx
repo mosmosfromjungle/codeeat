@@ -5,6 +5,11 @@ import axios from 'axios'
 import { useAppSelector, useAppDispatch } from './hooks'
 import { DIALOG_STATUS, HELPER_STATUS } from './stores/UserStore'
 
+import MainBgmPath from '../public/assets/audios/BGM.mp3'
+import MoleGameBgmPath from '../public/assets/audios/Mole_BGM.mp3'
+import BrickGameBgmPath from '../public/assets/audios/Brick_BGM.mp3'
+import RainGameBgmPath from '../public/assets/audios/Rain_BGM.mp3'
+
 // ↓ Entry Dialog
 import EntryDialog from './components/entrydialog/EntryDialog'
 import LoginDialog from './components/entrydialog/LoginDialog'
@@ -37,6 +42,7 @@ import ProfileButton from './components/ProfileButton'
 import ProfileDialog from './components/ProfileDialog'
 
 import GlobalFont from '../public/assets/fonts/GlobalFont'
+import {  } from './stores/AudioStore'
 
 // import { authenticateUser } from './apicalls/auth';
 
@@ -44,8 +50,8 @@ import GlobalFont from '../public/assets/fonts/GlobalFont'
 // const cookies = new Cookies();
 
 // TODO: Production 서버에 옮겨가면 해당 부분 수정 필요 
-axios.defaults.baseURL = 'http://43.202.65.140:2567'
-// axios.defaults.baseURL = 'http://localhost:2567'
+// axios.defaults.baseURL = 'http://43.202.65.140:2567'
+axios.defaults.baseURL = 'http://localhost:2567'
 console.log('axios.defaults.baseURL ', axios.defaults.baseURL);
 
 const Backdrop = styled.div`
@@ -57,6 +63,11 @@ const Backdrop = styled.div`
 function App() {
   const dispatch = useAppDispatch()
   const dialogStatus = useAppSelector((state) => state.user.dialogStatus)
+
+  const mainBgm = useAppSelector((state) => state.audio.MainBgm);
+  const moleGameBgm = useAppSelector((state) => state.audio.MoleGameBgm);
+  const brickGameBgm = useAppSelector((state) => state.audio.BrickGameBgm);
+  const rainGameBgm = useAppSelector((state) => state.audio.RainGameBgm);
 
   // ↓ Game Dialog
   const brickGameOpen = useAppSelector((state) => state.brickgame.brickGameOpen)
@@ -70,7 +81,58 @@ function App() {
   const showDMList = useAppSelector((state) => state.dm.showDMList)
   const showDMRoom = useAppSelector((state) => state.dm.showDMRoom)
 
+  useEffect (() => {
+    let mainBgmAudio : HTMLAudioElement | null = null;
+    let moleBgmAudio : HTMLAudioElement | null = null;
+    let rainBgmAudio : HTMLAudioElement | null = null;
+    let brickBgmAudio : HTMLAudioElement | null = null;
 
+    if (mainBgm) {
+      mainBgmAudio = new Audio(MainBgmPath)
+      mainBgmAudio.play()
+    }
+    if (moleGameBgm) {
+      moleBgmAudio = new Audio(MoleGameBgmPath);
+      moleBgmAudio.play();
+    }
+  
+    if (brickGameBgm) {
+      brickBgmAudio = new Audio(BrickGameBgmPath);
+      brickBgmAudio.play();
+    }
+  
+    if (rainGameBgm) {
+      rainBgmAudio = new Audio(RainGameBgmPath);
+      rainBgmAudio.play();
+    }
+    if (moleGameBgm || brickGameBgm || rainGameBgm) {
+      if (mainBgmAudio) {
+        mainBgmAudio.pause();
+        mainBgmAudio.currentTime = 0;
+      }
+    }
+    return () => {
+      if (mainBgmAudio) {
+        mainBgmAudio.pause();
+        mainBgmAudio.currentTime = 0;
+      }
+  
+      if (moleBgmAudio) {
+        moleBgmAudio.pause();
+        moleBgmAudio.currentTime = 0;
+      }
+  
+      if (brickBgmAudio) {
+        brickBgmAudio.pause();
+        brickBgmAudio.currentTime = 0;
+      }
+  
+      if (rainBgmAudio) {
+        rainBgmAudio.pause();
+        rainBgmAudio.currentTime = 0;
+      }
+    };
+  }, [mainBgm, moleGameBgm, brickGameBgm, rainGameBgm])
   // TODO: cookie 가져오는 부분 해결 필요 
   // useEffect(() => {
   //   // 첫 렌더링 시, refresh token이 있다면 token 인증을 통해 entry 상태를 설정 

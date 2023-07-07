@@ -29,11 +29,11 @@ const app = express()
 
 const allowedOrigins = [
   'http://localhost:5173',
-  // 'http://127.0.0.1:5173',
+  // // 'http://127.0.0.1:5173',
   // 'http://43.202.65.140:5173',
   // 'http://43.202.65.140',
   // 'http://13.209.87.246:5173',
-  'http://codeeat.site'
+  // 'http://codeeat.site'
 ]
 
 const options: cors.CorsOptions = {

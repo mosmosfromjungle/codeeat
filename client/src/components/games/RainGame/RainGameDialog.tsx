@@ -8,6 +8,8 @@ import { closeRainGameDialog } from '../../../stores/RainGameDialogStore'
 import phaserGame from '../../../PhaserGame'
 import Bootstrap from '../../../scenes/Bootstrap'
 
+import { playRainGameBgm } from '../../../stores/AudioStore'
+
 import {
   Backdrop,
   Wrapper,
@@ -51,9 +53,11 @@ const RainGameDialog = () => {
   //     bootstrap.gameNetwork.startRainGame()
   // }
   // }
+  dispatch(playRainGameBgm(true))
 
   const handleClose = () => {
     try {
+      dispatch(playRainGameBgm(false))
       bootstrap.gameNetwork.leaveGameRoom()
       dispatch(closeRainGameDialog())
       dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))

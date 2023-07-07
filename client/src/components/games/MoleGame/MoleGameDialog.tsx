@@ -12,6 +12,8 @@ import CorrectBGM from '/assets/audios/mole_correct.mp3';
 import WrongBGM from '/assets/audios/mole_wrong.mp3';
 import FinishBGM from '/assets/audios/mole_finish.mp3';
 
+import { playMoleGameBgm } from '../../../stores/AudioStore'
+
 import hammer from '/assets/game/molegame/hammer.png';
 
 import { 
@@ -33,6 +35,7 @@ function capitalizeFirstLetter(string) {
 export default function MoleGameDialog() {
   // For communication between client and server
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
+  const dispatch = useAppDispatch()
 
   // My information
   const username = useAppSelector((state) => state.user.username);
@@ -49,8 +52,6 @@ export default function MoleGameDialog() {
   
   // Get room host information
   const host = useAppSelector((state) => state.molegame.host)
-
-  const dispatch = useAppDispatch()
 
   const [flag, setFlag] = useState(0)
   const [titleColor, setTitleColor] = useState('#f2ecff')
@@ -104,6 +105,8 @@ export default function MoleGameDialog() {
     setIsModalOpen(false)
     handleClose();
   }
+
+  dispatch((playMoleGameBgm(true)))
 
   let randomNumber1 = 0
   let randomNumber2 = 0
@@ -573,6 +576,7 @@ export default function MoleGameDialog() {
   // 8. Close
 
   const handleClose = () => {
+    dispatch((playMoleGameBgm(false)))
     endGame()
 
     try {

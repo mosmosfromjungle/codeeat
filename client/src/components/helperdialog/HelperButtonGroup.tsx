@@ -83,8 +83,10 @@ export default function HelperButtonGroup() {
 
   return (
     <Backdrop>
-      <ButtonGroup>
+      {roomJoined && (
         <BGMController/>
+      )}
+      <ButtonGroup>
         <Wrapper>
           {roomJoined && (
             <FabWrapper>
