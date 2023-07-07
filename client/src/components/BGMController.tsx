@@ -3,50 +3,35 @@ import styled from 'styled-components';
 import VolumeUpOutlinedIcon from '@mui/icons-material/VolumeUpOutlined';
 import VolumeOffOutlinedIcon from '@mui/icons-material/VolumeOffOutlined';
 import { useState, useEffect } from 'react';
-import BGM from '../../public/assets/audios/BGM.mp3';
+import { useAppSelector, useAppDispatch } from '../hooks';
+import { toggleMainBgm } from '../stores/AudioStore';
 import { HelperButton } from './GlobalStyle';
 
-export default function () {
-  const [BGMstate, setBGMstate] = useState<boolean>(true);
-  const [audio] = useState<HTMLAudioElement | null>(
-    typeof Audio === 'undefined' ? null : new Audio(BGM)
-  );
+export default function BGMController() {
+  const dispatch = useAppDispatch();  
+  const playingBGM = useAppSelector((state) => state.audio.MainBgm)
 
-  useEffect(() => {
-    if (!audio) return;
-    audio.addEventListener(
-      'ended',
-      function () {
-        audio.currentTime = 0;
-        audio.play();
-      },
-      false
-    );
-  }, []);
-
-  useEffect(() => {
-    BGMstate ? audio?.play() : audio?.pause();
-  }, [BGMstate]);
-
-  const handleBGM = () => {
-    setBGMstate(!BGMstate);
-  };
+  const handleToggle = () => {
+    dispatch(toggleMainBgm());
+  }
 
   return (
     <Wrapper>
-      <FabWrapper>
+        <FabWrapper>
         <HelperButton 
           disableRipple
-          onClick={handleBGM}>
-          {BGMstate ? (
+          onClick={handleToggle}>
+          {playingBGM ? (
             <VolumeUpOutlinedIcon fontSize="large" sx={{ color: 'black' }} />
           ) : (
             <VolumeOffOutlinedIcon fontSize="large" sx={{ color: 'black' }} />
           )}
-        </HelperButton>
+      </HelperButton>
       </FabWrapper>
     </Wrapper>
-  );
+    );
+    
+    
 }
 
 const Wrapper = styled.div`

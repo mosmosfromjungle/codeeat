@@ -9,6 +9,7 @@ import rainGameDialogReducer from './RainGameDialogStore'
 import rankingBoardReducer from './RankingBoardStore'
 import rainGameReducer from './RainGameStore'
 import dmReducer from './DMStore'
+import audioReducer from './AudioStore'
 // import faceChatReducer from './FaceChatStore'
 enableMapSet()
 
@@ -22,6 +23,7 @@ const rootReducer = {
   raingame: rainGameReducer,
   rankingboard: rankingBoardReducer,
   dm: dmReducer,
+  audio: audioReducer,
   // facechat: faceChatReducer,
 }
 

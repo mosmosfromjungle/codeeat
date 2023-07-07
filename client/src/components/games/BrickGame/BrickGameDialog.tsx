@@ -22,6 +22,7 @@ import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
+import { playBrickGameBgm } from '../../../stores/AudioStore'
 
 import { updateLevel, UpdateLevelReqest } from '../../../apicalls/auth'
 import ExperienceResultModal from '../../ExperienceResultModal'
@@ -62,7 +63,8 @@ function capitalizeFirstLetter(string) {
 export default function BrickGameDialog() {
   const dispatch = useAppDispatch()
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
-
+  // BGM
+  dispatch(playBrickGameBgm(true))
   // My information
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character);
@@ -204,6 +206,7 @@ export default function BrickGameDialog() {
   }, [oppCurrentImages]);
 
   const handleClose = () => {
+    dispatch(playBrickGameBgm(false))
     try {
       const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
       bootstrap.gameNetwork.leaveGameRoom()
