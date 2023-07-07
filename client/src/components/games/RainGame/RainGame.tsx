@@ -22,6 +22,7 @@ import {
   Comment,
   StartButton,
   Item,
+  Name,
 } from './RainGameStyle'
 import './RainGame.css'
 
@@ -55,15 +56,15 @@ export function RainGame() {
   const rainGameReady = useAppSelector((state) => state.raingame.rainGameReady)
 
   const raingame = useAppSelector((state) => state.raingame)
-  const canvasHeight = 50
-  const lineHeight = canvasHeight + 550
+
+  const lineHeight = 380
   const dispatch = useAppDispatch()
   const keywordInput = useRef<HTMLInputElement>(null)
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
   const [time, setTime] = useState(100)
   const host = useAppSelector((state) => state.raingame.host)
   const sessionId = useAppSelector((state) => state.user.gameSessionId)
-  const winner = useAppSelector((state) => state.raingame.winner)
+  const gamewinner = useAppSelector((state) => state.raingame.winner)
   
 
   // My information
@@ -88,12 +89,12 @@ export function RainGame() {
   })
   const targetword = useAppSelector((state) => state.raingame.words)
   const targetwordRef = useRef(targetword)
-  const [dheart, setDheart] = useState(false)
   const myExtraSpeedRef = useRef(0)
   const youExtraSpeedRef = useRef(0)
   const me = useAppSelector((state) => state.raingame.me)
   const [myImage, setMyImage] = useState(false)
   const [youImage, setYouImage] = useState(false)
+  const [expUpdated, setExpUpdated] = useState(false)
 
   const hideMyImage = useCallback(() => {
     setMyImage(false)
@@ -105,7 +106,7 @@ export function RainGame() {
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const openModal = () => {
-    console.log("openModal")
+    console.log("openModal:",gamewinner)
     setTimeout(() => {
       setIsModalOpen(true)
     }, 200)
@@ -134,17 +135,29 @@ export function RainGame() {
   }
 
   useEffect(() => {
-    console.log('승자를 감지했다:',winner)
-    if (winner == username) {
-      gainExpUpdateLevel(username, 7)
-    } else if (winner == you.username) {
-      gainExpUpdateLevel(username, 3)
-    }
-    if (winner) {
+    setMyState({
+      heart: raingame.myState.heart,
+      point: raingame.myState.point,
+      item: raingame.myState.item,
+    })
+    setYouState({
+      heart: raingame.youState.heart,
+      point: raingame.youState.point,
+      item: raingame.youState.item,
+    })
+  }, [raingame.myState, raingame.youState])
+
+  useEffect(() => {
+    if (gamewinner && !expUpdated) {
+      if (gamewinner === username) {
+        gainExpUpdateLevel(username, 7)
+      } else if (gamewinner === you.username) {
+        gainExpUpdateLevel(username, 3)
+      } 
+      setExpUpdated(true)
       openModal()
-      
     }
-  }, [winner])
+  }, [gamewinner, expUpdated])
 
   const handleClose = () => {
     try {
@@ -156,28 +169,28 @@ export function RainGame() {
       console.error('Error leaving the room:', error)
     }
   }
-
+/* 오른쪽 x : 60~600 */
   const Awords = [
-    { y: 0, speed: 2.1, keyword: 'computer', x: 103, itemA: false, itemB: false },
-    { y: 0, speed: 2.4, keyword: 'code', x: 245, itemA: false, itemB: false },
-    { y: 0, speed: 2.3, keyword: 'program', x: 376, itemA: false, itemB: false },
-    { y: 0, speed: 2.0, keyword: 'button', x: 439, itemA: false, itemB: false },
-    { y: 0, speed: 2.1, keyword: 'screen', x: 329, itemA: false, itemB: false },
-    { y: 0, speed: 2.1, keyword: 'click', x: 278, itemA: true, itemB: false },
-    { y: 0, speed: 2.2, keyword: 'type', x: 163, itemA: false, itemB: true },
-    { y: 0, speed: 2.4, keyword: 'game', x: 106, itemA: true, itemB: false },
-    { y: 0, speed: 2.3, keyword: 'save', x: 227, itemA: false, itemB: true },
-    { y: 0, speed: 2.3, keyword: 'picture', x: 291, itemA: true, itemB: false },
-    { y: 0, speed: 2.3, keyword: 'sound', x: 336, itemA: true, itemB: false },
-    { y: 0, speed: 2.3, keyword: 'play', x: 389, itemA: false, itemB: true },
-    { y: 0, speed: 2.3, keyword: 'stop', x: 428, itemA: true, itemB: false },
-    { y: 0, speed: 2.4, keyword: 'go', x: 430, itemA: true, itemB: true },
-    { y: 0, speed: 1.9, keyword: 'back', x: 470, itemA: false, itemB: false },
-    { y: 0, speed: 2.0, keyword: 'web', x: 210, itemA: false, itemB: false },
-    { y: 0, speed: 2.1, keyword: 'internet', x: 250, itemA: true, itemB: false },
-    { y: 0, speed: 2.3, keyword: 'link', x: 290, itemA: false, itemB: false },
-    { y: 0, speed: 1.7, keyword: 'password', x: 330, itemA: true, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'mouse', x: 370, itemA: false, itemB: false },
+    { y: 0, speed: 2.1, keyword: 'computer', x: 60, itemA: false, itemB: false },
+    { y: 0, speed: 2.4, keyword: 'code', x: 600, itemA: false, itemB: false },
+    { y: 0, speed: 2.3, keyword: 'program', x: 60, itemA: false, itemB: false },
+    { y: 0, speed: 2.0, keyword: 'button', x: 600, itemA: true, itemB: false },
+    { y: 0, speed: 2.1, keyword: 'screen', x: 60, itemA: false, itemB: false },
+    { y: 0, speed: 2.1, keyword: 'click', x: 600, itemA: true, itemB: false },
+    { y: 0, speed: 2.2, keyword: 'type', x: 60, itemA: false, itemB: true },
+    { y: 0, speed: 2.4, keyword: 'game', x: 600, itemA: true, itemB: false },
+    { y: 0, speed: 2.3, keyword: 'save', x: 60, itemA: false, itemB: true },
+    { y: 0, speed: 2.3, keyword: 'picture', x: 600, itemA: true, itemB: false },
+    { y: 0, speed: 2.3, keyword: 'sound', x: 60, itemA: true, itemB: false },
+    { y: 0, speed: 2.3, keyword: 'play', x: 600, itemA: false, itemB: true },
+    { y: 0, speed: 2.3, keyword: 'stop', x: 60, itemA: true, itemB: false },
+    { y: 0, speed: 2.4, keyword: 'go', x: 600, itemA: true, itemB: true },
+    { y: 0, speed: 1.9, keyword: 'back', x: 60, itemA: false, itemB: false },
+    { y: 0, speed: 2.0, keyword: 'web', x: 600, itemA: false, itemB: false },
+    { y: 0, speed: 2.1, keyword: 'internet', x: 60, itemA: true, itemB: false },
+    { y: 0, speed: 2.3, keyword: 'link', x: 600, itemA: false, itemB: false },
+    { y: 0, speed: 1.7, keyword: 'password', x: 60, itemA: true, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'mouse', x: 600, itemA: false, itemB: false },
     { y: 0, speed: 1.9, keyword: 'keyboard', x: 410, itemA: true, itemB: false },
     { y: 0, speed: 1.7, keyword: 'app', x: 450, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'scroll', x: 200, itemA: false, itemB: false },
@@ -220,15 +233,15 @@ export function RainGame() {
     { y: 0, speed: 1.9, keyword: 'wiFi', x: 300, itemA: false, itemB: false },
   ]
   const Bwords = [
-    { y: 0, speed: 3.9, keyword: 'upload', x: 40, itemA: false, itemB: false },
-    { y: 0, speed: 3.7, keyword: 'folder', x: 123, itemA: false, itemB: true },
-    { y: 0, speed: 3.5, keyword: 'file', x: 245, itemA: false, itemB: false },
-    { y: 0, speed: 3.9, keyword: 'cut', x: 309, itemA: false, itemB: true },
+    { y: 0, speed: 3.9, keyword: 'upload', x: 100, itemA: false, itemB: false },
+    { y: 0, speed: 3.7, keyword: 'folder', x: 200, itemA: false, itemB: true },
+    { y: 0, speed: 3.5, keyword: 'file', x: 200, itemA: false, itemB: false },
+    { y: 0, speed: 3.9, keyword: 'cut', x: 200, itemA: false, itemB: true },
     { y: 0, speed: 3.7, keyword: 'copy', x: 378, itemA: false, itemB: false },
     { y: 0, speed: 3.5, keyword: 'paste', x: 420, itemA: false, itemB: false },
     { y: 0, speed: 3.9, keyword: 'print', x: 489, itemA: false, itemB: false },
     { y: 0, speed: 3.7, keyword: 'camera', x: 444, itemA: false, itemB: true },
-    { y: 0, speed: 3.5, keyword: 'microphone', x: 130, itemA: false, itemB: false },
+    { y: 0, speed: 3.5, keyword: 'microphone', x: 430, itemA: false, itemB: false },
     { y: 0, speed: 3.9, keyword: 'speaker', x: 350, itemA: false, itemB: false },
     { y: 0, speed: 3.7, keyword: 'text', x: 225, itemA: false, itemB: false },
     { y: 0, speed: 3.5, keyword: 'font', x: 432, itemA: false, itemB: false },
@@ -297,12 +310,13 @@ export function RainGame() {
       setMyGame((game) =>
         game.reduce((newGame, item) => {
           const newY = item.y + item.speed + myExtraSpeedRef.current
-
-          if (newY >= lineHeight && !dheart) {
+          if (newY >= lineHeight) {
+            console.log("목숨 깎임")
             debouncedDecreaseHeart()
-            setDheart(true)
-            if (myState.heart === 0) {
-              bootstrap.gameNetwork.endGame(me.username)
+
+            if (myState.heart <= 0) {
+              console.log("목숨 0되는거 감지됨")
+              bootstrap.gameNetwork.endGame(you.username)
             }
           } else {
             newGame.push({ ...item, y: newY })
@@ -370,20 +384,7 @@ export function RainGame() {
     }
   }, [raingame])
 
-  useEffect(() => {
-    setMyState({
-      heart: raingame.myState.heart,
-      point: raingame.myState.point,
-      item: raingame.myState.item,
-    })
-    setDheart(false)
-    setYouState({
-      heart: raingame.youState.heart,
-      point: raingame.youState.point,
-      item: raingame.youState.item,
-    })
-  }, [raingame.myState, raingame.youState])
-
+  
   useEffect(() => {
     targetwordRef.current = targetword
   }, [targetword])
@@ -541,7 +542,7 @@ export function RainGame() {
   return (
     <>
       <GameArea>
-        {isModalOpen && <ExperienceResultModal open={isModalOpen} handleClose={closeModal} />}
+        {isModalOpen && <ExperienceResultModal open={isModalOpen} handleClose={closeModal} winner={ gamewinner === username} />}
         {!rainGameInProgressRef.current && (
           <Comment>
             <p
@@ -631,7 +632,7 @@ export function RainGame() {
                 fontSize: '50px',
                 letterSpacing: '0.1vw',
                 top: `${word.y}px`,
-                left: `${word.x + 120}px`,
+                left: `${word.x + 60}px`,
                 color: word.itemA ? 'red' : (word.itemB ? 'blue' : '#FFFFFF'),
                 zIndex: 2,
               }}
@@ -647,24 +648,30 @@ export function RainGame() {
           <CharacterArea>
             <img
               src={friendimgpath}
-              width="50px"
+              width="40px"
               id="friend-character"
               className={you.username ? '' : 'hidden'}
             ></img>
           </CharacterArea>
           <NameArea>
+            <Name>
             친구 [{you.username.toUpperCase()}] <br />
+            </Name>
+            <div>
             {friendLifeElements}
+            </div>
           </NameArea>
         </FriendPoint>
 
         <PlayArea>
           <Item>
-            💡 특별한 색의 단어를 성공하면 아이템을 사용할 수 있어요 !<br />
-            <br />
-            <span style={{ color: 'red' }}>빨간색</span> - 상대방 속도 키우기
-            <br />
+            <div>
+            💡 아이템을 사용해보세요!
+            </div>
+            <div style={{ marginTop: '8px' }}>
+            <span style={{ color: 'red' }}>빨간색</span> - 상대방 속도 키우기<br />
             <span style={{ color: 'blue' }}>파란색</span> - 상대방 단어 가리기
+            </div>
           </Item>
         </PlayArea>
 
@@ -675,31 +682,37 @@ export function RainGame() {
         </InputArea>
 
         <PlayArea>
-          <div>
-            명령어를 입력한 후 엔터를 쳐주세요 !
-            <TextField
-              focused
-              inputRef={keywordInput}
-              onKeyPress={(e) => keydown(e.charCode)}
-              fullWidth
-              InputProps={{
-                style: {
-                  width: '300px',
-                  marginTop: '10px',
-                },
-              }}
-            />
-            <button onClick={() => keydown(13)} style={{ display: 'none' }}></button>
+          <div style={{ textAlign: 'center', padding: '0 0 10px 0', fontSize: '20px' }}>
+            키워드 입력:
+          {/* 명령어를 입력한 후 엔터를 쳐주세요 ! */}
           </div>
+          <TextField
+            // focused
+            autoFocus
+            fullWidth
+            label="키워드 입력 후 엔터를 눌러주세요!"
+            variant="outlined"
+            autoComplete='off'
+            inputRef={keywordInput}
+            onKeyPress={(e) => keydown(e.charCode)}
+            InputProps={{
+              // style: { marginTop: '10px' },
+            }}
+          />
+          <button onClick={() => keydown(13)} style={{ display: 'none' }}></button>
         </PlayArea>
 
         <MyPoint>
           <NameArea>
-            <span style={{ color: 'yellow' }}>나</span> [{username.toUpperCase()}]<br />
-            {myLifeElements}
+            <Name>
+              <span style={{ color: 'yellow' }}>나</span> [{username.toUpperCase()}]<br />
+            </Name>
+            <div>
+              {myLifeElements}
+            </div>
           </NameArea>
           <CharacterArea>
-            <img src={imgpath} width="50px" id="my-character"></img>
+            <img src={imgpath} width="40px" id="my-character"></img>
           </CharacterArea>
         </MyPoint>
       </PointArea>

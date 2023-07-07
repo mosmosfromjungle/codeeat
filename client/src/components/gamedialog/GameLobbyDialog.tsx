@@ -121,6 +121,8 @@ export default function GameLobbyDialog() {
     }
   }
 
+  const type = brickGameOpen ? 'brick' : (moleGameOpen ? 'mole' : 'rain')
+
   return (
     <>
       <Backdrop>
@@ -150,14 +152,14 @@ export default function GameLobbyDialog() {
                   방 선택하기
                 </Title>
               </TitleWrapper>
-              <CustomRoomTable />
+              <CustomRoomTable type={ type }/>
               <RoomButton>
                 <Button
                   variant="contained"
                   size="large" 
                   onClick={() => setShowCreateRoomForm(true)}
                 >
-                  게임방 만들기
+                  새 게임방 만들기
                 </Button>
               </RoomButton>
             </CustomRoomWrapper>

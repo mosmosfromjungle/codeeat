@@ -13,16 +13,16 @@ const Backdrop = styled.div`
   position: fixed;
   display: flex;
   gap: 10px;
-  bottom: 25px;
-  right: 17px;
+  bottom: 24px;
+  right: 16px;
   align-items: flex-end;
 `
 const DMwrapper = styled(Box)`
   height: 570px;
   width: 395px;
-  background: #F6F6F6;
-  border: 10px solid #FFFFF5;
-  padding: 1px 1px;
+  // background: #F6F6F6;
+  // border: 10px solid #FFFFF5;
+  padding: 10px;
   border-radius: 20px 20px 10px 10px;
 
   Button {
@@ -36,13 +36,13 @@ export function DMRoom() {
 
   return (
     <Backdrop>
-    <Content>
-        <DMwrapper>
-        <DMHeader/>
-          <DMBubbles newMessage={newMessage}/>
-          <DMBottom setNewMessage={setNewMessage}/>
-        </DMwrapper>
-    </Content>
+      <Content>
+          <DMwrapper>
+            <DMHeader/>
+            <DMBubbles newMessage={newMessage}/>
+            <DMBottom setNewMessage={setNewMessage}/>
+          </DMwrapper>
+      </Content>
     </Backdrop>
   );
 }

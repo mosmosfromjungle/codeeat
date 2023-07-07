@@ -59,15 +59,28 @@ export const Position = styled.div`
 `
 
 export const CharacterArea = styled.div`
-  height: 40%;
-  width: 30%;
-  padding: 15px;
+  // height: 40%;
+  // width: 30%;
+  // padding: 15px;
+  display: flex;
+  align-items: center;
+  margin: 0 8px;
 `
 
 export const NameArea = styled.div`
-  height: 30%;
-  width: 70%;
-  margin-top: 30px;
+  // height: 30%;
+  // width: 70%;
+  // margin-top: 30px;
+  // flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 8px;
+`
+
+export const Name = styled.div`
+  margin-top: 16px;
 `
 
 export const Comment = styled.div`
@@ -93,7 +106,7 @@ export const TimerArea = styled.div`
   trans-form: translateX(-50%);
   font-size: 35px;
   z-index: 1;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.3);
   padding: 15px;
   border-radius: 10px;
   color: #fff;
@@ -119,7 +132,7 @@ export const Left = styled.div`
 `
 
 export const Right = styled.div`
-  width: 43%;
+  width: 50%;
   position: relative;
   overflow: hidden;
   textalign: center;
@@ -135,22 +148,10 @@ export const PointArea = styled.div`
   font-family: Font_DungGeun;
 `
 
-export const FriendPoint = styled.div`
-  display: flex;
-  position: relative;
-  left: 30px;
-  width: 20%;
-  margin-top: 10px;
-  text-align: center;
-  border: 1px solid #00000029;
-  border-radius: 16px;
-  box-shadow: 0px 3px 6px #0000006f;
-`
-
 export const InputArea = styled.div`
   display: flex;
   position: relative;
-  margin: 20px;
+  margin: 16px;
   width: 10%;
   text-align: center;
   font-size: 90px;
@@ -161,26 +162,49 @@ export const InputArea = styled.div`
 `
 
 export const PlayArea = styled.div`
-  display: flex;
   position: relative;
-  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   width: 25%;
-  font-size: 18px;
+  // margin: 20px;
+  padding: 16px;
+`
+
+export const FriendPoint = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 20%;
+  margin-top: 10px;
+  padding: 16px;
+  text-align: center;
+  border-radius: 16px;
+  box-shadow: 0px 1px 6px #0000006f;
 `
 
 export const MyPoint = styled.div`
-    display: flex;
-    position: relative;
-    right: 30px;
-    width: 20%;
-    margin-top: 10px;
-    text-align: center;
-    border: 5px solid yellow;
-    border-radius: 16px;
-    box-shadow: 0px 3px 6px #0000006f;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 20%;
+  margin-top: 10px;
+  padding: 12px;
+  text-align: center;
+  border: 4px solid yellow;
+  border-radius: 16px;
+  box-shadow: 0px 1px 6px #0000006f;
 `
 
 export const Item = styled.div`
-    margin-left: 60px;
+    // margin-left: 60px;
+    line-height: 1.2;
+    color: yellow;
+    text-align: center;
+    font-size: 20px;
 `
 

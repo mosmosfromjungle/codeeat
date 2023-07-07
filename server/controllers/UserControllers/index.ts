@@ -407,14 +407,14 @@ export const gainExp = async (req: CustomRequest, res: Response) => {
     const oldUserLevel = foundUser.userProfile.userLevel
     const oldUserExp = foundUser.userProfile.currentExp
     const oldRequiredExp = foundUser.userProfile.requiredExp
-
+    
     foundUser.userProfile.currentExp += req.body.exp
 
     let levelUp = 0
     while (foundUser.userProfile.currentExp >= foundUser.userProfile.requiredExp) {
         levelUp += 1
-        // foundUser.userProfile.userLevel += 1
-        foundUser.userProfile.userLevel = parseInt(foundUser.userProfile.userLevel, 10) + 1
+        foundUser.userProfile.userLevel += 1
+        // foundUser.userProfile.userLevel = parseInt(foundUser.userProfile.userLevel, 10) + 1
         foundUser.userProfile.currentExp -= foundUser.userProfile.requiredExp
         foundUser.userProfile.requiredExp = getRequiredExp(foundUser.userProfile.userLevel)
     }
