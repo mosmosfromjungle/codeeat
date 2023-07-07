@@ -5,10 +5,10 @@ import axios from 'axios'
 import { useAppSelector, useAppDispatch } from './hooks'
 import { DIALOG_STATUS, HELPER_STATUS } from './stores/UserStore'
 
-import MainBgmPath from '../public/assets/audios/BGM.mp3'
-import MoleGameBgmPath from '../public/assets/audios/Mole_BGM.mp3'
-import BrickGameBgmPath from '../public/assets/audios/Brick_BGM.mp3'
-import RainGameBgmPath from '../public/assets/audios/Rain_BGM.mp3'
+import MainBgmPath from '../public/assets/audios/bgm_main.mp3'
+import MoleGameBgmPath from '../public/assets/audios/bgm_mole.mp3'
+import BrickGameBgmPath from '../public/assets/audios/bgm_brick.mp3'
+import RainGameBgmPath from '../public/assets/audios/bgm_rain.mp3'
 
 // ↓ Entry Dialog
 import EntryDialog from './components/entrydialog/EntryDialog'
