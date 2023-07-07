@@ -1,3 +1,4 @@
+import { Button } from '@mui/material'
 import styled from 'styled-components'
 
 export const Content = styled.div`
@@ -38,4 +39,23 @@ export const HeaderTitle = styled.div`
   font-weight: bold;
   font-family: Font_DungGeun;
 //   background-color: ;
+`
+
+export const HelperButton = styled(Button)`
+  && {
+    width: 60px;
+    height: 60px;
+    color: black;
+    display: flex;
+    justify-content: center;
+    &:hover {
+      background-color: transparent; // 호버 스타일 제거
+      box-shadow: none; // 호버 스타일 제거
+    }
+    background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" 
+      viewBox="0 -0.5 14 13" shape-rendering="crispEdges"
+      %3E%3Cmetadata%3EMade with Pixels to Svg https://codepen.io/shshaw/pen/XbxvNj%3C/metadata%3E%3Cpath 
+      stroke="%23222034" d="M3 0h8M2 1h1M11 1h1M1 2h1M12 2h1M0 3h1M13 3h1M0 4h1M13 4h1M0 5h1M13 5h1M0 6h1M13 6h1M0 7h1M13 7h1M0 8h1M13 8h1M0 9h1M13 9h1M1 10h1M12 10h1M2 11h1M11 11h1M3 12h8" /%3E%3Cpath 
+      stroke="%23e2f0ea" d="M3 1h8M2 2h10M1 3h12M1 4h12M1 5h12M1 6h12M1 7h12M1 8h12M1 9h12M2 10h10M3 11h8" /%3E%3C/svg%3E');
+  }
 `
