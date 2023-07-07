@@ -7,6 +7,7 @@ import UserIcon from '@mui/icons-material/SupervisorAccount'
 import LogoutIcon from '@mui/icons-material/ExitToApp';
 import HelpIcon from '@mui/icons-material/Help';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt'
+import { PersonAddRounded, MailOutlineRounded, PeopleRounded, ChatBubbleRounded, EmailRounded } from '@mui/icons-material'
 import BGMController from '../BGMController'
 
 import { setFocused } from '../../stores/ChatStore'
@@ -87,7 +88,8 @@ export default function HelperButtonGroup() {
                   dispatch(setShowDMList(false))
                 )}
               >
-                <ChatIcon />
+                {/* <ChatIcon /> */}
+                <ChatBubbleRounded />
               </HelperButton>
             </FabWrapper>
           )}
@@ -109,7 +111,8 @@ export default function HelperButtonGroup() {
                   dispatch(setFocused(true))
                 )}
               >
-                <DMIcon />
+                {/* <DMIcon /> */}
+                <EmailRounded />
               </HelperButton>
             </FabWrapper>
           )}
@@ -128,7 +131,8 @@ export default function HelperButtonGroup() {
                   dispatch(setShowDMList(false))
                 )}
               >
-                <UserIcon />
+                {/* <UserIcon /> */}
+                <PeopleRounded />
               </HelperButton>
             </FabWrapper>
           )}
@@ -147,7 +151,8 @@ export default function HelperButtonGroup() {
                   dispatch(setShowDMList(false))
                 )}
               >
-                <SentimentSatisfiedAltIcon />
+                {/* <SentimentSatisfiedAltIcon /> */}
+                <PersonAddRounded />
               </HelperButton>
             </FabWrapper>
           )}
