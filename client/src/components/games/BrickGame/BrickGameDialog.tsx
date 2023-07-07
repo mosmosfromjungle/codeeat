@@ -518,7 +518,7 @@ export default function BrickGameDialog() {
                 { oppUsername ? gameInProgress && (
                 <Left>
                   <TextField
-                    label="명령어 입력 후 엔터"
+                    label="명령어 입력 후 엔터를 눌러주세요!"
                     variant="outlined"
                     value={command}
                     onChange={(event) => setCommand(event.target.value)}

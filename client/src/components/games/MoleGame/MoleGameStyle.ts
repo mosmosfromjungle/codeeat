@@ -45,8 +45,12 @@ export const Header = styled.div`
 `
 
 export const Comment = styled.div`
-  float: right;
-  right: 10px;
+  // float: right;
+  // right: 10px;
+  width: 20%;
+  position: absolute;
+  top: 40px;
+  left: 40px;
   font-size: 20px;
   font-family: Font_DungGeun;
 `
@@ -73,6 +77,8 @@ export const ProblemText = styled.div`
 
 export const Content = styled.div`
   display: flex;
+  flex-direction: row;
+  justify-content: center;
 `
 
 export const TipArea = styled.div`
@@ -80,27 +86,39 @@ export const TipArea = styled.div`
   height: 15%;
   color: white;
   text-align: center;
-  margin: 10px auto 10px auto;
-  font-size: 20px;
+  margin: 32px auto 8px auto;
+  font-size: 22px;
   font-family: Font_DungGeun;
 `
 
+export const YourWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 40px;
+`
+
 export const YourPoint = styled.div`
-  width: 30%;
+  // width: 30%; 
   text-align: center;
 `
 
+export const MyWrapper = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 40px;
+`
+
 export const MyPoint = styled.div`
-  width: 30%;
+  // width: 30%;
   text-align: center;
 `
 
 export const Moles = styled.div`
-  width: 40%;
-  margin: auto auto;
+  // width: 40%;
+  // margin: auto auto;
   list-style: none;
   width: 620px;
-  border-radius: 20px;
+  // border-radius: 20px;
 `
 
 export const IsWinner = styled.div`

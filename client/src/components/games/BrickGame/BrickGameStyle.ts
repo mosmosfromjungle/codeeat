@@ -127,20 +127,20 @@ export const ScoreWrapper = styled.div`
 `
 
 export const OppInfo = styled.div`
-  width: 40%;
+  // width: 40%;
   position: relative;
   display: flex;
-  // flex-direction: column;
-  // justify-content: center;
+  flex-direction: row;
+  justify-content: flex-start;
   align-items: center;
 `
 
 export const MyInfo = styled.div`
-  width: 60%;
+  // width: 60%;
   position: relative;
   display: flex;
-  // flex-direction: column;
-  // justify-content: center;
+  flex-direction: row;
+  justify-content: flex-start;
   align-items: center;
 `
 
@@ -306,7 +306,8 @@ export const Right = styled.div`
 `
 
 export const CharacterArea = styled.div`
-  width: 30%;
+  // width: 30%;
+  margin: 0 8px 0 0;
 `
 
 export const NameArea = styled.div`
