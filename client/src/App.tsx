@@ -87,24 +87,35 @@ function App() {
     let rainBgmAudio : HTMLAudioElement | null = null;
     let brickBgmAudio : HTMLAudioElement | null = null;
 
+    const handleAudioEnded = (audio: HTMLAudioElement) => {
+      audio.pause();
+      audio.currentTime = 0;
+      audio.play();
+    };
+
     if (mainBgm) {
       mainBgmAudio = new Audio(MainBgmPath)
+      mainBgmAudio.addEventListener("ended", () => handleAudioEnded(mainBgmAudio!));
       mainBgmAudio.play()
     }
     if (moleGameBgm) {
       moleBgmAudio = new Audio(MoleGameBgmPath);
+      moleBgmAudio.addEventListener("ended", () => handleAudioEnded(mainBgmAudio!));
       moleBgmAudio.play();
     }
   
     if (brickGameBgm) {
       brickBgmAudio = new Audio(BrickGameBgmPath);
+      brickBgmAudio.addEventListener("ended", () => handleAudioEnded(mainBgmAudio!));
       brickBgmAudio.play();
     }
   
     if (rainGameBgm) {
       rainBgmAudio = new Audio(RainGameBgmPath);
+      rainBgmAudio.addEventListener("ended", () => handleAudioEnded(mainBgmAudio!));
       rainBgmAudio.play();
     }
+
     if (moleGameBgm || brickGameBgm || rainGameBgm) {
       if (mainBgmAudio) {
         mainBgmAudio.pause();
