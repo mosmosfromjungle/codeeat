@@ -58,7 +58,9 @@ export function RainGame() {
 
   const raingame = useAppSelector((state) => state.raingame)
 
-  const lineHeight = 380
+  const wd = window.innerHeight - 200
+  const lineHeight = wd*0.85
+  console.log(lineHeight)
   const dispatch = useAppDispatch()
   const keywordInput = useRef<HTMLInputElement>(null)
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
