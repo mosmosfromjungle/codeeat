@@ -8,9 +8,11 @@ import DialogContent from '@mui/material/DialogContent'
 import Alert from '@mui/material/Alert'
 
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
+import CardContent from '@mui/material/CardContent'
 
-import { useTheme } from '@mui/material/styles';
-import CardContent from '@mui/material/CardContent';
+import brick from '/assets/game/common/thumbnail_brick.png'
+import mole from '/assets/game/common/thumbnail_mole.png'
+import rain from '/assets/game/common/thumbnail_rain.png'
 
 import { useAppSelector, useAppDispatch } from '../../hooks'
 
@@ -27,16 +29,25 @@ const GameRoomList = styled.div`
   align-items: center;
 `
 
+const CardWrapper = styled.div`
+  width: 860px;
+  height: 400px;
+  background-color: #404767;
+  border-radius: 16px;
+  padding: 8px;
+  overflow: auto;
+`
+
 const Card = styled.div`
-  background-color: black;
+  width: 380px;
+  height: 160px;
+  margin: 10px;
+  background-color: rgb(34, 38, 57);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 20px;
-  height: 160px;
-  width: 380px;
-  margin: 10px;
 `
 
 const ImageArea = styled.div`
@@ -118,9 +129,6 @@ const PasswordDialog = styled(Dialog)`
 `
 
 export const CustomRoomTable = (props) => {
-  console.log('props: '+props);
-  console.log('props.type: '+props.type);
-
   const [password, setPassword] = useState('')
   const [selectedRoom, setSelectedRoom] = useState('')
   const [showPasswordDialog, setShowPasswordDialog] = useState(false)
@@ -170,8 +178,6 @@ export const CustomRoomTable = (props) => {
     setShowPasswordError(false)
   }
 
-  const theme = useTheme();
-
   return availableRooms.length === 0 ? (
     <MessageText>
       아직 만들어진 방이 없어요. 방을 만들어 친구들과 게임을 시작하세요 !
@@ -179,50 +185,63 @@ export const CustomRoomTable = (props) => {
   ) : (
     <>
       <GameRoomList>
-        {availableRooms.map((room) => {
-          const { roomId, metadata, clients } = room
-          const { name, description, hasPassword } = metadata
-          return (
-            <Button 
-              sx={{ width: '50%' }} 
-              disabled={ clients === 2 }
-              onClick={() => {
-                if (hasPassword) {
-                  setShowPasswordDialog(true)
-                  setSelectedRoom(roomId)
-                } else {
-                  handleJoinClick(roomId, null)
-                }
-              }}
-            >
-              <Card>
-                <ImageArea>
-                  <img
-                    src="/assets/game/common/thumbnail_mole.png"
-                    style={{ width: '100%', height: '100%', borderRadius: '20px', backgroundColor: 'green' }}
-                  />
-                </ImageArea>
+        <CardWrapper>
+          {availableRooms.map((room) => {
+            const { roomId, metadata, clients } = room
+            const { name, description, hasPassword } = metadata
+            return (
+              <Button 
+                sx={{ borderRadius: '20px' }} 
+                disabled={ clients === 2 }
+                onClick={() => {
+                  if (hasPassword) {
+                    setShowPasswordDialog(true)
+                    setSelectedRoom(roomId)
+                  } else {
+                    handleJoinClick(roomId, null)
+                  }
+                }}
+              >
+                <Card>
+                  <ImageArea>
+                    <img
+                      src={ 
+                        props.type === 'brick' ? brick 
+                        : (props.type === 'mole' ? mole : rain) 
+                      }
+                      style={{ width: '75%', height: '75%', borderRadius: '20px', 
+                              padding: '8px',
 
-                <TextArea>
-                  <CardContent style={{ flex: '1 0 auto' }}>
-                    <TopArea>
-                      <Title>{name}</Title>
-                      <Description>{description}</Description>
-                    </TopArea>
+                              backgroundColor: props.type === 'brick' ? 'white' 
+                              : (props.type === 'mole' ? 'yellow' : 'lightblue'),
 
-                    <BottomArea>
-                      <hr style={{ width: '220px' }} />
-                      <div style={{ display: 'flex' }}>
-                        <Footer style={{ color: 'yellow' }}>{clients === 2 ? 'Playing' : 'Waiting'}</Footer>
-                        <Footer><PeopleAltIcon />{clients}/2</Footer>
-                      </div>
-                    </BottomArea>
-                  </CardContent>
-                </TextArea>
-              </Card>
-            </Button>
-          )
-        })}
+                              border: `8px solid ${props.type === 'brick' ? 'brown'
+                              : (props.type === 'mole' ? 'green' : 'blue')}`,
+                      }}
+                    />
+                  </ImageArea>
+
+                  <TextArea>
+                    <CardContent style={{ flex: '1 0 auto' }}>
+                      <TopArea>
+                        <Title>{name}</Title>
+                        <Description>{description}</Description>
+                      </TopArea>
+
+                      <BottomArea>
+                        <hr style={{ width: '220px' }} />
+                        <div style={{ display: 'flex' }}>
+                          <Footer style={{ color: clients === 2 ? 'green' : 'yellow' }}>{ clients === 2 ? 'Playing' : 'Waiting'}</Footer>
+                          <Footer><PeopleAltIcon />{clients}/2</Footer>
+                        </div>
+                      </BottomArea>
+                    </CardContent>
+                  </TextArea>
+                </Card>
+              </Button>
+            )
+          })}
+        </CardWrapper>
       </GameRoomList>
       <PasswordDialog open={showPasswordDialog} onClose={resetPasswordDialog}>
         <form onSubmit={handlePasswordSubmit}>
