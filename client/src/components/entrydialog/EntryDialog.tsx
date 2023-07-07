@@ -136,6 +136,8 @@ export default function EntryDialog() {
   }
 
   useEffect(() => {
+    if (lobbyJoined) return setShowSnackbar(false)
+
     const timeout = setTimeout(() => {
       if (!lobbyJoined) {
         setShowSnackbar(true);
