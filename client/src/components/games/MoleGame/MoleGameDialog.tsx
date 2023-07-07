@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
-// import Button from '@mui/material/Button'
 
 import { useAppSelector, useAppDispatch } from '../../../hooks'
 import { closeMoleGameDialog } from '../../../stores/MoleGameStore'
@@ -12,12 +11,14 @@ import CorrectBGM from '/assets/audios/mole_correct.mp3';
 import WrongBGM from '/assets/audios/mole_wrong.mp3';
 import FinishBGM from '/assets/audios/mole_finish.mp3';
 
+import { playMoleGameBgm } from '../../../stores/AudioStore'
+
 import hammer from '/assets/game/molegame/hammer.png';
 
 import { 
   Backdrop, Wrapper, RoundArea, Header, 
   Comment, Problem, ProblemText, TipArea, Content, 
-  Moles, MyPoint, YourPoint, IsWinner, IsHost, CharacterArea, NameArea, LifeArea, PointArea, 
+  Moles, MyPoint, YourPoint, IsWinner, IsHost, CharacterArea, NameArea, LifeArea, PointArea, YourWrapper, MyWrapper, 
 } from './MoleGameStyle'
 import './MoleGame.css'
 
@@ -33,6 +34,7 @@ function capitalizeFirstLetter(string) {
 export default function MoleGameDialog() {
   // For communication between client and server
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
+  const dispatch = useAppDispatch()
 
   // My information
   const username = useAppSelector((state) => state.user.username);
@@ -49,8 +51,6 @@ export default function MoleGameDialog() {
   
   // Get room host information
   const host = useAppSelector((state) => state.molegame.host)
-
-  const dispatch = useAppDispatch()
 
   const [flag, setFlag] = useState(0)
   const [titleColor, setTitleColor] = useState('#f2ecff')
@@ -83,15 +83,10 @@ export default function MoleGameDialog() {
 
   const [winner, setWinner] = useState(String)
   const [expUpdated, setExpUpdated] = useState(false)
-
   const [moleCatch, setMoleCatch] = useState(0)
 
-  // If friend get point, display event
   const friendPoint = useAppSelector((state) => state.molegame.friendPoint)
-
-  // If friend click wrong, display event
   const friendLife = useAppSelector((state) => state.molegame.friendLife)
-
   const problem = useAppSelector((state) => state.molegame.problem)
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -105,6 +100,8 @@ export default function MoleGameDialog() {
     setIsModalOpen(false)
     handleClose();
   }
+
+  dispatch((playMoleGameBgm(true)))
 
   let randomNumber1 = 0
   let randomNumber2 = 0
@@ -139,35 +136,30 @@ export default function MoleGameDialog() {
   let myLifeElements = []
 
   for (let i = 0; i < parseInt(friendLife); i++) {
-    friendLifeElements.push(<img key={i} src={hammer} width="60px" style={{ margin: '5px' }}></img>)
+    friendLifeElements.push(
+      <img key={i} src={hammer} width="60px" style={{ margin: '5px' }}></img>
+    )
   }
 
   for (let i = 0; i < myLife; i++) {
-    myLifeElements.push(<img key={i} src={hammer} width="60px" style={{ margin: '5px' }}></img>)
+    myLifeElements.push(
+      <img key={i} src={hammer} width="60px" style={{ margin: '5px' }}></img>
+    )
   }
 
   // 1. Load problems
 
   const problems = [
-    ['파이썬에서 리스트에 들어있는 모든 수를 합하는 함수는?', ['sum', 'len', 'map']],
-    ['파이썬에서 리스트의 원소 개수를 구하는 함수는?', ['len', 'abs', 'map']],
-    ['파이썬에서 새로운 정렬된 리스트를 반환하는 함수는?', ['sorted', 'len', 'sort']],
-    ['파이썬에서 리스트 자체를 정렬시켜버리는 것은?', ['sort', 'len', 'sorted']],
-    ['파이썬에서 내림차순 정렬을 위해 사용하는 옵션은?', ['reverse', 'len', 'map']],
-    ['파이썬에서 숫자의 절댓값을 리턴하는 함수는?', ['abs', 'len', 'map']],
-    [
-      '파이썬에서 문자열로 구성된 표현식을 입력으로 받아 해당 문자열을 실행한 결괏값을 리턴하는 함수는?',
-      ['eval', 'len', 'map'],
-    ],
-    ['파이썬에서 문자의 유니코드 숫자 값을 리턴하는 함수는?', ['ord', 'len', 'map']],
-    [
-      '파이썬에서 유니코드 숫자값을 입력받아 그 코드에 해당하는 문자를 리턴하는 함수는?',
-      ['char', 'len', 'map'],
-    ],
-    [
-      '파이썬에서 for문과 함께 자주 사용하는 함수로, 입력받은 숫자에 해당하는 범위 값을 반복 가능한 객체로 만들어 리턴하는 함수는?',
-      ['range', 'len', 'map'],
-    ],
+    ['파이썬에서 리스트에 들어있는 모든 수를 합하는 함수는?', ['sum', 'range', 'map']],
+    ['파이썬에서 리스트의 원소 개수를 구하는 함수는?', ['len', 'abs', 'eval']],
+    ['파이썬에서 새로운 정렬된 리스트를 반환하는 함수는?', ['sorted', 'char', 'sort']],
+    ['파이썬에서 리스트 자체를 정렬시켜버리는 것은?', ['sort', 'for', 'sorted']],
+    ['파이썬에서 내림차순 정렬을 위해 사용하는 옵션은?', ['reverse', 'range', 'sorted']],
+    ['파이썬에서 숫자의 절댓값을 리턴하는 함수는?', ['abs', 'char', 'map']],
+    ['파이썬에서 문자열로 구성된 표현식을 입력으로 받아 해당 문자열을 실행한 결과값을 리턴하는 함수는?', ['eval', 'reverse', 'map'],],
+    ['파이썬에서 문자의 유니코드 숫자 값을 리턴하는 함수는?', ['ord', 'len', 'eval']],
+    ['파이썬에서 유니코드 숫자값을 입력받아 그 코드에 해당하는 문자를 리턴하는 함수는?', ['char', 'sum', 'len'],],
+    ['파이썬에서 for문과 함께 자주 사용하는 함수로, 입력받은 숫자에 해당하는 범위 값을 반복 가능한 객체로 만드는 함수는?', ['range', 'sort', 'abs'],],
   ]
 
   // 2. Bling the Text
@@ -219,7 +211,7 @@ export default function MoleGameDialog() {
 
       if (host !== username) {
         // 내가 방장이 아닌데 상대방(방장)이 나갔다면, 이 방의 방장을 나로 업데이트
-        bootstrap.gameNetwork.changeHost(username)
+        // bootstrap.gameNetwork.changeHost(username)
       }
 
       // 게임 도중에 한명이 나갔다면,
@@ -228,7 +220,6 @@ export default function MoleGameDialog() {
         showWinner()
 
         setProblemText('정답을 말하고 있는 두더지를 잡아라!')
-
         setStartButton(false)
 
         const FinishAudio = new Audio(FinishBGM)
@@ -439,7 +430,7 @@ export default function MoleGameDialog() {
       moleActive(moleNumber2)
       moleActive(moleNumber3)
 
-      let timeoutId = setTimeout(seeMole, 5000)
+      let timeoutId = setTimeout(seeMole, 50000)
       setMoleCatch(timeoutId)
 
       setActiveNumber(randomNumber1)
@@ -574,6 +565,7 @@ export default function MoleGameDialog() {
   // 8. Close
 
   const handleClose = () => {
+    dispatch((playMoleGameBgm(false)))
     endGame()
 
     try {
@@ -699,7 +691,18 @@ export default function MoleGameDialog() {
           <CloseIcon />
         </IconButton>
 
-        <RoundArea>Round {turn}/3</RoundArea>
+        { startGame ? (
+          <RoundArea>Round {turn}/3</RoundArea>
+        ) : (
+          <Comment>
+            <p className={`friend-comment ${friendname ? '' : 'start-game'}`}>
+              {friendname ? '친구가 들어왔어요, 방장은 Start 버튼을 눌러주세요 !' : '친구가 아직 들어오지 않았어요! 친구가 들어와야 게임이 시작돼요.'}
+              {/* <br />
+              {friendname ? '방장은 Start 버튼을 눌러주세요 !' : '친구가 들어와야 게임이 시작돼요.'} */}
+            </p>
+          </Comment>
+          )
+        }
 
         <body>
           <Header>
@@ -708,26 +711,19 @@ export default function MoleGameDialog() {
             </div>
           </Header>
 
-          <Comment>
-            <p className={`friend-comment ${friendname ? '' : 'start-game'}`}>
-              {friendname ? '친구가 들어왔어요,' : '친구가 아직 들어오지 않았어요 !'}
-              <br />
-              {friendname ? '방장은 Start 버튼을 눌러주세요 !' : '친구가 들어와야 게임이 시작돼요.'}
-            </p>
-          </Comment>
-
           <div className="main">
             <Problem>
               <ProblemText>{problemText}</ProblemText>
             </Problem>
 
             <TipArea>
-              틀린 답을 외치는 두더지를 잡으면 목숨이 깎여요!
-              <br />
-              💡 TIP: 두더지를 빨리 잡으려고 하는 것보다, 문제를 잘 읽고 푸는 게 더 중요할 거예요.
+              💡 TIP: 틀린 답을 외치는 두더지를 잡으면 목숨이 깎여요!
+              {/* <br />
+              💡 TIP: 두더지를 빨리 잡으려고 하는 것보다, 문제를 잘 읽고 푸는 게 더 중요할 거예요. */}
             </TipArea>
 
             <Content>
+              <YourWrapper>
               <YourPoint>
                 {/* <IsWinner>
                   {friendname && !startGame && winner === friendname ? 'WINNER' : ''}
@@ -756,6 +752,7 @@ export default function MoleGameDialog() {
                   <span id="friend-point-current">{friendPoint ? friendPoint : '0'}</span>/3
                 </PointArea>
               </YourPoint>
+              </YourWrapper>
 
               <Moles>
                 <ul className="whack-a-mole">
@@ -843,6 +840,7 @@ export default function MoleGameDialog() {
                 </ul>
               </Moles>
 
+              <MyWrapper>
               <MyPoint>
                 {/* <IsWinner>
                   {winner === username && !startGame ? 'WINNER' : ''}
@@ -875,6 +873,7 @@ export default function MoleGameDialog() {
                   <span id="point-current">{myPoint}</span>/3
                 </PointArea>
               </MyPoint>
+              </MyWrapper>
             </Content>
 
             <div id="start-button-div" className="point-box clearfix hidden">
@@ -882,7 +881,7 @@ export default function MoleGameDialog() {
                 <button
                   type="button"
                   className="start-btn"
-                  style={{ color: startButtonColor }}
+                  style={{ color: startButtonColor, margin: '32px' }}
                   disabled={!startButton}
                   onClick={startButton ? () => startMole() : null}
                   onMouseEnter={handleMouseOver}

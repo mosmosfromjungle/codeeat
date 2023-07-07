@@ -36,6 +36,7 @@ export class MoleGameRoom extends Room<GameState> {
     this.setMetadata({ name, description, hasPassword })
 
     this.setState(new GameState())
+
     this.state.host = username
     
     // when receiving updatePlayer message, call the PlayerUpdateCommand
