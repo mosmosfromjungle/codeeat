@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
-// import Button from '@mui/material/Button'
 
 import { useAppSelector, useAppDispatch } from '../../../hooks'
 import { closeMoleGameDialog } from '../../../stores/MoleGameStore'
@@ -138,35 +137,30 @@ export default function MoleGameDialog() {
   let myLifeElements = []
 
   for (let i = 0; i < parseInt(friendLife); i++) {
-    friendLifeElements.push(<img key={i} src={hammer} width="60px" style={{ margin: '5px' }}></img>)
+    friendLifeElements.push(
+      <img key={i} src={hammer} width="60px" style={{ margin: '5px' }}></img>
+    )
   }
 
   for (let i = 0; i < myLife; i++) {
-    myLifeElements.push(<img key={i} src={hammer} width="60px" style={{ margin: '5px' }}></img>)
+    myLifeElements.push(
+      <img key={i} src={hammer} width="60px" style={{ margin: '5px' }}></img>
+    )
   }
 
   // 1. Load problems
 
   const problems = [
-    ['파이썬에서 리스트에 들어있는 모든 수를 합하는 함수는?', ['sum', 'len', 'map']],
-    ['파이썬에서 리스트의 원소 개수를 구하는 함수는?', ['len', 'abs', 'map']],
-    ['파이썬에서 새로운 정렬된 리스트를 반환하는 함수는?', ['sorted', 'len', 'sort']],
-    ['파이썬에서 리스트 자체를 정렬시켜버리는 것은?', ['sort', 'len', 'sorted']],
-    ['파이썬에서 내림차순 정렬을 위해 사용하는 옵션은?', ['reverse', 'len', 'map']],
-    ['파이썬에서 숫자의 절댓값을 리턴하는 함수는?', ['abs', 'len', 'map']],
-    [
-      '파이썬에서 문자열로 구성된 표현식을 입력으로 받아 해당 문자열을 실행한 결괏값을 리턴하는 함수는?',
-      ['eval', 'len', 'map'],
-    ],
-    ['파이썬에서 문자의 유니코드 숫자 값을 리턴하는 함수는?', ['ord', 'len', 'map']],
-    [
-      '파이썬에서 유니코드 숫자값을 입력받아 그 코드에 해당하는 문자를 리턴하는 함수는?',
-      ['char', 'len', 'map'],
-    ],
-    [
-      '파이썬에서 for문과 함께 자주 사용하는 함수로, 입력받은 숫자에 해당하는 범위 값을 반복 가능한 객체로 만들어 리턴하는 함수는?',
-      ['range', 'len', 'map'],
-    ],
+    ['파이썬에서 리스트에 들어있는 모든 수를 합하는 함수는?', ['sum', 'range', 'map']],
+    ['파이썬에서 리스트의 원소 개수를 구하는 함수는?', ['len', 'abs', 'eval']],
+    ['파이썬에서 새로운 정렬된 리스트를 반환하는 함수는?', ['sorted', 'char', 'sort']],
+    ['파이썬에서 리스트 자체를 정렬시켜버리는 것은?', ['sort', 'for', 'sorted']],
+    ['파이썬에서 내림차순 정렬을 위해 사용하는 옵션은?', ['reverse', 'range', 'sorted']],
+    ['파이썬에서 숫자의 절댓값을 리턴하는 함수는?', ['abs', 'char', 'map']],
+    ['파이썬에서 문자열로 구성된 표현식을 입력으로 받아 해당 문자열을 실행한 결과값을 리턴하는 함수는?', ['eval', 'reverse', 'map'],],
+    ['파이썬에서 문자의 유니코드 숫자 값을 리턴하는 함수는?', ['ord', 'len', 'eval']],
+    ['파이썬에서 유니코드 숫자값을 입력받아 그 코드에 해당하는 문자를 리턴하는 함수는?', ['char', 'sum', 'len'],],
+    ['파이썬에서 for문과 함께 자주 사용하는 함수로, 입력받은 숫자에 해당하는 범위 값을 반복 가능한 객체로 만드는 함수는?', ['range', 'sort', 'abs'],],
   ]
 
   // 2. Bling the Text
@@ -227,7 +221,6 @@ export default function MoleGameDialog() {
         showWinner()
 
         setProblemText('정답을 말하고 있는 두더지를 잡아라!')
-
         setStartButton(false)
 
         const FinishAudio = new Audio(FinishBGM)
