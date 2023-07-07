@@ -84,7 +84,7 @@ export default function ProfileButton() {
   const character = useAppSelector((state) => state.user.character)
   const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}.png`
   // const userLevel = useAppSelector((state) => state.user.userLevel)
-  const [userLevel, setUserLevel] = useState<string>()
+  const [userLevel, setUserLevel] = useState<number>()
   const [currentExp, setCurrentExp] = useState<number>()
   const [requiredExp, setRequiredExp] = useState<number>()
 
@@ -142,7 +142,7 @@ export default function ProfileButton() {
                   <span style={{ fontSize: '24px', lineHeight: '1' }}>{username}</span>
                 </Profile>
               </ListItem>
-              <ExperienceBar currentExperience={currentExp} experienceToNextLevel={requiredExp} />
+              <ExperienceBar oldExperience={0} currentExperience={currentExp} experienceToNextLevel={requiredExp} />
             </ProfileButtonWrapper>
           </CustomButton>
         </ContentWrapper>

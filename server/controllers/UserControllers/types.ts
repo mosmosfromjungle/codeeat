@@ -12,7 +12,7 @@ export interface IUserInfo {
 export interface IUserProfile {
     [key: string]: any
     character: string
-    userLevel: string
+    userLevel: number
     currentExp: number
     requiredExp: number
     grade?: string

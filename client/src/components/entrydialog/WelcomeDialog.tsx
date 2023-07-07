@@ -43,6 +43,9 @@ const Wrapper = styled.form`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   background: #222639;
   border-radius: 16px;
   padding: 36px 50px;
@@ -50,14 +53,16 @@ const Wrapper = styled.form`
   width: 75%;
 `
 const Title = styled.h3`
-  margin: 5px;
+  margin: 16px;
   font-size: 50px;
-  color: #c2c2c2;
+  color: white;
   text-align: center;
 `
 const Content = styled.div`
   display: flex;
-  margin: 36px 0;
+  margin: 40px 0;
+  flex-direction: row;
+  justify-content: center;
 `
 const Left = styled.div`
   display: flex;
@@ -68,7 +73,7 @@ const Left = styled.div`
   font-size: 20px;
 `
 const Right = styled.div`
-  width: 50%;
+  width: 40%;
   margin: 0 0 0 60px;
   color: white;
   display: flex;
@@ -90,10 +95,12 @@ const Special = styled.span`
   color: #f9f871;
   font-height: bold;
 `
-const Description = styled.span`
+const Description = styled.div`
   color: white;
   font-size: 26px;
   line-height: 1.5;
+  word-break: keep-all;
+  text-align: center;
 `
 const GameDescription = styled.div`
   margin-top: 40px;
@@ -179,15 +186,14 @@ export default function WelcomeDialog() {
             <Description>
               <span style={{ fontSize: '40px', color: '#f9f871' }}>{username.toUpperCase()}</span>{' '}
               님, 안녕하세요! <br />
-              여기는 키즈들의 코딩공간, 코드잇입니다. <br />
               <br />
-              저희 코드잇에는 세가지 게임이 있어요. <br />
+              {/* 여기는 키즈들의 코딩공간, 코드잇입니다. <br /> */}
               왼쪽 맵을 확인하여 원하는 게임을 플레이해보세요 !<br />
             </Description>
             <GameDescription>
-              <h3 style={{ color: '#e46c0a' }}>주황: 두더지 게임</h3>
-              <h3 style={{ color: '#e1e100' }}>노랑: 산성비 게임</h3>
-              <h3 style={{ color: '#00de1a' }}>초록: 자료구조 게임</h3>
+              <h3 style={{ color: '#00de1a' }}>초록: 두더지 게임</h3>
+              <h3 style={{ color: 'skyblue' }}>파랑: 산성비 게임</h3>
+              <h3 style={{ color: '#e1e100' }}>노랑: 자료구조 게임</h3>
             </GameDescription>
           </Right>
         </Content>

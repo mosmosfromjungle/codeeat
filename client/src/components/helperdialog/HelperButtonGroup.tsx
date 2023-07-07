@@ -1,18 +1,19 @@
 import { useRef, useEffect } from 'react'
 import styled from 'styled-components'
 
-import Fab from '@mui/material/Fab'
 import ChatIcon from '@mui/icons-material/Chat'
 import DMIcon from '@mui/icons-material/Send'
 import UserIcon from '@mui/icons-material/SupervisorAccount'
 import LogoutIcon from '@mui/icons-material/ExitToApp';
 import HelpIcon from '@mui/icons-material/Help';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt'
+import BGMController from '../BGMController'
 
 import { setFocused } from '../../stores/ChatStore'
 import { setShowDMList, setShowDMRoom } from '../../stores/DMStore'
 import { HELPER_STATUS, setHelperStatus } from '../../stores/UserStore'
 import { useAppSelector, useAppDispatch } from '../../hooks'
+import { HelperButton } from '../GlobalStyle'
 
 const Backdrop = styled.div`
   position: fixed;
@@ -33,26 +34,7 @@ const ButtonGroup = styled.div`
 const FabWrapper = styled.div`
   margin-top: auto;
 `
-const CustomFab = styled(Fab)`
-  position: relative;
-  &:after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: -2px;
-    width: 60px;
-    height: 60px;
-    shape-rendering: crispEdges;
-    z-index: -1;
-    background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" 
-      viewBox="0 -0.5 14 13" shape-rendering="crispEdges"
-      %3E%3Cmetadata%3EMade with Pixels to Svg https://codepen.io/shshaw/pen/XbxvNj%3C/metadata%3E%3Cpath 
-      stroke="%23222034" d="M3 0h8M2 1h1M11 1h1M1 2h1M12 2h1M0 3h1M13 3h1M0 4h1M13 4h1M0 5h1M13 5h1M0 6h1M13 6h1M0 7h1M13 7h1M0 8h1M13 8h1M0 9h1M13 9h1M1 10h1M12 10h1M2 11h1M11 11h1M3 12h8" /%3E%3Cpath 
-      stroke="%23e2f0ea" d="M3 1h8M2 2h10M1 3h12M1 4h12M1 5h12M1 6h12M1 7h12M1 8h12M1 9h12M2 10h10M3 11h8" /%3E%3C/svg%3E');
-  }
-`
-// stroke="%23ffffff"
-// stroke="%23e2f0ea"
+
 
 export default function HelperButtonGroup() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -83,11 +65,16 @@ export default function HelperButtonGroup() {
   return (
     <Backdrop>
       <ButtonGroup>
+
+        <BGMController/>
+
         <Wrapper>
           {roomJoined && (
             <FabWrapper>
-              <CustomFab
+              <HelperButton
+                disableRipple
                 onClick={() => helperStatus === HELPER_STATUS.CHAT ? (
+                  console.log('clicked the button'),
                   dispatch(setHelperStatus(HELPER_STATUS.NONE)),
                   dispatch(setFocused(false))
                 ) : (
@@ -98,7 +85,7 @@ export default function HelperButtonGroup() {
                 )}
               >
                 <ChatIcon />
-              </CustomFab>
+              </HelperButton>
             </FabWrapper>
           )}
         </Wrapper>
@@ -106,7 +93,8 @@ export default function HelperButtonGroup() {
         <Wrapper>
           {roomJoined && (
             <FabWrapper>
-              <CustomFab
+              <HelperButton
+                disableRipple
                 onClick={() => showDMList || showDMRoom || helperStatus === HELPER_STATUS.DM ? (
                   dispatch(setShowDMRoom(false)),
                   dispatch(setShowDMList(false)),
@@ -119,7 +107,7 @@ export default function HelperButtonGroup() {
                 )}
               >
                 <DMIcon />
-              </CustomFab>
+              </HelperButton>
             </FabWrapper>
           )}
         </Wrapper>
@@ -127,7 +115,8 @@ export default function HelperButtonGroup() {
         <Wrapper>
           {roomJoined && (
             <FabWrapper>
-              <CustomFab
+              <HelperButton
+                disableRipple
                 onClick={() => helperStatus === HELPER_STATUS.USERS ? (
                   dispatch(setHelperStatus(HELPER_STATUS.NONE))
                 ) : ( 
@@ -137,7 +126,7 @@ export default function HelperButtonGroup() {
                 )}
               >
                 <UserIcon />
-              </CustomFab>
+              </HelperButton>
             </FabWrapper>
           )}
         </Wrapper>
@@ -145,7 +134,8 @@ export default function HelperButtonGroup() {
         <Wrapper>
           {roomJoined && (
             <FabWrapper>
-              <CustomFab
+              <HelperButton
+                disableRipple
                 onClick={() => helperStatus === HELPER_STATUS.FRIENDS ? (
                   dispatch(setHelperStatus(HELPER_STATUS.NONE))
                 ) : ( 
@@ -155,7 +145,7 @@ export default function HelperButtonGroup() {
                 )}
               >
                 <SentimentSatisfiedAltIcon />
-              </CustomFab>
+              </HelperButton>
             </FabWrapper>
           )}
         </Wrapper>
@@ -163,7 +153,8 @@ export default function HelperButtonGroup() {
         <Wrapper>
           {roomJoined && (
             <FabWrapper>
-              <CustomFab
+              <HelperButton
+                disableRipple
                 onClick={() => helperStatus === HELPER_STATUS.LOGOUT ? (
                   dispatch(setHelperStatus(HELPER_STATUS.NONE))
                 ) : ( 
@@ -173,7 +164,7 @@ export default function HelperButtonGroup() {
                 )}
               >
                 <LogoutIcon />
-              </CustomFab>
+              </HelperButton>
             </FabWrapper>
           )}
         </Wrapper>
@@ -181,7 +172,8 @@ export default function HelperButtonGroup() {
         <Wrapper>
           {roomJoined && (
             <FabWrapper>
-              <CustomFab
+              <HelperButton
+                disableRipple
                 onClick={() => helperStatus === HELPER_STATUS.VERSION ? (
                   dispatch(setHelperStatus(HELPER_STATUS.NONE))
                 ) : ( 
@@ -191,7 +183,7 @@ export default function HelperButtonGroup() {
                 )}
               >
                 <HelpIcon />
-              </CustomFab>
+              </HelperButton>
             </FabWrapper>
           )}
         </Wrapper>

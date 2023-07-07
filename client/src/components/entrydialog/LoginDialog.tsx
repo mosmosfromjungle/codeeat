@@ -46,7 +46,7 @@ const Wrapper = styled.form`
 const Title = styled.p`
   margin: 5px;
   font-size: 50px;
-  color: #c2c2c2;
+  color: white;
   text-align: center;
   font-family: Font_DungGeun;
 `
@@ -141,7 +141,7 @@ export default function LoginDialog() {
             dispatch(setUsername(payload.username))
             dispatch(setCharacter(payload.character))
             dispatch(setUserLevel(payload.userLevel))
-            console.log(payload.username)
+            // console.log(payload.username)
             bootstrap.dmNetwork.whoAmI(payload.username)
               
             setTimeout(() => {

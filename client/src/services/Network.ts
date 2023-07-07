@@ -34,13 +34,43 @@ export default class Network {
         : `${protocol}//${window.location.hostname}:2567`
     this.client = new Client(endpoint)
     
-    this.joinLobbyRoom(RoomType.LOBBY).then(() => {
-      store.dispatch(setLobbyJoined(true))
+    // await this.joinLobbyRoom(RoomType.LOBBY).then(() => {
+    //   store.dispatch(setLobbyJoined(true))
+    // })
+    this.retryJoinLobbyRoom(RoomType.LOBBY, 5000, 3)
+    .then(() => {
+      store.dispatch(setLobbyJoined(true));
     })
+    .catch((error) => {
+      console.error(error)
+    });
     
     phaserEvents.on(Event.MY_PLAYER_NAME_CHANGE, this.updatePlayerName, this)
     phaserEvents.on(Event.MY_PLAYER_TEXTURE_CHANGE, this.updatePlayer, this)
     // phaserEvents.on(Event.PLAYER_DISCONNECTED, this.playerStreamDisconnect, this)
+  }
+
+  retryJoinLobbyRoom(roomType, interval, maxAttempts) {
+    return new Promise((resolve, reject) => {
+      let attempts = 0;
+  
+      const tryJoin = () => {
+        attempts++;
+        this.joinLobbyRoom(roomType)
+          .then(() => {
+            resolve(); // 성공 시 Promise 완료
+          })
+          .catch((error) => {
+            if (attempts < maxAttempts) {
+              setTimeout(tryJoin, interval); // 일정한 간격으로 재시도
+            } else {
+              reject(error); // 최대 시도 횟수 초과 시 Promise 실패
+            }
+          });
+      };
+  
+      tryJoin();
+    });
   }
 
   async leaveRoom() {
@@ -116,7 +146,6 @@ export default class Network {
           const { field, value } = change
           phaserEvents.emit(Event.PLAYER_UPDATED, field, value, key)
 
-          // UGLY: 플레이어가 이름을 바꿀때마다 새로운 플레이어가 Join 했다는 메세지를 푸시하게 된다. 로직 수정 필요 
           // when a new player finished setting up player name
           if (field === 'name' && value !== '') {   // 이름을 세팅하면 플레이어가 새로 join한걸로 처리된다... 
             phaserEvents.emit(Event.PLAYER_JOINED, player, key)

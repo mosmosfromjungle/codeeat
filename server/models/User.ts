@@ -7,7 +7,7 @@ const user = new Schema<IUserInfo>({
     username: { type: String, required: true, unique: true },
     userProfile: {
         character: { type: String, required: true },
-        userLevel: { type: String, required: true },
+        userLevel: { type: Number, required: true },
         currentExp: { type: Number, required: true },
         requiredExp: { type: Number, required: true },
         grade: { type: String, required: false },

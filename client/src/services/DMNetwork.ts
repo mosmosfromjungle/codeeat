@@ -20,7 +20,7 @@ export default class DMNetwork {
     // process.env.NODE_ENV === 'production'
     // ? import.meta.env.VITE_SERVER_URL
     // : `http://${window.location.hostname}:8888`
-    `http://localhost:8888`
+    `http://43.202.65.140:8888`
 
     this.socketClient = io(socketUrl, {
       transports: ['websocket', 'polling', 'flashsocket'],
@@ -32,7 +32,7 @@ export default class DMNetwork {
       console.error(err)
     })
     this.socketClient.on('message', (data) => {
-      console.log(data,'라고 받음')
+      // console.log(data,'라고 받음')
       data.id = 1;
       store.dispatch(setNewMessage(data))
       store.dispatch(setNewMessageCnt(1))
@@ -45,7 +45,7 @@ export default class DMNetwork {
 
   joinRoom = (roomId: string, senderName: string, receiverName: string, callback:any) => {
     this.socketClient.emit('join-room', { roomId: roomId, username: senderName, receiverName: receiverName });
-    console.log('emit joinRoom - roomId:',roomId,'senderName:',senderName,'receiverName:',receiverName)
+    // console.log('emit joinRoom - roomId:',roomId,'senderName:',senderName,'receiverName:',receiverName)
     this.socketClient.on('old-messages', (data) => {
       this.oldMessages = [];
       data.forEach((element: any) => {
