@@ -58,7 +58,7 @@ export function RainGame() {
 
   const raingame = useAppSelector((state) => state.raingame)
 
-  const lineHeight = 380
+  const lineHeight = 527;
   const dispatch = useAppDispatch()
   const keywordInput = useRef<HTMLInputElement>(null)
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
@@ -170,28 +170,28 @@ export function RainGame() {
       console.error('Error leaving the room:', error)
     }
   }
-  /* 오른쪽 x : 60~600 */
+  /* 오른쪽 x : 60~ */
   const Awords = [
     { y: 0, speed: 2.1, keyword: 'computer', x: 60, itemA: false, itemB: false },
-    { y: 0, speed: 2.4, keyword: 'code', x: 600, itemA: false, itemB: false },
+    { y: 0, speed: 2.4, keyword: 'code', x: 560, itemA: false, itemB: false },
     { y: 0, speed: 2.3, keyword: 'program', x: 60, itemA: false, itemB: false },
-    { y: 0, speed: 2.0, keyword: 'button', x: 600, itemA: true, itemB: false },
+    { y: 0, speed: 2.0, keyword: 'button', x: 560, itemA: true, itemB: false },
     { y: 0, speed: 2.1, keyword: 'screen', x: 60, itemA: false, itemB: false },
-    { y: 0, speed: 2.1, keyword: 'click', x: 600, itemA: true, itemB: false },
+    { y: 0, speed: 2.1, keyword: 'click', x: 560, itemA: true, itemB: false },
     { y: 0, speed: 2.2, keyword: 'type', x: 60, itemA: false, itemB: true },
-    { y: 0, speed: 2.4, keyword: 'game', x: 600, itemA: true, itemB: false },
+    { y: 0, speed: 2.4, keyword: 'game', x: 560, itemA: true, itemB: false },
     { y: 0, speed: 2.3, keyword: 'save', x: 60, itemA: false, itemB: true },
-    { y: 0, speed: 2.3, keyword: 'picture', x: 600, itemA: true, itemB: false },
+    { y: 0, speed: 2.3, keyword: 'picture', x: 560, itemA: true, itemB: false },
     { y: 0, speed: 2.3, keyword: 'sound', x: 60, itemA: true, itemB: false },
-    { y: 0, speed: 2.3, keyword: 'play', x: 600, itemA: false, itemB: true },
+    { y: 0, speed: 2.3, keyword: 'play', x: 560, itemA: false, itemB: true },
     { y: 0, speed: 2.3, keyword: 'stop', x: 60, itemA: true, itemB: false },
-    { y: 0, speed: 2.4, keyword: 'go', x: 600, itemA: true, itemB: true },
+    { y: 0, speed: 2.4, keyword: 'go', x: 560, itemA: true, itemB: true },
     { y: 0, speed: 1.9, keyword: 'back', x: 60, itemA: false, itemB: false },
-    { y: 0, speed: 2.0, keyword: 'web', x: 600, itemA: false, itemB: false },
+    { y: 0, speed: 2.0, keyword: 'web', x: 560, itemA: false, itemB: false },
     { y: 0, speed: 2.1, keyword: 'internet', x: 60, itemA: true, itemB: false },
-    { y: 0, speed: 2.3, keyword: 'link', x: 600, itemA: false, itemB: false },
+    { y: 0, speed: 2.3, keyword: 'link', x: 560, itemA: false, itemB: false },
     { y: 0, speed: 1.7, keyword: 'password', x: 60, itemA: true, itemB: false },
-    { y: 0, speed: 1.5, keyword: 'mouse', x: 600, itemA: false, itemB: false },
+    { y: 0, speed: 1.5, keyword: 'mouse', x: 560, itemA: false, itemB: false },
     { y: 0, speed: 1.9, keyword: 'keyboard', x: 410, itemA: true, itemB: false },
     { y: 0, speed: 1.7, keyword: 'app', x: 450, itemA: false, itemB: false },
     { y: 0, speed: 1.5, keyword: 'scroll', x: 200, itemA: false, itemB: false },
@@ -311,6 +311,7 @@ export function RainGame() {
       setMyGame((game) =>
         game.reduce((newGame, item) => {
           const newY = item.y + item.speed + myExtraSpeedRef.current
+          console.log("newY: "+newY);
           if (newY >= lineHeight) {
             console.log('목숨 깎임')
             debouncedDecreaseHeart()
@@ -491,7 +492,7 @@ export function RainGame() {
         // 5초 후에 extraSpeed를 0으로 되돌리기
         setTimeout(() => {
           myExtraSpeedRef.current = 0
-        }, 7000)
+        }, 4000)
         break
       case 'B':
         setMyImage(true)
@@ -509,7 +510,7 @@ export function RainGame() {
         // 5초 후에 extraSpeed를 0으로 되돌리기
         setTimeout(() => {
           youExtraSpeedRef.current = 0
-        }, 7000)
+        }, 4000)
         break
       case 'B':
         setYouImage(true)
