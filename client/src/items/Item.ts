@@ -18,8 +18,8 @@ export default class Item extends Phaser.Physics.Arcade.Sprite {
   setDialogBox(text: string) {
     const innerText = this.scene.add
       .text(0, 0, text)
-      .setFontFamily('Arial')
-      .setFontSize(12)
+      .setFontFamily('Oxygen')
+      .setFontSize(10)
       .setColor('#000000')
 
     // set dialogBox slightly larger than the text in it
@@ -33,7 +33,7 @@ export default class Item extends Phaser.Physics.Arcade.Sprite {
         .graphics()
         .fillStyle(0xffffff, 1)
         .fillRoundedRect(dialogBoxX, dialogBoxY, dialogBoxWidth, dialogBoxHeight, 3)
-        .lineStyle(1.5, 0x000000, 1)
+        .lineStyle(1, 0x000000, 1)
         .strokeRoundedRect(dialogBoxX, dialogBoxY, dialogBoxWidth, dialogBoxHeight, 3)
     )
     this.dialogBox.add(innerText.setPosition(dialogBoxX + 2, dialogBoxY))
@@ -47,7 +47,9 @@ export default class Item extends Phaser.Physics.Arcade.Sprite {
   // add text into status box container
   setStatusBox(text: string) {
     const innerText = this.scene.add
-      .text(0, 0, text)
+      .text(0, 0, text, {
+        wordWrap: { width: 160, useAdvancedWrap: true}
+      })
       .setFontFamily('Arial')
       .setFontSize(12)
       .setColor('#000000')
