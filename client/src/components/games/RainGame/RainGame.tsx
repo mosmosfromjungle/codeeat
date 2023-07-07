@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from '../../../hooks'
 import Bootstrap from '../../../scenes/Bootstrap'
 import phaserGame from '../../../PhaserGame'
 
+import { playRainGameBgm } from '../../../stores/AudioStore'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 
@@ -65,7 +66,6 @@ export function RainGame() {
   const host = useAppSelector((state) => state.raingame.host)
   const sessionId = useAppSelector((state) => state.user.gameSessionId)
   const gamewinner = useAppSelector((state) => state.raingame.winner)
-  
 
   // My information
   const username = useAppSelector((state) => state.user.username)
@@ -106,7 +106,7 @@ export function RainGame() {
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const openModal = () => {
-    console.log("openModal:",gamewinner)
+    console.log('openModal:', gamewinner)
     setTimeout(() => {
       setIsModalOpen(true)
     }, 200)
@@ -153,7 +153,7 @@ export function RainGame() {
         gainExpUpdateLevel(username, 7)
       } else if (gamewinner === you.username) {
         gainExpUpdateLevel(username, 3)
-      } 
+      }
       setExpUpdated(true)
       openModal()
     }
@@ -161,6 +161,7 @@ export function RainGame() {
 
   const handleClose = () => {
     try {
+      dispatch(playRainGameBgm(false))
       bootstrap.gameNetwork.startRainGame(false)
       bootstrap.gameNetwork.leaveGameRoom()
       dispatch(closeRainGameDialog())
@@ -169,7 +170,7 @@ export function RainGame() {
       console.error('Error leaving the room:', error)
     }
   }
-/* 오른쪽 x : 60~600 */
+  /* 오른쪽 x : 60~600 */
   const Awords = [
     { y: 0, speed: 2.1, keyword: 'computer', x: 60, itemA: false, itemB: false },
     { y: 0, speed: 2.4, keyword: 'code', x: 600, itemA: false, itemB: false },
@@ -311,11 +312,11 @@ export function RainGame() {
         game.reduce((newGame, item) => {
           const newY = item.y + item.speed + myExtraSpeedRef.current
           if (newY >= lineHeight) {
-            console.log("목숨 깎임")
+            console.log('목숨 깎임')
             debouncedDecreaseHeart()
 
             if (myState.heart <= 0) {
-              console.log("목숨 0되는거 감지됨")
+              console.log('목숨 0되는거 감지됨')
               bootstrap.gameNetwork.endGame(you.username)
             }
           } else {
@@ -384,7 +385,6 @@ export function RainGame() {
     }
   }, [raingame])
 
-  
   useEffect(() => {
     targetwordRef.current = targetword
   }, [targetword])
@@ -542,7 +542,13 @@ export function RainGame() {
   return (
     <>
       <GameArea>
-        {isModalOpen && <ExperienceResultModal open={isModalOpen} handleClose={closeModal} winner={ gamewinner === username} />}
+        {isModalOpen && (
+          <ExperienceResultModal
+            open={isModalOpen}
+            handleClose={closeModal}
+            winner={gamewinner === username}
+          />
+        )}
         {!rainGameInProgressRef.current && (
           <Comment>
             <p
@@ -613,7 +619,7 @@ export function RainGame() {
                 letterSpacing: '0.1vw',
                 top: `${word.y}px`,
                 left: `${word.x}px`,
-                color: word.itemA ? 'red' : (word.itemB ? 'blue' : '#FFFFFF'),
+                color: word.itemA ? 'red' : word.itemB ? 'blue' : '#FFFFFF',
                 zIndex: 2,
               }}
             >
@@ -633,7 +639,7 @@ export function RainGame() {
                 letterSpacing: '0.1vw',
                 top: `${word.y}px`,
                 left: `${word.x}px`,
-                color: word.itemA ? 'red' : (word.itemB ? 'blue' : '#FFFFFF'),
+                color: word.itemA ? 'red' : word.itemB ? 'blue' : '#FFFFFF',
                 zIndex: 2,
               }}
             >
@@ -655,22 +661,19 @@ export function RainGame() {
           </CharacterArea>
           <NameArea>
             <Name>
-            친구 [{you.username.toUpperCase()}] <br />
+              친구 [{you.username.toUpperCase()}] <br />
             </Name>
-            <div>
-            {friendLifeElements}
-            </div>
+            <div>{friendLifeElements}</div>
           </NameArea>
         </FriendPoint>
 
         <PlayArea>
           <Item>
-            <div>
-            💡 아이템을 사용해보세요!
-            </div>
+            <div>💡 아이템을 사용해보세요!</div>
             <div style={{ marginTop: '8px' }}>
-            <span style={{ color: 'red' }}>빨간색</span> - 상대방 속도 키우기<br />
-            <span style={{ color: 'blue' }}>파란색</span> - 상대방 단어 가리기
+              <span style={{ color: 'red' }}>빨간색</span> - 상대방 속도 키우기
+              <br />
+              <span style={{ color: 'blue' }}>파란색</span> - 상대방 단어 가리기
             </div>
           </Item>
         </PlayArea>
@@ -684,7 +687,7 @@ export function RainGame() {
         <PlayArea>
           <div style={{ textAlign: 'center', padding: '0 0 10px 0', fontSize: '20px' }}>
             키워드 입력:
-          {/* 명령어를 입력한 후 엔터를 쳐주세요 ! */}
+            {/* 명령어를 입력한 후 엔터를 쳐주세요 ! */}
           </div>
           <TextField
             // focused
@@ -692,12 +695,14 @@ export function RainGame() {
             fullWidth
             label="키워드 입력 후 엔터를 눌러주세요!"
             variant="outlined"
-            autoComplete='off'
+            autoComplete="off"
             inputRef={keywordInput}
             onKeyPress={(e) => keydown(e.charCode)}
-            InputProps={{
-              // style: { marginTop: '10px' },
-            }}
+            InputProps={
+              {
+                // style: { marginTop: '10px' },
+              }
+            }
           />
           <button onClick={() => keydown(13)} style={{ display: 'none' }}></button>
         </PlayArea>
@@ -707,9 +712,7 @@ export function RainGame() {
             <Name>
               <span style={{ color: 'yellow' }}>나</span> [{username.toUpperCase()}]<br />
             </Name>
-            <div>
-              {myLifeElements}
-            </div>
+            <div>{myLifeElements}</div>
           </NameArea>
           <CharacterArea>
             <img src={imgpath} width="40px" id="my-character"></img>
