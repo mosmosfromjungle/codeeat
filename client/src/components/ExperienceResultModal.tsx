@@ -145,7 +145,7 @@ const ExperienceResultModal =
       <Experience>
         <ExperienceBarResult oldExperience={oldUserExp} currentExperience={currentExp} experienceToNextLevel={requiredExp} />
       </Experience>
-
+      <br/><br/>
       <Bottom>
         <Button variant="contained"
           size="large"

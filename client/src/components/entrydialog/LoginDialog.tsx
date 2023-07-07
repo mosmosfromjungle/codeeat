@@ -46,7 +46,7 @@ const Wrapper = styled.form`
 const Title = styled.p`
   margin: 5px;
   font-size: 50px;
-  color: #c2c2c2;
+  color: white;
   text-align: center;
   font-family: Font_DungGeun;
 `
