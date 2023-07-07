@@ -104,19 +104,19 @@ function App() {
     }
     if (moleGameBgm) {
       moleBgmAudio = new Audio(MoleGameBgmPath);
-      moleBgmAudio.addEventListener("ended", () => handleAudioEnded(mainBgmAudio!));
+      moleBgmAudio.addEventListener("ended", () => handleAudioEnded(moleBgmAudio!));
       moleBgmAudio.play();
     }
   
     if (brickGameBgm) {
       brickBgmAudio = new Audio(BrickGameBgmPath);
-      brickBgmAudio.addEventListener("ended", () => handleAudioEnded(mainBgmAudio!));
+      brickBgmAudio.addEventListener("ended", () => handleAudioEnded(brickBgmAudio!));
       brickBgmAudio.play();
     }
   
     if (rainGameBgm) {
       rainBgmAudio = new Audio(RainGameBgmPath);
-      rainBgmAudio.addEventListener("ended", () => handleAudioEnded(mainBgmAudio!));
+      rainBgmAudio.addEventListener("ended", () => handleAudioEnded(rainBgmAudio!));
       rainBgmAudio.play();
     }
 
