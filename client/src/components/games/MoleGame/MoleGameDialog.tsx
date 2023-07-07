@@ -81,15 +81,10 @@ export default function MoleGameDialog() {
   const [turn, setTurn] = useState(0)
 
   const [winner, setWinner] = useState(String)
-
   const [moleCatch, setMoleCatch] = useState(0)
 
-  // If friend get point, display event
   const friendPoint = useAppSelector((state) => state.molegame.friendPoint)
-
-  // If friend click wrong, display event
   const friendLife = useAppSelector((state) => state.molegame.friendLife)
-
   const problem = useAppSelector((state) => state.molegame.problem)
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -212,7 +207,7 @@ export default function MoleGameDialog() {
 
       if (host !== username) {
         // 내가 방장이 아닌데 상대방(방장)이 나갔다면, 이 방의 방장을 나로 업데이트
-        bootstrap.gameNetwork.changeHost(username)
+        // bootstrap.gameNetwork.changeHost(username)
       }
 
       // 게임 도중에 한명이 나갔다면,
