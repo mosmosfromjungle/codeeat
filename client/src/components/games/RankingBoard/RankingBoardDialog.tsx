@@ -151,10 +151,13 @@ const Backdrop = styled.div`
   background: rgba(0, 0, 0, 0.3);
 `
 const Wrapper = styled.div`
-  width: 100%; // Adjust this as needed
-  height: 80%; // Adjust this as needed
+  // width: 100%; // Adjust this as needed
+  // height: 80%; // Adjust this as needed
+  width: 600px;
+  height: 860px;
   display: flex;
   flex-direction: column;
+  justify-content: center
   align-items: center;
 `
 const Body = styled.div`
