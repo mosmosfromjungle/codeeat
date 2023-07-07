@@ -430,7 +430,7 @@ export default function MoleGameDialog() {
       moleActive(moleNumber2)
       moleActive(moleNumber3)
 
-      let timeoutId = setTimeout(seeMole, 5000)
+      let timeoutId = setTimeout(seeMole, 50000)
       setMoleCatch(timeoutId)
 
       setActiveNumber(randomNumber1)
