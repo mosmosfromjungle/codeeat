@@ -5,10 +5,10 @@ import axios from 'axios'
 import { useAppSelector, useAppDispatch } from './hooks'
 import { DIALOG_STATUS, HELPER_STATUS } from './stores/UserStore'
 
-import MainBgmPath from '../public/assets/audios/bgm_main.mp3'
-import MoleGameBgmPath from '../public/assets/audios/bgm_mole.mp3'
-import BrickGameBgmPath from '../public/assets/audios/bgm_brick.mp3'
-import RainGameBgmPath from '../public/assets/audios/bgm_rain.mp3'
+import MainBgmPath from '../src/audio/bgm_main.mp3'
+import MoleGameBgmPath from '../src/audio/bgm_mole.mp3'
+import BrickGameBgmPath from '../src/audio/bgm_brick.mp3'
+import RainGameBgmPath from '../src/audio/bgm_rain.mp3'
 
 // ↓ Entry Dialog
 import EntryDialog from './components/entrydialog/EntryDialog'
@@ -82,6 +82,10 @@ function App() {
   const showDMRoom = useAppSelector((state) => state.dm.showDMRoom)
 
   useEffect (() => {
+    if (dialogStatus === DIALOG_STATUS.LOGIN 
+      || dialogStatus === DIALOG_STATUS.JOIN
+      || dialogStatus === DIALOG_STATUS.ENTRY
+      || dialogStatus === DIALOG_STATUS.WELCOME) return
     let mainBgmAudio : HTMLAudioElement | null = null;
     let moleBgmAudio : HTMLAudioElement | null = null;
     let rainBgmAudio : HTMLAudioElement | null = null;
@@ -143,7 +147,7 @@ function App() {
         rainBgmAudio.currentTime = 0;
       }
     };
-  }, [mainBgm, moleGameBgm, brickGameBgm, rainGameBgm])
+  }, [mainBgm, moleGameBgm, brickGameBgm, rainGameBgm, dialogStatus])
   // TODO: cookie 가져오는 부분 해결 필요 
   // useEffect(() => {
   //   // 첫 렌더링 시, refresh token이 있다면 token 인증을 통해 entry 상태를 설정 
