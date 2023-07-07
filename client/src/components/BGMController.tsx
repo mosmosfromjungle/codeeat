@@ -7,35 +7,10 @@ import { useAppSelector, useAppDispatch } from '../hooks';
 import { toggleMainBgm } from '../stores/AudioStore';
 
 export default function BGMController() {
-  const dispatch = useAppDispatch();
-  const MainBgmPath = useAppSelector((state) => state.audio.MainBgmPath);
-
-  const [audio] = useState(new Audio(MainBgmPath));
-  const [playing, setPlaying] = useState(true);
-
-  useEffect(() => {
-    audio.addEventListener('ended', function () {
-      audio.currentTime = 0;
-      audio.play();
-    });
-
-    if (playing) {
-      audio.play();
-    } else {
-      audio.pause();
-      audio.currentTime = 0;
-    }
-
-    return () => {
-      audio.removeEventListener('ended', function () {
-        audio.currentTime = 0;
-        audio.play();
-      });
-    };
-  }, [playing, MainBgmPath]);
+  const dispatch = useAppDispatch();  
+  const playingBGM = useAppSelector((state) => state.audio.MainBgm)
 
   const handleToggle = () => {
-    setPlaying(!playing);
     dispatch(toggleMainBgm());
   }
 
@@ -43,7 +18,7 @@ export default function BGMController() {
     <Wrapper>
       <FabWrapper>
         <CustomFab onClick={handleToggle}>
-          {playing ? (
+          {playingBGM ? (
             <VolumeUpOutlinedIcon fontSize="large" sx={{ color: 'black' }} />
             ) : (
             <VolumeOffOutlinedIcon fontSize="large" sx={{ color: 'black' }} />
