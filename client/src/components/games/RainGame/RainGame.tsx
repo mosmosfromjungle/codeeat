@@ -631,7 +631,7 @@ export function RainGame() {
                 fontSize: '50px',
                 letterSpacing: '0.1vw',
                 top: `${word.y}px`,
-                left: `${word.x + 60}px`,
+                left: `${word.x + 40}px`,
                 color: word.itemA ? 'red' : (word.itemB ? 'blue' : '#FFFFFF'),
                 zIndex: 2,
               }}
