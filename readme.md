@@ -1,5 +1,7 @@
 # CodeEat
 
+![screenshot](https://github.com/junsoopooh/junsoopooh.github.io/blob/master/project/project/image.png?raw=true)
+
 ## 참고자료 
 
 노션 링크 : [코드잇 노션](https://www.notion.so/6-AlgoEat-627732bdb859410bb173f34f7d84330a)
