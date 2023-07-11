@@ -1,8 +1,7 @@
-# CodeEat
+# <span style="font-size:50px;">코드잇</span>
 
 ![screenshot](https://github.com/junsoopooh/junsoopooh.github.io/blob/master/project/project/image.png?raw=true)
 
-# <span style="font-size:50px;">코드잇</span>
 
 코딩을 처음 접하는 어린이들을 위한 미니 게임 플랫폼. 코드잇 입니다.
 
@@ -91,7 +90,6 @@
 <span style="font-size:25px;">🐯**서준택(FE)**</span> : https://github.com/Taek222
 
 <span style="font-size:25px;">🐰**서지원(FE)**</span> : https://github.com/unauthorized-401
-
 
 
 
