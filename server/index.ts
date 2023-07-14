@@ -30,8 +30,8 @@ const app = express()
 const allowedOrigins = [
   'http://localhost:5173',
   'http://127.0.0.1:5173',
-  'http://43.202.65.140:5173',
-  'http://43.202.65.140',
+  'http://3.35.67.179:5173',
+  'http://3.35.67.179',
   'http://codeeat.site'
 ]
 

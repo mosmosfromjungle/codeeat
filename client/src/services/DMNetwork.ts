@@ -20,7 +20,7 @@ export default class DMNetwork {
     // process.env.NODE_ENV === 'production'
     // ? import.meta.env.VITE_SERVER_URL
     // : `http://${window.location.hostname}:8888`
-    `http://43.202.65.140:8888`
+    `http://3.35.67.179:8888`
     // `http://localhost:8888`
 
     this.socketClient = io(socketUrl, {
