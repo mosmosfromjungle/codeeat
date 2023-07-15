@@ -32,7 +32,9 @@ const allowedOrigins = [
   'http://127.0.0.1:5173',
   'http://3.35.67.179:5173',
   'http://3.35.67.179',
-  'http://codeeat.site'
+  'http://codeeat.site',
+  'http://3.35.67.179:80',
+  'http://3.35.67.179:2567'
 ]
 
 const options: cors.CorsOptions = {
