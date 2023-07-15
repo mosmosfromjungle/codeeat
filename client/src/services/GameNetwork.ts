@@ -422,11 +422,15 @@ export default class GameNetwork {
           )
         }
       })
-    })
+    });
 
     this.room.onMessage(Message.RAIN_GAME_END_S, (data) => {
       const { username } = data
       store.dispatch(setRainGameWinner(username))
-    })
+    });
+
+    this.room.onMessage(Message.RAIN_GAME_OUT_S, () => {
+      store.dispatch(setRainGameYou({ username: '', character:''}));
+    });
   }
 }
