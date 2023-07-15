@@ -33,10 +33,7 @@ export class RainGameRoom extends Room<GameState> {
     this.onMessage(Message.RAIN_GAME_START_C, (client, content) => {
       const { value } = content
       this.state.raingames.rainGameInProgress = value
-      this.broadcast(
-        Message.RAIN_GAME_START_S,{ progress : value },
-        { afterNextPatch: true}
-      )
+      this.broadcast(Message.RAIN_GAME_START_S, { progress: value }, { afterNextPatch: true })
     })
 
     this.onMessage(Message.RAIN_GAME_WORD_C, (client, content) => {
@@ -59,39 +56,37 @@ export class RainGameRoom extends Room<GameState> {
       this.state.raingames.rainGameStates.forEach((gameState, currentSessionId) => {
         if (currentSessionId === client.sessionId) {
           gameState.heart -= 1
-        
+
           if (gameState.heart === 0) {
             // Find the other session ID
-            let otherSessionId = null;
+            let otherSessionId = null
             this.state.raingames.rainGameStates.forEach((_, sid) => {
-                if (sid !== currentSessionId) {
-                    otherSessionId = sid;
-                }
-            });
+              if (sid !== currentSessionId) {
+                otherSessionId = sid
+              }
+            })
 
             // Set the winnerUsername to the username corresponding to the other sessionId
             if (otherSessionId) {
-                const winnerUsername = this.state.raingames.rainGameUsers[otherSessionId].username;
-                this.state.raingames.winner = winnerUsername;
+              const winnerUsername = this.state.raingames.rainGameUsers[otherSessionId].username
+              this.state.raingames.winner = winnerUsername
 
-                this.broadcast(
-                    Message.RAIN_GAME_END_S,
-                    { username: winnerUsername },
-                    { afterNextPatch: true }
-                );
+              this.broadcast(
+                Message.RAIN_GAME_END_S,
+                { username: winnerUsername },
+                { afterNextPatch: true }
+              )
             }
+          }
         }
-    }
-});
+      })
 
-
-this.broadcast(
-    Message.RAIN_GAME_HEART_S,
-    { states: this.state.raingames.rainGameStates },
-    { afterNextPatch: true }
-);
-});
-
+      this.broadcast(
+        Message.RAIN_GAME_HEART_S,
+        { states: this.state.raingames.rainGameStates },
+        { afterNextPatch: true }
+      )
+    })
 
     this.onMessage(Message.RAIN_GAME_ITEM_C, (client, data) => {
       const { item } = data
@@ -105,7 +100,7 @@ this.broadcast(
             gameState.item.push('B')
           }
           if (item === 'NA') {
-            gameState.item.shift();
+            gameState.item.shift()
           }
         }
       })
@@ -125,8 +120,8 @@ this.broadcast(
           new RainGameUser(data.username, data.character)
         )
         this.state.raingames.rainGameStates.set(client.sessionId, new RainGameState())
-        if ( this.state.raingames.rainGameUsers.size === 2) {
-          this.state.raingames.rainGameReady = true;
+        if (this.state.raingames.rainGameUsers.size === 2) {
+          this.state.raingames.rainGameReady = true
         }
 
         this.broadcast(
@@ -141,15 +136,21 @@ this.broadcast(
       }
     )
 
-    this.onMessage(
-      Message.RAIN_GAME_END_C, (client, data : {username : string;}) => { 
-        this.state.raingames.winner = username
-        this.broadcast(
-          Message.RAIN_GAME_END_S,
-          data,{ afterNextPatch: true }
-        )
+    this.onMessage(Message.RAIN_GAME_END_C, (client, data: { username: string }) => {
+      this.state.raingames.winner = username
+      this.broadcast(Message.RAIN_GAME_END_S, data, { afterNextPatch: true })
+    })
+
+    this.onMessage(Message.RAIN_GAME_OUT_C, (client, data: { username: string }) => {
+      for (let key of this.state.raingames.rainGameUsers.keys()) {
+        if (this.state.raingames.rainGameUsers.get(key).username === data.username) {
+          this.state.raingames.rainGameUsers.delete(key)
+          break
+        }
       }
-    )
+      this.broadcast(Message.RAIN_GAME_OUT_S, data, { except: client, afterNextPatch: true})
+
+    })
   }
 
   async onAuth(client: Client, options: { password: string | null }) {

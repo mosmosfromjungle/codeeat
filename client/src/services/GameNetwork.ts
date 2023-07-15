@@ -322,6 +322,10 @@ export default class GameNetwork {
     
     this.room?.send(Message.RAIN_GAME_END_C, { username: username })
   }
+
+  leaveRainGameRoom(username: string) {
+    this.room?.send(Message.RAIN_GAME_OUT_C, { username: username })
+  }
   
   /* RAIN GAME  */
 
