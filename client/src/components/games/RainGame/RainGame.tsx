@@ -64,7 +64,6 @@ export function RainGame() {
   const keywordInput = useRef<HTMLInputElement>(null)
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
   const [time, setTime] = useState(100)
-  const host = useAppSelector((state) => state.raingame.host)
   const sessionId = useAppSelector((state) => state.user.gameSessionId)
   const gamewinner = useAppSelector((state) => state.raingame.winner)
 
@@ -96,6 +95,7 @@ export function RainGame() {
   const [myImage, setMyImage] = useState(false)
   const [youImage, setYouImage] = useState(false)
   const [expUpdated, setExpUpdated] = useState(false)
+  const [host, setHost] = useState(raingame.host);
 
   const hideMyImage = useCallback(() => {
     setMyImage(false)
@@ -159,6 +159,11 @@ export function RainGame() {
       openModal()
     }
   }, [gamewinner, expUpdated])
+
+  useEffect(()=> {
+    setHost(raingame.host);
+    console.log("방장 변경 업데이트 됌:",raingame.host)
+  }, [raingame.host]);
 
   const handleClose = () => {
     try {

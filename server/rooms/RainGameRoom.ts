@@ -148,8 +148,26 @@ export class RainGameRoom extends Room<GameState> {
           break
         }
       }
-      this.broadcast(Message.RAIN_GAME_OUT_S, data, { except: client, afterNextPatch: true})
 
+      let hostchanged = {}
+
+      if (this.state.host === data.username) {
+        const newHostKey = this.state.raingames.rainGameUsers.keys().next().value
+        this.state.host = this.state.raingames.rainGameUsers.get(newHostKey)?.username || ''
+
+        hostchanged = { host: this.state.host }
+      }
+
+      if (Object.keys(hostchanged).length > 0) {
+        console.log("방장 변경되었다고 서버가 알림")
+        this.broadcast(
+          Message.RAIN_GAME_OUT_S,
+          { host: this.state.host },
+          { except: client, afterNextPatch: true }
+        )
+      } else {
+        this.broadcast(Message.RAIN_GAME_OUT_S, data, { except: client, afterNextPatch: true })
+      }
     })
   }
 
