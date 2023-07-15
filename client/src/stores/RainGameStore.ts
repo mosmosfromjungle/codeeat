@@ -58,6 +58,7 @@ export const rainGameSlice = createSlice({
   reducers: {
     setRainGameHost: (state, action: PayloadAction<string>) => {
       state.host = action.payload
+      console.log("방장 변경 설정 되었음:",state.host)
     },
 
     setRainGameReady: (state, action: PayloadAction<boolean>) => {

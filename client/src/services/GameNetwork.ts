@@ -319,7 +319,6 @@ export default class GameNetwork {
   }
 
   endGame(username: string) {
-    
     this.room?.send(Message.RAIN_GAME_END_C, { username: username })
   }
 
@@ -429,8 +428,16 @@ export default class GameNetwork {
       store.dispatch(setRainGameWinner(username))
     });
 
-    this.room.onMessage(Message.RAIN_GAME_OUT_S, () => {
-      store.dispatch(setRainGameYou({ username: '', character:''}));
+    this.room.onMessage(Message.RAIN_GAME_OUT_S, (data) => {
+      const { host } = data;
+
+      if (host) {
+        console.log("방장 변경 소식 클라가 받음")
+        store.dispatch(setRainGameYou({ username: '', character: ''}));
+        store.dispatch(setRainGameHost(host));
+      } else {
+        store.dispatch(setRainGameYou({ username: '', character:''}));
+      }
     });
   }
 }
