@@ -36,6 +36,12 @@ export class RainGameRoom extends Room<GameState> {
       this.broadcast(Message.RAIN_GAME_START_S, { progress: value }, { afterNextPatch: true })
     })
 
+    this.onMessage(Message.RAIN_GAME_READY_C, (client, content) => {
+      const { value } = content
+      this.state.raingames.rainGameReady = value
+      this.broadcast(Message.RAIN_GAME_READY_S, { ready: value }, { afterNextPatch: true})
+    })
+
     this.onMessage(Message.RAIN_GAME_WORD_C, (client, content) => {
       const { word, sessionId, states } = content
       this.state.raingames.rainGameStates.forEach((gameState, sessionId) => {
@@ -115,13 +121,19 @@ export class RainGameRoom extends Room<GameState> {
     this.onMessage(
       Message.RAIN_GAME_USER_C,
       (client, data: { username: string; character: string }) => {
-        this.state.raingames.rainGameUsers.set(
-          client.sessionId,
-          new RainGameUser(data.username, data.character)
-        )
-        this.state.raingames.rainGameStates.set(client.sessionId, new RainGameState())
-        if (this.state.raingames.rainGameUsers.size === 2) {
-          this.state.raingames.rainGameReady = true
+        if (!this.state.raingames.rainGameUsers.has(client.sessionId)) {
+          this.state.raingames.rainGameUsers.set(
+            client.sessionId,
+            new RainGameUser(data.username, data.character)
+          )
+          this.state.raingames.rainGameStates.set(client.sessionId, new RainGameState())
+        } else {
+          this.state.raingames.rainGameStates.get(client.sessionId).point = 0
+          this.state.raingames.rainGameStates.get(client.sessionId).heart = 3
+          this.state.raingames.rainGameStates.get(client.sessionId).item = []
+
+          this.state.raingames.rainGameInProgress = false
+          this.state.raingames.winner = ''
         }
 
         this.broadcast(
@@ -138,6 +150,7 @@ export class RainGameRoom extends Room<GameState> {
 
     this.onMessage(Message.RAIN_GAME_END_C, (client, data: { username: string }) => {
       this.state.raingames.winner = username
+      
       this.broadcast(Message.RAIN_GAME_END_S, data, { afterNextPatch: true })
     })
 
@@ -203,8 +216,6 @@ export class RainGameRoom extends Room<GameState> {
       description: this.description,
       host: this.state.host,
     })
-
-    // this.broadcast(Message.RAIN_GAME_READY_S)
   }
 
   onLeave(client: Client, consented: boolean) {

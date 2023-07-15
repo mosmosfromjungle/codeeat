@@ -99,6 +99,14 @@ export const StartButton = styled.div`
   font-family: Font_DungGeun;
 `
 
+export const ReadyButton = styled.div`
+  position: absolute;
+  top: 40px;
+  right: -30px;
+  font-size: 25px;
+  font-family: Font_DungGeun;
+`
+
 export const TimerArea = styled.div`
   position: absolute;
   top: 40px;

@@ -27,16 +27,16 @@ export interface RainGameStates {
 
 export const initialState: RainGameStates = {
   host: '',
-  rainGameReady: true, /* 지금은 필요없는데 나중에 준비버튼 만들려고 냅뒀음 */
+  rainGameReady: false,
   rainGameInProgress: false,
   myState: {
     point: 0,
-    heart: 2,
+    heart: 3,
     item: [],
   },
   youState: {
     point: 0,
-    heart: 2,
+    heart: 3,
     item: [],
   },
   me: {
@@ -58,7 +58,6 @@ export const rainGameSlice = createSlice({
   reducers: {
     setRainGameHost: (state, action: PayloadAction<string>) => {
       state.host = action.payload
-      console.log("방장 변경 설정 되었음:",state.host)
     },
 
     setRainGameReady: (state, action: PayloadAction<boolean>) => {
