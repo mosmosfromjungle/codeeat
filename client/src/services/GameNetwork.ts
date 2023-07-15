@@ -432,7 +432,6 @@ export default class GameNetwork {
       const { host } = data;
 
       if (host) {
-        console.log("방장 변경 소식 클라가 받음")
         store.dispatch(setRainGameYou({ username: '', character: ''}));
         store.dispatch(setRainGameHost(host));
       } else {
