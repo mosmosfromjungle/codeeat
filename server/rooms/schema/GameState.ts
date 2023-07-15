@@ -34,7 +34,7 @@ export class KeywordRain extends Schema implements IKeywordRain {
 }
 export class RainGameState extends Schema implements IRainGameState {
   @type('number') point = 0
-  @type('number') heart = 2
+  @type('number') heart = 3
   @type(['string']) item: string[] = []
 }
 
@@ -53,7 +53,7 @@ export class RainGameRoomState extends Schema implements IRainGameRoomState {
   @type('string')
   host = ''
   @type('boolean')
-  rainGameReady: boolean = true;
+  rainGameReady: boolean = false;
   @type('boolean')
   rainGameInProgress: boolean = false;
   @type({ map: RainGameState })

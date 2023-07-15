@@ -22,6 +22,7 @@ import {
   PlayArea,
   Comment,
   StartButton,
+  ReadyButton,
   Item,
   Name,
 } from './RainGameStyle'
@@ -48,53 +49,54 @@ interface KeywordRain {
 }
 
 function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
+  return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
 export function RainGame() {
-  const rainGameInProgress = useAppSelector((state) => state.raingame.rainGameInProgress);
-  const rainGameInProgressRef = useRef(rainGameInProgress);
-  const rainGameReady = useAppSelector((state) => state.raingame.rainGameReady);
+  const rainGameInProgress = useAppSelector((state) => state.raingame.rainGameInProgress)
+  const rainGameInProgressRef = useRef(rainGameInProgress)
+  const rainGameReady = useAppSelector((state) => state.raingame.rainGameReady)
+  const rainGameReadyRef = useRef(rainGameReady)
 
-  const raingame = useAppSelector((state) => state.raingame);
+  const raingame = useAppSelector((state) => state.raingame)
 
-  const lineHeight = 527;
-  const dispatch = useAppDispatch();
-  const keywordInput = useRef<HTMLInputElement>(null);
-  const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap;
-  const [time, setTime] = useState(100);
-  const sessionId = useAppSelector((state) => state.user.gameSessionId);
+  const lineHeight = 527
+  const dispatch = useAppDispatch()
+  const keywordInput = useRef<HTMLInputElement>(null)
+  const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
+  const [time, setTime] = useState(100)
+  const sessionId = useAppSelector((state) => state.user.gameSessionId)
 
   // My information
-  const username = useAppSelector((state) => state.user.username);
-  const character = useAppSelector((state) => state.user.character);
-  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}.png`;
+  const username = useAppSelector((state) => state.user.username)
+  const character = useAppSelector((state) => state.user.character)
+  const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}.png`
 
   // Friend information
-  const you = useAppSelector((state) => state.raingame.you);
-  const friendimgpath = `/assets/character/single/${capitalizeFirstLetter(you.character)}.png`;
-  const [myGame, setMyGame] = useState<KeywordRain[]>([]);
-  const [youGame, setYouGame] = useState<KeywordRain[]>([]);
+  const you = useAppSelector((state) => state.raingame.you)
+  const friendimgpath = `/assets/character/single/${capitalizeFirstLetter(you.character)}.png`
+  const [myGame, setMyGame] = useState<KeywordRain[]>([])
+  const [youGame, setYouGame] = useState<KeywordRain[]>([])
   const [myState, setMyState] = useState({
     heart: raingame.myState.heart,
     point: raingame.myState.point,
     item: raingame.myState.item,
-  });
+  })
   const [youState, setYouState] = useState({
     heart: raingame.youState.heart,
     point: raingame.youState.point,
     item: raingame.youState.item,
-  });
-  const targetword = useAppSelector((state) => state.raingame.words);
-  const targetwordRef = useRef(targetword);
-  const myExtraSpeedRef = useRef(0);
-  const youExtraSpeedRef = useRef(0);
-  const me = useAppSelector((state) => state.raingame.me);
-  const [myImage, setMyImage] = useState(false);
-  const [youImage, setYouImage] = useState(false);
-  const [expUpdated, setExpUpdated] = useState(false);
-  const [host, setHost] = useState(raingame.host);
-  const [winner, setWinner] = useState(raingame.winner);
+  })
+  const targetword = useAppSelector((state) => state.raingame.words)
+  const targetwordRef = useRef(targetword)
+  const myExtraSpeedRef = useRef(0)
+  const youExtraSpeedRef = useRef(0)
+  const me = useAppSelector((state) => state.raingame.me)
+  const [myImage, setMyImage] = useState(false)
+  const [youImage, setYouImage] = useState(false)
+  const [expUpdated, setExpUpdated] = useState(false)
+  const [host, setHost] = useState(raingame.host)
+  const [winner, setWinner] = useState(raingame.winner)
 
   const hideMyImage = useCallback(() => {
     setMyImage(false)
@@ -113,7 +115,9 @@ export function RainGame() {
 
   const closeModal = () => {
     setIsModalOpen(false)
-    handleClose()
+    bootstrap.gameNetwork.startRainGame(false);
+    bootstrap.gameNetwork.readyRainGame(false);
+    bootstrap.gameNetwork.sendMyInfoToServer(username, character);
   }
 
   // 경험치 보내주기
@@ -147,8 +151,8 @@ export function RainGame() {
   }, [raingame.myState, raingame.youState])
 
   useEffect(() => {
-    setWinner(raingame.winner);
-  }, [raingame.winner]);
+    setWinner(raingame.winner)
+  }, [raingame.winner])
 
   useEffect(() => {
     if (winner && !expUpdated) {
@@ -162,17 +166,18 @@ export function RainGame() {
     }
   }, [winner, expUpdated])
 
-  useEffect(()=> {
-    setHost(raingame.host);
-  }, [raingame.host]);
+  useEffect(() => {
+    setHost(raingame.host)
+  }, [raingame.host])
 
   const handleClose = () => {
     try {
       dispatch(playRainGameBgm(false))
-      bootstrap.gameNetwork.startRainGame(false)
-      bootstrap.gameNetwork.leaveRainGameRoom(username)
-      dispatch(closeRainGameDialog())
-      dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
+      bootstrap.gameNetwork.startRainGame(false);
+      bootstrap.gameNetwork.readyRainGame(false);
+      bootstrap.gameNetwork.leaveRainGameRoom(username);
+      dispatch(closeRainGameDialog());
+      dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN));
     } catch (error) {
       console.error('Error leaving the room:', error)
     }
@@ -395,12 +400,21 @@ export function RainGame() {
   }, [targetword])
 
   useEffect(() => {
+    rainGameReadyRef.current = rainGameReady
+  }, [rainGameReady])
+
+  useEffect(() => {
     rainGameInProgressRef.current = rainGameInProgress
+    if (!rainGameInProgress) {
+      setMyGame([]) // myGame 초기화
+      setYouGame([]) // youGame 초기화
+      setTime(100) // 시간 초기화
+    }
   }, [rainGameInProgress])
 
   useEffect(() => {
     // 아직 준비상태면, 단어 떨어지지 않음
-    if (!rainGameInProgressRef.current || !rainGameReady) {
+    if (!rainGameInProgressRef.current || !rainGameReadyRef.current) {
       return
     }
 
@@ -523,8 +537,12 @@ export function RainGame() {
     }
   }
 
+  const handleReady = () => {
+    bootstrap.gameNetwork.readyRainGame(true);
+  };
+
   const handleStart = () => {
-    if (rainGameReady) {
+    if (rainGameReadyRef.current) {
       bootstrap.gameNetwork.startRainGame(true)
     }
   }
@@ -551,7 +569,7 @@ export function RainGame() {
           <ExperienceResultModal
             open={isModalOpen}
             handleClose={closeModal}
-            winner={winner === username ? true : (winner === you.username ? false : null)}
+            winner={winner === username ? true : winner === you.username ? false : null}
           />
         )}
         {!rainGameInProgressRef.current && (
@@ -595,6 +613,31 @@ export function RainGame() {
               </div>
             </div>
           </StartButton>
+        ) : you.username && !rainGameInProgressRef.current && username !== host && !rainGameReadyRef.current ? (
+          <ReadyButton>
+            <div id="ready-button-div">
+              <div className="btn-wrap">
+                <Button
+                  type="button"
+                  onClick={() => handleReady()}
+                  style={{
+                    position: 'absolute',
+                    fontSize: '20px',
+                    fontFamily: 'Font_DungGeun',
+                    width: '160px',
+                    background: 'white',
+                    color: 'black',
+                    top: '0px',
+                    right: '80px',
+                    borderRadius: '20px',
+                    zIndex: 3,
+                  }}
+                >
+                  준비 완료
+                </Button>
+              </div>
+            </div>
+          </ReadyButton>
         ) : (
           ''
         )}
