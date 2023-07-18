@@ -27,6 +27,8 @@ export enum Message {
   RAIN_GAME_END_S,
   RAIN_GAME_OUT_C,
   RAIN_GAME_OUT_S,
+  RAIN_GAME_CLOSE_C,
+  RAIN_GAME_CLOSE_S,
 
   // ***** Brick Game *****
   // Client

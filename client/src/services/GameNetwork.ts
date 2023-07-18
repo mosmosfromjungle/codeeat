@@ -308,9 +308,9 @@ export default class GameNetwork {
     this.room?.send(Message.RAIN_GAME_WORD_C, { word: word, sessionId: sessionId, states: states })
   }
 
-  sendMyInfoToServer(username: string, character: string) {
+  sendMyInfoToServer(username: string, character: string, expUpdated: boolean) {
     if (!this.room) return
-    this.room.send(Message.RAIN_GAME_USER_C, { username: username, character: character })
+    this.room.send(Message.RAIN_GAME_USER_C, { username: username, character: character, expUpdated: expUpdated })
   }
 
   decreaseHeart(sessionId: string) {
@@ -327,6 +327,10 @@ export default class GameNetwork {
 
   leaveRainGameRoom(username: string) {
     this.room?.send(Message.RAIN_GAME_OUT_C, { username: username })
+  }
+
+  closeResult(username: string) {
+    this.room?.send(Message.RAIN_GAME_CLOSE_C, {username: username})
   }
  
   /* RAIN GAME  */
@@ -442,5 +446,9 @@ export default class GameNetwork {
         store.dispatch(setRainGameYou({ username: '', character:''}));
       }
     });
+
+    this.room.onMessage(Message.RAIN_GAME_CLOSE_S, (data) => {
+      
+    })
   }
 }

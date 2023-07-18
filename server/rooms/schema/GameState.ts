@@ -41,11 +41,13 @@ export class RainGameState extends Schema implements IRainGameState {
 export class RainGameUser extends Schema implements IRainGameUser {
   @type('string') username = ''
   @type('string') character = ''
+  @type('boolean') expUpdated : boolean 
 
-  constructor(name: string, character: string) {
+  constructor(name: string, character: string, expUpdated: boolean) {
     super()
     this.username = name
     this.character = character
+    this.expUpdated = false
   }
 }
 
