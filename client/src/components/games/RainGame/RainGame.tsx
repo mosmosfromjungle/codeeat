@@ -68,8 +68,10 @@ export function RainGame() {
   const sessionId = useAppSelector((state) => state.user.gameSessionId)
 
   // My information
+  const me = useAppSelector((state)=> state.raingame.me)
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
+  const expUpdated = useAppSelector((state) => state.raingame.me.expUpdated)
   const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}.png`
 
   // Friend information
@@ -91,12 +93,23 @@ export function RainGame() {
   const targetwordRef = useRef(targetword)
   const myExtraSpeedRef = useRef(0)
   const youExtraSpeedRef = useRef(0)
-  const me = useAppSelector((state) => state.raingame.me)
+
   const [myImage, setMyImage] = useState(false)
   const [youImage, setYouImage] = useState(false)
-  const [expUpdated, setExpUpdated] = useState(false)
   const [host, setHost] = useState(raingame.host)
   const [winner, setWinner] = useState(raingame.winner)
+  const [myExpUpdated, setMyExpUpdated] = useState({expUpdated: expUpdated})
+  const [youExpUpdated, setYouExpUpdated] = useState({expUpdated : you.expUpdated})
+
+  useEffect(() => {
+    setMyExpUpdated({
+      expUpdated : expUpdated
+    })
+    setYouExpUpdated({
+      expUpdated : you.expUpdated
+    })
+  },[raingame.me, raingame.you])
+
 
   const hideMyImage = useCallback(() => {
     setMyImage(false)
@@ -114,10 +127,21 @@ export function RainGame() {
   }
 
   const closeModal = () => {
-    setIsModalOpen(false)
-    bootstrap.gameNetwork.startRainGame(false);
-    bootstrap.gameNetwork.readyRainGame(false);
-    bootstrap.gameNetwork.sendMyInfoToServer(username, character);
+    bootstrap.gameNetwork.startRainGame(false)
+    bootstrap.gameNetwork.readyRainGame(false)
+    bootstrap.gameNetwork.sendMyInfoToServer(username, character,false)
+    
+
+    let interval: NodeJS.Timeout = setInterval(() => {
+      if (!expUpdated) {
+        setIsModalOpen(false)
+        clearInterval(interval) // 조건이 충족되면 interval을 종료합니다.
+      }
+    }, 1000) // 1초에 한 번씩 실행
+
+    setTimeout(() => {
+      clearInterval(interval)
+    }, 3000)
   }
 
   // 경험치 보내주기
@@ -161,7 +185,6 @@ export function RainGame() {
       } else if (winner === you.username) {
         gainExpUpdateLevel(username, 3)
       }
-      setExpUpdated(true)
       openModal()
     }
   }, [winner, expUpdated])
@@ -173,11 +196,11 @@ export function RainGame() {
   const handleClose = () => {
     try {
       dispatch(playRainGameBgm(false))
-      bootstrap.gameNetwork.startRainGame(false);
-      bootstrap.gameNetwork.readyRainGame(false);
-      bootstrap.gameNetwork.leaveRainGameRoom(username);
-      dispatch(closeRainGameDialog());
-      dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN));
+      bootstrap.gameNetwork.startRainGame(false)
+      bootstrap.gameNetwork.readyRainGame(false)
+      bootstrap.gameNetwork.leaveRainGameRoom(username)
+      dispatch(closeRainGameDialog())
+      dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
     } catch (error) {
       console.error('Error leaving the room:', error)
     }
@@ -538,8 +561,8 @@ export function RainGame() {
   }
 
   const handleReady = () => {
-    bootstrap.gameNetwork.readyRainGame(true);
-  };
+    bootstrap.gameNetwork.readyRainGame(true)
+  }
 
   const handleStart = () => {
     if (rainGameReadyRef.current) {
@@ -613,7 +636,10 @@ export function RainGame() {
               </div>
             </div>
           </StartButton>
-        ) : you.username && !rainGameInProgressRef.current && username !== host && !rainGameReadyRef.current ? (
+        ) : you.username &&
+          !rainGameInProgressRef.current &&
+          username !== host &&
+          !rainGameReadyRef.current ? (
           <ReadyButton>
             <div id="ready-button-div">
               <div className="btn-wrap">

@@ -120,11 +120,11 @@ export class RainGameRoom extends Room<GameState> {
 
     this.onMessage(
       Message.RAIN_GAME_USER_C,
-      (client, data: { username: string; character: string }) => {
+      (client, data: { username: string; character: string; expUpdated: boolean }) => {
         if (!this.state.raingames.rainGameUsers.has(client.sessionId)) {
           this.state.raingames.rainGameUsers.set(
             client.sessionId,
-            new RainGameUser(data.username, data.character)
+            new RainGameUser(data.username, data.character, data.expUpdated)
           )
           this.state.raingames.rainGameStates.set(client.sessionId, new RainGameState())
         } else {
@@ -192,6 +192,10 @@ export class RainGameRoom extends Room<GameState> {
           this.broadcast(Message.RAIN_GAME_OUT_S, data, { except: client, afterNextPatch: true })
         }
       }
+    })
+
+    this.onMessage(Message.RAIN_GAME_CLOSE_C, (clinet, data: {username : string}) => {
+      this.broadcast(Message.RAIN_GAME_CLOSE_S, data)
     })
   }
 
