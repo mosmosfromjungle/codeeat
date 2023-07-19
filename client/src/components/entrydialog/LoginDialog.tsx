@@ -141,7 +141,6 @@ export default function LoginDialog() {
             dispatch(setUsername(payload.username))
             dispatch(setCharacter(payload.character))
             dispatch(setUserLevel(payload.userLevel))
-            // console.log(payload.username)
             bootstrap.dmNetwork.whoAmI(payload.username)
               
             setTimeout(() => {

@@ -17,11 +17,6 @@ export default class DMNetwork {
   public oldMessages: OldMessage[]
   constructor() {
     const socketUrl =
-      // process.env.NODE_ENV === 'production'
-      // ? import.meta.env.VITE_SERVER_URL
-      // : `http://${window.location.hostname}:8888`
-      // 준코
-      // `http://43.202.65.140:8888`
       `http://127.0.0.1:8888`
 
     this.socketClient = io(socketUrl, {
@@ -34,7 +29,6 @@ export default class DMNetwork {
       console.error(err)
     })
     this.socketClient.on('message', (data) => {
-      // console.log(data,'라고 받음')
       data.id = 1
       store.dispatch(setNewMessage(data))
       store.dispatch(setNewMessageCnt(1))
@@ -51,7 +45,6 @@ export default class DMNetwork {
       username: senderName,
       receiverName: receiverName,
     })
-    // console.log('emit joinRoom - roomId:',roomId,'senderName:',senderName,'receiverName:',receiverName)
     this.socketClient.on('old-messages', (data) => {
       this.oldMessages = []
       data.forEach((element: any) => {

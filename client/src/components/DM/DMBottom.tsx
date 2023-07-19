@@ -22,7 +22,6 @@ export default function DMBottom(props) {
       setValue('');
       return;
     }
-      // console.log('보냄');
     const newMessage = new Message({
       id: 0,
       message: Rvalue,
