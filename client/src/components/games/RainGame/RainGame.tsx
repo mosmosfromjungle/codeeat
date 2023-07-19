@@ -22,6 +22,7 @@ import {
   PlayArea,
   Comment,
   StartButton,
+  ReadyButton,
   Item,
   Name,
 } from './RainGameStyle'
@@ -55,22 +56,22 @@ export function RainGame() {
   const rainGameInProgress = useAppSelector((state) => state.raingame.rainGameInProgress)
   const rainGameInProgressRef = useRef(rainGameInProgress)
   const rainGameReady = useAppSelector((state) => state.raingame.rainGameReady)
+  const rainGameReadyRef = useRef(rainGameReady)
 
   const raingame = useAppSelector((state) => state.raingame)
-
 
   const lineHeight = 527
   const dispatch = useAppDispatch()
   const keywordInput = useRef<HTMLInputElement>(null)
   const bootstrap = phaserGame.scene.keys.bootstrap as Bootstrap
   const [time, setTime] = useState(100)
-  const host = useAppSelector((state) => state.raingame.host)
   const sessionId = useAppSelector((state) => state.user.gameSessionId)
-  const gamewinner = useAppSelector((state) => state.raingame.winner)
 
   // My information
+  const me = useAppSelector((state)=> state.raingame.me)
   const username = useAppSelector((state) => state.user.username)
   const character = useAppSelector((state) => state.user.character)
+  const expUpdated = useAppSelector((state) => state.raingame.me.expUpdated)
   const imgpath = `/assets/character/single/${capitalizeFirstLetter(character)}.png`
 
   // Friend information
@@ -92,10 +93,23 @@ export function RainGame() {
   const targetwordRef = useRef(targetword)
   const myExtraSpeedRef = useRef(0)
   const youExtraSpeedRef = useRef(0)
-  const me = useAppSelector((state) => state.raingame.me)
+
   const [myImage, setMyImage] = useState(false)
   const [youImage, setYouImage] = useState(false)
-  const [expUpdated, setExpUpdated] = useState(false)
+  const [host, setHost] = useState(raingame.host)
+  const [winner, setWinner] = useState(raingame.winner)
+  const [myExpUpdated, setMyExpUpdated] = useState({expUpdated: expUpdated})
+  const [youExpUpdated, setYouExpUpdated] = useState({expUpdated : you.expUpdated})
+
+  useEffect(() => {
+    setMyExpUpdated({
+      expUpdated : expUpdated
+    })
+    setYouExpUpdated({
+      expUpdated : you.expUpdated
+    })
+  },[raingame.me, raingame.you])
+
 
   const hideMyImage = useCallback(() => {
     setMyImage(false)
@@ -107,15 +121,27 @@ export function RainGame() {
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const openModal = () => {
-    console.log('openModal:', gamewinner)
     setTimeout(() => {
       setIsModalOpen(true)
     }, 200)
   }
 
   const closeModal = () => {
-    setIsModalOpen(false)
-    handleClose()
+    bootstrap.gameNetwork.startRainGame(false)
+    bootstrap.gameNetwork.readyRainGame(false)
+    bootstrap.gameNetwork.sendMyInfoToServer(username, character,false)
+    
+
+    let interval: NodeJS.Timeout = setInterval(() => {
+      if (!expUpdated) {
+        setIsModalOpen(false)
+        clearInterval(interval) // 조건이 충족되면 interval을 종료합니다.
+      }
+    }, 1000) // 1초에 한 번씩 실행
+
+    setTimeout(() => {
+      clearInterval(interval)
+    }, 3000)
   }
 
   // 경험치 보내주기
@@ -149,22 +175,30 @@ export function RainGame() {
   }, [raingame.myState, raingame.youState])
 
   useEffect(() => {
-    if (gamewinner && !expUpdated) {
-      if (gamewinner === username) {
+    setWinner(raingame.winner)
+  }, [raingame.winner])
+
+  useEffect(() => {
+    if (winner && !expUpdated) {
+      if (winner === username) {
         gainExpUpdateLevel(username, 7)
-      } else if (gamewinner === you.username) {
+      } else if (winner === you.username) {
         gainExpUpdateLevel(username, 3)
       }
-      setExpUpdated(true)
       openModal()
     }
-  }, [gamewinner, expUpdated])
+  }, [winner, expUpdated])
+
+  useEffect(() => {
+    setHost(raingame.host)
+  }, [raingame.host])
 
   const handleClose = () => {
     try {
       dispatch(playRainGameBgm(false))
       bootstrap.gameNetwork.startRainGame(false)
-      bootstrap.gameNetwork.leaveGameRoom()
+      bootstrap.gameNetwork.readyRainGame(false)
+      bootstrap.gameNetwork.leaveRainGameRoom(username)
       dispatch(closeRainGameDialog())
       dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))
     } catch (error) {
@@ -312,13 +346,10 @@ export function RainGame() {
       setMyGame((game) =>
         game.reduce((newGame, item) => {
           const newY = item.y + item.speed + myExtraSpeedRef.current
-          console.log("newY: "+newY);
           if (newY >= lineHeight) {
-            console.log('목숨 깎임')
             debouncedDecreaseHeart()
 
             if (myState.heart <= 0) {
-              console.log('목숨 0되는거 감지됨')
               bootstrap.gameNetwork.endGame(you.username)
             }
           } else {
@@ -392,12 +423,21 @@ export function RainGame() {
   }, [targetword])
 
   useEffect(() => {
+    rainGameReadyRef.current = rainGameReady
+  }, [rainGameReady])
+
+  useEffect(() => {
     rainGameInProgressRef.current = rainGameInProgress
+    if (!rainGameInProgress) {
+      setMyGame([]) // myGame 초기화
+      setYouGame([]) // youGame 초기화
+      setTime(100) // 시간 초기화
+    }
   }, [rainGameInProgress])
 
   useEffect(() => {
     // 아직 준비상태면, 단어 떨어지지 않음
-    if (!rainGameInProgressRef.current || !rainGameReady) {
+    if (!rainGameInProgressRef.current || !rainGameReadyRef.current) {
       return
     }
 
@@ -520,8 +560,12 @@ export function RainGame() {
     }
   }
 
+  const handleReady = () => {
+    bootstrap.gameNetwork.readyRainGame(true)
+  }
+
   const handleStart = () => {
-    if (rainGameReady) {
+    if (rainGameReadyRef.current) {
       bootstrap.gameNetwork.startRainGame(true)
     }
   }
@@ -548,7 +592,7 @@ export function RainGame() {
           <ExperienceResultModal
             open={isModalOpen}
             handleClose={closeModal}
-            winner={gamewinner === username}
+            winner={winner === username ? true : winner === you.username ? false : null}
           />
         )}
         {!rainGameInProgressRef.current && (
@@ -592,6 +636,34 @@ export function RainGame() {
               </div>
             </div>
           </StartButton>
+        ) : you.username &&
+          !rainGameInProgressRef.current &&
+          username !== host &&
+          !rainGameReadyRef.current ? (
+          <ReadyButton>
+            <div id="ready-button-div">
+              <div className="btn-wrap">
+                <Button
+                  type="button"
+                  onClick={() => handleReady()}
+                  style={{
+                    position: 'absolute',
+                    fontSize: '20px',
+                    fontFamily: 'Font_DungGeun',
+                    width: '160px',
+                    background: 'white',
+                    color: 'black',
+                    top: '0px',
+                    right: '80px',
+                    borderRadius: '20px',
+                    zIndex: 3,
+                  }}
+                >
+                  준비 완료
+                </Button>
+              </div>
+            </div>
+          </ReadyButton>
         ) : (
           ''
         )}

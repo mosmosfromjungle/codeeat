@@ -16,6 +16,7 @@ export interface IKeywordRain extends Schema {
 export interface IRainGameUser extends Schema {
   username: string
   character: string
+  expUpdated: boolean
 }
 
 export interface IRainGameState extends Schema {

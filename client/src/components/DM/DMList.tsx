@@ -32,13 +32,11 @@ export const ConversationList = () => {
   }, []);
 
   useEffect(() => {
-    // console.log('방 목록 불러옴', rooms);
   }, [rooms]);
 
 const handleClick = (room) => {
   dispatch(setReceiverName(room.receiverName));
   dispatch(setRoomId(room.roomId));
-  // console.log('룸아이디설정',room.roomId)
 
   dispatch(setNewMessageCnt(-1 * room.unreadCount))
   dispatch(setNewMessage({ message: '' }))

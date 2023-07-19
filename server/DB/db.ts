@@ -13,7 +13,7 @@ const mongoose = require('mongoose')
 
 export async function connectDB() {
   mongoose.set('strictQuery', false)
-  mongoose.connect(config.db.host, { 
+  mongoose.connect(config.db.host, {
     dbName: 'mosmos',
     useNewUrlParser: true,
   })
@@ -30,7 +30,7 @@ export async function connectDB() {
   // defaultProblems()
 }
 
-export const createCollection = (modelName : string) => {
+export const createCollection = (modelName: string) => {
   if (mongoose.modelNames().includes(modelName)) {
     return mongoose.model(modelName)
   }

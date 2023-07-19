@@ -37,7 +37,7 @@ import {
   setRainGameYou,
   setRainGameYouWord,
   setRainGameHost,
-  // setRainGameReady,
+  setRainGameReady,
   setRainGameInProgress,
   setRainStateMe,
   setRainStateYou,
@@ -297,17 +297,20 @@ export default class GameNetwork {
 
 
   startRainGame(progress: boolean) {
-    console.log('startRainGame')
     this.room?.send(Message.RAIN_GAME_START_C, { value : progress})
+  }
+
+  readyRainGame(ready: boolean) {
+    this.room?.send(Message.RAIN_GAME_READY_C, { value : ready })
   }
 
   removeWord(word: string, sessionId: string, states: RainGameStates) {
     this.room?.send(Message.RAIN_GAME_WORD_C, { word: word, sessionId: sessionId, states: states })
   }
 
-  sendMyInfoToServer(username: string, character: string) {
+  sendMyInfoToServer(username: string, character: string, expUpdated: boolean) {
     if (!this.room) return
-    this.room.send(Message.RAIN_GAME_USER_C, { username: username, character: character })
+    this.room.send(Message.RAIN_GAME_USER_C, { username: username, character: character, expUpdated: expUpdated })
   }
 
   decreaseHeart(sessionId: string) {
@@ -319,10 +322,17 @@ export default class GameNetwork {
   }
 
   endGame(username: string) {
-    
     this.room?.send(Message.RAIN_GAME_END_C, { username: username })
   }
-  
+
+  leaveRainGameRoom(username: string) {
+    this.room?.send(Message.RAIN_GAME_OUT_C, { username: username })
+  }
+
+  closeResult(username: string) {
+    this.room?.send(Message.RAIN_GAME_CLOSE_C, {username: username})
+  }
+ 
   /* RAIN GAME  */
 
   rain_game_init() {
@@ -365,9 +375,10 @@ export default class GameNetwork {
       store.dispatch(setRainGameInProgress(progress))
     })
 
-    // this.room.onMessage(Message.RAIN_GAME_READY_S, () => {
-    //   store.dispatch(setRainGameReady(true))
-    // })
+    this.room.onMessage(Message.RAIN_GAME_READY_S, (content) => {
+      const { ready } = content
+      store.dispatch(setRainGameReady(ready))
+    })
 
     this.room.onMessage(Message.RAIN_GAME_WORD_S, (data) => {
       const { word, states } = data
@@ -418,11 +429,26 @@ export default class GameNetwork {
           )
         }
       })
-    })
+    });
 
     this.room.onMessage(Message.RAIN_GAME_END_S, (data) => {
       const { username } = data
       store.dispatch(setRainGameWinner(username))
+    });
+
+    this.room.onMessage(Message.RAIN_GAME_OUT_S, (data) => {
+      const { host } = data;
+
+      if (host) {
+        store.dispatch(setRainGameYou({ username: '', character: ''}));
+        store.dispatch(setRainGameHost(host));
+      } else {
+        store.dispatch(setRainGameYou({ username: '', character:''}));
+      }
+    });
+
+    this.room.onMessage(Message.RAIN_GAME_CLOSE_S, (data) => {
+      
     })
   }
 }
