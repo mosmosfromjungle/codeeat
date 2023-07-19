@@ -3,7 +3,8 @@
 ![screenshot](https://github.com/junsoopooh/junsoopooh.github.io/blob/master/project/project/image.png?raw=true)
 
 
-코딩을 처음 접하는 어린이들을 위한 미니 게임 플랫폼. 코드잇 입니다.
+코딩을 처음 접하는 어린이들을 위한 미니 게임 플랫폼! 코드잇 입니다.
+서비스 주소 : http://codeeat.site/
 
 
 
