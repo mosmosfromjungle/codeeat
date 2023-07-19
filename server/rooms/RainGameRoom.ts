@@ -100,7 +100,6 @@ export class RainGameRoom extends Room<GameState> {
         if (sessionId !== client.sessionId) {
           if (item === 'A') {
             gameState.item.push('A')
-            console.log(gameState.item)
           }
           if (item === 'B') {
             gameState.item.push('B')

@@ -24,7 +24,6 @@ export const DMController = (socket: Socket) => {
     const { roomId, username, receiverName } = host;
 
     if (rooms[roomId]) {
-      console.log('대화방 유저 입장');
       rooms[roomId].push(username);
       socket.join(roomId);
     } else {
@@ -59,7 +58,6 @@ export const DMController = (socket: Socket) => {
 
   const readMessage = async (message: { roomId: string; username: string; receiverName: string; }) => {
     const { roomId, username, receiverName } = message;
-    // console.log('읽어들임')
     getDMMessage(username,receiverName)
     .then((dmMessage) => {
       socket.emit('old-messages', dmMessage);

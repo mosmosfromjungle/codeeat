@@ -49,8 +49,6 @@ import {} from './stores/AudioStore'
 // import Cookies from 'universal-cookie';
 // const cookies = new Cookies();
 
-// TODO: Production 서버에 옮겨가면 해당 부분 수정 필요
-// 준코
 // axios.defaults.baseURL = 'http://43.202.65.140:2567'
 axios.defaults.baseURL = 'http://127.0.0.1:2567'
 console.log('axios.defaults.baseURL ', axios.defaults.baseURL)
@@ -152,19 +150,6 @@ function App() {
       }
     }
   }, [mainBgm, moleGameBgm, brickGameBgm, rainGameBgm, dialogStatus])
-  // TODO: cookie 가져오는 부분 해결 필요
-  // useEffect(() => {
-  //   // 첫 렌더링 시, refresh token이 있다면 token 인증을 통해 entry 상태를 설정
-  //   // const refreshToken = cookies.get('refreshToken');
-  //   // console.log('refresh token: ', refreshToken)
-  //   // if (refreshToken) {
-  //   authenticateUser().then((result) => {
-  //     if (result.status === 200) {
-  //       dispatch(setEntryProcess(ENTRY_PROCESS.WELCOME));
-  //     }
-  //   })
-  //   // }
-  // }, [])
 
   let ui: JSX.Element
   if (dialogStatus === DIALOG_STATUS.JOIN) {

@@ -422,8 +422,6 @@ export class BrickGameRoom extends Room<IGameState> {
     this.state.brickgames.hasRoundWinner = false
     this.state.brickgames.roundWinner = ''
     this.state.brickgames.currentRound += 1
-    // const newProblem = this.getRandomProblem()
-    // console.log('problem: ', newProblem)
     let newProblem
     if (this.state.brickgames.currentRound === 1) {
       newProblem = {
