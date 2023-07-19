@@ -181,14 +181,8 @@ export default function FriendsDialog() {
       .then((response) => {
         if (!response) return
         setResMessage('친구 요청을 수락했어요')
-        // dispatch(setShowFriend(false))
-        // dispatch(setHelperStatus(HELPER_STATUS.NONE))
       })
       .catch((error) => {
-        // if (error.response) {
-        //   const { status, message } = error.response.data
-        //   console.log('message: ' + message)
-        // }
         setResMessage('친구요청을 수락하는데 오류가 있었어요!')
       })
   }
@@ -202,14 +196,8 @@ export default function FriendsDialog() {
       .then((response) => {
         if (!response) return
         setResMessage('친구 요청을 거절했어요')
-        // dispatch(setShowFriend(false))
-        // dispatch(setHelperStatus(HELPER_STATUS.NONE))
       })
       .catch((error) => {
-        // if (error.response) {
-        //   const { status, message } = error.response.data
-        //   console.log('message: ' + message)
-        // }
         setResMessage('친구요청을 거절하는데 오류가 있었어요!')
       })
   }
@@ -223,14 +211,8 @@ export default function FriendsDialog() {
       .then((response) => {
         if (!response) return
         setResMessage('친구를 삭제했어요')
-        // dispatch(setShowFriend(false))
-        // dispatch(setHelperStatus(HELPER_STATUS.NONE))
       })
       .catch((error) => {
-        // if (error.response) {
-        //   const { status, message } = error.response.data
-        //   console.log('message: ' + message)
-        // }
         setResMessage('친구를 삭제하는데 오류가 있었어요!')
       })
   }

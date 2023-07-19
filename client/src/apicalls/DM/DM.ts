@@ -6,7 +6,6 @@ import Game from '../../scenes/Game'
 export const checkIfFirst = async (body: {senderName: string; receiverName: string}) => {
   try{
     const response = axios.post(`/lastdm/checkIfFirst`, body)
-    // console.log(body)
     return response;
   } catch(err) {
     console.error(err)

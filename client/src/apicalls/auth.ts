@@ -207,7 +207,6 @@ export const updateMyProfile = async (body: UpdateRequest): Promise<any> => {
 }
 
 export const updateLevel = async (body: UpdateLevelReqest): Promise<any> => {
-  // console.log("바디는 제대로 들어오는거니?" + JSON.stringify(body))
   try {
     const response = await axios.post('/auth/exp', body, {
       withCredentials: true,
@@ -223,31 +222,6 @@ export const updateLevel = async (body: UpdateLevelReqest): Promise<any> => {
   }
 }
 
-// export const updateMyProfile = async () => {
-//     const body = {
-//       school: school,
-//       grade: grade,
-//       description: description,
-//     }
-//     try {
-//       const response = await axios.post(`/update`, body)
-//       if (response) {
-//         const { status } = response.data
-//         if (response.status === 200) {
-//           if (status === 200) {
-//             return 1
-//           } else if (status === 404) {
-//             return 2
-//           } else if (status === 409) {
-//             return 3
-//           }
-//         } else {
-//           console.log('서버에러')
-//         }
-//       }
-//     } catch (error) {}
-//   }
-
 export const join = async (body: JoinRequest): Promise<any> => {
   try {
     const response = await axios.post('/auth/signup', body, {
@@ -256,9 +230,6 @@ export const join = async (body: JoinRequest): Promise<any> => {
         'Content-type': 'application/json',
       },
     })
-    if (response.status === 200) { 
-      // UGLY: 이 부분이 필요없다는게 검증되면 삭제하기 
-    }
     return response.data
   } catch (error) {
     throw error 

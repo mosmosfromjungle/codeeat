@@ -34,18 +34,20 @@ export class KeywordRain extends Schema implements IKeywordRain {
 }
 export class RainGameState extends Schema implements IRainGameState {
   @type('number') point = 0
-  @type('number') heart = 2
+  @type('number') heart = 3
   @type(['string']) item: string[] = []
 }
 
 export class RainGameUser extends Schema implements IRainGameUser {
   @type('string') username = ''
   @type('string') character = ''
+  @type('boolean') expUpdated : boolean 
 
-  constructor(name: string, character: string) {
+  constructor(name: string, character: string, expUpdated: boolean) {
     super()
     this.username = name
     this.character = character
+    this.expUpdated = false
   }
 }
 
@@ -53,7 +55,7 @@ export class RainGameRoomState extends Schema implements IRainGameRoomState {
   @type('string')
   host = ''
   @type('boolean')
-  rainGameReady: boolean = true;
+  rainGameReady: boolean = false;
   @type('boolean')
   rainGameInProgress: boolean = false;
   @type({ map: RainGameState })

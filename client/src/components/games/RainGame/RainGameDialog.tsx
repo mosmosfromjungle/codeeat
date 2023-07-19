@@ -47,17 +47,12 @@ const RainGameDialog = () => {
 
   bootstrap.gameNetwork.sendMyInfoToServer(username, character)
 
-  // const handleStartGame = () => {
-  //   console.log('handleStartGame')
-  //   if(isReady && isHost){
-  //     bootstrap.gameNetwork.startRainGame()
-  // }
-  // }
   dispatch(playRainGameBgm(true))
 
   const handleClose = () => {
     try {
       dispatch(playRainGameBgm(false))
+      bootstrap.gameNetwork.leaveRainGameRoom(username)
       bootstrap.gameNetwork.leaveGameRoom()
       dispatch(closeRainGameDialog())
       dispatch(setDialogStatus(DIALOG_STATUS.IN_MAIN))

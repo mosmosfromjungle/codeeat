@@ -6,6 +6,7 @@ import { Interface } from 'readline'
 export interface RainGameUser {
   username: string
   character: string
+  expUpdated: boolean
 }
 
 export interface RainGameState {
@@ -27,25 +28,27 @@ export interface RainGameStates {
 
 export const initialState: RainGameStates = {
   host: '',
-  rainGameReady: true, /* 지금은 필요없는데 나중에 준비버튼 만들려고 냅뒀음 */
+  rainGameReady: false,
   rainGameInProgress: false,
   myState: {
     point: 0,
-    heart: 2,
+    heart: 3,
     item: [],
   },
   youState: {
     point: 0,
-    heart: 2,
+    heart: 3,
     item: [],
   },
   me: {
     username: '',
     character: '',
+    expUpdated: false,
   },
   you: {
     username: '',
     character: '',
+    expUpdated: false,
   },
   words: '',
   winner: ''
@@ -69,15 +72,17 @@ export const rainGameSlice = createSlice({
     },
 
     setRainGameYou: (state, action: PayloadAction<RainGameUser>) => {
-      const { username, character } = action.payload
+      const { username, character, expUpdated } = action.payload
       state.you.username = username
       state.you.character = character
+      state.you.expUpdated = expUpdated
     },
 
     setRainGameMe: (state, action: PayloadAction<RainGameUser>) => {
-      const { username, character } = action.payload
+      const { username, character, expUpdated } = action.payload
       state.me.username = username
       state.me.character = character
+      state.me.expUpdated = expUpdated
     },
 
     setRainStateMe: (state, action: PayloadAction<RainGameState>) => {
