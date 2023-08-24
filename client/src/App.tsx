@@ -44,13 +44,7 @@ import ProfileDialog from './components/ProfileDialog'
 import GlobalFont from '../public/assets/fonts/GlobalFont'
 import {} from './stores/AudioStore'
 
-// import { authenticateUser } from './apicalls/auth';
-
-// import Cookies from 'universal-cookie';
-// const cookies = new Cookies();
-
-// axios.defaults.baseURL = 'http://43.202.65.140:2567'
-axios.defaults.baseURL = 'http://127.0.0.1:2567'
+axios.defaults.baseURL = 'http://3.35.67.179:2567'
 console.log('axios.defaults.baseURL ', axios.defaults.baseURL)
 
 const Backdrop = styled.div`

@@ -16,8 +16,13 @@ export default class DMNetwork {
   private socketClient: Socket
   public oldMessages: OldMessage[]
   constructor() {
+
     const socketUrl =
-      `http://127.0.0.1:8888`
+    // process.env.NODE_ENV === 'production'
+    // ? import.meta.env.VITE_SERVER_URL
+    // : `http://${window.location.hostname}:8888`
+    `http://3.35.67.179:8888`
+    // `http://localhost:8888`
 
     this.socketClient = io(socketUrl, {
       transports: ['websocket', 'polling', 'flashsocket'],
