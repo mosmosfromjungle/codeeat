@@ -4,7 +4,7 @@
 
 
 코딩을 처음 접하는 어린이들을 위한 미니 게임 플랫폼! 코드잇 입니다. <br>
-서비스 주소 : http://codeeat.site/
+~~서비스 주소 : http://codeeat.site/~~ 배포 중단단
 
 
 
@@ -74,7 +74,7 @@
 | ------------------------------------------------------------ | ---------------------------------------------- |
 | [코드잇 포스터](https://github.com/junsoopooh/junsoopooh.github.io/blob/master/img/CodeEat_Poster.pdf) | A1 Size의 포스터로 요약한 프로젝트 내용입니다. |
 | [코드잇 깃허브](https://github.com/mosmosfromjungle/mosmos)  | 실제 코드를 확인할 수 있습니다.                |
-| [코드잇 서비스 주소](codeeat.site)                           | 서비스를 체험해볼 수 있습니다.                 |
+| [~~코드잇 서비스 주소~~](codeeat.site)                           | ~~서비스를 체험해볼 수 있습니다.~~ 배포 중단                 |
 | [코드잇 발표 PPT](https://github.com/junsoopooh/junsoopooh.github.io/blob/master/img/codeeat_PPT.pdf) | 프로젝트 최종 발표 당시의 PPT입니다.           |
 | [코드잇 발표 영상](https://drive.google.com/drive/folders/1EF5lpVpnaSRqlo7-A2ImtDPM1MCD8iqy) | 프로젝트 최종 발표의 비디오 버전입니다.        |
 
