@@ -29,6 +29,7 @@
 - **3가지 게임** :3종류의 2인용 실시간 멀티플레이 게임을 구현하였습니다.
 
   #### ☔산성비 게임
+  ![game1](https://raw.githubusercontent.com/junsoopooh/junsoopooh.github.io/master/img/codeeatgame1.webp)
 
   - 떨어지는 영어 단어를 입력하여 점수를 획득합니다. 
   - 제한시간 내 높은 점수를 얻거나, 상대가 목숨을 모두 잃으면 승리합니다.
@@ -37,12 +38,14 @@
   - 아이들이 키보드 타자, 특히 영어 타자에 익숙해지도록 돕기 위한 게임입니다. 
 
   #### 🔨두더지 게임
+  ![game2](https://raw.githubusercontent.com/junsoopooh/junsoopooh.github.io/master/img/codeeatgame2.webp)
 
   - 주어진 문제에 알맞은 정답을 들고 있는 두더지를 상대보다 먼저 클릭하는 게임입니다.
   - 정답 유무는 효과음과 캐릭터의 반응을 통해 알 수 있습니다.
   - 파이썬의 함수와 같은 기초 문제들이 출제됩니다.
 
   #### 📦자료구조 게임
+  ![game3](https://raw.githubusercontent.com/junsoopooh/junsoopooh.github.io/master/img/codeeatgame3.webp)
 
   - 문제가 제시하는 조건에 맞게 주어진 동물 배열을 정리하는 게임입니다.
   - List, Set, Stack, Deque, Queue 중 하나를 선택하고 그에 맞는 오퍼레이션을 선택합니다.
