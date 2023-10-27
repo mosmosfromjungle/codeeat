@@ -1,6 +1,6 @@
 # <span style="font-size:50px;">코드잇</span>
 
-![screenshot]([https://github.com/junsoopooh/junsoopooh.github.io/blob/master/img/image.png?raw=true](https://raw.githubusercontent.com/junsoopooh/junsoopooh.github.io/master/img/image.webp))
+![screenshot](https://raw.githubusercontent.com/junsoopooh/junsoopooh.github.io/master/img/image.webp)
 
 
 코딩을 처음 접하는 어린이들을 위한 미니 게임 플랫폼! 코드잇 입니다. <br>
@@ -10,7 +10,7 @@
 
 ## <span style="font-size:40px;">📜포스터</span>
 
-![CodeEat](https://github.com/junsoopooh/junsoopooh.github.io/blob/master/img/CodeEat_Poster.jpg?raw=true)
+![CodeEat](https://raw.githubusercontent.com/junsoopooh/junsoopooh.github.io/master/img/CodeEat_Poster.webp)
 
 ------
 
